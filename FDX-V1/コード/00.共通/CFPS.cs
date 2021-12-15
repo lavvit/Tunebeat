@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FDK
+{
+	public class CFPS
+	{
+		// プロパティ
+
+		public int n現在のFPS
+		{
+			get;
+			private set;
+		}
+		public bool bFPSの値が変化した
+		{
+			get;
+			private set;
+		}
+
+
+		// コンストラクタ
+
+		public CFPS()
+		{
+			this.n現在のFPS = 0;
+			this.基点時刻ms = DxLibDLL.DX.GetNowCount();
+			this.内部FPS = 0;
+			this.bFPSの値が変化した = false;
+		}
+
+
+		// メソッド
+
+		public void tカウンタ更新()
+		{
+			this.bFPSの値が変化した = false;
+
+			const long INTERVAL = 1000;
+			while( (DxLibDLL.DX.GetNowCount() - this.基点時刻ms ) >= INTERVAL )
+			{
+				this.n現在のFPS = this.内部FPS;
+				this.内部FPS = 0;
+				this.bFPSの値が変化した = true;
+				this.基点時刻ms += INTERVAL;
+			}
+			this.内部FPS++;
+		}
+
+
+		// その他
+
+		#region [ private ]
+		//-----------------
+		private CTimer	timer;
+		private long	基点時刻ms;
+		private int		内部FPS;
+		//-----------------
+		#endregion
+	}
+}
