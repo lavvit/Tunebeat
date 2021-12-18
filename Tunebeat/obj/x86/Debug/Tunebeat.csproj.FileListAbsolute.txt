@@ -1,0 +1,6 @@
+C:\Users\LAVVIT1075\source\repos\Tunebeat\Tunebeat\obj\x86\Debug\Tunebeat.csproj.AssemblyReference.cache
+C:\Users\LAVVIT1075\source\repos\Tunebeat\Tunebeat\obj\x86\Debug\Tunebeat.csproj.SuggestedBindingRedirects.cache
+C:\Users\LAVVIT1075\source\repos\Tunebeat\Tunebeat\obj\x86\Debug\Tunebeat.Properties.Discord.resources
+C:\Users\LAVVIT1075\source\repos\Tunebeat\Tunebeat\obj\x86\Debug\Tunebeat.Properties.Resources.resources
+C:\Users\LAVVIT1075\source\repos\Tunebeat\Tunebeat\obj\x86\Debug\Tunebeat.csproj.GenerateResource.cache
+C:\Users\LAVVIT1075\source\repos\Tunebeat\Tunebeat\obj\x86\Debug\Tunebeat.csproj.CoreCompileInputs.cache

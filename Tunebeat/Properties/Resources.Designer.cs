@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TJAPlayer3.Properties {
+namespace Tunebeat.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TJAPlayer3.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TJAPlayer3.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Tunebeat.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -59,23 +59,13 @@ namespace TJAPlayer3.Properties {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
         /// </summary>
-        internal static System.Drawing.Icon dtx {
+        internal static System.Drawing.Icon tunebeat {
             get {
-                object obj = ResourceManager.GetObject("dtx", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   (アイコン) に類似した型 System.Drawing.Icon のローカライズされたリソースを検索します。
-        /// </summary>
-        internal static System.Drawing.Icon tjap3 {
-            get {
-                object obj = ResourceManager.GetObject("tjap3", resourceCulture);
+                object obj = ResourceManager.GetObject("tunebeat", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }

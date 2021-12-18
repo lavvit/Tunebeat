@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TJAPlayer3.Properties {
+namespace Tunebeat.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace TJAPlayer3.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("TJAPlayer3.Properties.Discord", typeof(Discord).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Tunebeat.Properties.Discord", typeof(Discord).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
