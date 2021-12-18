@@ -1,8 +1,0 @@
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\bin\Debug\Amaoto.dll
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\bin\Debug\Amaoto.pdb
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\bin\Debug\DxLibWDotNet.dll
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\obj\Debug\Amaoto.csproj.AssemblyReference.cache
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\obj\Debug\Amaoto.csproj.CoreCompileInputs.cache
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\obj\Debug\Amaoto.csproj.CopyComplete
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\obj\Debug\Amaoto.dll
-C:\Users\LAVVIT1075\source\repos\Tunebeat\Amaoto\obj\Debug\Amaoto.pdb
