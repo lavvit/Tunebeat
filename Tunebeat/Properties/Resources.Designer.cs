@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Tunebeat.Properties {
+namespace TJAPlayer3.Properties {
     using System;
     
     
