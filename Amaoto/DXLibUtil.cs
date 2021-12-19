@@ -41,17 +41,17 @@ namespace Amaoto
         {
             if (blendMode == BlendMode.None)
             {
-                return DX.DX_BLENDMODE_PMA_ALPHA;
+                return DX.DX_BLENDMODE_ALPHA;
             }
             else if (blendMode == BlendMode.Add)
             {
-                return DX.DX_BLENDMODE_PMA_ADD;
+                return DX.DX_BLENDMODE_ADD;
             }
             else if (blendMode == BlendMode.Subtract)
             {
-                return DX.DX_BLENDMODE_PMA_SUB;
+                return DX.DX_BLENDMODE_SUB;
             }
-            return DX.DX_BLENDMODE_PMA_ALPHA;
+            return DX.DX_BLENDMODE_ALPHA;
         }
     }
 }

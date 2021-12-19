@@ -22,6 +22,7 @@ namespace Amaoto
             ScaleX = 1.0;
             ScaleY = 1.0;
             Opacity = 1.0;
+            Color = Color.FromArgb(32, 255, 255, 255);
             ReferencePoint = ReferencePoint.TopLeft;
         }
 
@@ -189,6 +190,8 @@ namespace Amaoto
                 DX.SetDrawMode(DX.DX_DRAWMODE_NEAREST);
             }
 
+            DX.SetDrawBright(Color.R, Color.G, Color.B);
+
             if (!isDefinedRect)
             {
                 if (ScaleX == 1.0 && ScaleY == 1.0)
@@ -281,6 +284,7 @@ namespace Amaoto
                 }
             }
 
+            DX.SetDrawBright(255, 255, 255);
             DX.SetDrawBlendMode(DX.DX_BLENDMODE_NOBLEND, 0);
         }
 
@@ -370,6 +374,8 @@ namespace Amaoto
                 return new Size((int)(ScaleX * s.Width), (int)(ScaleY * s.Height));
             }
         }
+
+        public Color Color { get; set; }
     }
 
     /// <summary>
