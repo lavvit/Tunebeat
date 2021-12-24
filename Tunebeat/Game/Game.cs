@@ -55,6 +55,7 @@ namespace Tunebeat.Game
             DrawString(0, 80, $"{MainTJA.Courses[Course].COURSE}", 0xffffff);
             DrawString(0, 100, $"{MainTJA.Courses[Course].LEVEL}", 0xffffff);
             DrawString(0, 120, $"{MainTJA.Courses[Course].TotalNotes}", 0xffffff);
+            DrawString(0, 140, $"{MainTJA.Courses[Course].ScrollType}", 0xffffff);
 #endif
 
             foreach (Scene scene in ChildScene)

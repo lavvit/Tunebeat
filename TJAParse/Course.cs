@@ -9,6 +9,7 @@ namespace TJAParse
     public class Course
     {
         public ECourse COURSE = ECourse.Oni;
+        public EScroll ScrollType = EScroll.Normal;
         public int LEVEL = 0, SCOREINIT, SCOREDIFF, TotalNotes;
         public List<int> BALLOON = new List<int>();
         public List<int> ListMeasureCount = new List<int>();
@@ -44,7 +45,15 @@ namespace TJAParse
             {
                 if (str.StartsWith("#"))
                 {
-                    if (str.StartsWith("#START"))
+                    if (str.StartsWith("#BMSCROLL"))
+                    {
+                        NowInfo.ScrollType = EScroll.BMSCROLL;
+                    }
+                    else if (str.StartsWith("#HBSCROLL"))
+                    {
+                        NowInfo.ScrollType = EScroll.HBSCROLL;
+                    }
+                    else if (str.StartsWith("#START"))
                     {
                         NowInfo.StartParse = true;
                         NowInfo.Time = (long)(header.OFFSET * -1000.0);
@@ -116,8 +125,11 @@ namespace TJAParse
                                 Measure = NowInfo.Measure,
                                 EChip = EChip.Note,
                                 ENote = (ENote)int.Parse(num.ToString()),
+                                EScroll = NowInfo.ScrollType,
                                 CanShow = true
                             };
+
+                            courses[NowCourse].ScrollType = chip.EScroll;
 
                             if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)
                             {
@@ -243,5 +255,12 @@ namespace TJAParse
         Hard,
         Oni,
         Edit
+    }
+
+    public enum EScroll
+    {
+        Normal,
+        BMSCROLL,
+        HBSCROLL
     }
 }

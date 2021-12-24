@@ -10,6 +10,7 @@ namespace TJAParse
     {
         public ENote ENote;
         public EChip EChip;
+        public EScroll EScroll;
         public double Time;
         public double Bpm;
         public double Scroll;
