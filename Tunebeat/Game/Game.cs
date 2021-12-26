@@ -41,10 +41,22 @@ namespace Tunebeat.Game
 
         public override void Update()
         {
-            DrawString(0, 0, $"{MainTimer.Value}", 0xffffff);
             MainTimer.Tick();
             if (MainTimer.State == 0) MainTimer.Start();
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); IsSongPlay = true; }
+            if (IsSongPlay && !MainSong.IsPlaying) MainTimer.Stop();
+
+#if DEBUG
+            DrawString(0, 0, $"{MainTimer.Value}", 0xffffff); if (IsSongPlay && !MainSong.IsPlaying) DrawString(100, 0, "Stoped", 0xffffff);
+            DrawString(0, 20, $"{MainTJA.Header.TITLE}", 0xffffff);
+            DrawString(0, 40, $"{MainTJA.Header.SUBTITLE}", 0xffffff);
+            DrawString(0, 60, $"{MainTJA.Header.BPM}", 0xffffff);
+
+            DrawString(0, 80, $"{MainTJA.Courses[Course].COURSE}", 0xffffff);
+            DrawString(0, 100, $"{MainTJA.Courses[Course].LEVEL}", 0xffffff);
+            DrawString(0, 120, $"{MainTJA.Courses[Course].TotalNotes}", 0xffffff);
+            DrawString(0, 140, $"{MainTJA.Courses[Course].ScrollType}", 0xffffff);
+#endif
 
             foreach (Scene scene in ChildScene)
                 scene?.Update();
