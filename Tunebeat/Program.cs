@@ -38,12 +38,14 @@ namespace Tunebeat
             if (DxLib_Init() < 0) return;
             SetDrawScreen(DX_SCREEN_BACK);
 
+            //データ読み込み
+            PlayData.Init();
             //画像読み込み
             TextureLoad.Init();
             //音源読み込み
             SoundLoad.Init();
 
-            SceneChange(new Game.Game());
+            SceneChange(new SongSelect.SongSelect());
         }
 
         static void Update()
@@ -57,7 +59,7 @@ namespace Tunebeat
             }
         }
 
-        static void End()
+        public static void End()
         {
             DxLib_End();            
         }
