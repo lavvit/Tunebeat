@@ -47,7 +47,7 @@ namespace Tunebeat.SongSelect
                 Program.End();
             }
 
-            if (Key.IsPushed(KEY_INPUT_F3))
+            if (Key.IsPushed(KEY_INPUT_F1))
             {
                 PlayData.Auto = !PlayData.Auto;
             }

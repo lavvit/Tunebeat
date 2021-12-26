@@ -32,7 +32,7 @@ namespace Tunebeat.Game
                 var chip = Game.MainTJA.Courses[Game.Course].ListChip[i];
                 double time = chip.Time - Game.MainTimer.Value;
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
-                if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -400)
+                if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
                 {
                     TextureLoad.Game_Bar.Draw(NotesP.X + x, NotesP.Y, new Rectangle(0, 0, 195, 195));
                 }
@@ -56,13 +56,13 @@ namespace Tunebeat.Game
                         case ENote.Ka:
                         case ENote.DON:
                         case ENote.KA:
-                            if (x >= -400)
+                            if (x >= -715)
                                 TextureLoad.Game_Notes.Draw(NotesP.X + x, NotesP.Y, new Rectangle((int)chip.ENote * 195, 0, 195, 195));
                             break;
                         case ENote.RollStart:
                         case ENote.ROLLStart:
                             var rollx = NotesX(chip.RollEnd.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
-                            if (rollx >= -400)
+                            if (rollx >= -715)
                             {
                                 TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
                                 TextureLoad.Game_Notes.Draw(NotesP.X + x - 3 + 112, NotesP.Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
@@ -74,7 +74,7 @@ namespace Tunebeat.Game
                         case ENote.Balloon:
                         case ENote.Kusudama:
                             var ballx = NotesX(chip.RollEnd.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
-                            if (ballx >= -400)
+                            if (ballx >= -715)
                             {
                                 if (x > 0)
                                     TextureLoad.Game_Notes.Draw(NotesP.X + x, NotesP.Y, new Rectangle(195 * 11, 0, 390, 195));

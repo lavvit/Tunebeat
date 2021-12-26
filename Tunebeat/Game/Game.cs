@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using static DxLibDLL.DX;
 using Amaoto;
+using TJAParse;
 using Tunebeat.Common;
 
 namespace Tunebeat.Game
@@ -19,6 +20,7 @@ namespace Tunebeat.Game
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA.TJAPath)}/{MainTJA.Header.WAVE}");
             IsAuto = PlayData.Auto;
             Course = PlayData.PlayCourse;
+            ProcessNote.BalloonList = 0;
 
             #region AddChildScene
             AddChildScene(new Notes());
@@ -49,6 +51,14 @@ namespace Tunebeat.Game
             DrawString(0, 100, $"{MainTJA.Courses[Course].LEVEL}", 0xffffff);
             DrawString(0, 120, $"{MainTJA.Courses[Course].TotalNotes}", 0xffffff);
             DrawString(0, 140, $"{MainTJA.Courses[Course].ScrollType}", 0xffffff);
+
+            Chip chip = GetNotes.GetNowNote(MainTJA.Courses[Course].ListChip, MainTimer.Value);
+            if (chip != null)
+            {
+                DrawString(520, 100, $"{chip.Time}", 0xffffff);
+                DrawString(520, 120, $"{ProcessNote.RollState(chip)}", 0xffffff);
+                DrawString(520, 240, $"{chip.ENote}", 0xffffff);
+            }
 
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);
             #endif

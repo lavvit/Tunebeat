@@ -18,6 +18,7 @@ namespace Tunebeat.Game
                 if (judge != EJudge.Through)
                 {
                     Score.AddScore(judge);
+                    Score.msJudge = (Game.MainTimer.Value - chip.Time);
                     chip.IsHit = true;
                     if (judge == EJudge.Bad || judge == EJudge.Poor)
                     {
@@ -42,5 +43,78 @@ namespace Tunebeat.Game
                         chip.IsMiss = true;
                     }
         }
+
+        public static ERoll RollState(Chip chip)
+        {
+            if (chip.RollEnd != null && chip.EChip == EChip.Note)
+            {
+                switch (chip.ENote)
+                {
+                    case ENote.RollStart:
+                        return ERoll.Roll;
+                    case ENote.ROLLStart:
+                        return ERoll.ROLL;
+                    case ENote.Balloon:
+                        return ERoll.Balloon;
+                    case ENote.Kusudama:
+                        return ERoll.Kusudama;
+                    default:
+                        return ERoll.None;
+                }
+            }
+            else
+            {
+                return ERoll.None;
+            }
+        }
+
+        public static void RollProcess(Chip chip, bool isDon)
+        {
+            switch (RollState(chip))
+            {
+                case ERoll.Roll:
+                case ERoll.ROLL:
+                    if (chip.RollCount == 0)
+                    {
+                        NowRoll = 0;
+                    }
+                    chip.RollCount++;
+                    NowRoll++;
+                    Score.AddRoll();
+                    break;
+                case ERoll.Balloon:
+                case ERoll.Kusudama:
+                    int balloonamount = Game.MainTJA.Courses[Game.Course].BALLOON.Count > BalloonList ? Game.MainTJA.Courses[Game.Course].BALLOON[BalloonList] : 5;
+                    if (chip.RollCount == 0)
+                    {
+                        BalloonRemain = balloonamount;
+                    }
+                    if (isDon)
+                    {
+                        chip.RollCount++;
+                        BalloonRemain--;
+                        Score.AddBalloon();
+                        if (chip.RollCount == balloonamount)
+                        {
+                            chip.IsHit = true;
+                            BalloonList++;
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public enum ERoll
+        {
+            None,
+            Roll,
+            ROLL,
+            Balloon,
+            Kusudama
+        };
+
+        public static int NowRoll, BalloonRemain, BalloonList;
     }
 }

@@ -32,6 +32,7 @@ namespace Tunebeat.Game
         public static void Process(bool isDon, bool isLeft)
         {
             Chip chip = GetNotes.GetNearNote(Game.MainTJA.Courses[Game.Course].ListChip, Game.MainTimer.Value);
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA.Courses[Game.Course].ListChip, Game.MainTimer.Value);
             EJudge judge;
             if (Game.IsAuto)
             {
@@ -41,9 +42,16 @@ namespace Tunebeat.Game
             {
                 judge = GetNotes.GetJudge(chip, Game.MainTimer.Value);
             }
-            ProcessNote.Process(judge, chip, isDon);
-            
-            if(chip.ENote == ENote.DON || chip.ENote == ENote.KA)
+            if (ProcessNote.RollState(nowchip) == ProcessNote.ERoll.None)
+            {
+                ProcessNote.Process(judge, chip, isDon);
+            }
+            else
+            {
+                ProcessNote.RollProcess(nowchip, isDon);
+            }
+
+            if (chip.ENote == ENote.DON || chip.ENote == ENote.KA || ProcessNote.RollState(nowchip) == ProcessNote.ERoll.ROLL)
             {
                 SoundLoad.Don.Volume = 1.5;
                 SoundLoad.Ka.Volume = 1.5;

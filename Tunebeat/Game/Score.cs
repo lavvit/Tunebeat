@@ -20,6 +20,10 @@ namespace Tunebeat.Game
             Bad = 0;
             Poor = 0;
             Auto = 0;
+            Roll = 0;
+            RollYellow = 0;
+            RollBalloon = 0;
+            JudgeCounter = new Counter(0, 200, 1000, false);
             base.Enable();
         }
 
@@ -37,17 +41,28 @@ namespace Tunebeat.Game
             DrawString(0, 380, "BD:" + $"{Bad}", 0xffffff);
             DrawString(0, 400, "PR:" + $"{Poor}", 0xffffff);
             DrawString(0, 420, "AT:" + $"{Auto}", 0xffffff);
+            DrawString(0, 440, "RL:" + $"{Roll}({RollYellow},{RollBalloon})", 0xffffff);
+
+            if (JudgeCounter.State == TimerState.Started)
+            {
+                DrawString(600, 260, $"{DisplayJudge}", 0xffffff);
+                DrawString(600, 280, $"{msJudge}", 0xffffff);
+            }
             #endif
             base.Draw();
         }
 
         public override void Update()
         {
+            JudgeCounter.Tick();
             base.Update();
         }
 
         public static void AddScore(EJudge judge)
         {
+            DisplayJudge = judge;
+            JudgeCounter.Reset();
+            JudgeCounter.Start();
             switch (judge)
             {
                 case EJudge.Perfect:
@@ -77,6 +92,20 @@ namespace Tunebeat.Game
             }
         }
 
-        public static int EXScore, Perfect, Great, Good, Bad, Poor, Auto;
+        public static void AddRoll()
+        {
+            Roll++;
+            RollYellow++;
+        }
+        public static void AddBalloon()
+        {
+            Roll++;
+            RollBalloon++;
+        }
+
+        public static int EXScore, Perfect, Great, Good, Bad, Poor, Auto, Roll, RollYellow, RollBalloon;
+        public static double msJudge;
+        private static EJudge DisplayJudge;
+        private static Counter JudgeCounter;
     }
 }

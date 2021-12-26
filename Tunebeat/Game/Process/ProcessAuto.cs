@@ -22,6 +22,11 @@ namespace Tunebeat.Game
             {
                 KeyInput.Process(false, true);
             }
+
+            if (chip.RollEnd != null && time >= chip.Time && time < chip.RollEnd.Time && !chip.IsHit && !chip.IsMiss)
+            {
+                KeyInput.Process(true, true);
+            }
         }
     }
 }

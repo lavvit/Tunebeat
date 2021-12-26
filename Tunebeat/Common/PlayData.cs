@@ -9,7 +9,7 @@ namespace Tunebeat.Common
             PlayFile = @"Songs/水天神術・時雨.tja";
             PlayCourse = 3;
 
-            Auto = false;
+            Auto = true;
         }
 
         public static string PlayFile;

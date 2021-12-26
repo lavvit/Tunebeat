@@ -15,6 +15,8 @@ namespace TJAParse
         public double Bpm;
         public double Scroll;
         public double Measure;
+        public int RollCount;
+        public int Balloon;
         public bool IsHit;
         public bool IsMiss;
         public bool IsRoll;

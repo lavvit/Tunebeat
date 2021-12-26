@@ -106,6 +106,54 @@ namespace Tunebeat.Game
             return nearestChip;
         }
 
+        public static Chip GetNowNote(List<Chip> listChip, double nTime)
+        {
+            //sw2.Start();
+            nTime += 0;
+
+            int nTimeDiff;
+            int count = listChip.Count;
+            if (count <= 0)         // 演奏データとして1個もチップがない場合は
+            {
+                //sw2.Stop();
+                return null;
+            }
+
+            int nIndex_NowChip = count - 1;
+            if (0 >= count)      // その時点で演奏すべきチップが既に全部無くなっていたら
+            {
+                nIndex_NowChip  = count - 1;
+            }
+            // int nIndex_NearestChip_Future = nIndex_InitialPositionSearching;
+            //			while ( nIndex_NearestChip_Future < count )	// 検索
+            for (; nIndex_NowChip >= 0; nIndex_NowChip--)
+            {
+                Chip chip = listChip[nIndex_NowChip];
+                if (chip.ENote >= ENote.Don && chip.ENote <= ENote.Kusudama)
+                {
+                    if (chip.Time <= nTime)
+                    {
+                        break;
+                    }
+                }
+                
+            }
+            if (nIndex_NowChip < 0)  // 検索対象が見つからなかった場合
+            {
+                return null;
+            }
+            Chip nowChip = listChip[nIndex_NowChip];
+            nTimeDiff = Math.Abs((int)(nTime - nowChip.Time));
+            int n検索範囲時間ms = 0;
+            if ((n検索範囲時間ms > 0) && (nTimeDiff > n検索範囲時間ms))                 // チップは見つかったが、検索範囲時間外だった場合
+            {
+                //sw2.Stop();
+                return null;
+            }
+            //sw2.Stop();
+            return nowChip;
+        }
+
         public static EJudge GetJudge(Chip chip, double time)
         {
             if (chip != null)
