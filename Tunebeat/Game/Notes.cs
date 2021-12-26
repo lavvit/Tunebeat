@@ -40,7 +40,7 @@ namespace Tunebeat.Game
                 //オートの処理呼び出し
                 ProcessAuto.Update(Game.IsAuto, chip, Game.MainTimer.Value);
                 //ノーツが通り過ぎた時の処理
-                ProcessNote.PassNote(chip, time);
+                ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true);
             }
 
             for (int i = Game.MainTJA.Courses[Game.Course].ListChip.Count - 1; i >= 0; i--)

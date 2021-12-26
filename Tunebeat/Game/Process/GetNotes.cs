@@ -111,9 +111,10 @@ namespace Tunebeat.Game
             if (chip != null)
             {
                 double Difference = Math.Abs(time - chip.Time);
-                if (Difference <= 25) return EJudge.Great;
-                else if (Difference <= 70) return EJudge.Good;
-                else if (Difference <= 100) return EJudge.Miss;
+                if (Difference <= 16) return EJudge.Perfect;
+                else if (Difference <= 32) return EJudge.Great;
+                else if (Difference <= 90) return EJudge.Good;
+                else if (Difference <= 125) return EJudge.Bad;
                 else return EJudge.Through;
             }
             else return EJudge.Through;
@@ -122,9 +123,12 @@ namespace Tunebeat.Game
 
     public enum EJudge
     {
+        Perfect,
         Great,
         Good,
-        Miss,
+        Bad,
+        Poor,
         Through,
+        Auto
     }
 }

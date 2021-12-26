@@ -11,33 +11,34 @@ namespace Tunebeat.Game
 {
     public class ProcessNote
     {
-        public static void Process(EJudge judge, Chip chip)
+        public static void Process(EJudge judge, Chip chip, bool isDon)
         {
-            if(judge != EJudge.Through)
+            if ((isDon && (chip.ENote == ENote.Don || chip.ENote == ENote.DON)) || (!isDon && (chip.ENote == ENote.Ka || chip.ENote == ENote.KA)))
             {
-                chip.IsHit = true;
-                if(judge != EJudge.Miss)
+                if (judge != EJudge.Through)
                 {
-
+                    Score.AddScore(judge);
+                    chip.IsHit = true;
+                    if (judge == EJudge.Bad || judge == EJudge.Poor)
+                    {
+                        chip.IsMiss = true;
+                    }
                 }
                 else
                 {
                     chip.IsMiss = true;
                 }
             }
-            else
-            {
-                chip.IsMiss = true;
-            }
         }
 
-        public static void PassNote(Chip chip, double time)
+        public static void PassNote(Chip chip, double time, bool isDon)
         {
             if (!chip.IsHit && time < -100 && chip.EChip == EChip.Note && chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
                 if (!chip.IsMiss)
                     if (GetNotes.GetJudge(chip, time) == EJudge.Through)
                     {
-                        Process(EJudge.Through, chip);
+                        Score.AddScore(EJudge.Through);
+                        Process(EJudge.Through, chip, isDon);
                         chip.IsMiss = true;
                     }
         }

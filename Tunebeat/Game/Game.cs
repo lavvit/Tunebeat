@@ -22,6 +22,7 @@ namespace Tunebeat.Game
 
             #region AddChildScene
             AddChildScene(new Notes());
+            AddChildScene(new Score());
             #endregion
             base.Enable();
         }
@@ -48,6 +49,7 @@ namespace Tunebeat.Game
             DrawString(0, 100, $"{MainTJA.Courses[Course].LEVEL}", 0xffffff);
             DrawString(0, 120, $"{MainTJA.Courses[Course].TotalNotes}", 0xffffff);
             DrawString(0, 140, $"{MainTJA.Courses[Course].ScrollType}", 0xffffff);
+
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);
             #endif
 
