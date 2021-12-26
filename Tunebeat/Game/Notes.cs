@@ -36,6 +36,11 @@ namespace Tunebeat.Game
                 {
                     TextureLoad.Game_Bar.Draw(NotesP.X + x, NotesP.Y, new Rectangle(0, 0, 195, 195));
                 }
+
+                //オートの処理呼び出し
+                ProcessAuto.Update(Game.IsAuto, chip, Game.MainTimer.Value);
+                //ノーツが通り過ぎた時の処理
+                ProcessNote.PassNote(chip, time);
             }
 
             for (int i = Game.MainTJA.Courses[Game.Course].ListChip.Count - 1; i >= 0; i--)

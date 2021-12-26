@@ -14,6 +14,9 @@ namespace Tunebeat.Game
     {
         public static void Update(bool isAuto)
         {
+            if(Key.IsPushed(KEY_INPUT_F1))
+                Game.IsAuto = !Game.IsAuto;
+
             if (isAuto) return;
 
             if (Key.IsPushed(LEFTDON))

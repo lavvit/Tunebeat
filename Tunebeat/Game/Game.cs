@@ -61,7 +61,8 @@ namespace Tunebeat.Game
             foreach (Scene scene in ChildScene)
                 scene?.Update();
 
-            KeyInput.Update(false);
+            KeyInput.Update(IsAuto);
+          
 
             base.Update();
         }
@@ -76,7 +77,7 @@ namespace Tunebeat.Game
         public static Counter MainTimer;
         public static Sound MainSong;
         public static List<Scene> ChildScene = new List<Scene>();
-        public static bool IsSongPlay;
+        public static bool IsSongPlay, IsAuto = false;
         public static int Course;
     }
 }

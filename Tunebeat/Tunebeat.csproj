@@ -59,6 +59,7 @@
     <Compile Include="Game\Process\GetNotes.cs" />
     <Compile Include="Game\Process\KeyInput.cs" />
     <Compile Include="Game\Notes.cs" />
+    <Compile Include="Game\Process\ProcessAuto.cs" />
     <Compile Include="Game\Process\ProcessNote.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
