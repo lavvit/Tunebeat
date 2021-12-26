@@ -6,7 +6,9 @@ namespace Tunebeat.Common
     {
         public static void Init()
         {
-            const string DEFAULT = @"Resourse\Sound\";
+            const string DEFAULT = @"Resourses\Sound\";
+            Don = new Sound($"{DEFAULT}Don.ogg");
+            Ka = new Sound($"{DEFAULT}Ka.ogg");
         }
 
         public static Sound Don, Ka;

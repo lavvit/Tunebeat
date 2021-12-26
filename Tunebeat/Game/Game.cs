@@ -16,7 +16,7 @@ namespace Tunebeat.Game
             MainTJA = new TJAParse.TJAParse(@"Songs/水天神術・時雨.tja");
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA.TJAPath)}/{MainTJA.Header.WAVE}");
-            Course = 3;
+            Course = 4;
 
             #region AddChildScene
             AddChildScene(new Notes());
@@ -48,6 +48,9 @@ namespace Tunebeat.Game
 
             foreach (Scene scene in ChildScene)
                 scene?.Update();
+
+            KeyInput.Update(false);
+
             base.Update();
         }
 
