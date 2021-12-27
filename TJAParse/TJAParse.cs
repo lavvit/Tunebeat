@@ -47,6 +47,9 @@ namespace TJAParse
             //譜面読み込み
             foreach (string str in alltext)
                 Course.Load(str, Courses, Header);
+
+            foreach (string str in alltext)
+                Course.RollDoubledCheck(Courses);
         }
 
         public string TJAPath;

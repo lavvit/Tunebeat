@@ -55,10 +55,16 @@ namespace Tunebeat.Game
             Chip chip = GetNotes.GetNowNote(MainTJA.Courses[Course].ListChip, MainTimer.Value);
             if (chip != null)
             {
+                DrawString(520, 80, $"{chip.ENote}", 0xffffff);
                 DrawString(520, 100, $"{chip.Time}", 0xffffff);
                 DrawString(520, 120, $"{ProcessNote.RollState(chip)}", 0xffffff);
+                DrawString(520, 160, $"{chip.RollCount}", 0xffffff);
+                DrawString(520, 180, $"{ProcessNote.BalloonRemain}", 0xffffff);
                 DrawString(520, 240, $"{chip.ENote}", 0xffffff);
             }
+            DrawString(520, 140, $"{ProcessAuto.RollTimer.Value}", 0xffffff);
+            DrawString(600, 140, $"{PlayData.AutoRoll}", 0xffffff);
+            DrawString(700, 140, $"{ProcessAuto.RollTimer.Value % (1000.0 / PlayData.AutoRoll)}", 0xffffff);
 
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);
             #endif

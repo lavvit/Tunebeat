@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TJAParse;
 using static DxLibDLL.DX;
-using Amaoto;
+using Tunebeat.Common;
 
 namespace Tunebeat.Game
 {
@@ -46,7 +46,7 @@ namespace Tunebeat.Game
 
         public static ERoll RollState(Chip chip)
         {
-            if (chip.RollEnd != null && chip.EChip == EChip.Note)
+            if (chip != null && chip.EChip == EChip.Note)
             {
                 switch (chip.ENote)
                 {
@@ -89,13 +89,21 @@ namespace Tunebeat.Game
                     {
                         BalloonRemain = balloonamount;
                     }
-                    if (isDon)
+                    if (isDon && !chip.IsHit)
                     {
                         chip.RollCount++;
                         BalloonRemain--;
                         Score.AddBalloon();
                         if (chip.RollCount == balloonamount)
                         {
+                            if (RollState(chip) == ERoll.Balloon)
+                            {
+                                SoundLoad.Balloon.Play();
+                            }
+                            else
+                            {
+                                SoundLoad.Kusudama.Play();
+                            }
                             chip.IsHit = true;
                             BalloonList++;
                         }
@@ -106,15 +114,15 @@ namespace Tunebeat.Game
             }
         }
 
-        public enum ERoll
-        {
-            None,
-            Roll,
-            ROLL,
-            Balloon,
-            Kusudama
-        };
-
         public static int NowRoll, BalloonRemain, BalloonList;
     }
+
+    public enum ERoll
+    {
+        None,
+        Roll,
+        ROLL,
+        Balloon,
+        Kusudama
+    };
 }

@@ -29,12 +29,15 @@ namespace Tunebeat.Game
 
         public override void Disable()
         {
+            JudgeCounter.Reset();
             base.Disable();
         }
         public override void Draw()
         {
             #if DEBUG
             DrawString(0, 300, "SC:" + $"{EXScore}", 0xffffff);
+            int maxremain = Game.MainTJA.Courses[Game.Course].TotalNotes - EXScore;
+            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(60, 300, maxremain > 0 ? $"MAX-{maxremain}" : "MAX+0", 0xffffff);
             DrawString(0, 320, "PG:" + $"{Perfect}", 0xffffff);
             DrawString(0, 340, "GR:" + $"{Great}", 0xffffff);
             DrawString(0, 360, "GD:" + $"{Good}", 0xffffff);

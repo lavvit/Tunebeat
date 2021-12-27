@@ -15,11 +15,13 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
+            ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.AutoRoll), (long)1000.0, false);
             base.Enable();
         }
 
         public override void Disable()
         {
+            ProcessAuto.RollTimer.Reset();
             base.Disable();
         }
 
@@ -29,7 +31,7 @@ namespace Tunebeat.Game
 
             for (int i = 0; i < Game.MainTJA.Courses[Game.Course].ListChip.Count; i++)
             {
-                var chip = Game.MainTJA.Courses[Game.Course].ListChip[i];
+                Chip chip = Game.MainTJA.Courses[Game.Course].ListChip[i];
                 double time = chip.Time - Game.MainTimer.Value;
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
                 if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
@@ -42,10 +44,22 @@ namespace Tunebeat.Game
                 //ノーツが通り過ぎた時の処理
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true);
             }
+            //連打のタイマー　なんでここ？？
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA.Courses[Game.Course].ListChip, Game.MainTimer.Value);
+            ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
+            ProcessAuto.RollTimer.Tick();
+            if (roll != ERoll.None)
+            {
+                ProcessAuto.RollTimer.Start();
+            }
+            else
+            {
+                ProcessAuto.RollTimer.Reset();
+            }
 
             for (int i = Game.MainTJA.Courses[Game.Course].ListChip.Count - 1; i >= 0; i--)
             {
-                var chip = Game.MainTJA.Courses[Game.Course].ListChip[i];
+                Chip chip = Game.MainTJA.Courses[Game.Course].ListChip[i];
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
 
                 if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit)
@@ -61,7 +75,7 @@ namespace Tunebeat.Game
                             break;
                         case ENote.RollStart:
                         case ENote.ROLLStart:
-                            var rollx = NotesX(chip.RollEnd.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
+                            double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
                             if (rollx >= -715)
                             {
                                 TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
@@ -73,15 +87,18 @@ namespace Tunebeat.Game
                             break;
                         case ENote.Balloon:
                         case ENote.Kusudama:
-                            var ballx = NotesX(chip.RollEnd.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
+                            double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
                             if (ballx >= -715)
                             {
                                 if (x > 0)
-                                    TextureLoad.Game_Notes.Draw(NotesP.X + x, NotesP.Y, new Rectangle(195 * 11, 0, 390, 195));
+                                    TextureLoad.Game_Notes.Draw(NotesP.X + x, NotesP.Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                 else if (ballx > 0)
-                                    TextureLoad.Game_Notes.Draw(NotesP.X, NotesP.Y, new Rectangle(195 * 11, 0, 390, 195));
+                                    TextureLoad.Game_Notes.Draw(NotesP.X, NotesP.Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                 else
-                                    TextureLoad.Game_Notes.Draw(NotesP.X + ballx, NotesP.Y, new Rectangle(195 * 11, 0, 390, 195));
+                                {
+                                    TextureLoad.Game_Notes.Draw(NotesP.X + ballx, NotesP.Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                    ProcessNote.BalloonList++;
+                                }
                             }
                             break;
                     }
@@ -97,7 +114,7 @@ namespace Tunebeat.Game
 
         public static double NotesX(double chiptime, double timer, double bpm, double scroll)
         {
-            var time = chiptime - timer;
+            double time = chiptime - timer;
             return time * bpm * scroll * 2.0 / 335.2396;
         }
 

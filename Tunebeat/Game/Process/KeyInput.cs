@@ -16,6 +16,12 @@ namespace Tunebeat.Game
         {
             if(Key.IsPushed(KEY_INPUT_F1))
                 Game.IsAuto = !Game.IsAuto;
+            if (Key.IsPushed(KEY_INPUT_F3) && PlayData.AutoRoll > 0)
+                if (PlayData.AutoRoll > 120) PlayData.AutoRoll = 120;
+                else PlayData.AutoRoll--;
+            if (Key.IsPushed(KEY_INPUT_F4))
+                if (PlayData.AutoRoll >= 120) PlayData.AutoRoll = 1000;
+                else PlayData.AutoRoll++;
 
             if (isAuto) return;
 
@@ -34,15 +40,20 @@ namespace Tunebeat.Game
             Chip chip = GetNotes.GetNearNote(Game.MainTJA.Courses[Game.Course].ListChip, Game.MainTimer.Value);
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA.Courses[Game.Course].ListChip, Game.MainTimer.Value);
             EJudge judge;
+            ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             if (Game.IsAuto)
             {
                 judge = EJudge.Auto;
+            }
+            else if (chip == null)
+            {
+                judge = EJudge.Through;
             }
             else
             {
                 judge = GetNotes.GetJudge(chip, Game.MainTimer.Value);
             }
-            if (ProcessNote.RollState(nowchip) == ProcessNote.ERoll.None)
+            if (chip != null && roll == ERoll.None)
             {
                 ProcessNote.Process(judge, chip, isDon);
             }
@@ -51,19 +62,24 @@ namespace Tunebeat.Game
                 ProcessNote.RollProcess(nowchip, isDon);
             }
 
-            if (chip.ENote == ENote.DON || chip.ENote == ENote.KA || ProcessNote.RollState(nowchip) == ProcessNote.ERoll.ROLL)
+            Sound[] taiko = new Sound[2];
+            if (chip != null && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
             {
-                SoundLoad.Don.Volume = 1.5;
-                SoundLoad.Ka.Volume = 1.5;
+                taiko[0] = SoundLoad.DON;
+                taiko[0].Volume = 1.5;
+                taiko[1] = SoundLoad.KA;
+                taiko[1].Volume = 1.5;
             }
             else
             {
-                SoundLoad.Don.Volume = 1.0;
-                SoundLoad.Ka.Volume = 1.0;
+                taiko[0] = SoundLoad.Don;
+                taiko[0].Volume = 1.0;
+                taiko[1] = SoundLoad.Ka;
+                taiko[1].Volume = 1.0;
             }
 
-            if (isDon) SoundLoad.Don.Play();
-            else SoundLoad.Ka.Play();
+            if (isDon) taiko[0].Play();
+            else taiko[1].Play();
         }
 
         public const int LEFTDON = KEY_INPUT_F;

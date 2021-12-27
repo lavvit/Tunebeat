@@ -10,11 +10,13 @@ namespace Tunebeat.Common
             PlayCourse = 3;
 
             Auto = true;
+            AutoRoll = 15;
         }
 
         public static string PlayFile;
         public static int PlayCourse;
 
         public static bool Auto;
+        public static int AutoRoll;
     }
 }

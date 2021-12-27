@@ -133,12 +133,16 @@ namespace TJAParse
 
                             if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)
                             {
-                                NowInfo.RollBegin = chip;
+                                if (NowInfo.RollBegin == null)
+                                    NowInfo.RollBegin = chip;
                             }
                             if (chip.EChip == EChip.Note && chip.ENote == ENote.RollEnd)
                             {
                                 if (NowInfo.RollBegin != null)
+                                {
                                     NowInfo.RollBegin.RollEnd = chip;
+                                    chip.RollEnd = chip;
+                                }
                                 NowInfo.RollBegin = null;
                             }
 
@@ -154,7 +158,21 @@ namespace TJAParse
                 }
             }
 
-         
+
+        }
+
+        public static void RollDoubledCheck(Course[] courses)//仕方なく分ける
+        {
+            for (int i = courses[NowCourse].ListChip.Count - 1; i > 0; i--)
+            {
+                if (courses[NowCourse].ListChip[i].ENote == courses[NowCourse].ListChip[i - 1].ENote)
+                {
+                    if (courses[NowCourse].ListChip[i].ENote == ENote.Balloon || courses[NowCourse].ListChip[i].ENote == ENote.RollStart || courses[NowCourse].ListChip[i].ENote == ENote.ROLLStart || courses[NowCourse].ListChip[i].ENote == ENote.Kusudama)
+                    {
+                        courses[NowCourse].ListChip.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         public static void GetMeasureCount(string str, Course[] courses)
