@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
+using Tunebeat.Common;
 
 namespace Tunebeat.Game
 {
@@ -13,20 +14,24 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
-            EXScore = 0;
-            Perfect = 0;
-            Great = 0;
-            Good = 0;
-            Bad = 0;
-            Poor = 0;
-            Auto = 0;
-            Roll = 0;
-            RollYellow = 0;
-            RollBalloon = 0;
-            Gauge = 0;
-            SetGauge();
+            for (int i = 0; i < 2; i++)
+            {
+                EXScore[i] = 0;
+                Perfect[i] = 0;
+                Great[i] = 0;
+                Good[i] = 0;
+                Bad[i] = 0;
+                Poor[i] = 0;
+                Auto[i] = 0;
+                Roll[i] = 0;
+                RollYellow[i] = 0;
+                RollBalloon[i] = 0;
+                Gauge[i] = 0;
+                SetGauge(i);
+            }
 
             JudgeCounter = new Counter(0, 200, 1000, false);
+            JudgeCounter2P = new Counter(0, 200, 1000, false);
             base.Enable();
         }
 
@@ -38,23 +43,45 @@ namespace Tunebeat.Game
         public override void Draw()
         {
             #if DEBUG
-            DrawString(0, 300, $"SC:{EXScore}", 0xffffff);
-            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 300, Remain > 0 ? $"MAX-{Remain}" : "MAX+0", 0xffffff);
-            DrawString(0, 320, $"PG:{Perfect}", 0xffffff);
-            DrawString(0, 340, $"GR:{Great}", 0xffffff);
-            DrawString(0, 360, $"GD:{Good}", 0xffffff);
-            DrawString(0, 380, $"BD:{Bad}", 0xffffff);
-            DrawString(0, 400, $"PR:{Poor}", 0xffffff);
-            DrawString(0, 420, $"AT:{Auto}", 0xffffff);
-            DrawString(0, 440, $"RL:{Roll}({RollYellow},{RollBalloon})", 0xffffff);
+            DrawString(0, 300, $"SC:{EXScore[0]}", 0xffffff);
+            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 300, Remain[0] > 0 ? $"MAX-{Remain[0]}" : "MAX+0", 0xffffff);
+            DrawString(0, 320, $"PG:{Perfect[0]}", 0xffffff);
+            DrawString(0, 340, $"GR:{Great[0]}", 0xffffff);
+            DrawString(0, 360, $"GD:{Good[0]}", 0xffffff);
+            DrawString(0, 380, $"BD:{Bad[0]}", 0xffffff);
+            DrawString(0, 400, $"PR:{Poor[0]}", 0xffffff);
+            DrawString(0, 420, $"AT:{Auto[0]}", 0xffffff);
+            DrawString(0, 440, $"RL:{Roll[0]}({RollYellow[0]},{RollBalloon[0]})", 0xffffff);
 
-            DrawString(200, 300, $"{Gauge}", 0xffffff);
-            DrawString(200, 320, $"Total:{Total}", 0xffffff);
+            DrawString(200, 300, $"{Gauge[0]}", 0xffffff);
+            DrawString(200, 320, $"Total:{Total[0]}", 0xffffff);
 
             if (JudgeCounter.State == TimerState.Started)
             {
-                DrawString(600, 260, $"{DisplayJudge}", 0xffffff);
-                DrawString(600, 280, $"{msJudge}", 0xffffff);
+                DrawString(600, 260, $"{DisplayJudge[0]}", 0xffffff);
+                DrawString(600, 280, $"{msJudge[0]}", 0xffffff);
+            }
+
+            if (PlayData.IsPlay2P)
+            {
+                DrawString(0, 560, $"SC:{EXScore[1]}", 0xffffff);
+                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 560, Remain[1] > 0 ? $"MAX-{Remain[1]}" : "MAX+0", 0xffffff);
+                DrawString(0, 560, $"PG:{Perfect[1]}", 0xffffff);
+                DrawString(0, 600, $"GR:{Great[1]}", 0xffffff);
+                DrawString(0, 620, $"GD:{Good[1]}", 0xffffff);
+                DrawString(0, 640, $"BD:{Bad[1]}", 0xffffff);
+                DrawString(0, 660, $"PR:{Poor[1]}", 0xffffff);
+                DrawString(0, 680, $"AT:{Auto[1]}", 0xffffff);
+                DrawString(0, 700, $"RL:{Roll[1]}({RollYellow[1]},{RollBalloon[1]})", 0xffffff);
+
+                DrawString(200, 560, $"{Gauge[1]}", 0xffffff);
+                DrawString(200, 580, $"Total:{Total[1]}", 0xffffff);
+
+                if (JudgeCounter2P.State == TimerState.Started)
+                {
+                    DrawString(600, 520, $"{DisplayJudge[1]}", 0xffffff);
+                    DrawString(600, 540, $"{msJudge[1]}", 0xffffff);
+                }
             }
             #endif
             base.Draw();
@@ -62,110 +89,126 @@ namespace Tunebeat.Game
 
         public override void Update()
         {
-            Hit = Perfect + Great + Good + Bad + Poor + Auto;
-            Remain = Hit * 2 - EXScore;
+            Hit[0] = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];
+            Remain[0] = Hit[0] * 2 - EXScore[0];
+            if (PlayData.IsPlay2P)
+            {
+                Hit[1] = Perfect[1] + Great[1] + Good[1] + Bad[1] + Poor[1] + Auto[1];
+                Remain[1] = Hit[1] * 2 - EXScore[1];
+            }
             JudgeCounter.Tick();
+            JudgeCounter2P.Tick();
             base.Update();
         }
 
-        public static void AddScore(EJudge judge)
+        public static void AddScore(EJudge judge, int player)
         {
-            AddGauge(judge);
-            DisplayJudge = judge;
-            JudgeCounter.Reset();
-            JudgeCounter.Start();
+            AddGauge(judge, player);
+            DisplayJudge[player] = judge;
+
+            if (player == 0)
+            {
+                JudgeCounter.Reset();
+                JudgeCounter.Start();
+            }
+            else
+            {
+                JudgeCounter2P.Reset();
+                JudgeCounter2P.Start();
+            }
+            
             switch (judge)
             {
                 case EJudge.Perfect:
-                    Perfect++;
-                    EXScore += 2;
+                    Perfect[player]++;
+                    EXScore[player] += 2;
                     break;
                 case EJudge.Great:
-                    Great++;
-                    EXScore += 2;
+                    Great[player]++;
+                    EXScore[player] += 2;
                     break;
                 case EJudge.Good:
-                    Good++;
-                    EXScore++;
+                    Good[player]++;
+                    EXScore[player]++;
                     break;
                 case EJudge.Bad:
-                    Bad++;
+                    Bad[player]++;
                     break;
                 case EJudge.Poor:
                 case EJudge.Through:
-                    Poor++;
+                    Poor[player]++;
                     break;
                 case EJudge.Auto:
-                    Auto++;
+                    Auto[player]++;
                     break;
                 default:
                     break;
             }
         }
 
-        public static void AddRoll()
+        public static void AddRoll(int player)
         {
-            Roll++;
-            RollYellow++;
+            Roll[player]++;
+            RollYellow[player]++;
         }
-        public static void AddBalloon()
+        public static void AddBalloon(int player)
         {
-            Roll++;
-            RollBalloon++;
+            Roll[player]++;
+            RollBalloon[player]++;
         }
 
-        public static void AddGauge(EJudge judge)
+        public static void AddGauge(EJudge judge, int player)
         {
-            double gauge = Total / Game.MainTJA.Courses[Game.Course].TotalNotes;
+            double[] gauge = new double[2] { Total[0] / Game.MainTJA.Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA.Courses[Game.Course[1]].TotalNotes };
             switch (judge)
             {
                 case EJudge.Good:
-                    gauge *= GoodRate;
+                    gauge[player] *= GoodRate[player];
                     break;
                 case EJudge.Bad:
-                    gauge *= -BadRate;
+                    gauge[player] *= -BadRate[player];
                     break;
                 case EJudge.Poor:
-                    gauge *= -PoorRate;
+                    gauge[player] *= -PoorRate[player];
                     break;
             }
-            Gauge += gauge;
+            Gauge[player] += gauge[player];
 
-            if (Gauge >= 100.0)
+            if (Gauge[player] >= 100.0)
             {
-                Gauge = 100.0;
+                Gauge[player] = 100.0;
             }
-            if (Gauge <= 0.0)
+            if (Gauge[player] <= 0.0)
             {
-                Gauge = 0.0;
+                Gauge[player] = 0.0;
             }
         }
 
-        public static void SetGauge()
+        public static void SetGauge(int player)
         {
-            double total = 135;
-            double goodrate = 0.5;
-            double badrate = 2;
-            double poorrate;
-            switch (Game.Course)
+            double[] total = new double[2] { 135, 135 };
+            double[] goodrate = new double[2] { 0.5, 0.5 };
+            double[] badrate = new double[2] { 2.0, 2.0 };
+            double[] poorrate = new double[2];
+            switch (Game.Course[player])
             {
                 case (int)ECourse.Easy:
                     {
-                        goodrate = 0.75;
-                        badrate = 0.5;
-                        switch (Game.MainTJA.Courses[Game.Course].LEVEL)
+                        goodrate[player] = 0.75;
+                        badrate[player] = 0.5;
+                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
-                                total = 166.666; //0.6
+                                total[player] = 166.666; //0.6
                                 break;
                             case 2:
                             case 3:
-                                total = 157.9; //0.63333
+                                total[player] = 157.9; //0.63333
                                 break;
                             case 4:
                             case 5:
                             default:
-                                total = 136.36; //0.73333
+                                total[player] = 136.36; //0.73333
                                 break;
                         }
 
@@ -173,60 +216,60 @@ namespace Tunebeat.Game
                     break;
                 case (int)ECourse.Normal:
                     {
-                        goodrate = 0.75;
-                        switch (Game.MainTJA.Courses[Game.Course].LEVEL)
+                        goodrate[player] = 0.75;
+                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
-                                badrate = 0.5;
-                                total = 152.333; //0.65
+                                badrate[player] = 0.5;
+                                total[player] = 152.333; //0.65
                                 break;
                             case 3:
-                                badrate = 0.5;
-                                total = 143.8; //0.695
+                                badrate[player] = 0.5;
+                                total[player] = 143.8; //0.695
                                 break;
                             case 4:
-                                badrate = 0.75;
-                                total = 142.2; //0.70333
+                                badrate[player] = 0.75;
+                                total[player] = 142.2; //0.70333
                                 break;
                             case 5:
                             case 6:
                             case 7:
                             default:
-                                badrate = 1;
-                                total = 133.333; //0.75
+                                badrate[player] = 1;
+                                total[player] = 133.333; //0.75
                                 break;
                         }
                     }
                     break;
                 case (int)ECourse.Hard:
                     {
-                        goodrate = 0.75;
-                        switch (Game.MainTJA.Courses[Game.Course].LEVEL)
+                        goodrate[player] = 0.75;
+                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
-                                badrate = 0.75;
-                                total = 129; //0.775
+                                badrate[player] = 0.75;
+                                total[player] = 129; //0.775
                                 break;
                             case 3:
-                                badrate = 1;
-                                total = 138; //0.725
+                                badrate[player] = 1;
+                                total[player] = 138; //0.725
                                 break;
                             case 4:
-                                badrate = 1.166;
-                                total = 144.5; //0.691
+                                badrate[player] = 1.166;
+                                total[player] = 144.5; //0.691
                                 break;
                             case 5:
-                                badrate = 1.25;
-                                total = 148.15; //0.675
+                                badrate[player] = 1.25;
+                                total[player] = 148.15; //0.675
                                 break;
                             case 6:
                             case 7:
                             case 8:
                             default:
-                                badrate = 1.25;
-                                total = 145.45; //0.6875
+                                badrate[player] = 1.25;
+                                total[player] = 145.45; //0.6875
                                 break;
                         }
                     }
@@ -234,8 +277,8 @@ namespace Tunebeat.Game
                 case (int)ECourse.Oni:
                 case (int)ECourse.Edit:
                     {
-                        goodrate = 0.5;
-                        switch (Game.MainTJA.Courses[Game.Course].LEVEL)
+                        goodrate[player] = 0.5;
+                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -244,18 +287,18 @@ namespace Tunebeat.Game
                             case 5:
                             case 6:
                             case 7:
-                                badrate = 1.6;
-                                total = 141.4; //0.7075
+                                badrate[player] = 1.6;
+                                total[player] = 141.4; //0.7075
                                 break;
                             case 8:
-                                badrate = 2;
-                                total = 142.85; //0.7
+                                badrate[player] = 2;
+                                total[player] = 142.85; //0.7
                                 break;
                             case 9:
                             case 10:
                             default:
-                                badrate = 2;
-                                total = 133.333; //0.75
+                                badrate[player] = 2;
+                                total[player] = 133.333; //0.75
                                 break;
                         }
                     }
@@ -263,15 +306,16 @@ namespace Tunebeat.Game
             }
             poorrate = badrate;
 
-            Total = Game.MainTJA.Courses[Game.Course].TOTAL > 0.0 ? Game.MainTJA.Courses[Game.Course].TOTAL : total;
-            GoodRate = goodrate;
-            BadRate = badrate;
-            PoorRate = poorrate;
+            Total[player] = Game.MainTJA.Courses[Game.Course[player]].TOTAL > 0.0 ? Game.MainTJA.Courses[Game.Course[player]].TOTAL : total[player];
+            GoodRate[player] = goodrate[player];
+            BadRate[player] = badrate[player];
+            PoorRate[player] = poorrate[player];
         }
 
-        public static int EXScore, Perfect, Great, Good, Bad, Poor, Auto, Hit, Roll, RollYellow, RollBalloon, Remain;
-        public static double msJudge, Gauge, Total, GoodRate, BadRate, PoorRate;
-        private static EJudge DisplayJudge;
-        private static Counter JudgeCounter;
+        public static int[] EXScore = new int[2], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
+            Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], Remain = new int[2];
+        public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2];
+        private static EJudge[] DisplayJudge = new EJudge[2];
+        private static Counter JudgeCounter, JudgeCounter2P;
     }
 }

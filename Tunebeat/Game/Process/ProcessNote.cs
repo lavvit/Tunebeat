@@ -11,14 +11,14 @@ namespace Tunebeat.Game
 {
     public class ProcessNote
     {
-        public static void Process(EJudge judge, Chip chip, bool isDon)
+        public static void Process(EJudge judge, Chip chip, bool isDon, int player)
         {
             if ((isDon && (chip.ENote == ENote.Don || chip.ENote == ENote.DON)) || (!isDon && (chip.ENote == ENote.Ka || chip.ENote == ENote.KA)))
             {
                 if (judge != EJudge.Through)
                 {
-                    Score.AddScore(judge);
-                    Score.msJudge = (Game.MainTimer.Value - chip.Time);
+                    Score.AddScore(judge, player);
+                    Score.msJudge[player] = (Game.MainTimer.Value - chip.Time);
                     chip.IsHit = true;
                     if (judge == EJudge.Bad || judge == EJudge.Poor)
                     {
@@ -32,14 +32,14 @@ namespace Tunebeat.Game
             }
         }
 
-        public static void PassNote(Chip chip, double time, bool isDon)
+        public static void PassNote(Chip chip, double time, bool isDon, int player)
         {
             if (!chip.IsHit && time < -100 && chip.EChip == EChip.Note && chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
                 if (!chip.IsMiss)
                     if (GetNotes.GetJudge(chip, time) == EJudge.Through)
                     {
-                        Score.AddScore(EJudge.Through);
-                        Process(EJudge.Through, chip, isDon);
+                        Score.AddScore(EJudge.Through, player);
+                        Process(EJudge.Through, chip, isDon, player);
                         chip.IsMiss = true;
                     }
         }
@@ -68,7 +68,7 @@ namespace Tunebeat.Game
             }
         }
 
-        public static void RollProcess(Chip chip, bool isDon)
+        public static void RollProcess(Chip chip, bool isDon, int player)
         {
             switch (RollState(chip))
             {
@@ -76,24 +76,24 @@ namespace Tunebeat.Game
                 case ERoll.ROLL:
                     if (chip.RollCount == 0)
                     {
-                        NowRoll = 0;
+                        NowRoll[player] = 0;
                     }
                     chip.RollCount++;
-                    NowRoll++;
-                    Score.AddRoll();
+                    NowRoll[player]++;
+                    Score.AddRoll(player);
                     break;
                 case ERoll.Balloon:
                 case ERoll.Kusudama:
-                    int balloonamount = Game.MainTJA.Courses[Game.Course].BALLOON.Count > BalloonList ? Game.MainTJA.Courses[Game.Course].BALLOON[BalloonList] : 5;
+                    int balloonamount = Game.MainTJA.Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA.Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
                     if (chip.RollCount == 0)
                     {
-                        BalloonRemain = balloonamount;
+                        BalloonRemain[player] = balloonamount;
                     }
                     if (isDon && !chip.IsHit)
                     {
                         chip.RollCount++;
-                        BalloonRemain--;
-                        Score.AddBalloon();
+                        BalloonRemain[player]--;
+                        Score.AddBalloon(player);
                         if (chip.RollCount == balloonamount)
                         {
                             if (RollState(chip) == ERoll.Balloon)
@@ -105,7 +105,7 @@ namespace Tunebeat.Game
                                 SoundLoad.Kusudama.Play();
                             }
                             chip.IsHit = true;
-                            BalloonList++;
+                            BalloonList[player]++;
                         }
                     }
                     break;
@@ -114,7 +114,7 @@ namespace Tunebeat.Game
             }
         }
 
-        public static int NowRoll, BalloonRemain, BalloonList;
+        public static int[] NowRoll = new int[2], BalloonRemain = new int[2], BalloonList = new int[2];
     }
 
     public enum ERoll
