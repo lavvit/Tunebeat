@@ -11,6 +11,7 @@ namespace TJAParse
         public ECourse COURSE = ECourse.Oni;
         public EScroll ScrollType = EScroll.Normal;
         public int LEVEL = 0, SCOREINIT, SCOREDIFF, TotalNotes;
+        public double TOTAL;
         public List<int> BALLOON = new List<int>();
         public List<int> ListMeasureCount = new List<int>();
         public List<Chip> ListChip = new List<Chip>();
@@ -38,6 +39,9 @@ namespace TJAParse
                         foreach (var sb in splitballoon)
                             if (sb != "" && splitballoon.Length >= 1)
                                 courses[NowCourse].BALLOON.Add(int.Parse(sb));
+                        break;
+                    case "TOTAL":
+                        courses[NowCourse].TOTAL = double.Parse(split[1]);
                         break;
                 }
             }
