@@ -59,21 +59,19 @@ namespace Tunebeat.Game
             Chip[] chip = new Chip[2] { GetNotes.GetNowNote(MainTJA.Courses[Course[0]].ListChip, MainTimer.Value), GetNotes.GetNowNote(MainTJA.Courses[Course[1]].ListChip, MainTimer.Value) };
             if (chip[0] != null)
             {
-                DrawString(520, 80, $"{chip[0].ENote}", 0xffffff);
-                DrawString(520, 100, $"{chip[0].Time}", 0xffffff);
-                DrawString(520, 120, $"{ProcessNote.RollState(chip[0])}", 0xffffff);
-                DrawString(520, 160, $"{chip[0].RollCount}", 0xffffff);
-                DrawString(520, 180, $"{ProcessNote.BalloonRemain[0]}", 0xffffff);
-                DrawString(520, 240, $"{chip[0].ENote}", 0xffffff);
+                DrawString(520, 160, $"{chip[0].ENote}", 0xffffff);
+                DrawString(520, 180, $"{chip[0].Time}", 0xffffff);
+                DrawString(520, 200, $"{ProcessNote.RollState(chip[0])}", 0xffffff);
+                DrawString(520, 220, $"{chip[0].RollCount}", 0xffffff);
+                DrawString(520, 240, $"{ProcessNote.BalloonRemain[0]}", 0xffffff);
             }
             if (PlayData.IsPlay2P && chip[1] != null)
             {
-                DrawString(520, 820, $"{chip[1].ENote}", 0xffffff);
-                DrawString(520, 840, $"{chip[1].Time}", 0xffffff);
-                DrawString(520, 860, $"{ProcessNote.RollState(chip[1])}", 0xffffff);
-                DrawString(520, 880, $"{chip[1].RollCount}", 0xffffff);
-                DrawString(520, 900, $"{ProcessNote.BalloonRemain[1]}", 0xffffff);
                 DrawString(520, 780, $"{chip[1].ENote}", 0xffffff);
+                DrawString(520, 800, $"{chip[1].Time}", 0xffffff);
+                DrawString(520, 820, $"{ProcessNote.RollState(chip[1])}", 0xffffff);
+                DrawString(520, 840, $"{chip[1].RollCount}", 0xffffff);
+                DrawString(520, 860, $"{ProcessNote.BalloonRemain[1]}", 0xffffff);
             }
 
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);

@@ -66,7 +66,7 @@ namespace Tunebeat.Game
             {
                 DrawString(0, 560, $"SC:{EXScore[1]}", 0xffffff);
                 if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 560, Remain[1] > 0 ? $"MAX-{Remain[1]}" : "MAX+0", 0xffffff);
-                DrawString(0, 560, $"PG:{Perfect[1]}", 0xffffff);
+                DrawString(0, 580, $"PG:{Perfect[1]}", 0xffffff);
                 DrawString(0, 600, $"GR:{Great[1]}", 0xffffff);
                 DrawString(0, 620, $"GD:{Good[1]}", 0xffffff);
                 DrawString(0, 640, $"BD:{Bad[1]}", 0xffffff);
