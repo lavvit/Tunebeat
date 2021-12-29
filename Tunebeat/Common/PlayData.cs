@@ -7,6 +7,9 @@ namespace Tunebeat.Common
     {
         public static void Init()
         {
+            SkinName = "Default";
+            SoundName = "Default";
+            BGMName = "Default";
             PlayFile = @"Songs/水天神術・時雨.tja";
             PlayCourse[0] = 3;
             PlayCourse[1] = 4;
@@ -27,7 +30,7 @@ namespace Tunebeat.Common
             RIGHTKA2P = KEY_INPUT_COMMA;
         }
 
-        public static string PlayFile;
+        public static string SkinName, SoundName, BGMName, PlayFile;
         public static int[] PlayCourse = new int[2];
         public static bool IsPlay2P;
 

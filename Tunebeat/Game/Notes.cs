@@ -31,7 +31,16 @@ namespace Tunebeat.Game
         {
             DrawNotes(0);
             if (PlayData.IsPlay2P)
+            {
                 DrawNotes(1);
+                TextureLoad.Game_Base_DP.Draw(0, NotesP[0].Y - 4);
+                TextureLoad.Game_Lane_Frame_DP.Draw(NotesP[0].X - 26, NotesP[0].Y - 4);
+            }
+            else
+            {
+                TextureLoad.Game_Base.Draw(0, NotesP[0].Y - 4);
+                TextureLoad.Game_Lane_Frame.Draw(NotesP[0].X - 26, NotesP[0].Y - 4);
+            }
             base.Draw();
         }
 
@@ -42,6 +51,8 @@ namespace Tunebeat.Game
 
         public static void DrawNotes(int player)
         {
+            TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
+
             TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
             for (int i = 0; i < Game.MainTJA.Courses[Game.Course[player]].ListChip.Count; i++)
@@ -51,7 +62,7 @@ namespace Tunebeat.Game
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
                 if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
                 {
-                    TextureLoad.Game_Bar.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
+                    TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
                 }
 
                 //オートの処理呼び出し

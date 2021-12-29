@@ -25,6 +25,12 @@ namespace Tunebeat.Game
                 ProcessNote.BalloonList[i] = 0;
             }
 
+            for (int i = 0; i < 4; i++)
+            {
+                HitTimer[i] = new Counter(0, 100, 1000, false);
+                HitTimer2P[i] = new Counter(0, 100, 1000, false);
+            }
+
             #region AddChildScene
             AddChildScene(new Notes());
             AddChildScene(new Score());
@@ -37,6 +43,11 @@ namespace Tunebeat.Game
             MainSong.Dispose();
             MainTimer.Reset();
             IsSongPlay = false;
+            for (int i = 0; i < 4; i++)
+            {
+                HitTimer[i].Reset();
+                HitTimer2P[i].Reset();
+            }
             foreach (Scene scene in ChildScene)
                 scene?.Disable();
             base.Disable();
@@ -44,6 +55,8 @@ namespace Tunebeat.Game
 
         public override void Draw()
         {
+            TextureLoad.Game_Background.Draw(0, 0);
+
             #if DEBUG
             DrawString(0, 0, $"{MainTimer.Value}", 0xffffff); if (IsSongPlay && !MainSong.IsPlaying) DrawString(60, 0, "Stoped", 0xffffff);
             DrawString(0, 20, $"{MainTJA.Header.TITLE}", 0xffffff);
@@ -79,12 +92,59 @@ namespace Tunebeat.Game
 
             foreach (Scene scene in ChildScene)
                 scene?.Draw();
+
+            if (HitTimer[0].State == TimerState.Started)
+            {
+                TextureLoad.Game_Don[0].Opacity = 1.0 - ((double)HitTimer[0].Value / HitTimer[0].End);
+                TextureLoad.Game_Don[0].Draw(362, 337);
+            }
+            if (HitTimer[1].State == TimerState.Started)
+            {
+                TextureLoad.Game_Don[1].Opacity = 1.0 - ((double)HitTimer[1].Value / HitTimer[1].End);
+                TextureLoad.Game_Don[1].Draw(362, 337);
+            }
+            if (HitTimer[2].State == TimerState.Started)
+            {
+                TextureLoad.Game_Ka[0].Opacity = 1.0 - ((double)HitTimer[2].Value / HitTimer[2].End);
+                TextureLoad.Game_Ka[0].Draw(362, 337);
+            }
+            if (HitTimer[3].State == TimerState.Started)
+            {
+                TextureLoad.Game_Ka[1].Opacity = 1.0 - ((double)HitTimer[3].Value / HitTimer[3].End);
+                TextureLoad.Game_Ka[1].Draw(362, 337);
+            }
+            if (HitTimer2P[0].State == TimerState.Started)
+            {
+                TextureLoad.Game_Don2P[0].Opacity = 1.0 - ((double)HitTimer2P[0].Value / HitTimer2P[0].End);
+                TextureLoad.Game_Don2P[0].Draw(362, 337 + 262);
+            }
+            if (HitTimer2P[1].State == TimerState.Started)
+            {
+                TextureLoad.Game_Don2P[1].Opacity = 1.0 - ((double)HitTimer2P[1].Value / HitTimer2P[1].End);
+                TextureLoad.Game_Don2P[1].Draw(362, 337 + 262);
+            }
+            if (HitTimer2P[2].State == TimerState.Started)
+            {
+                TextureLoad.Game_Ka2P[0].Opacity = 1.0 - ((double)HitTimer2P[2].Value / HitTimer2P[2].End);
+                TextureLoad.Game_Ka2P[0].Draw(362, 337 + 262);
+            }
+            if (HitTimer2P[3].State == TimerState.Started)
+            {
+                TextureLoad.Game_Ka2P[1].Opacity = 1.0 - ((double)HitTimer2P[3].Value / HitTimer2P[3].End);
+                TextureLoad.Game_Ka2P[1].Draw(362, 337 + 262);
+            }
+
             base.Draw();
         }
 
         public override void Update()
         {
             MainTimer.Tick();
+            for (int i = 0; i < 4; i++)
+            {
+                HitTimer[i].Tick();
+                HitTimer2P[i].Tick();
+            }
             if (MainTimer.State == 0) MainTimer.Start();
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); IsSongPlay = true; }
             if (IsSongPlay && !MainSong.IsPlaying)
@@ -122,5 +182,7 @@ namespace Tunebeat.Game
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2];
         public static int[] Course = new int[2];
+        public static Counter[] HitTimer = new Counter[4];
+        public static Counter[] HitTimer2P = new Counter[4];
     }
 }

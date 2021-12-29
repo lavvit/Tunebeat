@@ -28,25 +28,41 @@ namespace Tunebeat.Game
             if (!Auto1P)
             {
                 if (Key.IsPushed(PlayData.LEFTDON))
+                {
                     Process(true, true, 0);
+                }
                 if (Key.IsPushed(PlayData.RIGHTDON))
+                {
                     Process(true, false, 0);
+                }
                 if (Key.IsPushed(PlayData.LEFTKA))
+                {
                     Process(false, true, 0);
+                }
                 if (Key.IsPushed(PlayData.RIGHTKA))
+                {
                     Process(false, false, 0);
+                }
             }
 
             if (!Auto2P && PlayData.IsPlay2P)
             {
                 if (Key.IsPushed(PlayData.LEFTDON2P))
+                {
                     Process(true, true, 1);
+                }
                 if (Key.IsPushed(PlayData.RIGHTDON2P))
+                {
                     Process(true, false, 1);
+                }
                 if (Key.IsPushed(PlayData.LEFTKA2P))
+                {
                     Process(false, true, 1);
+                }
                 if (Key.IsPushed(PlayData.RIGHTKA2P))
+                {
                     Process(false, false, 1);
+                }
             }
         }
 
@@ -130,7 +146,65 @@ namespace Tunebeat.Game
 
                 if (isDon) taiko2P[0].Play();
                 else taiko2P[1].Play();
+            }
 
+            if (player == 0)
+            {
+                if (isDon)
+                {
+                    if (isLeft)
+                    {
+                        Game.HitTimer[0].Reset();
+                        Game.HitTimer[0].Start();
+                    }
+                    else
+                    {
+                        Game.HitTimer[1].Reset();
+                        Game.HitTimer[1].Start();
+                    }
+                }
+                else
+                {
+                    if (isLeft)
+                    {
+                        Game.HitTimer[2].Reset();
+                        Game.HitTimer[2].Start();
+                    }
+                    else
+                    {
+                        Game.HitTimer[3].Reset();
+                        Game.HitTimer[3].Start();
+                    }
+                }
+            }
+            else
+            {
+                if (isDon)
+                {
+                    if (isLeft)
+                    {
+                        Game.HitTimer2P[0].Reset();
+                        Game.HitTimer2P[0].Start();
+                    }
+                    else
+                    {
+                        Game.HitTimer2P[1].Reset();
+                        Game.HitTimer2P[1].Start();
+                    }
+                }
+                else
+                {
+                    if (isLeft)
+                    {
+                        Game.HitTimer2P[2].Reset();
+                        Game.HitTimer2P[2].Start();
+                    }
+                    else
+                    {
+                        Game.HitTimer2P[3].Reset();
+                        Game.HitTimer2P[3].Start();
+                    }
+                }
             }
         }
     }

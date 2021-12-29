@@ -17,12 +17,14 @@ namespace Tunebeat.Game
 
             if ((chip.ENote == ENote.Don || chip.ENote == ENote.DON) && time + 8 >= chip.Time && !chip.IsHit && !chip.IsMiss)
             {
-                KeyInput.Process(true, true, player);
+                KeyInput.Process(true, left[player], player);
+                left[player] = !left[player];
             }
 
             if ((chip.ENote == ENote.Ka || chip.ENote == ENote.KA) && time + 8 >= chip.Time && !chip.IsHit && !chip.IsMiss)
             {
-                KeyInput.Process(false, true, player);
+                KeyInput.Process(false, left[player], player);
+                left[player] = !left[player];
             }
 
             if (chip.RollEnd != null && time >= chip.Time && time < chip.RollEnd.Time && !chip.IsHit && !chip.IsMiss)
@@ -31,21 +33,27 @@ namespace Tunebeat.Game
                 {
                     if (chip.RollCount == 0)
                     {
-                        KeyInput.Process(true, true, player);
+                        KeyInput.Process(true, left[player], player);
+                        left[player] = !left[player];
+
                     }
                     if (RollTimer.Value == RollTimer.End)
                     {
-                        KeyInput.Process(true, true, player);
+                        KeyInput.Process(true, left[0], 0);
+                        left[0] = !left[0];
                         RollTimer.Value = RollTimer.Begin;
                     }
                     if (player == 1 && RollTimer2P.Value == RollTimer2P.End)
                     {
-                        KeyInput.Process(true, true, player);
+                        KeyInput.Process(true, left[1], 1);
+                        left[1] = !left[1];
                         RollTimer2P.Value = RollTimer2P.Begin;
                     }
                 }
             }
         }
         public static Counter RollTimer, RollTimer2P;
+
+        public static bool[] left = new bool[2];
     }
 }
