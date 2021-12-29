@@ -15,8 +15,8 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
-            ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.AutoRoll), (long)1000.0, false);
-            ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.AutoRoll), (long)1000.0, false);
+            ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+            ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             base.Enable();
         }
 
@@ -30,7 +30,7 @@ namespace Tunebeat.Game
         public override void Draw()
         {
             DrawNotes(0);
-            if (PlayData.IsPlay2P)
+            if (PlayData.Data.IsPlay2P)
             {
                 DrawNotes(1);
                 TextureLoad.Game_Base_DP.Draw(0, 286);

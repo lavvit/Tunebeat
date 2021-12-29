@@ -57,7 +57,7 @@ namespace Tunebeat.Game
             {
                 TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, 286 - 48 + 6, new Rectangle(Color[i], (int)Gauge[0] > i ? 40 : 0, 10, 40));
             }
-            if (PlayData.IsPlay2P)
+            if (PlayData.Data.IsPlay2P)
             {
                 TextureLoad.Game_Gauge_Base.Draw(495, 286 + 465, new Rectangle(0, 48, 1425, 48));
                 for (int i = 0; i < 100; i++)
@@ -87,7 +87,7 @@ namespace Tunebeat.Game
                 DrawString(600, 280, $"{msJudge[0]}", 0xffffff);
             }
 
-            if (PlayData.IsPlay2P)
+            if (PlayData.Data.IsPlay2P)
             {
                 DrawString(0, 560, $"SC:{EXScore[1]}", 0xffffff);
                 if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 560, Remain[1] > 0 ? $"MAX-{Remain[1]}" : "MAX+0", 0xffffff);
@@ -117,14 +117,14 @@ namespace Tunebeat.Game
         {
             Hit[0] = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];
             Remain[0] = Hit[0] * 2 - EXScore[0];
-            if (PlayData.IsPlay2P)
+            if (PlayData.Data.IsPlay2P)
             {
                 Hit[1] = Perfect[1] + Great[1] + Good[1] + Bad[1] + Poor[1] + Auto[1];
                 Remain[1] = Hit[1] * 2 - EXScore[1];
             }
 
             Gauge[0] = GaugeList[0][(int)GaugeType[0]];
-            if (PlayData.IsPlay2P)
+            if (PlayData.Data.IsPlay2P)
             {
                 Gauge[1] = GaugeList[1][(int)GaugeType[1]];
             }
@@ -198,7 +198,7 @@ namespace Tunebeat.Game
         {
             double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA.Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA.Courses[Game.Course[1]].TotalNotes };
             double[] gauge = new double[6];
-            int Notes = PlayData.Hazard[player] > Game.MainTJA.Courses[Game.Course[player]].TotalNotes ? Game.MainTJA.Courses[Game.Course[player]].TotalNotes : PlayData.Hazard[player];
+            int Notes = PlayData.Data.Hazard[player] > Game.MainTJA.Courses[Game.Course[player]].TotalNotes ? Game.MainTJA.Courses[Game.Course[player]].TotalNotes : PlayData.Data.Hazard[player];
             switch (judge)
             {
                 case EJudge.Perfect:
@@ -256,10 +256,10 @@ namespace Tunebeat.Game
                 }
             }
             
-            switch ((EGaugeAutoShift)PlayData.GaugeAutoShift[player])
+            switch ((EGaugeAutoShift)PlayData.Data.GaugeAutoShift[player])
             {
                 case EGaugeAutoShift.ToNormal:
-                    if ((PlayData.GaugeType[player] >= (int)EGauge.Hard && PlayData.GaugeType[player] <= (int)EGauge.Hazard) && GaugeList[player][(int)GaugeType[player]] <= 0.0)
+                    if ((PlayData.Data.GaugeType[player] >= (int)EGauge.Hard && PlayData.Data.GaugeType[player] <= (int)EGauge.Hazard) && GaugeList[player][(int)GaugeType[player]] <= 0.0)
                     {
                         GaugeType[player] = EGauge.Normal;
                     }
@@ -275,7 +275,7 @@ namespace Tunebeat.Game
                     }
                     if (GaugeType[player] < EGauge.Hard)
                     {
-                        switch (PlayData.GaugeAutoShiftMin[player])
+                        switch (PlayData.Data.GaugeAutoShiftMin[player])
                         {
                             case 0:
                                 GaugeType[player] = EGauge.Normal;
@@ -311,7 +311,7 @@ namespace Tunebeat.Game
                 case EGaugeAutoShift.LessBest:
                     if ((GaugeType[player] == EGauge.Hazard) && GaugeList[player][(int)GaugeType[player]] <= 0.0)
                     {
-                        GaugeType[player] = (EGauge)PlayData.GaugeType[player];
+                        GaugeType[player] = (EGauge)PlayData.Data.GaugeType[player];
                     }
                     if ((GaugeType[player] == EGauge.Hard || GaugeType[player] == EGauge.EXHard) && GaugeList[player][(int)GaugeType[player]] <= 0.0)
                     {
@@ -319,17 +319,17 @@ namespace Tunebeat.Game
                     }
                     if (GaugeType[player] < EGauge.Hard)
                     {
-                        switch (PlayData.GaugeAutoShiftMin[player])
+                        switch (PlayData.Data.GaugeAutoShiftMin[player])
                         {
                             case 0:
                                 GaugeType[player] = EGauge.Normal;
                                 break;
                             case 1:
-                                if (GaugeList[player][0] >= 80.0 && PlayData.GaugeType[player] != (int)EGauge.Assist && PlayData.GaugeType[player] != (int)EGauge.Easy)
+                                if (GaugeList[player][0] >= 80.0 && PlayData.Data.GaugeType[player] != (int)EGauge.Assist && PlayData.Data.GaugeType[player] != (int)EGauge.Easy)
                                 {
                                     GaugeType[player] = EGauge.Normal;
                                 }
-                                else if (GaugeList[player][2] >= 80.0 && PlayData.GaugeType[player] != (int)EGauge.Assist)
+                                else if (GaugeList[player][2] >= 80.0 && PlayData.Data.GaugeType[player] != (int)EGauge.Assist)
                                 {
                                     GaugeType[player] = EGauge.Easy;
                                 }
@@ -339,7 +339,7 @@ namespace Tunebeat.Game
                                 }
                                 break;
                             case 2:
-                                if (GaugeList[player][0] >= 80.0 && PlayData.GaugeType[player] != (int)EGauge.Assist && PlayData.GaugeType[player] != (int)EGauge.Easy)
+                                if (GaugeList[player][0] >= 80.0 && PlayData.Data.GaugeType[player] != (int)EGauge.Assist && PlayData.Data.GaugeType[player] != (int)EGauge.Easy)
                                 {
                                     GaugeType[player] = EGauge.Normal;
                                 }
@@ -482,25 +482,25 @@ namespace Tunebeat.Game
             BadRate[player] = badrate[player];
             PoorRate[player] = poorrate[player];
 
-            EGauge min = (EGauge)PlayData.GaugeAutoShiftMin[player];
-            GaugeType[player] = (EGauge)PlayData.GaugeType[player];
-            switch ((EGaugeAutoShift)PlayData.GaugeAutoShift[player])
+            EGauge min = (EGauge)PlayData.Data.GaugeAutoShiftMin[player];
+            GaugeType[player] = (EGauge)PlayData.Data.GaugeType[player];
+            switch ((EGaugeAutoShift)PlayData.Data.GaugeAutoShift[player])
             {
                 case EGaugeAutoShift.Best:
                     GaugeType[player] = EGauge.EXHard;
                     break;
                 case EGaugeAutoShift.LessBest:
-                    if (PlayData.GaugeType[player] >= (int)EGauge.Normal && PlayData.GaugeType[player] <= (int)EGauge.Easy)
+                    if (PlayData.Data.GaugeType[player] >= (int)EGauge.Normal && PlayData.Data.GaugeType[player] <= (int)EGauge.Easy)
                     {
                         GaugeType[player] = min;
                     }
                     break;
             }
-            GaugeType[player] = PlayData.Hazard[player] >= 1 ? EGauge.Hazard : GaugeType[player];
+            GaugeType[player] = PlayData.Data.Hazard[player] >= 1 ? EGauge.Hazard : GaugeType[player];
             GaugeList[player] = new double[6] { 0.0, 0.0, 0.0, 100.0, 100.0, 100.0 };
             ClearRate[player] = new double[6] { 80.0, 60.0, 80.0, 0.01, 0.01, 0.01 };
 
-            if (PlayData.GaugeType[player] >= (int)EGauge.Hard && PlayData.GaugeType[player] <= (int)EGauge.Hazard)
+            if (PlayData.Data.GaugeType[player] >= (int)EGauge.Hard && PlayData.Data.GaugeType[player] <= (int)EGauge.Hazard)
             {
                 Gauge[player] = 100.0;
             }

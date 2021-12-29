@@ -29,7 +29,7 @@ namespace Tunebeat.Game
 
             if (chip.RollEnd != null && time >= chip.Time && time < chip.RollEnd.Time && !chip.IsHit && !chip.IsMiss)
             {
-                if (PlayData.AutoRoll > 0)
+                if (PlayData.Data.AutoRoll > 0)
                 {
                     if (chip.RollCount == 0)
                     {

@@ -157,8 +157,8 @@ namespace Tunebeat.Game
 
         public static EJudge GetJudge(Chip chip, double time)
         {
-            int[] range = new int[5] { PlayData.JudgePerfect, PlayData.JudgeGreat, PlayData.JudgeGood, PlayData.JudgeBad, PlayData.JudgePoor };
-            switch (PlayData.JudgeType)
+            int[] range = new int[5] { PlayData.Data.JudgePerfect, PlayData.Data.JudgeGreat, PlayData.Data.JudgeGood, PlayData.Data.JudgeBad, PlayData.Data.JudgePoor };
+            switch (PlayData.Data.JudgeType)
             {
                 case 1://Spica標準
                     range[0] = 16;
@@ -175,7 +175,7 @@ namespace Tunebeat.Game
                     range[4] = 113;
                     break;
             }
-            if (PlayData.Just) range[2] = 0;
+            if (PlayData.Data.Just) range[2] = 0;
 
             if (chip != null)
             {

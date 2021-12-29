@@ -16,50 +16,50 @@ namespace Tunebeat.Game
         {
             if(Key.IsPushed(KEY_INPUT_F1))
                 Game.IsAuto[0] = !Game.IsAuto[0];
-            if (Key.IsPushed(KEY_INPUT_F2) && PlayData.IsPlay2P)
+            if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
                 Game.IsAuto[1] = !Game.IsAuto[1];
-            if (Key.IsPushed(KEY_INPUT_F3) && PlayData.AutoRoll > 0)
-                if (PlayData.AutoRoll > 120) PlayData.AutoRoll = 120;
-                else PlayData.AutoRoll--;
+            if (Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0)
+                if (PlayData.Data.AutoRoll > 120) PlayData.Data.AutoRoll = 120;
+                else PlayData.Data.AutoRoll--;
             if (Key.IsPushed(KEY_INPUT_F4))
-                if (PlayData.AutoRoll >= 120) PlayData.AutoRoll = 1000;
-                else PlayData.AutoRoll++;
+                if (PlayData.Data.AutoRoll >= 120) PlayData.Data.AutoRoll = 1000;
+                else PlayData.Data.AutoRoll++;
 
             if (!Auto1P)
             {
-                if (Key.IsPushed(PlayData.LEFTDON))
+                if (Key.IsPushed(PlayData.Data.LEFTDON))
                 {
                     Process(true, true, 0);
                 }
-                if (Key.IsPushed(PlayData.RIGHTDON))
+                if (Key.IsPushed(PlayData.Data.RIGHTDON))
                 {
                     Process(true, false, 0);
                 }
-                if (Key.IsPushed(PlayData.LEFTKA))
+                if (Key.IsPushed(PlayData.Data.LEFTKA))
                 {
                     Process(false, true, 0);
                 }
-                if (Key.IsPushed(PlayData.RIGHTKA))
+                if (Key.IsPushed(PlayData.Data.RIGHTKA))
                 {
                     Process(false, false, 0);
                 }
             }
 
-            if (!Auto2P && PlayData.IsPlay2P)
+            if (!Auto2P && PlayData.Data.IsPlay2P)
             {
-                if (Key.IsPushed(PlayData.LEFTDON2P))
+                if (Key.IsPushed(PlayData.Data.LEFTDON2P))
                 {
                     Process(true, true, 1);
                 }
-                if (Key.IsPushed(PlayData.RIGHTDON2P))
+                if (Key.IsPushed(PlayData.Data.RIGHTDON2P))
                 {
                     Process(true, false, 1);
                 }
-                if (Key.IsPushed(PlayData.LEFTKA2P))
+                if (Key.IsPushed(PlayData.Data.LEFTKA2P))
                 {
                     Process(false, true, 1);
                 }
-                if (Key.IsPushed(PlayData.RIGHTKA2P))
+                if (Key.IsPushed(PlayData.Data.RIGHTKA2P))
                 {
                     Process(false, false, 1);
                 }
@@ -111,7 +111,7 @@ namespace Tunebeat.Game
                     taiko[1] = SoundLoad.Ka;
                     taiko[1].Volume = 1.0;
                 }
-                if (PlayData.IsPlay2P)
+                if (PlayData.Data.IsPlay2P)
                 {
                     taiko[0].Pan = -255;
                     taiko[1].Pan = -255;

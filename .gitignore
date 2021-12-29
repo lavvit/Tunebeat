@@ -11,7 +11,7 @@
 *.DotSettings.user
 /packages
 /Test/Capture_img
-/Test/Config.ini
+/Test/Config.json
 /Test/bs1770gain**
 /Test/Amaoto.*
 /Test/TJAParse.*

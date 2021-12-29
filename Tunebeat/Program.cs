@@ -38,7 +38,7 @@ namespace Tunebeat
             if (DxLib_Init() < 0) return;
             SetDrawScreen(DX_SCREEN_BACK);
 
-            //データ読み込み
+            //設定読み込み
             PlayData.Init();
             //画像読み込み
             TextureLoad.Init();
@@ -61,6 +61,9 @@ namespace Tunebeat
 
         public static void End()
         {
+            //設定の保存
+            PlayData.End();
+
             DxLib_End();            
         }
 

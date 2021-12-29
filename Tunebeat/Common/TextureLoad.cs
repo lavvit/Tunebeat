@@ -1,4 +1,5 @@
 ﻿using Amaoto;
+using Tunebeat;
 
 namespace Tunebeat.Common
 {
@@ -10,24 +11,24 @@ namespace Tunebeat.Common
             const string GAME = @"Game\";
 
             #region Game
-            Game_Background = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Background.png");
-            Game_Base = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Base.png");
-            Game_Base_DP = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Base_DP.png");
-            Game_Notes = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Notes.png");
-            Game_Bar = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Bar.png");
-            Game_Lane = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Lane.png");
-            Game_Lane_Frame = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Lane_Frame.png");
-            Game_Lane_Frame_DP = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Lane_Frame_DP.png");
-            Game_Don[0] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Don_L.png");
-            Game_Don[1] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Don_R.png");
-            Game_Ka[0] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Ka_L.png");
-            Game_Ka[1] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Ka_R.png");
-            Game_Don2P[0] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Don_L.png");
-            Game_Don2P[1] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Don_R.png");
-            Game_Ka2P[0] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Ka_L.png");
-            Game_Ka2P[1] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Ka_R.png");
-            Game_Gauge = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Gauge.png");
-            Game_Gauge_Base = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Gauge_Base.png");
+            Game_Background = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Background.png");
+            Game_Base = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Base.png");
+            Game_Base_DP = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Base_DP.png");
+            Game_Notes = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Notes.png");
+            Game_Bar = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Bar.png");
+            Game_Lane = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Lane.png");
+            Game_Lane_Frame = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Lane_Frame.png");
+            Game_Lane_Frame_DP = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Lane_Frame_DP.png");
+            Game_Don[0] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Don_L.png");
+            Game_Don[1] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Don_R.png");
+            Game_Ka[0] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Ka_L.png");
+            Game_Ka[1] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Ka_R.png");
+            Game_Don2P[0] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Don_L.png");
+            Game_Don2P[1] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Don_R.png");
+            Game_Ka2P[0] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Ka_L.png");
+            Game_Ka2P[1] = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Ka_R.png");
+            Game_Gauge = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Gauge.png");
+            Game_Gauge_Base = new Texture($@"{DEFAULT}{PlayData.Data.SkinName}\{GAME}Gauge_Base.png");
             #endregion
         }
 

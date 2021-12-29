@@ -16,12 +16,12 @@ namespace Tunebeat.Game
         public override void Enable()
         {
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            MainTJA = new TJAParse.TJAParse(PlayData.PlayFile);
+            MainTJA = new TJAParse.TJAParse(PlayData.Data.PlayFile);
             for (int i = 0; i < 2; i++)
             {
                 MainSong = new Sound($"{Path.GetDirectoryName(MainTJA.TJAPath)}/{MainTJA.Header.WAVE}");
-                IsAuto[i] = PlayData.Auto[i];
-                Course[i] = PlayData.PlayCourse[i];
+                IsAuto[i] = PlayData.Data.Auto[i];
+                Course[i] = PlayData.Data.PlayCourse[i];
                 ProcessNote.BalloonList[i] = 0;
             }
 
@@ -63,11 +63,11 @@ namespace Tunebeat.Game
             DrawString(0, 40, $"{MainTJA.Header.SUBTITLE}", 0xffffff);
             DrawString(0, 60, $"{MainTJA.Header.BPM}", 0xffffff);
 
-            DrawString(0, 80, $"{MainTJA.Courses[Course[0]].COURSE}" + (PlayData.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].COURSE}" : ""), 0xffffff);
-            DrawString(0, 100, $"{MainTJA.Courses[Course[0]].LEVEL}" + (PlayData.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].LEVEL}" : ""), 0xffffff);
-            DrawString(0, 120, $"{MainTJA.Courses[Course[0]].TotalNotes}" + (PlayData.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
-            DrawString(0, 140, $"{MainTJA.Courses[Course[0]].ScrollType}" + (PlayData.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].ScrollType}" : ""), 0xffffff);
-            DrawString(200, 0, $"{PlayData.AutoRoll}", 0xffffff);
+            DrawString(0, 80, $"{MainTJA.Courses[Course[0]].COURSE}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].COURSE}" : ""), 0xffffff);
+            DrawString(0, 100, $"{MainTJA.Courses[Course[0]].LEVEL}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].LEVEL}" : ""), 0xffffff);
+            DrawString(0, 120, $"{MainTJA.Courses[Course[0]].TotalNotes}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
+            DrawString(0, 140, $"{MainTJA.Courses[Course[0]].ScrollType}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].ScrollType}" : ""), 0xffffff);
+            DrawString(200, 0, $"{PlayData.Data.AutoRoll}", 0xffffff);
 
             Chip[] chip = new Chip[2] { GetNotes.GetNowNote(MainTJA.Courses[Course[0]].ListChip, MainTimer.Value), GetNotes.GetNowNote(MainTJA.Courses[Course[1]].ListChip, MainTimer.Value) };
             if (chip[0] != null)
@@ -78,7 +78,7 @@ namespace Tunebeat.Game
                 DrawString(520, 220, $"{chip[0].RollCount}", 0xffffff);
                 DrawString(520, 240, $"{ProcessNote.BalloonRemain[0]}", 0xffffff);
             }
-            if (PlayData.IsPlay2P && chip[1] != null)
+            if (PlayData.Data.IsPlay2P && chip[1] != null)
             {
                 DrawString(520, 780, $"{chip[1].ENote}", 0xffffff);
                 DrawString(520, 800, $"{chip[1].Time}", 0xffffff);
