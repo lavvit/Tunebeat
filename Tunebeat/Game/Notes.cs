@@ -33,13 +33,13 @@ namespace Tunebeat.Game
             if (PlayData.IsPlay2P)
             {
                 DrawNotes(1);
-                TextureLoad.Game_Base_DP.Draw(0, NotesP[0].Y - 4);
-                TextureLoad.Game_Lane_Frame_DP.Draw(NotesP[0].X - 26, NotesP[0].Y - 4);
+                TextureLoad.Game_Base_DP.Draw(0, 286);
+                TextureLoad.Game_Lane_Frame_DP.Draw(495, 286);
             }
             else
             {
-                TextureLoad.Game_Base.Draw(0, NotesP[0].Y - 4);
-                TextureLoad.Game_Lane_Frame.Draw(NotesP[0].X - 26, NotesP[0].Y - 4);
+                TextureLoad.Game_Base.Draw(0, 286);
+                TextureLoad.Game_Lane_Frame.Draw(495, 286);
             }
             base.Draw();
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TJAParse;
+using Tunebeat.Common;
 
 namespace Tunebeat.Game
 {
@@ -156,13 +157,34 @@ namespace Tunebeat.Game
 
         public static EJudge GetJudge(Chip chip, double time)
         {
+            int[] range = new int[5] { PlayData.JudgePerfect, PlayData.JudgeGreat, PlayData.JudgeGood, PlayData.JudgeBad, PlayData.JudgePoor };
+            switch (PlayData.JudgeType)
+            {
+                case 1://Spica標準
+                    range[0] = 16;
+                    range[1] = 32;
+                    range[2] = 90;
+                    range[3] = 125;
+                    range[4] = 125;
+                    break;
+                case 2://ハードモード
+                    range[0] = 10;
+                    range[1] = 20;
+                    range[2] = 78;
+                    range[3] = 113;
+                    range[4] = 113;
+                    break;
+            }
+            if (PlayData.Just) range[2] = 0;
+
             if (chip != null)
             {
                 double Difference = Math.Abs(time - chip.Time);
-                if (Difference <= 16) return EJudge.Perfect;
-                else if (Difference <= 32) return EJudge.Great;
-                else if (Difference <= 90) return EJudge.Good;
-                else if (Difference <= 125) return EJudge.Bad;
+                if (Difference <= range[0]) return EJudge.Perfect;
+                else if (Difference <= range[1]) return EJudge.Great;
+                else if (Difference <= range[2]) return EJudge.Good;
+                else if (Difference <= range[3]) return EJudge.Bad;
+                else if (Difference <= range[4]) return EJudge.Poor;
                 else return EJudge.Through;
             }
             else return EJudge.Through;

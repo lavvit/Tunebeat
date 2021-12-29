@@ -19,6 +19,23 @@ namespace Tunebeat.Common
             Auto[1] = true;
             AutoRoll = 15;
 
+            GaugeType[0] = 0;
+            GaugeAutoShift[0] = 0;
+            GaugeAutoShiftMin[0] = 1;
+            Hazard[0] = 0;
+            GaugeType[1] = 0;
+            GaugeAutoShift[1] = 0;
+            GaugeAutoShiftMin[1] = 1;
+            Hazard[1] = 0;
+
+            JudgeType = 1;
+            JudgePerfect = 10;
+            JudgeGreat = 25;
+            JudgeGood = 75;
+            JudgeBad = 100;
+            JudgePoor = 120;
+            Just = false;
+
             LEFTDON = KEY_INPUT_F;
             RIGHTDON = KEY_INPUT_J;
             LEFTKA = KEY_INPUT_D;
@@ -36,6 +53,10 @@ namespace Tunebeat.Common
 
         public static bool[] Auto = new bool[2];
         public static int AutoRoll;
+
+        public static int[] GaugeType = new int[2], GaugeAutoShift = new int[2], GaugeAutoShiftMin = new int[2], Hazard = new int[2];
+        public static int JudgeType, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor;
+        public static bool Just;
 
         public static int LEFTDON, RIGHTDON, LEFTKA, RIGHTKA, LEFTDON2P, RIGHTDON2P, LEFTKA2P, RIGHTKA2P;
     }

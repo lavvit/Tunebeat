@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using static DxLibDLL.DX;
 using Amaoto;
+using TJAParse;
 using Tunebeat.Common;
+using Tunebeat.Game;
 
 namespace Tunebeat.SongSelect
 {
@@ -13,8 +15,6 @@ namespace Tunebeat.SongSelect
     {
         public override void Enable()
         {
-            NowCourse[0] = PlayData.PlayCourse[0];
-            NowCourse[1] = PlayData.PlayCourse[1];
             base.Enable();
         }
 
@@ -25,8 +25,8 @@ namespace Tunebeat.SongSelect
         public override void Draw()
         {
             #if DEBUG
-            DrawString(0, 0, $"{PlayData.PlayFile}", 0xffffff);
-            DrawString(0, 20, $"{NowCourse[0]}" + (PlayData.IsPlay2P ? $"/{NowCourse[1]}" : ""), 0xffffff);
+            DrawString(0, 0, $"File:{PlayData.PlayFile}", 0xffffff);
+            DrawString(0, 20, $"Course:{(ECourse)PlayData.PlayCourse[0]}" + (PlayData.IsPlay2P ? $"/{(ECourse)PlayData.PlayCourse[1]}" : ""), 0xffffff);
             if (PlayData.Auto[0])
             {
                 DrawString(0, 40, "1P AUTO", 0xffffff);
@@ -35,7 +35,12 @@ namespace Tunebeat.SongSelect
             {
                 DrawString(80, 40, "2P AUTO", 0xffffff);
             }
-            DrawString(0, 60, "PRESS ENTER", 0xffffff);
+            DrawString(0, 60, $"Gauge:{(EGauge)PlayData.GaugeType[0]}" + (PlayData.IsPlay2P ? $"/{(EGauge)PlayData.GaugeType[1]}" : ""), 0xffffff);
+            DrawString(0, 80, $"GAS:{(EGaugeAutoShift)PlayData.GaugeAutoShift[0]}" + (PlayData.IsPlay2P ? $"/{(EGaugeAutoShift)PlayData.GaugeAutoShift[1]}" : ""), 0xffffff);
+            DrawString(0, 100, $"GASmin:{(EGauge)PlayData.GaugeAutoShiftMin[0]}" + (PlayData.IsPlay2P ? $"/{(EGauge)PlayData.GaugeAutoShiftMin[1]}" : ""), 0xffffff);
+            DrawString(0, 120, $"Hazard:{PlayData.Hazard[0]}" + (PlayData.IsPlay2P ? $"/{PlayData.Hazard[1]}" : ""), 0xffffff);
+
+            DrawString(0, 140, "PRESS ENTER", 0xffffff);
             #endif
             base.Draw();
         }
@@ -44,8 +49,6 @@ namespace Tunebeat.SongSelect
         {
             if (Key.IsPushed(KEY_INPUT_RETURN))
             {
-                PlayData.PlayCourse[0] = NowCourse[0];
-                PlayData.PlayCourse[1] = NowCourse[1];
                 Program.SceneChange(new Game.Game());
             }
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
@@ -61,13 +64,58 @@ namespace Tunebeat.SongSelect
             {
                 PlayData.Auto[1] = !PlayData.Auto[1];
             }
+            if (Key.IsPushed(KEY_INPUT_F3))
+            {
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT))
+                {
+                    GASChange(0);
+                }
+                else
+                {
+                    GaugeChange(0);
+                }
+            }
+            if (Key.IsPushed(KEY_INPUT_F4) && PlayData.IsPlay2P)
+            {
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT))
+                {
+                    GASChange(1);
+                }
+                else
+                {
+                    GaugeChange(1);
+                }
+            }
             if (Key.IsPushed(KEY_INPUT_F5))
             {
                 PlayData.IsPlay2P = !PlayData.IsPlay2P;
             }
+            if (Key.IsPushed(KEY_INPUT_F7))
+            {
+                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.IsPlay2P)
+                {
+                    PlayData.Hazard[1]--;
+                }
+                else
+                {
+                    PlayData.Hazard[0]--;
+                }
+            }
+            if (Key.IsPushed(KEY_INPUT_F8))
+            {
+                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.IsPlay2P)
+                {
+                    PlayData.Hazard[1]++;
+                }
+                else
+                {
+                    PlayData.Hazard[0]++;
+                }
+            }
+
             if (Key.IsPushed(KEY_INPUT_LEFT))
             {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT))
+                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.IsPlay2P)
                 {
                     CourseChange(true, 1);
                 }
@@ -78,7 +126,7 @@ namespace Tunebeat.SongSelect
             }
             if (Key.IsPushed(KEY_INPUT_RIGHT))
             {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT))
+                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.IsPlay2P)
                 {
                     CourseChange(false, 1);
                 }
@@ -95,24 +143,37 @@ namespace Tunebeat.SongSelect
             if (!isdim)
             {
                 #region [ 上げる ]
-                if (NowCourse[player] < 4)
-                    NowCourse[player]++;
+                if (PlayData.PlayCourse[player] < 4)
+                    PlayData.PlayCourse[player]++;
                 else
-                    NowCourse[player] = 0;
+                    PlayData.PlayCourse[player] = 0;
                 #endregion
             }
             else
             {
                 #region [ 下げる ]
-                if (NowCourse[player] > 0)
-                    NowCourse[player]--;
+                if (PlayData.PlayCourse[player] > 0)
+                    PlayData.PlayCourse[player]--;
                 else
-                    NowCourse[player] = 4;
+                    PlayData.PlayCourse[player] = 4;
                 #endregion
             }
 
         }
 
-        private static int[] NowCourse = new int[2];
+        public static void GaugeChange(int player)
+        {
+            if (PlayData.GaugeType[player] < (int)EGauge.EXHard)
+                PlayData.GaugeType[player]++;
+            else
+                PlayData.GaugeType[player] = (int)EGauge.Normal;
+        }
+        public static void GASChange(int player)
+        {
+            if (PlayData.GaugeAutoShift[player] < (int)EGaugeAutoShift.LessBest)
+                PlayData.GaugeAutoShift[player]++;
+            else
+                PlayData.GaugeAutoShift[player] = (int)EGaugeAutoShift.None;
+        }
     }
 }

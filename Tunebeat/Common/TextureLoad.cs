@@ -26,6 +26,8 @@ namespace Tunebeat.Common
             Game_Don2P[1] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Don_R.png");
             Game_Ka2P[0] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Ka_L.png");
             Game_Ka2P[1] = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Ka_R.png");
+            Game_Gauge = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Gauge.png");
+            Game_Gauge_Base = new Texture($@"{DEFAULT}{PlayData.SkinName}\{GAME}Gauge_Base.png");
             #endregion
         }
 
@@ -37,7 +39,9 @@ namespace Tunebeat.Common
             Game_Bar,
             Game_Lane,
             Game_Lane_Frame,
-            Game_Lane_Frame_DP;
+            Game_Lane_Frame_DP,
+            Game_Gauge,
+            Game_Gauge_Base;
         public static Texture[] Game_Don = new Texture[2],
             Game_Ka = new Texture[2],
             Game_Don2P = new Texture[2],
