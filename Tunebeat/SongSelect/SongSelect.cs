@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Drawing;
+using System.Windows.Forms;
 using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
@@ -24,6 +27,9 @@ namespace Tunebeat.SongSelect
         }
         public override void Draw()
         {
+            DrawBox(0, 0, 1919, 257, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
+            TextureLoad.SongSelect_Background.Draw(0, 0);
+
             #if DEBUG
             DrawString(0, 0, $"File:{PlayData.Data.PlayFile}", 0xffffff);
             DrawString(0, 20, $"Course:{(ECourse)PlayData.Data.PlayCourse[0]}" + (PlayData.Data.IsPlay2P ? $"/{(ECourse)PlayData.Data.PlayCourse[1]}" : ""), 0xffffff);
@@ -53,7 +59,7 @@ namespace Tunebeat.SongSelect
             }
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
             {
-                Program.End();
+                Program.SceneChange(new Title.Title());
             }
 
             if (Key.IsPushed(KEY_INPUT_F1))
@@ -135,6 +141,27 @@ namespace Tunebeat.SongSelect
                     CourseChange(false, 0);
                 }
             }
+
+            if (Key.IsPushed(KEY_INPUT_F12))
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+
+                ofd.FileName = "水天神術・時雨.tja";
+                ofd.InitialDirectory = @"Songs\";
+                ofd.Filter = "TJAファイル(*.tja)|*.tja|すべてのファイル(*.*)|*.*";
+                ofd.FilterIndex = 1;
+                ofd.Title = "再生する譜面の選択";
+                ofd.RestoreDirectory = true;
+                ofd.CheckFileExists = true;
+                ofd.CheckPathExists = true;
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    PlayData.Data.PlayFile = ofd.InitialDirectory + ofd.FileName;
+                }
+                ofd.Dispose();
+            }
+
+
             base.Update();
         }
 

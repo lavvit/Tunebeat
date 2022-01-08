@@ -45,7 +45,7 @@ namespace Tunebeat
             //音源読み込み
             SoundLoad.Init();
 
-            SceneChange(new SongSelect.SongSelect());
+            SceneChange(new Title.Title());
         }
 
         static void Update()

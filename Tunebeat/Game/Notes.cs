@@ -31,16 +31,23 @@ namespace Tunebeat.Game
         {
             DrawNotes(0);
             if (PlayData.Data.IsPlay2P)
-            {
                 DrawNotes(1);
+
+            if (PlayData.Data.IsPlay2P)
+            {
+                TextureLoad.Game_Base_DP.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
                 TextureLoad.Game_Base_DP.Draw(0, 286);
+                TextureLoad.Game_Base_Info_DP.Draw(0, 286);
                 TextureLoad.Game_Lane_Frame_DP.Draw(495, 286);
             }
             else
             {
+                TextureLoad.Game_Base.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
                 TextureLoad.Game_Base.Draw(0, 286);
+                TextureLoad.Game_Base_Info.Draw(0, 286);
                 TextureLoad.Game_Lane_Frame.Draw(495, 286);
             }
+
             base.Draw();
         }
 

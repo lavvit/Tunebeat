@@ -24,6 +24,7 @@ namespace Tunebeat.Common
         public string SkinName = "Default";
         public string SoundName = "Default";
         public string BGMName = "Default";
+        public int[] SkinColor = new int[3] { 128, 128, 128 };
         public string PlayFile = @"Songs/水天神術・時雨.tja";
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
