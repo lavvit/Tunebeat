@@ -107,7 +107,7 @@ namespace Tunebeat.Game
             return nearestChip;
         }
 
-        public static Chip GetNowNote(List<Chip> listChip, double nTime)
+        public static Chip GetNowNote(List<Chip> listChip, double nTime, bool includeEmpty = false)
         {
             //sw2.Start();
             nTime += 0;
@@ -130,14 +130,23 @@ namespace Tunebeat.Game
             for (; nIndex_NowChip >= 0; nIndex_NowChip--)
             {
                 Chip chip = listChip[nIndex_NowChip];
-                if (chip.ENote >= ENote.Don && chip.ENote <= ENote.Kusudama)
+                if (includeEmpty)
                 {
                     if (chip.Time <= nTime)
                     {
                         break;
                     }
                 }
-                
+                else
+                {
+                    if (chip.ENote >= ENote.Don && chip.ENote <= ENote.Kusudama)
+                    {
+                        if (chip.Time <= nTime)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
             if (nIndex_NowChip < 0)  // 検索対象が見つからなかった場合
             {

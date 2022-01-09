@@ -61,6 +61,10 @@ namespace Tunebeat.SongSelect
             {
                 Program.SceneChange(new Title.Title());
             }
+            if (Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushing(KEY_INPUT_DELETE))
+            {
+                Program.SceneChange(new Game.Game());
+            }
 
             if (Key.IsPushed(KEY_INPUT_F1))
             {
@@ -72,24 +76,24 @@ namespace Tunebeat.SongSelect
             }
             if (Key.IsPushed(KEY_INPUT_F3))
             {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT))
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                 {
-                    GASChange(0);
+                    GaugeChange(1);
                 }
                 else
                 {
                     GaugeChange(0);
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_F4) && PlayData.Data.IsPlay2P)
+            if (Key.IsPushed(KEY_INPUT_F4))
             {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT))
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                 {
                     GASChange(1);
                 }
                 else
                 {
-                    GaugeChange(1);
+                    GASChange(0);
                 }
             }
             if (Key.IsPushed(KEY_INPUT_F5))

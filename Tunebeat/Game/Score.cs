@@ -29,16 +29,25 @@ namespace Tunebeat.Game
                 RollBalloon[i] = 0;
                 Gauge[i] = 0;
                 SetGauge(i);
+                Combo[i] = 0;
+                MaxCombo[i] = 0;
             }
 
             JudgeCounter = new Counter(0, 200, 1000, false);
+            JudgeCounterBig = new Counter(0, 500, 1000, false);
             JudgeCounter2P = new Counter(0, 200, 1000, false);
+            JudgeCounterBig2P = new Counter(0, 500, 1000, false);
+            BombAnimation = new Counter(0, 1023, 1000, false);
             base.Enable();
         }
 
         public override void Disable()
         {
             JudgeCounter.Reset();
+            JudgeCounterBig.Reset();
+            JudgeCounter2P.Reset();
+            JudgeCounterBig2P.Reset();
+            BombAnimation.Reset();
             base.Disable();
         }
         public override void Draw()
@@ -57,6 +66,7 @@ namespace Tunebeat.Game
             {
                 TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, 286 - 48 + 6, new Rectangle(Color[i], (int)Gauge[0] > i ? 40 : 0, 10, 40));
             }
+            DrawNumber(495 + 15, 286 - 48 + 12, $"{Gauge[0],5:F1}%", 0);
             if (PlayData.Data.IsPlay2P)
             {
                 TextureLoad.Game_Gauge_Base.Draw(495, 286 + 465, new Rectangle(0, 48, 1425, 48));
@@ -64,6 +74,21 @@ namespace Tunebeat.Game
                 {
                     TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, 286 + 465 + 2, new Rectangle(Color2P[i], (int)Gauge[1] > i ? 40 : 0, 10, 40));
                 }
+                DrawNumber(495 + 15, 286 + 465 + 8, $"{Gauge[1],5:F1}%", 0);
+            }
+
+            DrawJudge();
+
+            DrawNumber(0, 292, $"{EXScore[0], 9}", 0);
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
+            DrawNumber(0, 292 + 52, $"{(nowchip != null ? nowchip.Scroll : 1.0),9:F2}", 0);//HS
+            DrawNumber(0, 292 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
+            if (PlayData.Data.IsPlay2P)
+            {
+                DrawNumber(0, 292 + 331, $"{EXScore[1],9}", 0);
+                Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
+                DrawNumber(72, 292 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll : 1.0),6:F2}", 0);//HS
+                DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
 
             #if DEBUG
@@ -80,8 +105,9 @@ namespace Tunebeat.Game
             DrawString(200, 300, $"{Gauge[0]}", 0xffffff);
             DrawString(200, 320, $"Total:{Total[0]}", 0xffffff);
             if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 340, Cleared[0] ? "Cleared" : "Failed", 0xffffff);
+            DrawString(200, 360, $"Combo:{MaxCombo[0]}", 0xffffff);
 
-            if (JudgeCounter.State == TimerState.Started)
+            if (JudgeCounter.State == TimerState.Started || JudgeCounterBig.State == TimerState.Started)
             {
                 DrawString(600, 260, $"{DisplayJudge[0]}", 0xffffff);
                 DrawString(600, 280, $"{msJudge[0]}", 0xffffff);
@@ -101,9 +127,10 @@ namespace Tunebeat.Game
 
                 DrawString(200, 560, $"{Gauge[1]}", 0xffffff);
                 DrawString(200, 580, $"Total:{Total[1]}", 0xffffff);
-                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 600, Cleared[0] ? "Cleared" : "Failed", 0xffffff);
+                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 600, Cleared[1] ? "Cleared" : "Failed", 0xffffff);
+                DrawString(200, 620, $"Combo:{MaxCombo[1]}", 0xffffff);
 
-                if (JudgeCounter2P.State == TimerState.Started)
+                if (JudgeCounter2P.State == TimerState.Started || JudgeCounterBig2P.State == TimerState.Started)
                 {
                     DrawString(600, 520, $"{DisplayJudge[1]}", 0xffffff);
                     DrawString(600, 540, $"{msJudge[1]}", 0xffffff);
@@ -124,59 +151,281 @@ namespace Tunebeat.Game
             }
 
             Gauge[0] = GaugeList[0][(int)GaugeType[0]];
+            Cleared[0] = Gauge[0] >= ClearRate[0][(int)GaugeType[0]] ? true : false;
             if (PlayData.Data.IsPlay2P)
             {
                 Gauge[1] = GaugeList[1][(int)GaugeType[1]];
+                Cleared[1] = Gauge[1] >= ClearRate[1][(int)GaugeType[1]] ? true : false;
             }
 
-            for (int player = 0; player < 2; player++)
+            if (GaugeType[0] >= EGauge.Hard && Gauge[0] == 0 && (PlayData.Data.GaugeAutoShift[0] == (int)EGaugeAutoShift.None || PlayData.Data.GaugeAutoShift[0] == (int)EGaugeAutoShift.Retry))
             {
-                Cleared[player] = Gauge[player] >= ClearRate[player][(int)GaugeType[player]] ? true : false;
+                Game.Failed[0] = true;
+            }
+            if (PlayData.Data.IsPlay2P && GaugeType[1] >= EGauge.Hard && Gauge[1] == 0 && (PlayData.Data.GaugeAutoShift[1] == (int)EGaugeAutoShift.None || PlayData.Data.GaugeAutoShift[1] == (int)EGaugeAutoShift.Retry))
+            {
+                Game.Failed[1] = true;
             }
 
             JudgeCounter.Tick();
             JudgeCounter2P.Tick();
+            JudgeCounterBig.Tick();
+            JudgeCounterBig2P.Tick();
+            BombAnimation.Tick();
+            BombAnimation.Start();
             base.Update();
+        }
+
+        public static void DrawJudge(int player, bool isBig)
+        {
+            if (player == 0)
+            {
+                if (isBig)
+                {
+                    JudgeCounterBig.Reset();
+                    JudgeCounterBig.Start();
+                }
+                else
+                {
+                    JudgeCounter.Reset();
+                    JudgeCounter.Start();
+                }
+
+            }
+            else
+            {
+                if (isBig)
+                {
+                    JudgeCounterBig2P.Reset();
+                    JudgeCounterBig2P.Start();
+                }
+                else
+                {
+                    JudgeCounter2P.Reset();
+                    JudgeCounter2P.Start();
+                }
+            }
+        }
+        public static void DrawJudge()
+        {
+            if (JudgeCounter.State == TimerState.Started)
+            {
+                switch (DisplayJudge[0])
+                {
+                    case EJudge.Perfect:
+                        TextureLoad.Game_Bomb[0].Opacity = 1.0 - ((double)JudgeCounter.Value / JudgeCounter.End);
+                        TextureLoad.Game_Bomb[0].Draw(Notes.NotesP[0].X - 97.5, Notes.NotesP[0].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter.Value / JudgeCounter.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 0, 134, 42));
+                        break;
+                    case EJudge.Great:
+                        TextureLoad.Game_Bomb[4].Opacity = 1.0 - ((double)JudgeCounter.Value / JudgeCounter.End);
+                        TextureLoad.Game_Bomb[4].Draw(Notes.NotesP[0].X - 97.5, Notes.NotesP[0].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter.Value / JudgeCounter.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 1, 134, 42));
+                        break;
+                    case EJudge.Good:
+                        TextureLoad.Game_Bomb[5].Opacity = 1.0 - ((double)JudgeCounter.Value / JudgeCounter.End);
+                        TextureLoad.Game_Bomb[5].Draw(Notes.NotesP[0].X - 97.5, Notes.NotesP[0].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter.Value / JudgeCounter.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 2, 134, 42));
+                        break;
+                    case EJudge.Bad:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter.Value / JudgeCounter.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 3, 134, 42));
+                        break;
+                    case EJudge.Poor:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter.Value / JudgeCounter.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 4, 134, 42));
+                        break;
+                }
+            }
+            if (JudgeCounterBig.State == TimerState.Started)
+            {
+                switch (DisplayJudge[0])
+                {
+                    case EJudge.Perfect:
+                        TextureLoad.Game_Bomb[6].Opacity = 1.0 - ((double)JudgeCounterBig.Value / JudgeCounterBig.End);
+                        TextureLoad.Game_Bomb[6].Draw(Notes.NotesP[0].X - 97.5, Notes.NotesP[0].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig.Value / JudgeCounter.End));
+                        if (JudgeCounterBig.Value < JudgeCounter.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 0, 134, 42));
+                        break;
+                    case EJudge.Great:
+                        TextureLoad.Game_Bomb[10].Opacity = 1.0 - ((double)JudgeCounterBig.Value / JudgeCounterBig.End);
+                        TextureLoad.Game_Bomb[10].Draw(Notes.NotesP[0].X - 97.5, Notes.NotesP[0].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig.Value / JudgeCounter.End));
+                        if (JudgeCounterBig.Value < JudgeCounter.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 1, 134, 42));
+                        break;
+                    case EJudge.Good:
+                        TextureLoad.Game_Bomb[11].Opacity = 1.0 - ((double)JudgeCounterBig.Value / JudgeCounterBig.End);
+                        TextureLoad.Game_Bomb[11].Draw(Notes.NotesP[0].X - 97.5, Notes.NotesP[0].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig.Value / JudgeCounter.End));
+                        if (JudgeCounterBig.Value < JudgeCounter.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 2, 134, 42));
+                        break;
+                    case EJudge.Bad:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig.Value / JudgeCounter.End));
+                        if (JudgeCounterBig.Value < JudgeCounter.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 3, 134, 42));
+                        break;
+                    case EJudge.Poor:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig.Value / JudgeCounter.End));
+                        if (JudgeCounterBig.Value < JudgeCounter.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[0].X + 30.5, Notes.NotesP[0].Y - 18, new Rectangle(0, 42 * 4, 134, 42));
+                        break;
+                }
+            }
+            if (JudgeCounter2P.State == TimerState.Started)
+            {
+                switch (DisplayJudge[1])
+                {
+                    case EJudge.Perfect:
+                        TextureLoad.Game_Bomb[0].Opacity = 1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End);
+                        TextureLoad.Game_Bomb[0].Draw(Notes.NotesP[1].X - 97.5, Notes.NotesP[1].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 0, 134, 42));
+                        break;
+                    case EJudge.Great:
+                        TextureLoad.Game_Bomb[4].Opacity = 1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End);
+                        TextureLoad.Game_Bomb[4].Draw(Notes.NotesP[1].X - 97.5, Notes.NotesP[1].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 1, 134, 42));
+                        break;
+                    case EJudge.Good:
+                        TextureLoad.Game_Bomb[5].Opacity = 1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End);
+                        TextureLoad.Game_Bomb[5].Draw(Notes.NotesP[1].X - 97.5, Notes.NotesP[1].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 2, 134, 42));
+                        break;
+                    case EJudge.Bad:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 3, 134, 42));
+                        break;
+                    case EJudge.Poor:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounter2P.Value / JudgeCounter2P.End));
+                        TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 4, 134, 42));
+                        break;
+                }
+            }
+            if (JudgeCounterBig2P.State == TimerState.Started)
+            {
+                switch (DisplayJudge[1])
+                {
+                    case EJudge.Perfect:
+                        TextureLoad.Game_Bomb[6].Opacity = 1.0 - ((double)JudgeCounterBig2P.Value / JudgeCounterBig2P.End);
+                        TextureLoad.Game_Bomb[6].Draw(Notes.NotesP[1].X - 97.5, Notes.NotesP[1].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig2P.Value / JudgeCounter2P.End));
+                        if (JudgeCounterBig2P.Value < JudgeCounter2P.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 0, 134, 42));
+                        break;
+                    case EJudge.Great:
+                        TextureLoad.Game_Bomb[10].Opacity = 1.0 - (JudgeCounterBig2P.Value / JudgeCounterBig2P.End);
+                        TextureLoad.Game_Bomb[10].Draw(Notes.NotesP[1].X - 97.5, Notes.NotesP[1].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig2P.Value / JudgeCounter2P.End));
+                        if (JudgeCounterBig2P.Value < JudgeCounter2P.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 1, 134, 42));
+                        break;
+                    case EJudge.Good:
+                        TextureLoad.Game_Bomb[11].Opacity = 1.0 - (JudgeCounterBig2P.Value / JudgeCounterBig2P.End);
+                        TextureLoad.Game_Bomb[11].Draw(Notes.NotesP[1].X - 97.5, Notes.NotesP[1].Y - 97.5);
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig2P.Value / JudgeCounter2P.End));
+                        if (JudgeCounterBig2P.Value < JudgeCounter2P.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 2, 134, 42));
+                        break;
+                    case EJudge.Bad:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig2P.Value / JudgeCounter2P.End));
+                        if (JudgeCounterBig2P.Value < JudgeCounter2P.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 3, 134, 42));
+                        break;
+                    case EJudge.Poor:
+                        TextureLoad.Game_Judge.Opacity = 3.0 * (1.0 - ((double)JudgeCounterBig2P.Value / JudgeCounter2P.End));
+                        if (JudgeCounterBig2P.Value < JudgeCounter2P.End) TextureLoad.Game_Judge.Draw(Notes.NotesP[1].X + 30.5, Notes.NotesP[1].Y - 18, new Rectangle(0, 42 * 4, 134, 42));
+                        break;
+                }
+            }
+        }
+
+        public static int Digit(int num)
+        {
+            int digit = 1;
+            for (int i = num; i >= 10; i /= 10)
+            {
+                digit++;
+            }
+            return digit;
+        }
+        public static void DrawCombo(int player)
+        {
+            int color = 0;
+            switch (Game.Course[player])
+            {
+                case (int)ECourse.Easy:
+                    if (Combo[player] >= 200)
+                        color = 4;
+                    else if (Combo[player] >= 30)
+                        color = 3;
+                    else if (Combo[player] >= 10)
+                        color = 2;
+                    break;
+                case (int)ECourse.Normal:
+                    if (Combo[player] >= 300)
+                        color = 4;
+                    else if (Combo[player] >= 30)
+                        color = 3;
+                    else if (Combo[player] >= 10)
+                        color = 2;
+                    break;
+                case (int)ECourse.Hard:
+                    if (Combo[player] >= 500)
+                        color = 4;
+                    else if (Combo[player] >= 50)
+                        color = 3;
+                    else if (Combo[player] >= 30)
+                        color = 2;
+                    break;
+                case (int)ECourse.Oni:
+                case (int)ECourse.Edit:
+                    if (Combo[player] >= 1000)
+                        color = 4;
+                    else if (Combo[player] >= 100)
+                        color = 3;
+                    else if (Combo[player] >= 50)
+                        color = 2;
+                    break;
+            }
+            //if (Combo[player] >= 10)
+                DrawNumber(411 - 12 * Digit(Combo[player]), 372 + 262 * player, $"{Combo[player]}", color);
         }
 
         public static void AddScore(EJudge judge, int player)
         {
             AddGauge(judge, player);
             DisplayJudge[player] = judge;
-
-            if (player == 0)
-            {
-                JudgeCounter.Reset();
-                JudgeCounter.Start();
-            }
-            else
-            {
-                JudgeCounter2P.Reset();
-                JudgeCounter2P.Start();
-            }
-            
             switch (judge)
             {
                 case EJudge.Perfect:
                     Perfect[player]++;
                     EXScore[player] += 2;
+                    Combo[player]++;
+                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
                     break;
                 case EJudge.Great:
                     Great[player]++;
                     EXScore[player] += 1;
+                    Combo[player]++;
+                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
                     break;
                 case EJudge.Good:
                     Good[player]++;
+                    Combo[player]++;
+                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
                     break;
                 case EJudge.Bad:
                     Bad[player]++;
+                    Combo[player] = 0;
                     break;
                 case EJudge.Poor:
                 case EJudge.Through:
                     Poor[player]++;
+                    Combo[player] = 0;
                     break;
                 case EJudge.Auto:
                     Auto[player]++;
+                    Combo[player]++;
+                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
                     break;
                 default:
                     break;
@@ -196,9 +445,9 @@ namespace Tunebeat.Game
 
         public static void AddGauge(EJudge judge, int player)
         {
-            double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA.Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA.Courses[Game.Course[1]].TotalNotes };
+            double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA[player].Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA[player].Courses[Game.Course[1]].TotalNotes };
             double[] gauge = new double[6];
-            int Notes = PlayData.Data.Hazard[player] > Game.MainTJA.Courses[Game.Course[player]].TotalNotes ? Game.MainTJA.Courses[Game.Course[player]].TotalNotes : PlayData.Data.Hazard[player];
+            int Notes = PlayData.Data.Hazard[player] > Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes ? Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes : PlayData.Data.Hazard[player];
             switch (judge)
             {
                 case EJudge.Perfect:
@@ -367,7 +616,7 @@ namespace Tunebeat.Game
                     {
                         goodrate[player] = 0.75;
                         badrate[player] = 0.5;
-                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
+                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                                 total[player] = 166.666; //0.6
@@ -388,7 +637,7 @@ namespace Tunebeat.Game
                 case (int)ECourse.Normal:
                     {
                         goodrate[player] = 0.75;
-                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
+                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -416,7 +665,7 @@ namespace Tunebeat.Game
                 case (int)ECourse.Hard:
                     {
                         goodrate[player] = 0.75;
-                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
+                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -449,7 +698,7 @@ namespace Tunebeat.Game
                 case (int)ECourse.Edit:
                     {
                         goodrate[player] = 0.5;
-                        switch (Game.MainTJA.Courses[Game.Course[player]].LEVEL)
+                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -477,7 +726,7 @@ namespace Tunebeat.Game
             }
             poorrate = badrate;
 
-            Total[player] = Game.MainTJA.Courses[Game.Course[player]].TOTAL > 0.0 ? Game.MainTJA.Courses[Game.Course[player]].TOTAL : total[player];
+            Total[player] = Game.MainTJA[player].Courses[Game.Course[player]].TOTAL > 0.0 ? Game.MainTJA[player].Courses[Game.Course[player]].TOTAL : total[player];
             GoodRate[player] = goodrate[player];
             BadRate[player] = badrate[player];
             PoorRate[player] = poorrate[player];
@@ -510,14 +759,44 @@ namespace Tunebeat.Game
             }
         }
 
+        public static void DrawNumber(double x, double y, string num, int type)
+        {
+            foreach (char ch in num)
+            {
+                for (int i = 0; i < stNumber.Length; i++)
+                {
+                    if (ch == ' ')
+                    {
+                        break;
+                    }
+                    if (stNumber[i].ch == ch)
+                    {
+                        TextureLoad.Game_Number.Draw(x, y, new Rectangle(stNumber[i].X, 28 * type, 26, 28));
+                        break;
+                    }
+                }
+                x += 24;
+            }
+        }
+
         public static EGauge[] GaugeType = new EGauge[2];
         public static int[] EXScore = new int[2], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
-            Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], Remain = new int[2];
+            Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], Remain = new int[2], Combo = new int[2], MaxCombo = new int[2];
         public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2];
         public static double[][] GaugeList = new double[2][], ClearRate = new double[2][];
         public static bool[] Cleared = new bool[2];
         private static EJudge[] DisplayJudge = new EJudge[2];
-        private static Counter JudgeCounter, JudgeCounter2P;
+        private static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation;
+
+        private struct STNumber
+        {
+            public char ch;
+            public int X;
+        }
+        private static STNumber[] stNumber = new STNumber[12]
+        { new STNumber(){ ch = '0', X = 0 },new STNumber(){ ch = '1', X = 26 },new STNumber(){ ch = '2', X = 26 * 2 },new STNumber(){ ch = '3', X = 26 * 3 },new STNumber(){ ch = '4', X = 26 * 4 },
+        new STNumber(){ ch = '5', X = 26 * 5 },new STNumber(){ ch = '6', X = 26 * 6 },new STNumber(){ ch = '7', X = 26 * 7 },new STNumber(){ ch = '8', X = 26 * 8 },new STNumber(){ ch = '9', X = 26 * 9 },
+        new STNumber(){ ch = '.', X = 26 * 10 },new STNumber(){ ch = '%', X = 26 * 11 } };
     }
 
     public enum EGauge

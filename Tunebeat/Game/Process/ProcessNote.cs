@@ -18,6 +18,7 @@ namespace Tunebeat.Game
                 if (judge != EJudge.Through)
                 {
                     Score.AddScore(judge, player);
+                    Score.DrawJudge(player, chip.ENote == ENote.DON || chip.ENote == ENote.KA ? true : false);
                     Score.msJudge[player] = (Game.MainTimer.Value - chip.Time);
                     chip.IsHit = true;
                     if (judge == EJudge.Bad || judge == EJudge.Poor)
@@ -84,7 +85,7 @@ namespace Tunebeat.Game
                     break;
                 case ERoll.Balloon:
                 case ERoll.Kusudama:
-                    int balloonamount = Game.MainTJA.Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA.Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
+                    int balloonamount = Game.MainTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
                     if (chip.RollCount == 0)
                     {
                         BalloonRemain[player] = balloonamount;

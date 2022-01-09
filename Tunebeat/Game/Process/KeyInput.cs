@@ -12,7 +12,7 @@ namespace Tunebeat.Game
 {
     public class KeyInput
     {
-        public static void Update(bool Auto1P, bool Auto2P)
+        public static void Update(bool Auto1P, bool Auto2P, bool Failed1P, bool Failed2P)
         {
             if(Key.IsPushed(KEY_INPUT_F1))
                 Game.IsAuto[0] = !Game.IsAuto[0];
@@ -25,7 +25,7 @@ namespace Tunebeat.Game
                 if (PlayData.Data.AutoRoll >= 120) PlayData.Data.AutoRoll = 1000;
                 else PlayData.Data.AutoRoll++;
 
-            if (!Auto1P)
+            if (!Auto1P && !Failed1P)
             {
                 if (Key.IsPushed(PlayData.Data.LEFTDON))
                 {
@@ -45,7 +45,7 @@ namespace Tunebeat.Game
                 }
             }
 
-            if (!Auto2P && PlayData.Data.IsPlay2P)
+            if (!Auto2P && !Failed2P && PlayData.Data.IsPlay2P)
             {
                 if (Key.IsPushed(PlayData.Data.LEFTDON2P))
                 {
@@ -68,8 +68,8 @@ namespace Tunebeat.Game
 
         public static void Process(bool isDon, bool isLeft, int player)
         {
-            Chip chip = GetNotes.GetNearNote(Game.MainTJA.Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA.Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             EJudge judge;
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             if (Game.IsAuto[player])

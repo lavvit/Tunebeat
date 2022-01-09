@@ -16,12 +16,14 @@ namespace Tunebeat.Game
         public override void Enable()
         {
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            MainTJA = new TJAParse.TJAParse(PlayData.Data.PlayFile);
+            
             for (int i = 0; i < 2; i++)
             {
-                MainSong = new Sound($"{Path.GetDirectoryName(MainTJA.TJAPath)}/{MainTJA.Header.WAVE}");
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile);
+                MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[i].TJAPath)}/{MainTJA[i].Header.WAVE}");
                 IsAuto[i] = PlayData.Data.Auto[i];
                 Course[i] = PlayData.Data.PlayCourse[i];
+                Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
             }
 
@@ -101,20 +103,25 @@ namespace Tunebeat.Game
                 TextureLoad.Game_Ka2P[1].Opacity = 1.0 - ((double)HitTimer2P[3].Value / HitTimer2P[3].End);
                 TextureLoad.Game_Ka2P[1].Draw(362, 337 + 262);
             }
+            Score.DrawCombo(0);
+            if (PlayData.Data.IsPlay2P)
+            {
+                Score.DrawCombo(1);
+            }
 
             #if DEBUG
             DrawString(0, 0, $"{MainTimer.Value}", 0xffffff); if (IsSongPlay && !MainSong.IsPlaying) DrawString(60, 0, "Stoped", 0xffffff);
-            DrawString(0, 20, $"{MainTJA.Header.TITLE}", 0xffffff);
-            DrawString(0, 40, $"{MainTJA.Header.SUBTITLE}", 0xffffff);
-            DrawString(0, 60, $"{MainTJA.Header.BPM}", 0xffffff);
+            DrawString(0, 20, $"{MainTJA[0].Header.TITLE}", 0xffffff);
+            DrawString(0, 40, $"{MainTJA[0].Header.SUBTITLE}", 0xffffff);
+            DrawString(0, 60, $"{MainTJA[0].Header.BPM}", 0xffffff);
 
-            DrawString(0, 80, $"{MainTJA.Courses[Course[0]].COURSE}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].COURSE}" : ""), 0xffffff);
-            DrawString(0, 100, $"{MainTJA.Courses[Course[0]].LEVEL}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].LEVEL}" : ""), 0xffffff);
-            DrawString(0, 120, $"{MainTJA.Courses[Course[0]].TotalNotes}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
-            DrawString(0, 140, $"{MainTJA.Courses[Course[0]].ScrollType}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA.Courses[Course[1]].ScrollType}" : ""), 0xffffff);
+            DrawString(0, 80, $"{MainTJA[0].Courses[Course[0]].COURSE}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].COURSE}" : ""), 0xffffff);
+            DrawString(0, 100, $"{MainTJA[0].Courses[Course[0]].LEVEL}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].LEVEL}" : ""), 0xffffff);
+            DrawString(0, 120, $"{MainTJA[0].Courses[Course[0]].TotalNotes}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
+            DrawString(0, 140, $"{MainTJA[0].Courses[Course[0]].ScrollType}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].ScrollType}" : ""), 0xffffff);
             DrawString(200, 0, $"{PlayData.Data.AutoRoll}", 0xffffff);
 
-            Chip[] chip = new Chip[2] { GetNotes.GetNowNote(MainTJA.Courses[Course[0]].ListChip, MainTimer.Value), GetNotes.GetNowNote(MainTJA.Courses[Course[1]].ListChip, MainTimer.Value) };
+            Chip[] chip = new Chip[2] { GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value), GetNotes.GetNowNote(MainTJA[0].Courses[Course[1]].ListChip, MainTimer.Value) };
             if (chip[0] != null)
             {
                 DrawString(520, 160, $"{chip[0].ENote}", 0xffffff);
@@ -160,11 +167,15 @@ namespace Tunebeat.Game
             {
                 Program.SceneChange(new SongSelect.SongSelect());
             }
+            if (Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushing(KEY_INPUT_DELETE))
+            {
+                Program.SceneChange(new SongSelect.SongSelect());
+            }
 
             foreach (Scene scene in ChildScene)
                 scene?.Update();
 
-            KeyInput.Update(IsAuto[0], IsAuto[1]);
+            KeyInput.Update(IsAuto[0], IsAuto[1], Failed[0], Failed[1]);
           
 
             base.Update();
@@ -176,12 +187,12 @@ namespace Tunebeat.Game
             ChildScene.Add(scene);
         }
 
-        public static TJAParse.TJAParse MainTJA;
+        public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[2];
         public static Counter MainTimer;
         public static Sound MainSong;
         public static List<Scene> ChildScene = new List<Scene>();
         public static bool IsSongPlay;
-        public static bool[] IsAuto = new bool[2];
+        public static bool[] IsAuto = new bool[2], Failed = new bool[2];
         public static int[] Course = new int[2];
         public static Counter[] HitTimer = new Counter[4];
         public static Counter[] HitTimer2P = new Counter[4];

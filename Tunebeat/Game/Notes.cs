@@ -29,9 +29,27 @@ namespace Tunebeat.Game
 
         public override void Draw()
         {
-            DrawNotes(0);
+            if (Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.Normal)
+            {
+                DrawNotes(0);
+            }
+            else
+            {
+                DrawNotes(0);
+                //DrawNotesHBS(0, Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
+            }
             if (PlayData.Data.IsPlay2P)
-                DrawNotes(1);
+            {
+                if (Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
+                {
+                    DrawNotes(1);
+                }
+                else
+                {
+                    DrawNotes(1);
+                    //DrawNotesHBS(1, Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.HBSCROLL ? true : false);
+                }
+            }
 
             if (PlayData.Data.IsPlay2P)
             {
@@ -62,9 +80,9 @@ namespace Tunebeat.Game
 
             TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
-            for (int i = 0; i < Game.MainTJA.Courses[Game.Course[player]].ListChip.Count; i++)
+            for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
             {
-                Chip chip = Game.MainTJA.Courses[Game.Course[player]].ListChip[i];
+                Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                 double time = chip.Time - Game.MainTimer.Value;
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
                 if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
@@ -78,7 +96,7 @@ namespace Tunebeat.Game
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
             }
             //連打のタイマー　なんでここ？？
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA.Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             ProcessAuto.RollTimer.Tick();
             ProcessAuto.RollTimer2P.Tick();
@@ -105,9 +123,9 @@ namespace Tunebeat.Game
                 }
             }
 
-            for (int i = Game.MainTJA.Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
+            for (int i = Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
             {
-                Chip chip = Game.MainTJA.Courses[Game.Course[player]].ListChip[i];
+                Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
 
                 if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit)
@@ -155,10 +173,61 @@ namespace Tunebeat.Game
 
         }
 
-        public static double NotesX(double chiptime, double timer, double bpm, double scroll)
+        public static double NotesX(double chiptime, double timer, double bpm,  double scroll)
         {
             double time = chiptime - timer;
-            return time * bpm * scroll * 2.0 / 335.2396;
+            double x = time * bpm * scroll * 2.0 / 335.2396;
+            return x;
+        }
+
+        public static void DrawNotesHBS(int player, bool isHBS)
+        {
+            TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
+
+            TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
+
+            for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+            {
+                Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                double time = chip.Time - Game.MainTimer.Value;
+                //float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
+                //if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
+                //{
+                //    TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
+                //}
+
+                //オートの処理呼び出し
+                ProcessAuto.Update(Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                //ノーツが通り過ぎた時の処理
+                ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
+            }
+            //連打のタイマー　なんでここ？？
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
+            ProcessAuto.RollTimer.Tick();
+            ProcessAuto.RollTimer2P.Tick();
+            if (player == 0)
+            {
+                if (roll != ERoll.None)
+                {
+                    ProcessAuto.RollTimer.Start();
+                }
+                else
+                {
+                    ProcessAuto.RollTimer.Reset();
+                }
+            }
+            else
+            {
+                if (roll != ERoll.None)
+                {
+                    ProcessAuto.RollTimer2P.Start();
+                }
+                else
+                {
+                    ProcessAuto.RollTimer2P.Reset();
+                }
+            }
         }
 
         public static Point[] NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };

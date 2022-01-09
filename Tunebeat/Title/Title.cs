@@ -30,6 +30,11 @@ namespace Tunebeat.Title
             TextureLoad.Title_Text.Draw(270, 350);
             TextureLoad.Title_Text_Color.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
             TextureLoad.Title_Text_Color.Draw(270, 350);
+
+            #if DEBUG
+            DrawString(0, 0, $"RGB:{PlayData.Data.SkinColor[0]},{PlayData.Data.SkinColor[1]},{PlayData.Data.SkinColor[2]}", 0xffffff);
+            #endif
+
             base.Draw();
         }
 
@@ -42,6 +47,40 @@ namespace Tunebeat.Title
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
             {
                 Program.End();
+            }
+
+            if (Key.IsPushing(KEY_INPUT_1))
+            {
+                if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[0] < 255)
+                {
+                    PlayData.Data.SkinColor[0]++;
+                }
+                if (Key.IsPushing(KEY_INPUT_DOWN) && PlayData.Data.SkinColor[0] > 0)
+                {
+                    PlayData.Data.SkinColor[0]--;
+                }
+            }
+            if (Key.IsPushing(KEY_INPUT_2))
+            {
+                if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[1] < 255)
+                {
+                    PlayData.Data.SkinColor[1]++;
+                }
+                if (Key.IsPushing(KEY_INPUT_DOWN) && PlayData.Data.SkinColor[1] > 0)
+                {
+                    PlayData.Data.SkinColor[1]--;
+                }
+            }
+            if (Key.IsPushing(KEY_INPUT_3))
+            {
+                if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[2] < 255)
+                {
+                    PlayData.Data.SkinColor[2]++;
+                }
+                if (Key.IsPushing(KEY_INPUT_DOWN) && PlayData.Data.SkinColor[2] > 0)
+                {
+                    PlayData.Data.SkinColor[2]--;
+                }
             }
 
             base.Update();

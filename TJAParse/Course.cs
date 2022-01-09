@@ -51,11 +51,11 @@ namespace TJAParse
                 {
                     if (str.StartsWith("#BMSCROLL"))
                     {
-                        NowInfo.ScrollType = EScroll.BMSCROLL;
+                        courses[NowCourse].ScrollType = EScroll.BMSCROLL;
                     }
                     else if (str.StartsWith("#HBSCROLL"))
                     {
-                        NowInfo.ScrollType = EScroll.HBSCROLL;
+                        courses[NowCourse].ScrollType = EScroll.HBSCROLL;
                     }
                     else if (str.StartsWith("#START"))
                     {
@@ -88,7 +88,8 @@ namespace TJAParse
                     else if (str.StartsWith("#MEASURE"))
                     {
                         var SplitSlash = str.Replace("#MEASURE", "").Trim().Split('/');
-                        if (SplitSlash.Length > 1) NowInfo.Measure = (double.Parse(SplitSlash[1], System.Globalization.NumberStyles.AllowExponent) / double.Parse(SplitSlash[0], System.Globalization.NumberStyles.AllowExponent));
+                        double[] mes = new double[2] { double.Parse(SplitSlash[1]) , double.Parse(SplitSlash[0]) };
+                        if (SplitSlash.Length > 1) NowInfo.Measure = double.Parse(SplitSlash[1]) / double.Parse(SplitSlash[0]);
                     }
                     else if (str.StartsWith("#BARLINEON"))
                     {
@@ -129,11 +130,8 @@ namespace TJAParse
                                 Measure = NowInfo.Measure,
                                 EChip = EChip.Note,
                                 ENote = (ENote)int.Parse(num.ToString()),
-                                EScroll = NowInfo.ScrollType,
                                 CanShow = true
                             };
-
-                            courses[NowCourse].ScrollType = chip.EScroll;
 
                             if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)
                             {
