@@ -14,9 +14,9 @@ namespace TJAParse
         public static double Bpm = 120.0;
         public static double Measure = 1.0;
         public static int MeasureCount = 0;
+        public static bool IsGogo = false;
         public static bool ShowBarLine = true;
         public static bool AddMeasure = false;
         public static Chip RollBegin = null;
-        public static EScroll ScrollType;
     }
 }

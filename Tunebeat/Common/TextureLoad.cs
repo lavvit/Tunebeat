@@ -36,6 +36,7 @@ namespace Tunebeat.Common
             Game_Notes = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Notes.png");
             Game_Bar = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Bar.png");
             Game_Lane = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane.png");
+            Game_Lane_Gogo = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Gogo.png");
             Game_Lane_Frame = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Frame.png");
             Game_Lane_Frame_DP = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Frame_DP.png");
             Game_Don[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_L.png");
@@ -81,6 +82,7 @@ namespace Tunebeat.Common
             Game_Notes,
             Game_Bar,
             Game_Lane,
+            Game_Lane_Gogo,
             Game_Lane_Frame,
             Game_Lane_Frame_DP,
             Game_Gauge,

@@ -17,6 +17,7 @@ namespace TJAParse
         public double Measure;
         public int RollCount;
         public int Balloon;
+        public bool IsGogo;
         public bool IsHit;
         public bool IsMiss;
         public bool IsRoll;

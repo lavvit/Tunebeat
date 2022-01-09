@@ -99,6 +99,14 @@ namespace TJAParse
                     {
                         NowInfo.ShowBarLine = false;
                     }
+                    else if (str.StartsWith("#GOGOSTART"))
+                    {
+                        NowInfo.IsGogo = true;
+                    }
+                    else if (str.StartsWith("#GOGOEND"))
+                    {
+                        NowInfo.IsGogo = false;
+                    }
                 }
                 else
                 {
@@ -128,6 +136,7 @@ namespace TJAParse
                                 Bpm = NowInfo.Bpm,
                                 Scroll = NowInfo.Scroll,
                                 Measure = NowInfo.Measure,
+                                IsGogo = NowInfo.IsGogo,
                                 EChip = EChip.Note,
                                 ENote = (ENote)int.Parse(num.ToString()),
                                 CanShow = true
@@ -151,7 +160,7 @@ namespace TJAParse
                             if (chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
                                 courses[NowCourse].TotalNotes++;
 
-                            if (chip.ENote != ENote.Space)
+                            //if (chip.ENote != ENote.Space)
                                 courses[NowCourse].ListChip.Add(chip);
 
                             NowInfo.Time += 15000d / NowInfo.Bpm / NowInfo.Measure * (16d / courses[NowCourse].ListMeasureCount[NowInfo.MeasureCount < courses[NowCourse].ListMeasureCount.Count ? NowInfo.MeasureCount : courses[NowCourse].ListMeasureCount.Count - 1]);
@@ -245,6 +254,7 @@ namespace TJAParse
                 Bpm = NowInfo.Bpm,
                 EChip = channel,
                 Measure = NowInfo.Measure,
+                IsGogo = NowInfo.IsGogo,
                 ENote = note,
                 IsShow = isShow,
             };

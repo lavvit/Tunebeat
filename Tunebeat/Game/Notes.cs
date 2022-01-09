@@ -77,6 +77,12 @@ namespace Tunebeat.Game
         public static void DrawNotes(int player)
         {
             TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
+            Chip nchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            if (nchip != null && nchip.IsGogo)
+            {
+                TextureLoad.Game_Lane_Gogo.BlendMode = BlendMode.Add;
+                TextureLoad.Game_Lane_Gogo.Draw(NotesP[player].X - 22, NotesP[player].Y);
+            }
 
             TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
