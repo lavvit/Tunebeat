@@ -88,7 +88,7 @@ namespace TJAParse
                     else if (str.StartsWith("#MEASURE"))
                     {
                         var SplitSlash = str.Replace("#MEASURE", "").Trim().Split('/');
-                        double[] mes = new double[2] { double.Parse(SplitSlash[1]) , double.Parse(SplitSlash[0]) };
+                        double[] mes = new double[2] { SplitSlash[1] != "" ? double.Parse(SplitSlash[1]) : 4, SplitSlash[0] != "" ? double.Parse(SplitSlash[0]) : 4 };
                         if (SplitSlash.Length > 1) NowInfo.Measure = double.Parse(SplitSlash[1]) / double.Parse(SplitSlash[0]);
                     }
                     else if (str.StartsWith("#BARLINEON"))

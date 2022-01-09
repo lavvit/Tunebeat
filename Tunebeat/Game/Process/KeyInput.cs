@@ -97,7 +97,7 @@ namespace Tunebeat.Game
             Sound[] taiko2P = new Sound[2];
             if (player == 0)
             {
-                if (chip != null && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+                if (chip != null && Math.Abs(Game.MainTimer.Value - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
                     taiko[0] = SoundLoad.DON;
                     taiko[0].Volume = 1.5;
@@ -127,7 +127,7 @@ namespace Tunebeat.Game
             }
             else
             {
-                if (chip != null && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+                if (chip != null && Math.Abs(Game.MainTimer.Value - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
                     taiko2P[0] = SoundLoad.DON2P;
                     taiko2P[0].Volume = 1.5;
