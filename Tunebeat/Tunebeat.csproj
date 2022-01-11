@@ -37,6 +37,9 @@
     <StartupObject>
     </StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Tunebeat.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="DxLibWDotNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -84,6 +87,9 @@
       <Project>{ddcec7fc-ea71-46c5-b4c1-7e4c02529cb8}</Project>
       <Name>TJAParse</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Tunebeat.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

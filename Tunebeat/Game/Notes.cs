@@ -80,6 +80,7 @@ namespace Tunebeat.Game
             Chip nchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
             if (nchip != null && nchip.IsGogo)
             {
+                TextureLoad.Game_Lane_Gogo.Opacity = 0.5;
                 TextureLoad.Game_Lane_Gogo.BlendMode = BlendMode.Add;
                 TextureLoad.Game_Lane_Gogo.Draw(NotesP[player].X - 22, NotesP[player].Y);
             }
