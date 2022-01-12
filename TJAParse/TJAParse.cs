@@ -9,7 +9,7 @@ namespace TJAParse
 {
     public class TJAParse
     {
-        public TJAParse(string path)
+        public TJAParse(string path, double playspeed)
         {
             TJAPath = path;
             Header = new Header();
@@ -40,13 +40,13 @@ namespace TJAParse
 
             //ヘッダー読み込み
             foreach (string str in alltext)
-                Header.Load(str, Header);
+                Header.Load(str, Header, playspeed);
 
             foreach (string str in alltext)
                 Course.GetMeasureCount(str, Courses);
             //譜面読み込み
             foreach (string str in alltext)
-                Course.Load(str, Courses, Header);
+                Course.Load(str, Courses, Header, playspeed);
 
             foreach (string str in alltext)
                 Course.RollDoubledCheck(Courses);

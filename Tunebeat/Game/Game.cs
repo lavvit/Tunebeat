@@ -19,7 +19,7 @@ namespace Tunebeat.Game
             
             for (int i = 0; i < 2; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile);
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
                 MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[i].TJAPath)}/{MainTJA[i].Header.WAVE}");
                 IsAuto[i] = PlayData.Data.Auto[i];
                 Course[i] = PlayData.Data.PlayCourse[i];
@@ -154,7 +154,7 @@ namespace Tunebeat.Game
                 HitTimer2P[i].Tick();
             }
             if (MainTimer.State == 0) MainTimer.Start();
-            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); IsSongPlay = true; }
+            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 MainTimer.Stop();

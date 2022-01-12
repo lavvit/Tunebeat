@@ -121,6 +121,16 @@ namespace Tunebeat.Game
                     taiko[0].Pan = 0;
                     taiko[1].Pan = 0;
                 }
+                if (PlayData.Data.ChangeSESpeed)
+                {
+                    taiko[0].PlaySpeed = PlayData.Data.PlaySpeed;
+                    taiko[1].PlaySpeed = PlayData.Data.PlaySpeed;
+                }
+                else
+                {
+                    taiko[0].PlaySpeed = 1.0;
+                    taiko[1].PlaySpeed = 1.0;
+                }
 
                 if (isDon) taiko[0].Play();
                 else taiko[1].Play();
@@ -143,6 +153,16 @@ namespace Tunebeat.Game
                 }
                 taiko2P[0].Pan = 255;
                 taiko2P[1].Pan = 255;
+                if (PlayData.Data.ChangeSESpeed)
+                {
+                    taiko2P[0].PlaySpeed = PlayData.Data.PlaySpeed;
+                    taiko2P[1].PlaySpeed = PlayData.Data.PlaySpeed;
+                }
+                else
+                {
+                    taiko2P[0].PlaySpeed = 1.0;
+                    taiko2P[1].PlaySpeed = 1.0;
+                }
 
                 if (isDon) taiko2P[0].Play();
                 else taiko2P[1].Play();

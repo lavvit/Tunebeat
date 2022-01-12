@@ -11,7 +11,7 @@ namespace TJAParse
         public string TITLE, SUBTITLE, WAVE, GENRE;
         public double BPM, OFFSET, SONGVOL, SEVOL, DEMOSTART, SCOREMODE;
 
-        public static void Load(string str, Header header)
+        public static void Load(string str, Header header, double playspeed)
         {
             if (str.Length <= 0) return;
             var split = str.Split(':');
@@ -33,10 +33,10 @@ namespace TJAParse
                     header.GENRE = split[1];
                     break;
                 case "BPM":
-                    header.BPM = double.Parse(split[1]);
+                    header.BPM = double.Parse(split[1]) * playspeed;
                     break;
                 case "OFFSET":
-                    header.OFFSET = double.Parse(split[1]);
+                    header.OFFSET = double.Parse(split[1]) / playspeed;
                     break;
                 case "SONGVOL":
                     header.SONGVOL = double.Parse(split[1]);

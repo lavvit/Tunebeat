@@ -19,7 +19,7 @@ namespace TJAParse
         public static int NowCourse;
         public static int MeasureCount;
 
-        public static void Load(string str, Course[] courses, Header header)
+        public static void Load(string str, Course[] courses, Header header, double playspeed)
         {
             if (str.Length <= 0) return;
             var split = str.Split(':');
@@ -79,7 +79,7 @@ namespace TJAParse
                     }
                     else if (str.StartsWith("#BPMCHANGE"))
                     {
-                        NowInfo.Bpm = double.Parse(str.Replace("#BPMCHANGE", "").Trim());
+                        NowInfo.Bpm = double.Parse(str.Replace("#BPMCHANGE", "").Trim()) * playspeed;
                     }
                     else if (str.StartsWith("#DELAY"))
                     {

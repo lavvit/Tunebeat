@@ -8,6 +8,7 @@ namespace Tunebeat.Common
     {
         public static void Init()
         {
+            Data = new Data();
             if (!File.Exists("Config.json"))
                 ConfigManager.SaveConfig(Data, "Config.json");
 
@@ -28,6 +29,10 @@ namespace Tunebeat.Common
         public string PlayFile = @"Songs/水天神術・時雨.tja";
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
+
+        public double PlaySpeed = 1.0;
+        public bool ChangeSESpeed = true;
+        public double[] ScrollSpeed = new double[2] { 1.0, 1.0 };
 
         public bool[] Auto = new bool[2] { false, false };
         public int AutoRoll = 15;
