@@ -29,10 +29,20 @@ namespace Tunebeat.Common
         public string PlayFile = @"Songs/水天神術・時雨.tja";
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
+        public bool QuickStart = false;
+        public bool ShowResultScreen = false;
 
         public double PlaySpeed = 1.0;
         public bool ChangeSESpeed = true;
+
+        public int[] ScrollType = new int[2] { 0, 0 };
         public double[] ScrollSpeed = new double[2] { 1.0, 1.0 };
+        public bool[] FloatingHiSpeed = new bool[2] { false, false };
+        public int[] GreenNumber = new int[2] { 1200, 1200 };
+        public bool[] NormalHiSpeed = new bool[2] { false, false };
+        public int[] NHSSpeed = new int[2] { 0, 0 };
+        public bool[] UseSudden = new bool[2] { false, false };
+        public int[] SuddenNumber = new int[2] { 0, 0 };
 
         public bool[] Auto = new bool[2] { false, false };
         public int AutoRoll = 15;

@@ -81,13 +81,13 @@ namespace Tunebeat.Game
 
             DrawNumber(0, 292, $"{EXScore[0], 9}", 0);
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
-            DrawNumber(0, 292 + 52, $"{(nowchip != null ? nowchip.Scroll * PlayData.Data.ScrollSpeed[0] : PlayData.Data.ScrollSpeed[0]),9:F2}", 0);//HS
+            DrawNumber(0, 292 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
             DrawNumber(0, 292 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
             if (PlayData.Data.IsPlay2P)
             {
                 DrawNumber(0, 292 + 331, $"{EXScore[1],9}", 0);
                 Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
-                DrawNumber(72, 292 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * PlayData.Data.ScrollSpeed[1] : PlayData.Data.ScrollSpeed[1]),6:F2}", 0);//HS
+                DrawNumber(72, 292 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
                 DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
 
@@ -793,10 +793,10 @@ namespace Tunebeat.Game
             public char ch;
             public int X;
         }
-        private static STNumber[] stNumber = new STNumber[12]
+        private static STNumber[] stNumber = new STNumber[13]
         { new STNumber(){ ch = '0', X = 0 },new STNumber(){ ch = '1', X = 26 },new STNumber(){ ch = '2', X = 26 * 2 },new STNumber(){ ch = '3', X = 26 * 3 },new STNumber(){ ch = '4', X = 26 * 4 },
         new STNumber(){ ch = '5', X = 26 * 5 },new STNumber(){ ch = '6', X = 26 * 6 },new STNumber(){ ch = '7', X = 26 * 7 },new STNumber(){ ch = '8', X = 26 * 8 },new STNumber(){ ch = '9', X = 26 * 9 },
-        new STNumber(){ ch = '.', X = 26 * 10 },new STNumber(){ ch = '%', X = 26 * 11 } };
+        new STNumber(){ ch = '.', X = 26 * 10 },new STNumber(){ ch = '%', X = 26 * 11 },new STNumber(){ ch = '-', X = 26 * 12 } };
     }
 
     public enum EGauge

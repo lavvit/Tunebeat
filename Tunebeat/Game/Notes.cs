@@ -15,6 +15,16 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
+            for (int i = 0; i < 2; i++)
+            {
+                UseSudden[i] = PlayData.Data.UseSudden[i];
+                Sudden[i] = PlayData.Data.SuddenNumber[i];
+                Scroll[i] = PlayData.Data.ScrollSpeed[i];
+                if (PlayData.Data.NormalHiSpeed[i]) PreGreen[i] = SetGreenNumber(i, PlayData.Data.NHSSpeed[i]);
+                PreGreen[i] = PlayData.Data.GreenNumber[i];
+                NHSNumber[i] = PlayData.Data.NHSSpeed[i];
+                SetScroll(i, true);
+            }
             ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             base.Enable();
@@ -51,6 +61,37 @@ namespace Tunebeat.Game
                 }
             }
 
+            TextureLoad.Game_Sudden.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
+            if (UseSudden[0])
+            {
+                TextureLoad.Game_Sudden.Draw(NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), NotesP[0].Y);
+            }
+            if (UseSudden[1] && PlayData.Data.IsPlay2P)
+            {
+                TextureLoad.Game_Sudden.Draw(NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), NotesP[1].Y);
+            }
+
+            if (Key.IsPushing(KEY_INPUT_LSHIFT))
+            {
+                int type = 0;
+                if (PlayData.Data.FloatingHiSpeed[0]) type = 1;
+                else if (PlayData.Data.NormalHiSpeed[0]) type = 2;
+                TextureLoad.Game_HiSpeed.Draw(NotesP[0].X - 24, NotesP[0].Y - 2, new Rectangle(0, 56 * type, 195, 56));
+                Score.DrawNumber(NotesP[0].X - 4, NotesP[0].Y + 20, $"{Scroll[0],6:F2}", 0);
+                Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 348, $"{Sudden[0]}", 0);
+                Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 388, $"{(GreenNumber[0] > 0 ? GreenNumber[0] : 0)}", 5);
+            }
+            if (Key.IsPushing(KEY_INPUT_RSHIFT))
+            {
+                int type = 0;
+                if (PlayData.Data.FloatingHiSpeed[1]) type = 1;
+                else if (PlayData.Data.NormalHiSpeed[1]) type = 2;
+                TextureLoad.Game_HiSpeed.Draw(NotesP[1].X - 24, NotesP[1].Y - 2, new Rectangle(0, 56 * type, 195, 56));
+                Score.DrawNumber(NotesP[1].X - 4, NotesP[1].Y + 20, $"{Scroll[1],6:F2}", 0);
+                Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 616, $"{Sudden[1]}", 0);
+                Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 656, $"{(GreenNumber[1] > 0 ? GreenNumber[1] : 0)}", 5);
+            }
+
             if (PlayData.Data.IsPlay2P)
             {
                 TextureLoad.Game_Base_DP.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
@@ -66,11 +107,42 @@ namespace Tunebeat.Game
                 TextureLoad.Game_Lane_Frame.Draw(495, 286);
             }
 
+#if DEBUG
+
+            if (UseSudden[0]) DrawString(1700, 360, $"{Sudden[0]}", 0xffffff);
+            DrawString(1700, 400, $"{GreenNumber[0]}", 0x00ff00);
+            if (PlayData.Data.FloatingHiSpeed[0]) DrawString(1600, 360, "FHS", 0xffffff);
+            if (PlayData.Data.IsPlay2P)
+            {
+                if (UseSudden[1]) DrawString(1700, 620, $"{Sudden[1]}", 0xffffff);
+                DrawString(1700, 660, $"{GreenNumber[1]}", 0x00ff00);
+                if (PlayData.Data.FloatingHiSpeed[1]) DrawString(1600, 620, "FHS", 0xffffff);
+            }
+#endif
+
             base.Draw();
         }
 
         public override void Update()
         {
+            for (int i = 0; i < 2; i++)
+            {
+                GreenNumber[i] = GetGreenNumber(i);
+            }
+
+            if (Game.MainTimer.State == 0)
+            {
+                for (int i = 0; i < 2; i++)
+                {
+                    Scroll[i] = PlayData.Data.ScrollSpeed[i];
+                    UseSudden[i] = PlayData.Data.UseSudden[i];
+                    Sudden[i] = PlayData.Data.SuddenNumber[i];
+                    NHSNumber[i] = PlayData.Data.NHSSpeed[i];
+                    if (PlayData.Data.FloatingHiSpeed[i]) PlayData.Data.GreenNumber[i] = PreGreen[i];
+                    else PlayData.Data.GreenNumber[i] = GreenNumber[i];
+                }
+            }
+
             base.Update();
         }
 
@@ -183,7 +255,7 @@ namespace Tunebeat.Game
         public static double NotesX(double chiptime, double timer, double bpm,  double scroll, int player)
         {
             double time = chiptime - timer;
-            double x = time * bpm * scroll * 2.0 * PlayData.Data.ScrollSpeed[player] / 335.2396;
+            double x = time * bpm * scroll * 2.0 * Scroll[player] / 335.2396;
             return x;
         }
 
@@ -237,6 +309,68 @@ namespace Tunebeat.Game
             }
         }
 
+        public static int GetGreenNumber(int player, double plusminus = 0)
+        {
+            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            if (chip != null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
+            double scroll = chip != null ? chip.Scroll * (Scroll[player] + plusminus) : (Scroll[player] + plusminus);
+            int ms = scroll > 0 ? Showms[0] : Showms[1];
+            int sudden = UseSudden[player] ? Sudden[player] : 0;
+            double suddenrate = 1000.0 / (1000 - sudden);
+            return (int)(ms / (bpm * scroll * 2.0 * suddenrate));
+        }
+
+        public static int SetGreenNumber(int player, int number)
+        {
+            int sudden = UseSudden[player] ? Sudden[player] : 0;
+            double suddenrate = 1000.0 / (1000 - sudden);
+            return (int)(NHSTargetGNum[number] / suddenrate);
+        }
+
+        public static void SetScroll(int player, bool isLoad = false)
+        {
+            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            if (chip != null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
+            double scroll = chip != null ? chip.Scroll : 1.0;
+            int sudden = UseSudden[player] ? Sudden[player] : 0;
+            double suddenrate = 1000.0 / (1000 - sudden);
+            Scroll[player] = Math.Round(Showms[0] / (PreGreen[player] * bpm * scroll * 2.0 * suddenrate), 2, MidpointRounding.AwayFromZero);
+            if (isLoad) PlayData.Data.ScrollSpeed[player] = Scroll[player];
+        }
+
+        public static void SetSudden(int player, bool isPlus, bool isLoad = false, bool Reset = false)
+        {
+            if (!isLoad)
+            {
+                if (Reset)
+                {
+                    Sudden[player] = PlayData.Data.SuddenNumber[player];
+                }
+                else
+                {
+                    if (isPlus)
+                        Sudden[player] += 2;
+                    else Sudden[player] -= 2;
+                }
+            }
+            else
+            {
+                if (isPlus)
+                    PlayData.Data.SuddenNumber[player] += 2;
+                else PlayData.Data.SuddenNumber[player] -= 2;
+            }
+            
+            if (PlayData.Data.FloatingHiSpeed[player]) SetScroll(player, isLoad);
+        }
+
         public static Point[] NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };
+        public static int[] Showms = new int[2] { 256300, -37000 };
+        public static double[] Scroll = new double[2];
+        public static bool[] UseSudden = new bool[2];
+        public static int[] Sudden = new int[2], GreenNumber = new int[2], PreGreen = new int[2], NHSNumber = new int[2];
+        public static int[] NHSTargetGNum = new int[20] { 1200, 1000, 800, 700, 650, 600, 550, 500, 480, 460,
+            440, 420, 400, 380, 360, 340, 320, 300, 280, 260 };
     }
 }

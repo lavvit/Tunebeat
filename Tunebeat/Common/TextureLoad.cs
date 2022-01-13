@@ -39,6 +39,8 @@ namespace Tunebeat.Common
             Game_Lane_Gogo = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Gogo.png");
             Game_Lane_Frame = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Frame.png");
             Game_Lane_Frame_DP = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Frame_DP.png");
+            Game_Sudden = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Sudden.png");
+            Game_HiSpeed = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}HiSpeed.png");
             Game_Don[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_L.png");
             Game_Don[1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_R.png");
             Game_Ka[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_L.png");
@@ -58,6 +60,7 @@ namespace Tunebeat.Common
             }
             #endregion
             #region Result
+            Result_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}Background.png");
             #endregion
         }
 
@@ -85,6 +88,8 @@ namespace Tunebeat.Common
             Game_Lane_Gogo,
             Game_Lane_Frame,
             Game_Lane_Frame_DP,
+            Game_Sudden,
+            Game_HiSpeed,
             Game_Gauge,
             Game_Gauge_Base,
             Game_Judge,
@@ -96,6 +101,7 @@ namespace Tunebeat.Common
             Game_Bomb = new Texture[12];
         #endregion
         #region Result
+        public static Texture Result_Background;
         #endregion
     }
 }

@@ -109,6 +109,11 @@ namespace Tunebeat.Game
                 Score.DrawCombo(1);
             }
 
+            if (MainTimer.State == 0 && !IsSongPlay)
+            {
+                DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
+            }
+
             #if DEBUG
             DrawString(0, 0, $"{MainTimer.Value}", 0xffffff); if (IsSongPlay && !MainSong.IsPlaying) DrawString(60, 0, "Stoped", 0xffffff);
             DrawString(0, 20, $"{MainTJA[0].Header.TITLE}", 0xffffff);
@@ -153,11 +158,15 @@ namespace Tunebeat.Game
                 HitTimer[i].Tick();
                 HitTimer2P[i].Tick();
             }
-            if (MainTimer.State == 0) MainTimer.Start();
+            if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart)) MainTimer.Start();
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 MainTimer.Stop();
+                if (PlayData.Data.ShowResultScreen)
+                {
+                    Program.SceneChange(new Result.Result());
+                }
                 if (Key.IsPushed(KEY_INPUT_RETURN))
                 {
                     Program.SceneChange(new SongSelect.SongSelect());

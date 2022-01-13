@@ -19,11 +19,20 @@ namespace Tunebeat.Game
             if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
                 Game.IsAuto[1] = !Game.IsAuto[1];
             if (Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0)
+            {
                 if (PlayData.Data.AutoRoll > 120) PlayData.Data.AutoRoll = 120;
                 else PlayData.Data.AutoRoll--;
+                ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+            }
+                
             if (Key.IsPushed(KEY_INPUT_F4))
+            {
                 if (PlayData.Data.AutoRoll >= 120) PlayData.Data.AutoRoll = 1000;
                 else PlayData.Data.AutoRoll++;
+                ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+            }
 
             if (!Auto1P && !Failed1P)
             {
@@ -64,6 +73,161 @@ namespace Tunebeat.Game
                     Process(false, false, 1);
                 }
             }
+
+            if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
+            {
+                #region 開始前
+                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                {
+                    if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
+                    {
+                        if (PlayData.Data.NormalHiSpeed[0])
+                        {
+                            if (PlayData.Data.NHSSpeed[0] < 20) PlayData.Data.NHSSpeed[0]++;
+                            Notes.PreGreen[0] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[0]);
+                        }
+                        else PlayData.Data.ScrollSpeed[0] += 0.25;
+                        Notes.PreGreen[0] = Notes.GetGreenNumber(0, 0.25);
+                    }
+                    if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
+                    {
+                        if (PlayData.Data.NormalHiSpeed[0])
+                        {
+                            if (PlayData.Data.NHSSpeed[0] > 0) PlayData.Data.NHSSpeed[0]--;
+                            Notes.PreGreen[0] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[0]);
+                        }
+                        else PlayData.Data.ScrollSpeed[0] -= 0.25;
+                        Notes.PreGreen[0] = Notes.GetGreenNumber(0, -0.25);
+                    }
+                    if (Key.IsPushed(KEY_INPUT_LCONTROL))
+                    {
+                        PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
+                        Notes.PreGreen[0] = Notes.GetGreenNumber(0);
+                    }
+                }
+                if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                {
+                    if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
+                    {
+                        if (PlayData.Data.NormalHiSpeed[1])
+                        {
+                            if (PlayData.Data.NHSSpeed[1] < 20) PlayData.Data.NHSSpeed[1]++;
+                            Notes.PreGreen[1] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[1]);
+                        }
+                        else PlayData.Data.ScrollSpeed[1] += 0.25;
+                        Notes.PreGreen[1] = Notes.GetGreenNumber(1, 0.25);
+                    }
+                    if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
+                    {
+                        if (PlayData.Data.NormalHiSpeed[1])
+                        {
+                            if (PlayData.Data.NHSSpeed[1] > 0) PlayData.Data.NHSSpeed[1]--;
+                            Notes.PreGreen[1] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[1]);
+                        }
+                        else PlayData.Data.ScrollSpeed[1] -= 0.25;
+                        Notes.PreGreen[1] = Notes.GetGreenNumber(1, -0.25);
+                    }
+                    if (Key.IsPushed(KEY_INPUT_RCONTROL))
+                    {
+                        PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
+                        Notes.PreGreen[1] = Notes.GetGreenNumber(1);
+                    }
+                }
+                if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL))
+                {
+                    PlayData.Data.UseSudden[0] = !PlayData.Data.UseSudden[0];
+                }
+                if (!Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushed(KEY_INPUT_RCONTROL) && PlayData.Data.IsPlay2P)
+                {
+                    PlayData.Data.UseSudden[1] = !PlayData.Data.UseSudden[1];
+                }
+                if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] < 1000)
+                {
+                    Notes.SetSudden(0, true, true);
+                }
+                if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] > 0)
+                {
+                    Notes.SetSudden(0, false, true);
+                }
+                if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] < 1000 && PlayData.Data.IsPlay2P)
+                {
+                    Notes.SetSudden(1, true, true);
+                }
+                if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] > 0 && PlayData.Data.IsPlay2P)
+                {
+                    Notes.SetSudden(1, false, true);
+                }
+                #endregion
+            }
+            else if (Game.IsSongPlay && Game.MainSong.IsPlaying)
+            {
+                #region プレイ中
+                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                {
+                    if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
+                    {
+                        Notes.Scroll[0] += 0.25;
+                    }
+                    if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
+                    {
+                        Notes.Scroll[0] -= 0.25;
+                    }
+                    if (Key.IsPushed(KEY_INPUT_LCONTROL))
+                    {
+                        PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
+                    }
+                }
+                if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                {
+                    if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
+                    {
+                        Notes.Scroll[1] += 0.25;
+                    }
+                    if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
+                    {
+                        Notes.Scroll[1] -= 0.25;
+                    }
+                    if (Key.IsPushed(KEY_INPUT_RCONTROL))
+                    {
+                        PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
+                    }
+                }
+                if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL))
+                {
+                    Notes.UseSudden[0] = !Notes.UseSudden[0];
+                }
+                if (!Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushed(KEY_INPUT_RCONTROL) && PlayData.Data.IsPlay2P)
+                {
+                    Notes.UseSudden[1] = !Notes.UseSudden[1];
+                }
+                if (Key.IsPushing(KEY_INPUT_Z) && Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0])
+                {
+                    Notes.SetSudden(0, true, false, true);
+                }
+                else if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] < 1000)
+                {
+                    Notes.SetSudden(0, true);
+                }
+                else if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] > 0)
+                {
+                    Notes.SetSudden(0, false);
+
+                }
+                if (Key.IsPushing(KEY_INPUT_SLASH) && Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.IsPlay2P)
+                {
+                    Notes.SetSudden(1, true, false, true);
+                }
+                else if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] < 1000 && PlayData.Data.IsPlay2P)
+                {
+                    Notes.SetSudden(1, true);
+                }
+                else if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] > 0 && PlayData.Data.IsPlay2P)
+                {
+                    Notes.SetSudden(1, false);
+                }
+                #endregion
+            }
+
         }
 
         public static void Process(bool isDon, bool isLeft, int player)
