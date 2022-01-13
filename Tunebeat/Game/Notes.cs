@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.IO;
 using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
@@ -23,7 +24,7 @@ namespace Tunebeat.Game
                 if (PlayData.Data.NormalHiSpeed[i]) PreGreen[i] = SetGreenNumber(i, PlayData.Data.NHSSpeed[i]);
                 PreGreen[i] = PlayData.Data.GreenNumber[i];
                 NHSNumber[i] = PlayData.Data.NHSSpeed[i];
-                SetScroll(i, true);
+                if (PlayData.Data.FloatingHiSpeed[i]) SetScroll(i, true);
             }
             ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
@@ -148,6 +149,14 @@ namespace Tunebeat.Game
 
         public static void DrawNotes(int player)
         {
+            if ((PlayData.Data.PlayMovie && File.Exists($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Game.MainTJA[0].Header.BGMOVIE}")) || (PlayData.Data.ShowImage && File.Exists($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Game.MainTJA[0].Header.BGIMAGE}")))
+            {
+                TextureLoad.Game_Lane.Opacity = 0.5;
+            }
+            else
+            {
+                TextureLoad.Game_Lane.Opacity = 1.0;
+            }
             TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
             Chip nchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
             if (nchip != null && nchip.IsGogo)

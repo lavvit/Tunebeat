@@ -29,6 +29,8 @@ namespace Tunebeat.Common
         public string PlayFile = @"Songs/水天神術・時雨.tja";
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
+        public bool ShowImage = true;
+        public bool PlayMovie = true;
         public bool QuickStart = false;
         public bool ShowResultScreen = false;
 

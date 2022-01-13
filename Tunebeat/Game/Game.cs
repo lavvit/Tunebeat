@@ -20,12 +20,14 @@ namespace Tunebeat.Game
             for (int i = 0; i < 2; i++)
             {
                 MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
-                MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[i].TJAPath)}/{MainTJA[i].Header.WAVE}");
                 IsAuto[i] = PlayData.Data.Auto[i];
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
             }
+            MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
+            MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
+            MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
 
             for (int i = 0; i < 4; i++)
             {
@@ -43,6 +45,8 @@ namespace Tunebeat.Game
         public override void Disable()
         {
             MainSong.Dispose();
+            MainImage.Dispose();
+            MainMovie.Dispose();
             MainTimer.Reset();
             IsSongPlay = false;
             for (int i = 0; i < 4; i++)
@@ -57,8 +61,21 @@ namespace Tunebeat.Game
 
         public override void Draw()
         {
-            DrawBox(0, 0, 1919, 257, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
-            TextureLoad.Game_Background.Draw(0, 0);
+            if (PlayData.Data.PlayMovie && File.Exists($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}"))
+            {
+                MainMovie.Volume = 0;
+                MainMovie.Draw(0, 0);
+            }
+            else if (PlayData.Data.ShowImage && File.Exists($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}"))
+            {
+                MainImage.Draw(960 - (MainImage.TextureSize.Width / 2), 960 - (MainImage.TextureSize.Height / 2));
+            }
+            else
+            {
+                DrawBox(0, 0, 1919, 1079, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
+                TextureLoad.Game_Background.Draw(0, 0);
+            }
+            
 
             foreach (Scene scene in ChildScene)
                 scene?.Draw();
@@ -159,7 +176,7 @@ namespace Tunebeat.Game
                 HitTimer2P[i].Tick();
             }
             if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart)) MainTimer.Start();
-            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
+            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); if (PlayData.Data.PlayMovie) { MainMovie.Play(); } IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 MainTimer.Stop();
@@ -199,6 +216,8 @@ namespace Tunebeat.Game
         public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[2];
         public static Counter MainTimer;
         public static Sound MainSong;
+        public static Texture MainImage;
+        public static Movie MainMovie;
         public static List<Scene> ChildScene = new List<Scene>();
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2];

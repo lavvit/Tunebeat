@@ -8,7 +8,7 @@ namespace TJAParse
 {
     public class Header
     {
-        public string TITLE, SUBTITLE, WAVE, GENRE;
+        public string TITLE, SUBTITLE, WAVE, GENRE, BGIMAGE, BGMOVIE;
         public double BPM, OFFSET, SONGVOL, SEVOL, DEMOSTART, SCOREMODE;
 
         public static void Load(string str, Header header, double playspeed)
@@ -28,6 +28,12 @@ namespace TJAParse
                     break;
                 case "WAVE":
                     header.WAVE = split[1];
+                    break;
+                case "BGIMAGE":
+                    header.BGIMAGE = split[1];
+                    break;
+                case "BGMOVIE":
+                    header.BGMOVIE = split[1];
                     break;
                 case "GENRE":
                     header.GENRE = split[1];
