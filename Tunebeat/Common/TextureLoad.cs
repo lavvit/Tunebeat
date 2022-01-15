@@ -61,6 +61,9 @@ namespace Tunebeat.Common
             #endregion
             #region Result
             Result_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}Background.png");
+            Result_Panel = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}Panel.png");
+            Result_FastRate = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}FastRate.png");
+            Result_Gauge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}Gauge.png");
             #endregion
         }
 
@@ -101,7 +104,10 @@ namespace Tunebeat.Common
             Game_Bomb = new Texture[12];
         #endregion
         #region Result
-        public static Texture Result_Background;
+        public static Texture Result_Background,
+            Result_Panel,
+            Result_FastRate,
+            Result_Gauge;
         #endregion
     }
 }

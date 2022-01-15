@@ -91,6 +91,28 @@ namespace Tunebeat.Game
                 DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
 
+            if (Game.IsSongPlay && !Game.MainSong.IsPlaying && !PlayData.Data.ShowResultScreen)
+            {
+                DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 86, $"SC:{EXScore[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 86, $"PG:{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 0x00ff00 : (uint)0xffffff);
+                DrawString(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 86, $"GR:{Great[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 500, Notes.NotesP[0].Y + 86, $"GD:{Good[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 600, Notes.NotesP[0].Y + 86, $"BD:{Bad[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 700, Notes.NotesP[0].Y + 86, $"PR:{Poor[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 800, Notes.NotesP[0].Y + 86, $"RL:{Roll[0]}", 0xffffff);
+                if (PlayData.Data.IsPlay2P)
+                {
+                    DrawString(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 86, $"SC:{EXScore[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 86, $"PG:{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 0x00ff00 : (uint)0xffffff);
+                    DrawString(Notes.NotesP[1].X + 400, Notes.NotesP[1].Y + 86, $"GR:{Great[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 500, Notes.NotesP[1].Y + 86, $"GD:{Good[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 600, Notes.NotesP[1].Y + 86, $"BD:{Bad[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 700, Notes.NotesP[1].Y + 86, $"PR:{Poor[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 800, Notes.NotesP[1].Y + 86, $"RL:{Roll[1]}", 0xffffff);
+                }
+            }
+
+
             #if DEBUG
             DrawString(0, 300, $"SC:{EXScore[0]}", 0xffffff);
             if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 300, Remain[0] > 0 ? $"MAX-{Remain[0]}" : "MAX+0", 0xffffff);

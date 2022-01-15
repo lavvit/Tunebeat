@@ -321,7 +321,7 @@ namespace Tunebeat.Game
         public static int GetGreenNumber(int player, double plusminus = 0)
         {
             Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
-            if (chip != null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            if (chip == null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll * (Scroll[player] + plusminus) : (Scroll[player] + plusminus);
             int ms = scroll > 0 ? Showms[0] : Showms[1];
@@ -340,7 +340,7 @@ namespace Tunebeat.Game
         public static void SetScroll(int player, bool isLoad = false)
         {
             Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
-            if (chip != null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            if (chip == null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll : 1.0;
             int sudden = UseSudden[player] ? Sudden[player] : 0;
