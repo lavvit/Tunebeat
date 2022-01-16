@@ -43,16 +43,16 @@ namespace Tunebeat.Result
             }
 
             Score.DrawNumber(52, 290, $"{(int)Score.Gauge[0],3}%", 0);
-            Score.DrawNumber(377, 541, $"{Score.EXScore[0],5}", 6);
+            Score.DrawNumber(377, 541, $"{(Score.EXScore[0] > 0 ? Score.EXScore[0] : Score.Auto[0] * 2),5}", Score.EXScore[0] > 0 ? 6 : 7);
             Score.DrawNumber(377, 541 + 73, $"{Score.Bad[0] + Score.Poor[0],5}", 6);
 
-            Score.DrawNumber(171, 750, $"{Score.Perfect[0] + Score.Auto[0],4}", Score.Auto[0] > 0 ? 5 : 0);
+            Score.DrawNumber(171, 750, $"{(Score.EXScore[0] > 0 ? Score.Perfect[0] : Score.Auto[0]),4}", Score.EXScore[0] == 0 && Score.Auto[0] > 0 ? 5 : 0);
             Score.DrawNumber(171, 750 + 32, $"{Score.Great[0],4}", 0);
             Score.DrawNumber(171, 750 + 32 * 2, $"{Score.Good[0],4}", 0);
             Score.DrawNumber(171, 750 + 32 * 3, $"{Score.Bad[0],4}", 0);
             Score.DrawNumber(171, 750 + 32 * 4, $"{Score.Poor[0],4}", 0);
 
-            Score.DrawNumber(398, 960, $"{Score.Roll[0],4}", 0);
+            Score.DrawNumber(398, 960, $"{(Score.EXScore[0] > 0 ? Score.Roll[0] : Score.AutoRoll[0]),4}", Score.EXScore[0] == 0 && Score.AutoRoll[0] > 0 ? 5 : 0);
 
             if (PlayData.Data.IsPlay2P)
             {
@@ -64,16 +64,16 @@ namespace Tunebeat.Result
                 }
 
                 Score.DrawNumber(1319 + 52, 290, $"{(int)Score.Gauge[1],3}%", 0);
-                Score.DrawNumber(1353 + 377, 541, $"{Score.EXScore[1],5}", 6);
+                Score.DrawNumber(1353 + 377, 541, $"{(Score.EXScore[1] > 0 ? Score.EXScore[1] : Score.Auto[1] * 2),5}", Score.EXScore[1] > 0 ? 6 : 7);
                 Score.DrawNumber(1353 + 377, 541 + 73, $"{Score.Bad[1] + Score.Poor[1],5}", 6);
 
-                Score.DrawNumber(1353 + 171, 750, $"{Score.Perfect[1] + Score.Auto[1],4}", Score.Auto[1] > 0 ? 5 : 0);
+                Score.DrawNumber(1353 + 171, 750, $"{(Score.EXScore[1] > 0 ? Score.Perfect[1] : Score.Auto[1]),4}", Score.EXScore[1] == 0 && Score.Auto[1] > 0 ? 5 : 0);
                 Score.DrawNumber(1353 + 171, 750 + 32, $"{Score.Great[1],4}", 0);
                 Score.DrawNumber(1353 + 171, 750 + 32 * 2, $"{Score.Good[1],4}", 0);
                 Score.DrawNumber(1353 + 171, 750 + 32 * 3, $"{Score.Bad[1],4}", 0);
                 Score.DrawNumber(1353 + 171, 750 + 32 * 4, $"{Score.Poor[1],4}", 0);
 
-                Score.DrawNumber(1353 + 398, 960, $"{Score.Roll[1],4}", 0);
+                Score.DrawNumber(1353 + 398, 960, $"{(Score.EXScore[1] > 0 ? Score.Roll[1] : Score.AutoRoll[1]),4}", Score.EXScore[1] == 0 && Score.AutoRoll[1] > 0 ? 5 : 0);
             }
 
             base.Draw();
