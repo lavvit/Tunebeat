@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Drawing;
 using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
@@ -23,7 +24,6 @@ namespace Tunebeat.Game
                 IsAuto[i] = PlayData.Data.Auto[i];
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
-                ProcessNote.BalloonList[i] = 0;
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
@@ -131,6 +131,10 @@ namespace Tunebeat.Game
                 DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
             }
 
+            Chip nchip = GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value, true);
+            if (nchip != null && nchip.Lyric != null) DrawString(960, 1000, nchip.Lyric, 0x0000ff);
+
+
             #if DEBUG
             DrawString(0, 0, $"{MainTimer.Value}", 0xffffff); if (IsSongPlay && !MainSong.IsPlaying) DrawString(60, 0, "Stoped", 0xffffff);
             DrawString(0, 20, $"{MainTJA[0].Header.TITLE}", 0xffffff);
@@ -160,6 +164,8 @@ namespace Tunebeat.Game
                 DrawString(520, 840, $"{chip[1].RollCount}", 0xffffff);
                 DrawString(520, 860, $"{ProcessNote.BalloonRemain[1]}", 0xffffff);
             }
+
+            DrawString(520, 260, $"{ProcessNote.BalloonList[0]}", 0xffffff);
 
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);
             #endif

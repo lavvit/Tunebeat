@@ -24,6 +24,7 @@ namespace TJAParse
         public bool IsShow;
         public bool CanShow;
         public Chip RollEnd;
+        public string Lyric;
     }
 
     public enum EChip

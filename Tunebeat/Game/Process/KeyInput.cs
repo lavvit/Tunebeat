@@ -18,18 +18,16 @@ namespace Tunebeat.Game
                 Game.IsAuto[0] = !Game.IsAuto[0];
             if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
                 Game.IsAuto[1] = !Game.IsAuto[1];
-            if (Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0)
+
+            if ((Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 20))
             {
-                if (PlayData.Data.AutoRoll > 120) PlayData.Data.AutoRoll = 120;
-                else PlayData.Data.AutoRoll--;
+                PlayData.Data.AutoRoll--;
                 ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
                 ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             }
-                
-            if (Key.IsPushed(KEY_INPUT_F4))
+            if (Key.IsPushed(KEY_INPUT_F4) || (Key.IsPushing(KEY_INPUT_F4) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
             {
-                if (PlayData.Data.AutoRoll >= 120) PlayData.Data.AutoRoll = 1000;
-                else PlayData.Data.AutoRoll++;
+                PlayData.Data.AutoRoll++;
                 ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
                 ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             }

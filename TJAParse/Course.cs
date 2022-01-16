@@ -107,6 +107,10 @@ namespace TJAParse
                     {
                         NowInfo.IsGogo = false;
                     }
+                    else if (str.StartsWith("#LYRIC"))
+                    {
+                        NowInfo.LyricText = str.Replace("#LYRIC", "").Trim();
+                    }
                 }
                 else
                 {
@@ -139,7 +143,8 @@ namespace TJAParse
                                 IsGogo = NowInfo.IsGogo,
                                 EChip = EChip.Note,
                                 ENote = (ENote)int.Parse(num.ToString()),
-                                CanShow = true
+                                CanShow = true,
+                                Lyric = NowInfo.LyricText
                             };
 
                             if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)

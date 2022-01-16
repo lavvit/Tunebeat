@@ -129,6 +129,12 @@ namespace Tunebeat.Game
             for (int i = 0; i < 2; i++)
             {
                 GreenNumber[i] = GetGreenNumber(i);
+                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value, true);
+                if (chip != null && chip.RollEnd != null && chip.RollEnd.Time < Game.MainTimer.Value && ProcessNote.BalloonRemain[i] > 0)
+                {
+                    ProcessNote.BalloonRemain[i] = 0;
+                    ProcessNote.BalloonList[i]++;
+                }
             }
 
             if (Game.MainTimer.State == 0)
@@ -251,7 +257,6 @@ namespace Tunebeat.Game
                                 else
                                 {
                                     TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
-                                    ProcessNote.BalloonList[player]++;
                                 }
                             }
                             break;
