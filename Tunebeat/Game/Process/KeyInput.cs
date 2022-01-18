@@ -14,10 +14,26 @@ namespace Tunebeat.Game
     {
         public static void Update(bool Auto1P, bool Auto2P, bool Failed1P, bool Failed2P)
         {
-            if(Key.IsPushed(KEY_INPUT_F1))
+            if (Key.IsPushed(KEY_INPUT_F1))
+            {
                 Game.IsAuto[0] = !Game.IsAuto[0];
+                if (Game.MainTimer.State == 0)
+                {
+                    int poor = Score.Poor[0];
+                    Score.Poor[0] = Score.Auto[0];
+                    Score.Auto[0] = poor;
+                }
+            }
             if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
+            {
                 Game.IsAuto[1] = !Game.IsAuto[1];
+                if (Game.MainTimer.State == 0)
+                {
+                    int poor = Score.Poor[1];
+                    Score.Poor[1] = Score.Auto[1];
+                    Score.Auto[1] = poor;
+                }
+            }
 
             if ((Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 20))
             {
@@ -163,32 +179,45 @@ namespace Tunebeat.Game
                 #endregion
                 if (Key.IsPushed(KEY_INPUT_PGUP))
                 {
-                    Game.PushingTimer[0].Start();
+                    Game.PushedTimer[0].Start();
                 }
                 if (Key.IsLeft(KEY_INPUT_PGUP))
                 {
+                    Game.PushedTimer[0].Stop();
+                    Game.PushedTimer[0].Reset();
                     Game.PushingTimer[0].Stop();
                     Game.PushingTimer[0].Reset();
                 }
                 if (Key.IsPushed(KEY_INPUT_PGDN))
                 {
-                    Game.PushingTimer[1].Start();
+                    Game.PushedTimer[1].Start();
                 }
                 if (Key.IsLeft(KEY_INPUT_PGDN))
                 {
+                    Game.PushedTimer[1].Stop();
+                    Game.PushedTimer[1].Reset();
                     Game.PushingTimer[1].Stop();
                     Game.PushingTimer[1].Reset();
                 }
-                if (Key.IsPushed(KEY_INPUT_PGUP) || (Game.PushingTimer[0].Value >= 500 && Game.PushingTimer[0].Value % 10 == 0))
+                for (int i = 0; i < 2; i++)
+                {
+                    if (Game.PushedTimer[i].Value == Game.PushedTimer[i].End)
+                    {
+                        Game.PushingTimer[i].Start();
+                    }
+                }
+                if ((Key.IsPushed(KEY_INPUT_PGUP) || (Game.PushingTimer[0].Value == Game.PushingTimer[0].End)) && Game.Wait.State == 0)
                 {
                     Game.MeasureUp();
+                    Game.PushingTimer[0].Reset();
                 }
-                if (Key.IsPushed(KEY_INPUT_PGDN) || (Game.PushingTimer[1].Value >= 500 && Game.PushingTimer[1].Value % 10 == 0))
+                if ((Key.IsPushed(KEY_INPUT_PGDN) || (Game.PushingTimer[1].Value == Game.PushingTimer[1].End)) && Game.Wait.State == 0)
                 {
                     Game.MeasureDown();
+                    Game.PushingTimer[1].Reset();
                 }
             }
-            else if (Game.IsSongPlay && Game.MainSong.IsPlaying)
+            else if (Game.MainTimer.State != 0)
             {
                 #region プレイ中
                 if (Key.IsPushing(KEY_INPUT_LSHIFT))
@@ -255,6 +284,13 @@ namespace Tunebeat.Game
                     Notes.SetSudden(1, false);
                 }
                 #endregion
+                for (int i = 0; i < 2; i++)
+                {
+                    Game.PushedTimer[i].Stop();
+                    Game.PushedTimer[i].Reset();
+                    Game.PushingTimer[i].Stop();
+                    Game.PushingTimer[i].Reset();
+                }
             }
 
         }

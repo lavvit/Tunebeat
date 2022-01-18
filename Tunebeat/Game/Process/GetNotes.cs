@@ -166,18 +166,18 @@ namespace Tunebeat.Game
 
         public static EJudge GetJudge(Chip chip, double time)
         {
-            int[] range = new int[5] { PlayData.Data.JudgePerfect, PlayData.Data.JudgeGreat, PlayData.Data.JudgeGood, PlayData.Data.JudgeBad, PlayData.Data.JudgePoor };
+            
             switch (PlayData.Data.JudgeType)
             {
                 case 1://Spica標準
-                    range[0] = 16;
+                    range[0] = 20;
                     range[1] = 32;
                     range[2] = 90;
                     range[3] = 125;
                     range[4] = 125;
                     break;
                 case 2://ハードモード
-                    range[0] = 10;
+                    range[0] = 12;
                     range[1] = 20;
                     range[2] = 78;
                     range[3] = 113;
@@ -198,6 +198,7 @@ namespace Tunebeat.Game
             }
             else return EJudge.Through;
         }
+        public static int[] range = new int[5] { PlayData.Data.JudgePerfect, PlayData.Data.JudgeGreat, PlayData.Data.JudgeGood, PlayData.Data.JudgeBad, PlayData.Data.JudgePoor };
     }
 
     public enum EJudge

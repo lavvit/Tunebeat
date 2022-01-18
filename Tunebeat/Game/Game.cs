@@ -25,7 +25,8 @@ namespace Tunebeat.Game
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
-                PushingTimer[i] = new Counter(0, int.MaxValue, 1000, false);
+                PushedTimer[i] = new Counter(0, 499, 1000, false);
+                PushingTimer[i] = new Counter(0, 99, 1000, false);
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
@@ -36,9 +37,11 @@ namespace Tunebeat.Game
                 HitTimer[i] = new Counter(0, 100, 1000, false);
                 HitTimer2P[i] = new Counter(0, 100, 1000, false);
             }
+            Wait = new Counter(0, 500, 1000, false);
 
             PlayMeasure = 0;
             StartTime = 0;
+            MeasureList = new List<Chip>();
             MeasureCount();
 
             #region AddChildScene
@@ -56,6 +59,25 @@ namespace Tunebeat.Game
                 {
                     MeasureList.Add(MainTJA[0].Courses[Course[0]].ListChip[i]);
                 }
+            }
+        }
+
+        public static void SetBalloon()
+        {
+            for (int player = 0; player < 2; player++)
+            {
+                int amount = 0;
+                foreach (Chip chip in MainTJA[player].Courses[Course[player]].ListChip)
+                {
+                    if (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama)
+                    {
+                        if (chip.RollEnd.Time < StartTime)
+                        {
+                            amount++;
+                        }
+                    }
+                }
+                ProcessNote.BalloonList[player] = amount; 
             }
         }
 
@@ -100,6 +122,7 @@ namespace Tunebeat.Game
                 Notes.Sudden[i] = PlayData.Data.SuddenNumber[i];
                 Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
             }
+            SetBalloon();
         }
 
         public static void MeasureUp()
@@ -107,10 +130,12 @@ namespace Tunebeat.Game
             if (PlayMeasure < MeasureList.Count)
             {
                 PlayMeasure++;
-                StartTime = MeasureList[PlayMeasure - 1].Time;
-                MainTimer.Value = (int)MeasureList[PlayMeasure - 1].Time;
-                if (MainSong != null) MainSong.Time = MeasureList[PlayMeasure - 1].Time / 1000;
-                if (MainMovie != null) MainMovie.Time = MeasureList[PlayMeasure - 1].Time;
+                TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
+                MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                SetBalloon();
             }
         }
         public static void MeasureDown()
@@ -118,21 +143,32 @@ namespace Tunebeat.Game
             if (PlayMeasure > 1)
             {
                 PlayMeasure--;
-                StartTime = MeasureList[PlayMeasure - 1].Time;
-                MainTimer.Value = (int)MeasureList[PlayMeasure - 1].Time;
-                if (MainSong != null) MainSong.Time = MeasureList[PlayMeasure - 1].Time / 1000;
-                if (MainMovie != null) MainMovie.Time = MeasureList[PlayMeasure - 1].Time;
+                TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
+                MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
                     {
-                        if (chip.Time >= StartTime && chip.IsMiss)
+                        if (chip.Time >= StartTime - 1 && chip.IsMiss)
                         {
                             chip.IsMiss = false;
-                            Score.Poor[i]--;
+                            if (IsAuto[i])
+                            {
+                                Score.Auto[i]--;
+                                Score.Combo[i]--;
+                                Score.MaxCombo[i]--;
+                            }
+                            else
+                            {
+                                Score.Poor[i]--;
+                            }
                         }
                     }
                 }
+                SetBalloon();
             }
             else if(PlayMeasure == 1)
             {
@@ -141,6 +177,7 @@ namespace Tunebeat.Game
                 MainTimer.Value = -2000;
                 if (MainSong != null) MainSong.Time = 0;
                 if (MainMovie != null) MainMovie.Time = 0;
+                SetBalloon();
             }
         }
 
@@ -156,6 +193,12 @@ namespace Tunebeat.Game
                 HitTimer[i].Reset();
                 HitTimer2P[i].Reset();
             }
+            for (int i = 0; i < 2; i++)
+            {
+                PushedTimer[i].Reset();
+                PushingTimer[i].Reset();
+            }
+            Wait.Reset();
             foreach (Scene scene in ChildScene)
                 scene?.Disable();
             base.Disable();
@@ -230,6 +273,7 @@ namespace Tunebeat.Game
 
             if (MainTimer.State == 0 && !IsSongPlay)
             {
+                DrawString(720, 356, $"{PlayMeasure}/{MeasureList.Count}", 0xffffff);
                 DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
             }
 
@@ -285,8 +329,12 @@ namespace Tunebeat.Game
             }
             for (int i = 0; i < 2; i++)
             {
+                PushedTimer[i].Tick();
                 PushingTimer[i].Tick();
             }
+            Wait.Tick();
+            Wait.Start();
+            if (Wait.Value == Wait.End) Wait.Stop();
             if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart)) MainTimer.Start();
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(PlayMeasure == 0 ? true : false); if (PlayData.Data.PlayMovie) { MainMovie.Play(PlayMeasure == 0 ? true : false); } IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
             if (IsSongPlay && !MainSong.IsPlaying)
@@ -310,8 +358,28 @@ namespace Tunebeat.Game
                 Program.SceneChange(new SongSelect.SongSelect());
             }
 
-            foreach (Scene scene in ChildScene)
-                scene?.Update();
+            if (MainTimer.State != 0)
+            {
+                TimeRemain = 0;
+            }
+            else
+            {
+                if (Math.Abs(TimeRemain) < 1)
+                {
+                    TimeRemain = 0;
+                }
+                if (TimeRemain > 0)
+                {
+                    TimeRemain /= 1.2;
+                }
+                if (TimeRemain < 0)
+                {
+                    TimeRemain /= 1.2;
+                }
+            }
+
+                foreach (Scene scene in ChildScene)
+                    scene?.Update();
 
             KeyInput.Update(IsAuto[0], IsAuto[1], Failed[0], Failed[1]);
           
@@ -326,7 +394,7 @@ namespace Tunebeat.Game
         }
 
         public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[2];
-        public static Counter MainTimer;
+        public static Counter MainTimer, Wait;
         public static Sound MainSong;
         public static Texture MainImage;
         public static Movie MainMovie;
@@ -335,10 +403,8 @@ namespace Tunebeat.Game
         public static bool[] IsAuto = new bool[2], Failed = new bool[2];
         public static int[] Course = new int[2];
         public static int PlayMeasure;
-        public static double StartTime; 
+        public static double StartTime, TimeRemain; 
         public static List<Chip> MeasureList = new List<Chip>();
-        public static Counter[] HitTimer = new Counter[4];
-        public static Counter[] HitTimer2P = new Counter[4];
-        public static Counter[] PushingTimer = new Counter[2];
+        public static Counter[] HitTimer = new Counter[4], HitTimer2P = new Counter[4], PushedTimer = new Counter[2], PushingTimer = new Counter[2];
     }
 }

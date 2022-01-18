@@ -35,12 +35,15 @@ namespace Tunebeat.Game
 
         public static void PassNote(Chip chip, double time, bool isDon, int player)
         {
-            if (!chip.IsHit && time < -100 && chip.EChip == EChip.Note && chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
+            double cuttime = Game.MainTimer.State == 0 ? -1 : -100;
+            if (!chip.IsHit && time < cuttime && chip.EChip == EChip.Note && chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
                 if (!chip.IsMiss)
                     if (GetNotes.GetJudge(chip, time) == EJudge.Through)
                     {
-                        Score.AddScore(EJudge.Through, player);
-                        Process(EJudge.Through, chip, isDon, player);
+                        EJudge judge = Game.IsAuto[player] ? EJudge.Auto : EJudge.Through;
+                        if (!Game.IsAuto[player]) Score.AddScore(judge, player);
+                        Process(judge, chip, isDon, player);
+                        chip.IsHit = false;
                         chip.IsMiss = true;
                     }
         }
@@ -85,17 +88,12 @@ namespace Tunebeat.Game
                     break;
                 case ERoll.Balloon:
                 case ERoll.Kusudama:
-                    int balloonamount = Game.MainTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
-                    if (chip.RollCount == 0)
-                    {
-                        BalloonRemain[player] = balloonamount;
-                    }
                     if (isDon && !chip.IsHit)
                     {
                         chip.RollCount++;
                         BalloonRemain[player]--;
                         Score.AddBalloon(player);
-                        if (chip.RollCount == balloonamount)
+                        if (chip.RollCount == BalloonAmount(player))
                         {
                             if (RollState(chip) == ERoll.Balloon)
                             {
@@ -113,6 +111,11 @@ namespace Tunebeat.Game
                 default:
                     break;
             }
+        }
+
+        public static int BalloonAmount(int player)
+        {
+            return Game.MainTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
         }
 
         public static int[] NowRoll = new int[2], BalloonRemain = new int[2], BalloonList = new int[2];

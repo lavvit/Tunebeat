@@ -129,8 +129,12 @@ namespace Tunebeat.Game
             for (int i = 0; i < 2; i++)
             {
                 GreenNumber[i] = GetGreenNumber(i);
-                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value, true);
-                if (chip != null && chip.RollEnd != null && chip.RollEnd.Time < Game.MainTimer.Value && ProcessNote.BalloonRemain[i] > 0)
+                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value);
+                if (chip != null && chip.RollCount == 0 && chip.ENote >= ENote.RollStart && chip.ENote != ENote.RollEnd)
+                {
+                    ProcessNote.BalloonRemain[i] = ProcessNote.BalloonAmount(i);
+                }
+                if (chip != null && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value && ProcessNote.BalloonRemain[i] > 0)
                 {
                     ProcessNote.BalloonRemain[i] = 0;
                     ProcessNote.BalloonList[i]++;
@@ -178,7 +182,7 @@ namespace Tunebeat.Game
             {
                 Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                 double time = chip.Time - Game.MainTimer.Value;
-                float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll, player);
+                float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                 if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
                 {
                     TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
@@ -220,7 +224,7 @@ namespace Tunebeat.Game
             for (int i = Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
             {
                 Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
-                float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll, player);
+                float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
 
                 if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit)
                 {
@@ -235,7 +239,7 @@ namespace Tunebeat.Game
                             break;
                         case ENote.RollStart:
                         case ENote.ROLLStart:
-                            double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll, player);
+                            double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                             if (rollx >= -715)
                             {
                                 TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
@@ -247,7 +251,7 @@ namespace Tunebeat.Game
                             break;
                         case ENote.Balloon:
                         case ENote.Kusudama:
-                            double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll, player);
+                            double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                             if (ballx >= -715)
                             {
                                 if (x > 0)

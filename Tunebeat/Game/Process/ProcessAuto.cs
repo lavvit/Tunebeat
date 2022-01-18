@@ -38,7 +38,7 @@ namespace Tunebeat.Game
                         left[player] = !left[player];
 
                     }
-                    if (RollTimer.Value == RollTimer.End)
+                    if (player == 0 && RollTimer.Value == RollTimer.End)
                     {
                         KeyInput.Process(true, left[0], 0);
                         left[0] = !left[0];

@@ -39,6 +39,8 @@ namespace Tunebeat.Game
             JudgeCounter2P = new Counter(0, 200, 1000, false);
             JudgeCounterBig2P = new Counter(0, 500, 1000, false);
             BombAnimation = new Counter(0, 1023, 1000, false);
+            RollCounter = new Counter(0, 200, 1000, false);
+            RollCounter2P = new Counter(0, 200, 1000, false);
             base.Enable();
         }
 
@@ -49,6 +51,8 @@ namespace Tunebeat.Game
             JudgeCounter2P.Reset();
             JudgeCounterBig2P.Reset();
             BombAnimation.Reset();
+            RollCounter.Reset();
+            RollCounter2P.Reset();
             base.Disable();
         }
         public override void Draw()
@@ -80,16 +84,16 @@ namespace Tunebeat.Game
 
             DrawJudge();
 
-            DrawNumber(0, 292, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2), 9}", EXScore[0] > 0 || Good[0] + Bad[0] + Poor[0] + Auto[0] == 0 ? 0 : 5);
-            DrawMiniNumber(136, 319, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Good[0] + Bad[0] + Poor[0] + Auto[0] == 0 ? 0 : 1);
+            DrawNumber(0, 292, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2), 9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
+            DrawMiniNumber(136, 319, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 1);
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
+            Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
             DrawNumber(0, 292 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
             DrawNumber(0, 292 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
             if (PlayData.Data.IsPlay2P)
             {
-                DrawNumber(0, 292 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Good[1] + Bad[1] + Poor[1] + Auto[1] == 0 ? 0 : 5);
-                DrawMiniNumber(136, 319 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Good[1] + Bad[1] + Poor[1] + Auto[1] == 0 ? 0 : 1);
-                Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
+                DrawNumber(0, 292 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
+                DrawMiniNumber(136, 319 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
                 DrawNumber(72, 292 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
                 DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
@@ -113,6 +117,26 @@ namespace Tunebeat.Game
                     DrawString(Notes.NotesP[1].X + 700, Notes.NotesP[1].Y + 86, $"PR:{Poor[1]}", 0xffffff);
                     DrawString(Notes.NotesP[1].X + 800, Notes.NotesP[1].Y + 86, $"RL:{Roll[1]}", 0xffffff);
                 }
+            }
+
+            Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value);
+            Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value);
+            ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
+            ERoll roll2p = rnowchip2p != null ? ProcessNote.RollState(rnowchip2p) : ERoll.None;
+            if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter.Reset(); RollCounter.Start(); }
+            if (roll2p != ERoll.None && !rnowchip2p.IsHit) { RollCounter2P.Reset(); RollCounter2P.Start(); }
+            if (RollCounter.State != 0)
+            {
+                if ((roll == ERoll.Roll || roll == ERoll.ROLL)) NowRoll[0] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[0];
+                else if ((roll == ERoll.Balloon || roll == ERoll.Kusudama)) NowRoll[0] = ProcessNote.BalloonRemain[0];
+
+                DrawNumber(Notes.NotesP[0].X + 160, Notes.NotesP[0].Y + 82, $"{NowRoll[0]}", 0);
+            }
+            if (RollCounter2P.State != 0)
+            {
+                if ((roll2p == ERoll.Roll || roll2p == ERoll.ROLL)) NowRoll[1] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[1];
+                else if ((roll2p == ERoll.Balloon || roll2p == ERoll.Kusudama)) NowRoll[1] = ProcessNote.BalloonRemain[1];
+                DrawNumber(Notes.NotesP[1].X + 160, Notes.NotesP[1].Y + 82, $"{NowRoll[1]}", 0);
             }
 
 
@@ -198,6 +222,8 @@ namespace Tunebeat.Game
             JudgeCounterBig2P.Tick();
             BombAnimation.Tick();
             BombAnimation.Start();
+            RollCounter.Tick();
+            RollCounter2P.Tick();
             base.Update();
         }
 
@@ -236,7 +262,7 @@ namespace Tunebeat.Game
             if (JudgeCounter.State == TimerState.Started)
             {
                 if (DisplayJudge[0] != EJudge.Auto)
-                    DrawMiniNumber(Notes.NotesP[0].X + 178, Notes.NotesP[0].Y - 6, msJudge[0] > 0.0 ? $"+{(int)msJudge[0]}" : $"{(int)msJudge[0]}", msJudge[0] > 0.0 ? 1 : 2);
+                    DrawMiniNumber(Notes.NotesP[0].X + 178, Notes.NotesP[0].Y - 6, msJudge[0] >= 1.0 ? $"+{(int)msJudge[0]}" : $"{(int)msJudge[0]}", msJudge[0] > GetNotes.range[0] ? 1 : (msJudge[0] < -GetNotes.range[0] ? 2 : 0));
                 switch (DisplayJudge[0])
                 {
                     case EJudge.Perfect:
@@ -270,7 +296,7 @@ namespace Tunebeat.Game
             if (JudgeCounterBig.State == TimerState.Started)
             {
                 if (DisplayJudge[0] != EJudge.Auto)
-                    DrawMiniNumber(Notes.NotesP[0].X + 178, Notes.NotesP[0].Y - 6, msJudge[0] > 0.0 ? $"+{(int)msJudge[0]}" : $"{(int)msJudge[0]}", msJudge[0] > 0.0 ? 1 : 2);
+                    DrawMiniNumber(Notes.NotesP[0].X + 178, Notes.NotesP[0].Y - 6, msJudge[0] >= 1.0 ? $"+{(int)msJudge[0]}" : $"{(int)msJudge[0]}", msJudge[0] > GetNotes.range[0] ? 1 : (msJudge[0] < -GetNotes.range[0] ? 2 : 0));
                 switch (DisplayJudge[0])
                 {
                     case EJudge.Perfect:
@@ -304,7 +330,7 @@ namespace Tunebeat.Game
             if (JudgeCounter2P.State == TimerState.Started)
             {
                 if (DisplayJudge[1] != EJudge.Auto)
-                    DrawMiniNumber(Notes.NotesP[1].X + 178, Notes.NotesP[1].Y - 6, msJudge[1] > 0.0 ? $"+{(int)msJudge[1]}" : $"{(int)msJudge[1]}", msJudge[1] > 0.0 ? 1 : 2);
+                    DrawMiniNumber(Notes.NotesP[1].X + 178, Notes.NotesP[1].Y - 6, msJudge[1] >= 1.0 ? $"+{(int)msJudge[1]}" : $"{(int)msJudge[1]}", msJudge[1] > GetNotes.range[0] ? 1 : (msJudge[1] < -GetNotes.range[0] ? 2 : 0));
                 switch (DisplayJudge[1])
                 {
                     case EJudge.Perfect:
@@ -338,7 +364,7 @@ namespace Tunebeat.Game
             if (JudgeCounterBig2P.State == TimerState.Started)
             {
                 if (DisplayJudge[1] != EJudge.Auto)
-                    DrawMiniNumber(Notes.NotesP[1].X + 178, Notes.NotesP[1].Y - 6, msJudge[1] > 0.0 ? $"+{(int)msJudge[1]}" : $"{(int)msJudge[1]}", msJudge[1] > 0.0 ? 1 : 2);
+                    DrawMiniNumber(Notes.NotesP[1].X + 178, Notes.NotesP[1].Y - 6, msJudge[1] >= 1.0 ? $"+{(int)msJudge[1]}" : $"{(int)msJudge[1]}", msJudge[1] > GetNotes.range[0] ? 1 : (msJudge[1] < -GetNotes.range[0] ? 2 : 0));
                 switch (DisplayJudge[1])
                 {
                     case EJudge.Perfect:
@@ -850,12 +876,12 @@ namespace Tunebeat.Game
 
         public static EGauge[] GaugeType = new EGauge[2];
         public static int[] EXScore = new int[2], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
-            Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], AutoRoll = new int[2], Remain = new int[2], Combo = new int[2], MaxCombo = new int[2];
+            Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], AutoRoll = new int[2], Remain = new int[2], Combo = new int[2], MaxCombo = new int[2], NowRoll = new int[2];
         public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2];
         public static double[][] GaugeList = new double[2][], ClearRate = new double[2][];
         public static bool[] Cleared = new bool[2];
         private static EJudge[] DisplayJudge = new EJudge[2];
-        private static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation;
+        public static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation, RollCounter, RollCounter2P;
 
         private struct STNumber
         {
