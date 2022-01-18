@@ -32,6 +32,11 @@ namespace Tunebeat.Game
                 ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             }
 
+            if (Key.IsPushed(KEY_INPUT_Q))
+            {
+                Game.Reset();
+            }
+
             if (!Auto1P && !Failed1P)
             {
                 if (Key.IsPushed(PlayData.Data.LEFTDON))
@@ -156,6 +161,32 @@ namespace Tunebeat.Game
                     Notes.SetSudden(1, false, true);
                 }
                 #endregion
+                if (Key.IsPushed(KEY_INPUT_PGUP))
+                {
+                    Game.PushingTimer[0].Start();
+                }
+                if (Key.IsLeft(KEY_INPUT_PGUP))
+                {
+                    Game.PushingTimer[0].Stop();
+                    Game.PushingTimer[0].Reset();
+                }
+                if (Key.IsPushed(KEY_INPUT_PGDN))
+                {
+                    Game.PushingTimer[1].Start();
+                }
+                if (Key.IsLeft(KEY_INPUT_PGDN))
+                {
+                    Game.PushingTimer[1].Stop();
+                    Game.PushingTimer[1].Reset();
+                }
+                if (Key.IsPushed(KEY_INPUT_PGUP) || (Game.PushingTimer[0].Value >= 500 && Game.PushingTimer[0].Value % 10 == 0))
+                {
+                    Game.MeasureUp();
+                }
+                if (Key.IsPushed(KEY_INPUT_PGDN) || (Game.PushingTimer[1].Value >= 500 && Game.PushingTimer[1].Value % 10 == 0))
+                {
+                    Game.MeasureDown();
+                }
             }
             else if (Game.IsSongPlay && Game.MainSong.IsPlaying)
             {
@@ -246,13 +277,17 @@ namespace Tunebeat.Game
             {
                 judge = GetNotes.GetJudge(chip, Game.MainTimer.Value);
             }
-            if (chip != null && roll == ERoll.None)
+            if (Game.MainTimer.State != 0)
             {
-                ProcessNote.Process(judge, chip, isDon, player);
-            }
-            else
-            {
-                ProcessNote.RollProcess(nowchip, isDon, player);
+                if (chip != null && roll == ERoll.None)
+                {
+
+                    ProcessNote.Process(judge, chip, isDon, player);
+                }
+                else
+                {
+                    ProcessNote.RollProcess(nowchip, isDon, player);
+                }
             }
 
             Sound[] taiko = new Sound[2];

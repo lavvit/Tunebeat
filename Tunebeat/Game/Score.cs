@@ -492,6 +492,8 @@ namespace Tunebeat.Game
 
         public static void AddGauge(EJudge judge, int player)
         {
+            if (Game.MainTimer.State == 0) return;
+
             double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes };
             double[] gauge = new double[6];
             int Notes = PlayData.Data.Hazard[player] > Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes ? Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes : PlayData.Data.Hazard[player];

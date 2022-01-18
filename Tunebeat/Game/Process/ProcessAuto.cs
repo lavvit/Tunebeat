@@ -14,6 +14,7 @@ namespace Tunebeat.Game
         public static void Update(bool isAuto, Chip chip, double time, int player)
         {
             if (!isAuto) return;
+            if (Game.MainTimer.State == 0) return;
 
             if ((chip.ENote == ENote.Don || chip.ENote == ENote.DON) && time + 8 >= chip.Time && !chip.IsHit && !chip.IsMiss)
             {

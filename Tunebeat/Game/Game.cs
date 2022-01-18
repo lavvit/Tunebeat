@@ -24,6 +24,8 @@ namespace Tunebeat.Game
                 IsAuto[i] = PlayData.Data.Auto[i];
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
+                ProcessNote.BalloonList[i] = 0;
+                PushingTimer[i] = new Counter(0, int.MaxValue, 1000, false);
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
@@ -35,11 +37,111 @@ namespace Tunebeat.Game
                 HitTimer2P[i] = new Counter(0, 100, 1000, false);
             }
 
+            PlayMeasure = 0;
+            StartTime = 0;
+            MeasureCount();
+
             #region AddChildScene
             AddChildScene(new Notes());
             AddChildScene(new Score());
             #endregion
             base.Enable();
+        }
+
+        public static void MeasureCount()
+        {
+            for (int i = 0; i < MainTJA[0].Courses[Course[0]].ListChip.Count; i++)
+            {
+                if (MainTJA[0].Courses[Course[0]].ListChip[i].EChip == EChip.Measure)
+                {
+                    MeasureList.Add(MainTJA[0].Courses[Course[0]].ListChip[i]);
+                }
+            }
+        }
+
+        public static void Reset()
+        {
+            MainTimer.Stop();
+            MainSong.Stop();
+            MainMovie.Stop();
+            if (PlayMeasure == 0) MainTimer.Reset();
+            else MainTimer.Value = (int)StartTime;
+            MainSong.Time = StartTime / 1000;
+            MainMovie.Time = StartTime;
+            IsSongPlay = false;
+            for (int i = 0; i < 2; i++)
+            {
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
+                Failed[i] = false;
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                Score.EXScore[i] = 0;
+                Score.Perfect[i] = 0;
+                Score.Great[i] = 0;
+                Score.Good[i] = 0;
+                Score.Bad[i] = 0;
+                Score.Poor[i] = 0;
+                Score.Auto[i] = 0;
+                Score.Roll[i] = 0;
+                Score.AutoRoll[i] = 0;
+                Score.RollYellow[i] = 0;
+                Score.RollBalloon[i] = 0;
+                Score.Gauge[i] = 0;
+                Score.SetGauge(i);
+                Score.Combo[i] = 0;
+                Score.MaxCombo[i] = 0;
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                Notes.UseSudden[i] = PlayData.Data.UseSudden[i];
+                Notes.Sudden[i] = PlayData.Data.SuddenNumber[i];
+                Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
+            }
+        }
+
+        public static void MeasureUp()
+        {
+            if (PlayMeasure < MeasureList.Count)
+            {
+                PlayMeasure++;
+                StartTime = MeasureList[PlayMeasure - 1].Time;
+                MainTimer.Value = (int)MeasureList[PlayMeasure - 1].Time;
+                if (MainSong != null) MainSong.Time = MeasureList[PlayMeasure - 1].Time / 1000;
+                if (MainMovie != null) MainMovie.Time = MeasureList[PlayMeasure - 1].Time;
+            }
+        }
+        public static void MeasureDown()
+        {
+            if (PlayMeasure > 1)
+            {
+                PlayMeasure--;
+                StartTime = MeasureList[PlayMeasure - 1].Time;
+                MainTimer.Value = (int)MeasureList[PlayMeasure - 1].Time;
+                if (MainSong != null) MainSong.Time = MeasureList[PlayMeasure - 1].Time / 1000;
+                if (MainMovie != null) MainMovie.Time = MeasureList[PlayMeasure - 1].Time;
+                for (int i = 0; i < 2; i++)
+                {
+                    foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
+                    {
+                        if (chip.Time >= StartTime && chip.IsMiss)
+                        {
+                            chip.IsMiss = false;
+                            Score.Poor[i]--;
+                        }
+                    }
+                }
+            }
+            else if(PlayMeasure == 1)
+            {
+                PlayMeasure = 0;
+                StartTime = 0;
+                MainTimer.Value = -2000;
+                if (MainSong != null) MainSong.Time = 0;
+                if (MainMovie != null) MainMovie.Time = 0;
+            }
         }
 
         public override void Disable()
@@ -181,8 +283,12 @@ namespace Tunebeat.Game
                 HitTimer[i].Tick();
                 HitTimer2P[i].Tick();
             }
+            for (int i = 0; i < 2; i++)
+            {
+                PushingTimer[i].Tick();
+            }
             if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart)) MainTimer.Start();
-            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(); if (PlayData.Data.PlayMovie) { MainMovie.Play(); } IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
+            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(PlayMeasure == 0 ? true : false); if (PlayData.Data.PlayMovie) { MainMovie.Play(PlayMeasure == 0 ? true : false); } IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 MainTimer.Stop();
@@ -228,7 +334,11 @@ namespace Tunebeat.Game
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2];
         public static int[] Course = new int[2];
+        public static int PlayMeasure;
+        public static double StartTime; 
+        public static List<Chip> MeasureList = new List<Chip>();
         public static Counter[] HitTimer = new Counter[4];
         public static Counter[] HitTimer2P = new Counter[4];
+        public static Counter[] PushingTimer = new Counter[2];
     }
 }
