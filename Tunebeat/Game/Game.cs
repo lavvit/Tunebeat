@@ -125,9 +125,19 @@ namespace Tunebeat.Game
             SetBalloon();
         }
 
-        public static void MeasureUp()
+        public static void MeasureUp(bool end = false)
         {
-            if (PlayMeasure < MeasureList.Count)
+            if (end)
+            {
+                PlayMeasure = MeasureList.Count;
+                TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                StartTime = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                MainTimer.Value = (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                MainSong.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time) / 1000;
+                MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                SetBalloon();
+            }
+            else if (PlayMeasure < MeasureList.Count)
             {
                 PlayMeasure++;
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
@@ -138,9 +148,19 @@ namespace Tunebeat.Game
                 SetBalloon();
             }
         }
-        public static void MeasureDown()
+        public static void MeasureDown(bool home = false)
         {
-            if (PlayMeasure > 1)
+            if (home || PlayMeasure == 1)
+            {
+                PlayMeasure = 0;
+                TimeRemain += MainTimer.Value + 2000;
+                StartTime = 0;
+                MainTimer.Value = -2000;
+                MainSong.Time = 0;
+                MainMovie.Time = 0;
+                SetBalloon();
+            }
+            else if (PlayMeasure > 1)
             {
                 PlayMeasure--;
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
@@ -168,15 +188,6 @@ namespace Tunebeat.Game
                         }
                     }
                 }
-                SetBalloon();
-            }
-            else if(PlayMeasure == 1)
-            {
-                PlayMeasure = 0;
-                StartTime = 0;
-                MainTimer.Value = -2000;
-                if (MainSong != null) MainSong.Time = 0;
-                if (MainMovie != null) MainMovie.Time = 0;
                 SetBalloon();
             }
         }

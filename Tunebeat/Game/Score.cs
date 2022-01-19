@@ -98,8 +98,23 @@ namespace Tunebeat.Game
                 DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
 
+            int[] rankvalue = new int[] { 0, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 4 / 9,
+                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 6 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 8 / 9,
+                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 10 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 12 / 9,
+                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 14 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 16 / 9,
+                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2};
+            int[] rankvalue2p = new int[] { 0, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 4 / 9,
+                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 6 / 9, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 8 / 9,
+                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 10 / 9, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 12 / 9,
+                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 14 / 9, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 16 / 9,
+                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 2};
             if (Game.IsSongPlay && !Game.MainSong.IsPlaying && !PlayData.Data.ShowResultScreen)
             {
+                ERank rank = Rank[0];
+                if (Math.Abs(EXScore[0] + Auto[0] * 2 - rankvalue[(int)Rank[0]]) > Math.Abs(EXScore[0] + Auto[0] * 2 - rankvalue[(int)Rank[0] + 1]))
+                {
+                    rank = Rank[0] + 1;
+                }
                 DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 86, $"SC:{EXScore[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 86, $"PG:{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 0x00ff00 : (uint)0xffffff);
                 DrawString(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 86, $"GR:{Great[0]}", 0xffffff);
@@ -107,8 +122,15 @@ namespace Tunebeat.Game
                 DrawString(Notes.NotesP[0].X + 600, Notes.NotesP[0].Y + 86, $"BD:{Bad[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 700, Notes.NotesP[0].Y + 86, $"PR:{Poor[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 800, Notes.NotesP[0].Y + 86, $"RL:{Roll[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 106, $"Rank:{Rank[0]}", 0xffffff);
+                DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 106, $"{rank}{((EXScore[0] + Auto[0] == Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes) || (rank == Rank[0]) ? "+" : "")}{EXScore[0] + Auto[0] * 2 - rankvalue[(int)rank]}", 0xffffff);
                 if (PlayData.Data.IsPlay2P)
                 {
+                    ERank rank2p = Rank[1];
+                    if (Math.Abs(EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)Rank[1]]) > Math.Abs(EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)Rank[1] + 1]))
+                    {
+                        rank2p = Rank[1] + 1;
+                    }
                     DrawString(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 86, $"SC:{EXScore[1]}", 0xffffff);
                     DrawString(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 86, $"PG:{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 0x00ff00 : (uint)0xffffff);
                     DrawString(Notes.NotesP[1].X + 400, Notes.NotesP[1].Y + 86, $"GR:{Great[1]}", 0xffffff);
@@ -116,6 +138,8 @@ namespace Tunebeat.Game
                     DrawString(Notes.NotesP[1].X + 600, Notes.NotesP[1].Y + 86, $"BD:{Bad[1]}", 0xffffff);
                     DrawString(Notes.NotesP[1].X + 700, Notes.NotesP[1].Y + 86, $"PR:{Poor[1]}", 0xffffff);
                     DrawString(Notes.NotesP[1].X + 800, Notes.NotesP[1].Y + 86, $"RL:{Roll[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 106, $"Rank:{Rank[1]}", 0xffffff);
+                    DrawString(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 106, $"{rank2p}{((EXScore[1] + Auto[1] == Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes) || (rank2p == Rank[1]) ? "+" : "")}{EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)rank2p]}", 0xffffff);
                 }
             }
 
@@ -155,6 +179,7 @@ namespace Tunebeat.Game
             DrawString(200, 320, $"Total:{Total[0]}", 0xffffff);
             if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 340, Cleared[0] ? "Cleared" : "Failed", 0xffffff);
             DrawString(200, 360, $"Combo:{MaxCombo[0]}", 0xffffff);
+            DrawString(200, 380, $"Rank:{Rank[0]}", 0xffffff);
 
             if (JudgeCounter.State == TimerState.Started || JudgeCounterBig.State == TimerState.Started)
             {
@@ -178,6 +203,7 @@ namespace Tunebeat.Game
                 DrawString(200, 580, $"Total:{Total[1]}", 0xffffff);
                 if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 600, Cleared[1] ? "Cleared" : "Failed", 0xffffff);
                 DrawString(200, 620, $"Combo:{MaxCombo[1]}", 0xffffff);
+                DrawString(200, 640, $"Rank:{Rank[1]}", 0xffffff);
 
                 if (JudgeCounter2P.State == TimerState.Started || JudgeCounterBig2P.State == TimerState.Started)
                 {
@@ -193,18 +219,16 @@ namespace Tunebeat.Game
         {
             Hit[0] = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];
             Remain[0] = Hit[0] * 2 - EXScore[0];
+            Gauge[0] = GaugeList[0][(int)GaugeType[0]];
+            Cleared[0] = Gauge[0] >= ClearRate[0][(int)GaugeType[0]] ? true : false;
+            Rank[0] = GetRank(EXScore[0] + Auto[0] * 2, 0);
             if (PlayData.Data.IsPlay2P)
             {
                 Hit[1] = Perfect[1] + Great[1] + Good[1] + Bad[1] + Poor[1] + Auto[1];
                 Remain[1] = Hit[1] * 2 - EXScore[1];
-            }
-
-            Gauge[0] = GaugeList[0][(int)GaugeType[0]];
-            Cleared[0] = Gauge[0] >= ClearRate[0][(int)GaugeType[0]] ? true : false;
-            if (PlayData.Data.IsPlay2P)
-            {
                 Gauge[1] = GaugeList[1][(int)GaugeType[1]];
                 Cleared[1] = Gauge[1] >= ClearRate[1][(int)GaugeType[1]] ? true : false;
+                Rank[1] = GetRank(EXScore[1] + Auto[1] * 2, 1);
             }
 
             if (GaugeType[0] >= EGauge.Hard && Gauge[0] == 0 && (PlayData.Data.GaugeAutoShift[0] == (int)EGaugeAutoShift.None || PlayData.Data.GaugeAutoShift[0] == (int)EGaugeAutoShift.Retry))
@@ -215,6 +239,8 @@ namespace Tunebeat.Game
             {
                 Game.Failed[1] = true;
             }
+
+            
 
             JudgeCounter.Tick();
             JudgeCounter2P.Tick();
@@ -834,6 +860,42 @@ namespace Tunebeat.Game
             }
         }
 
+        public static ERank GetRank(int value, int player)
+        {
+            if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 16 / 9)
+            {
+                return ERank.AAA;
+            }
+            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 14 / 9)
+            {
+                return ERank.AA;
+            }
+            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 12 / 9)
+            {
+                return ERank.A;
+            }
+            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 10 / 9)
+            {
+                return ERank.B;
+            }
+            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 8 / 9)
+            {
+                return ERank.C;
+            }
+            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 6 / 9)
+            {
+                return ERank.D;
+            }
+            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 4 / 9)
+            {
+                return ERank.E;
+            }
+            else
+            {
+                return ERank.F;
+            }
+        }
+
         public static void DrawNumber(double x, double y, string num, int type)
         {
             foreach (char ch in num)
@@ -881,6 +943,7 @@ namespace Tunebeat.Game
         public static double[][] GaugeList = new double[2][], ClearRate = new double[2][];
         public static bool[] Cleared = new bool[2];
         private static EJudge[] DisplayJudge = new EJudge[2];
+        public static ERank[] Rank = new ERank[2];
         public static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation, RollCounter, RollCounter2P;
 
         private struct STNumber
@@ -916,5 +979,18 @@ namespace Tunebeat.Game
         ToNormal,
         Best,
         LessBest
+    }
+
+    public enum ERank
+    {
+        F,
+        E,
+        D,
+        C,
+        B,
+        A,
+        AA,
+        AAA,
+        MAX
     }
 }

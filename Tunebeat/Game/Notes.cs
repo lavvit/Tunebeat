@@ -134,7 +134,7 @@ namespace Tunebeat.Game
                 {
                     ProcessNote.BalloonRemain[i] = ProcessNote.BalloonAmount(i);
                 }
-                if (chip != null && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value && ProcessNote.BalloonRemain[i] > 0)
+                if (chip != null && (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama) && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value && ProcessNote.BalloonRemain[i] > 0)
                 {
                     ProcessNote.BalloonRemain[i] = 0;
                     ProcessNote.BalloonList[i]++;

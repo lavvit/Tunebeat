@@ -41,6 +41,7 @@ namespace Tunebeat.Result
             {
                 TextureLoad.Result_Gauge.Draw(159 + 4 * i, 279, new Rectangle(Color[i], (int)Score.Gauge[0] > i ? 48 : 0, 3, 48));
             }
+            TextureLoad.Result_Rank.Draw(363, 461, new Rectangle(0, 45 * (int)Score.Rank[0], 161, 45));
 
             Score.DrawNumber(52, 290, $"{(int)Score.Gauge[0],3}%", 0);
             Score.DrawNumber(377, 541, $"{(Score.EXScore[0] > 0 ? Score.EXScore[0] : Score.Auto[0] * 2),5}", Score.EXScore[0] > 0 ? 6 : 7);
@@ -62,6 +63,7 @@ namespace Tunebeat.Result
                 {
                     TextureLoad.Result_Gauge.Draw(1319 + 159 + 4 * i, 279, new Rectangle(Color2P[i], (int)Score.Gauge[1] > i ? 48 : 0, 3, 48));
                 }
+                TextureLoad.Result_Rank.Draw(1353 + 363, 461, new Rectangle(0, 45 * (int)Score.Rank[1], 161, 45));
 
                 Score.DrawNumber(1319 + 52, 290, $"{(int)Score.Gauge[1],3}%", 0);
                 Score.DrawNumber(1353 + 377, 541, $"{(Score.EXScore[1] > 0 ? Score.EXScore[1] : Score.Auto[1] * 2),5}", Score.EXScore[1] > 0 ? 6 : 7);

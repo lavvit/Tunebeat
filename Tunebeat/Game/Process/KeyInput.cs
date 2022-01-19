@@ -17,7 +17,7 @@ namespace Tunebeat.Game
             if (Key.IsPushed(KEY_INPUT_F1))
             {
                 Game.IsAuto[0] = !Game.IsAuto[0];
-                if (Game.MainTimer.State == 0)
+                if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
                 {
                     int poor = Score.Poor[0];
                     Score.Poor[0] = Score.Auto[0];
@@ -27,7 +27,7 @@ namespace Tunebeat.Game
             if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
             {
                 Game.IsAuto[1] = !Game.IsAuto[1];
-                if (Game.MainTimer.State == 0)
+                if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
                 {
                     int poor = Score.Poor[1];
                     Score.Poor[1] = Score.Auto[1];
@@ -215,6 +215,14 @@ namespace Tunebeat.Game
                 {
                     Game.MeasureDown();
                     Game.PushingTimer[1].Reset();
+                }
+                if (Key.IsPushed(KEY_INPUT_END) && Game.Wait.State == 0)
+                {
+                    Game.MeasureUp(true);
+                }
+                if (Key.IsPushed(KEY_INPUT_HOME) && Game.Wait.State == 0)
+                {
+                    Game.MeasureDown(true);
                 }
             }
             else if (Game.MainTimer.State != 0)
