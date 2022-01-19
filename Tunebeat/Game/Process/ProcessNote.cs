@@ -19,11 +19,18 @@ namespace Tunebeat.Game
                 {
                     Score.AddScore(judge, player);
                     Score.DrawJudge(player, chip.ENote == ENote.DON || chip.ENote == ENote.KA ? true : false);
-                    Score.msJudge[player] = (Game.MainTimer.Value - chip.Time);
+                    Score.msJudge[player] = (Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time);
                     chip.IsHit = true;
                     if (judge == EJudge.Bad || judge == EJudge.Poor)
                     {
                         chip.IsMiss = true;
+                    }
+                    else if (Game.MainTimer.State != 0 && judge != EJudge.Auto)
+                    {
+                        Score.Active.Reset();
+                        Score.Active.Start();
+                        Score.msSum[player] += (Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time);
+                        Score.Hit[player]++;
                     }
                 }
                 else

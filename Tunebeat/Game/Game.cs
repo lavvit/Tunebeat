@@ -114,6 +114,8 @@ namespace Tunebeat.Game
                 Score.SetGauge(i);
                 Score.Combo[i] = 0;
                 Score.MaxCombo[i] = 0;
+                Score.msSum[i] = 0;
+                Score.Hit[i] = 0;
             }
 
             for (int i = 0; i < 2; i++)
@@ -158,6 +160,26 @@ namespace Tunebeat.Game
                 MainTimer.Value = -2000;
                 MainSong.Time = 0;
                 MainMovie.Time = 0;
+                for (int i = 0; i < 2; i++)
+                {
+                    foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
+                    {
+                        if (chip.Time >= StartTime - 1 && chip.IsMiss)
+                        {
+                            chip.IsMiss = false;
+                            if (IsAuto[i])
+                            {
+                                Score.Auto[i]--;
+                                Score.Combo[i]--;
+                                Score.MaxCombo[i]--;
+                            }
+                            else
+                            {
+                                Score.Poor[i]--;
+                            }
+                        }
+                    }
+                }
                 SetBalloon();
             }
             else if (PlayMeasure > 1)
@@ -312,6 +334,7 @@ namespace Tunebeat.Game
                 DrawString(520, 200, $"{ProcessNote.RollState(chip[0])}", 0xffffff);
                 DrawString(520, 220, $"{chip[0].RollCount}", 0xffffff);
                 DrawString(520, 240, $"{ProcessNote.BalloonRemain[0]}", 0xffffff);
+                DrawString(520, 260, $"{ProcessNote.BalloonList[0]}", 0xffffff);
             }
             if (PlayData.Data.IsPlay2P && chip[1] != null)
             {
@@ -320,9 +343,16 @@ namespace Tunebeat.Game
                 DrawString(520, 820, $"{ProcessNote.RollState(chip[1])}", 0xffffff);
                 DrawString(520, 840, $"{chip[1].RollCount}", 0xffffff);
                 DrawString(520, 860, $"{ProcessNote.BalloonRemain[1]}", 0xffffff);
+                DrawString(520, 880, $"{ProcessNote.BalloonList[1]}", 0xffffff);
             }
 
-            DrawString(520, 260, $"{ProcessNote.BalloonList[0]}", 0xffffff);
+            DrawString(700, 160, $"NowAdjust:{PlayData.Data.InputAdjust[0]}", 0xffffff);
+            DrawString(700, 180, $"Average:{Score.msAverage[0]}", 0xffffff);
+            if (PlayData.Data.IsPlay2P && chip[1] != null)
+            {
+                DrawString(700, 780, $"NowAdjust:{PlayData.Data.InputAdjust[1]}", 0xffffff);
+                DrawString(700, 800, $"Average:{Score.msAverage[1]}", 0xffffff);
+            }
 
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);
             #endif
@@ -389,8 +419,28 @@ namespace Tunebeat.Game
                 }
             }
 
-                foreach (Scene scene in ChildScene)
-                    scene?.Update();
+            if (MainTimer.Value % 2000 <= 10 && MainTimer.Value > 0 && Score.Active.State != 0 && Score.Active.Value < Score.Active.End)
+            {
+                if (Score.msAverage[0] > 0.5 && PlayData.Data.AutoAdjust[0])
+                {
+                    PlayData.Data.InputAdjust[0] += 0.5;
+                }
+                if (Score.msAverage[0] < -0.5 && PlayData.Data.AutoAdjust[0])
+                {
+                    PlayData.Data.InputAdjust[0] -= 0.5;
+                }
+                if (Score.msAverage[1] > 0.5 && PlayData.Data.AutoAdjust[1] && PlayData.Data.IsPlay2P)
+                {
+                    PlayData.Data.InputAdjust[1] += 0.5;
+                }
+                if (Score.msAverage[1] < -0.5 && PlayData.Data.AutoAdjust[1] && PlayData.Data.IsPlay2P)// && !IsAuto[1])
+                {
+                    PlayData.Data.InputAdjust[1] -= 0.5;
+                }
+            }
+
+            foreach (Scene scene in ChildScene)
+                scene?.Update();
 
             KeyInput.Update(IsAuto[0], IsAuto[1], Failed[0], Failed[1]);
           
@@ -414,7 +464,7 @@ namespace Tunebeat.Game
         public static bool[] IsAuto = new bool[2], Failed = new bool[2];
         public static int[] Course = new int[2];
         public static int PlayMeasure;
-        public static double StartTime, TimeRemain; 
+        public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();
         public static Counter[] HitTimer = new Counter[4], HitTimer2P = new Counter[4], PushedTimer = new Counter[2], PushingTimer = new Counter[2];
     }

@@ -61,6 +61,8 @@ namespace Tunebeat.Common
         public int JudgeBad = 100;
         public int JudgePoor = 120;
         public bool Just = false;
+        public double[] InputAdjust = new double[2] { 0, 0 };
+        public bool[] AutoAdjust = new bool[2] { false, false };
 
         public int LEFTDON = KEY_INPUT_F;
         public int RIGHTDON = KEY_INPUT_J;

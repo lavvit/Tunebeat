@@ -129,12 +129,12 @@ namespace Tunebeat.Game
             for (int i = 0; i < 2; i++)
             {
                 GreenNumber[i] = GetGreenNumber(i);
-                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value);
+                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[i]);
                 if (chip != null && chip.RollCount == 0 && chip.ENote >= ENote.RollStart && chip.ENote != ENote.RollEnd)
                 {
                     ProcessNote.BalloonRemain[i] = ProcessNote.BalloonAmount(i);
                 }
-                if (chip != null && (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama) && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value && ProcessNote.BalloonRemain[i] > 0)
+                if (chip != null && (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama) && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value - PlayData.Data.InputAdjust[i] && ProcessNote.BalloonRemain[i] > 0)
                 {
                     ProcessNote.BalloonRemain[i] = 0;
                     ProcessNote.BalloonList[i]++;

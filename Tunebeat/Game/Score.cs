@@ -32,6 +32,8 @@ namespace Tunebeat.Game
                 SetGauge(i);
                 Combo[i] = 0;
                 MaxCombo[i] = 0;
+                msSum[i] = 0;
+                Hit[i] = 0;
             }
 
             JudgeCounter = new Counter(0, 200, 1000, false);
@@ -41,6 +43,7 @@ namespace Tunebeat.Game
             BombAnimation = new Counter(0, 1023, 1000, false);
             RollCounter = new Counter(0, 200, 1000, false);
             RollCounter2P = new Counter(0, 200, 1000, false);
+            Active = new Counter(0, 1000, 1000, false);
             base.Enable();
         }
 
@@ -53,6 +56,7 @@ namespace Tunebeat.Game
             BombAnimation.Reset();
             RollCounter.Reset();
             RollCounter2P.Reset();
+            Active.Reset();
             base.Disable();
         }
         public override void Draw()
@@ -143,8 +147,8 @@ namespace Tunebeat.Game
                 }
             }
 
-            Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value);
-            Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value);
+            Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[0]);
+            Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[1]);
             ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
             ERoll roll2p = rnowchip2p != null ? ProcessNote.RollState(rnowchip2p) : ERoll.None;
             if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter.Reset(); RollCounter.Start(); }
@@ -217,18 +221,18 @@ namespace Tunebeat.Game
 
         public override void Update()
         {
-            Hit[0] = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];
             Remain[0] = Hit[0] * 2 - EXScore[0];
             Gauge[0] = GaugeList[0][(int)GaugeType[0]];
             Cleared[0] = Gauge[0] >= ClearRate[0][(int)GaugeType[0]] ? true : false;
             Rank[0] = GetRank(EXScore[0] + Auto[0] * 2, 0);
+            msAverage[0] = Hit[0] > 0 ? msSum[0] / Hit[0] : 0;
             if (PlayData.Data.IsPlay2P)
             {
-                Hit[1] = Perfect[1] + Great[1] + Good[1] + Bad[1] + Poor[1] + Auto[1];
                 Remain[1] = Hit[1] * 2 - EXScore[1];
                 Gauge[1] = GaugeList[1][(int)GaugeType[1]];
                 Cleared[1] = Gauge[1] >= ClearRate[1][(int)GaugeType[1]] ? true : false;
                 Rank[1] = GetRank(EXScore[1] + Auto[1] * 2, 1);
+                msAverage[1] = Hit[1] > 0 ? msSum[1] / Hit[1] : 0;
             }
 
             if (GaugeType[0] >= EGauge.Hard && Gauge[0] == 0 && (PlayData.Data.GaugeAutoShift[0] == (int)EGaugeAutoShift.None || PlayData.Data.GaugeAutoShift[0] == (int)EGaugeAutoShift.Retry))
@@ -240,8 +244,6 @@ namespace Tunebeat.Game
                 Game.Failed[1] = true;
             }
 
-            
-
             JudgeCounter.Tick();
             JudgeCounter2P.Tick();
             JudgeCounterBig.Tick();
@@ -250,6 +252,7 @@ namespace Tunebeat.Game
             BombAnimation.Start();
             RollCounter.Tick();
             RollCounter2P.Tick();
+            Active.Tick();
             base.Update();
         }
 
@@ -939,12 +942,12 @@ namespace Tunebeat.Game
         public static EGauge[] GaugeType = new EGauge[2];
         public static int[] EXScore = new int[2], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
             Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], AutoRoll = new int[2], Remain = new int[2], Combo = new int[2], MaxCombo = new int[2], NowRoll = new int[2];
-        public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2];
+        public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2], msSum = new double[2], msAverage = new double[2];
         public static double[][] GaugeList = new double[2][], ClearRate = new double[2][];
         public static bool[] Cleared = new bool[2];
         private static EJudge[] DisplayJudge = new EJudge[2];
         public static ERank[] Rank = new ERank[2];
-        public static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation, RollCounter, RollCounter2P;
+        public static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation, RollCounter, RollCounter2P, Active;
 
         private struct STNumber
         {

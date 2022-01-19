@@ -123,6 +123,14 @@ namespace Tunebeat.Game
                         PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
                         Notes.PreGreen[0] = Notes.GetGreenNumber(0);
                     }
+                    if (Key.IsPushed(KEY_INPUT_LEFT))
+                    {
+                        PlayData.Data.InputAdjust[0] += 0.5;
+                    }
+                    if (Key.IsPushed(KEY_INPUT_RIGHT))
+                    {
+                        PlayData.Data.InputAdjust[0] -= 0.5;
+                    }
                 }
                 if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                 {
@@ -150,6 +158,14 @@ namespace Tunebeat.Game
                     {
                         PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
                         Notes.PreGreen[1] = Notes.GetGreenNumber(1);
+                    }
+                    if (Key.IsPushed(KEY_INPUT_LEFT))
+                    {
+                        PlayData.Data.InputAdjust[1] += 0.5;
+                    }
+                    if (Key.IsPushed(KEY_INPUT_RIGHT))
+                    {
+                        PlayData.Data.InputAdjust[1] -= 0.5;
                     }
                 }
                 if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL))
@@ -305,8 +321,8 @@ namespace Tunebeat.Game
 
         public static void Process(bool isDon, bool isLeft, int player)
         {
-            Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[player]);
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[player]);
             EJudge judge;
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             if (Game.IsAuto[player])
@@ -319,7 +335,7 @@ namespace Tunebeat.Game
             }
             else
             {
-                judge = GetNotes.GetJudge(chip, Game.MainTimer.Value);
+                judge = GetNotes.GetJudge(chip, Game.MainTimer.Value - PlayData.Data.InputAdjust[player]);
             }
             if (Game.MainTimer.State != 0)
             {
@@ -338,7 +354,7 @@ namespace Tunebeat.Game
             Sound[] taiko2P = new Sound[2];
             if (player == 0)
             {
-                if (chip != null && Math.Abs(Game.MainTimer.Value - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+                if (chip != null && Math.Abs(Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
                     taiko[0] = SoundLoad.DON;
                     taiko[0].Volume = 1.5;
@@ -378,7 +394,7 @@ namespace Tunebeat.Game
             }
             else
             {
-                if (chip != null && Math.Abs(Game.MainTimer.Value - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+                if (chip != null && Math.Abs(Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
                     taiko2P[0] = SoundLoad.DON2P;
                     taiko2P[0].Volume = 1.5;
