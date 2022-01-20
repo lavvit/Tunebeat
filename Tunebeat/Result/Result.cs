@@ -88,6 +88,12 @@ namespace Tunebeat.Result
                 Program.SceneChange(new SongSelect.SongSelect());
             }
 
+            if (Key.IsPushed(KEY_INPUT_F11))
+            {
+                if (!Game.Game.IsReplay[0]) PlayMemory.SaveData(0);
+                if (PlayData.Data.IsPlay2P && !Game.Game.IsReplay[1]) PlayMemory.SaveData(1);
+            }
+
             if (Key.IsPushed(KEY_INPUT_F12))
             {
                 DateTime time = DateTime.Now;

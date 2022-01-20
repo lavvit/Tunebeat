@@ -21,7 +21,7 @@ namespace Tunebeat.Game
                 {
                     Score.AddScore(judge, player);
                     Score.DrawJudge(player, chip.ENote == ENote.DON || chip.ENote == ENote.KA ? true : false);
-                    Score.msJudge[player] = (Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time);
+                    Score.msJudge[player] = (Game.MainTimer.Value - Game.Adjust[player] - chip.Time);
                     chip.IsHit = true;
                     if (judge == EJudge.Bad || judge == EJudge.Poor)
                     {
@@ -31,7 +31,7 @@ namespace Tunebeat.Game
                     {
                         Score.Active.Reset();
                         Score.Active.Start();
-                        Score.msSum[player] += (Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time);
+                        Score.msSum[player] += (Game.MainTimer.Value - Game.Adjust[player] - chip.Time);
                         Score.Hit[player]++;
                     }
                 }

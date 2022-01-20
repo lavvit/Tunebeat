@@ -16,13 +16,13 @@ namespace Tunebeat.Game
             if (!isAuto) return;
             if (Game.MainTimer.State == 0) return;
 
-            if ((chip.ENote == ENote.Don || chip.ENote == ENote.DON) && time + 8 >= chip.Time && !chip.IsHit && !chip.IsMiss)
+            if ((chip.ENote == ENote.Don || chip.ENote == ENote.DON) && time + 6 >= chip.Time && !chip.IsHit && !chip.IsMiss)
             {
                 KeyInput.Process(true, left[player], player);
                 left[player] = !left[player];
             }
 
-            if ((chip.ENote == ENote.Ka || chip.ENote == ENote.KA) && time + 8 >= chip.Time && !chip.IsHit && !chip.IsMiss)
+            if ((chip.ENote == ENote.Ka || chip.ENote == ENote.KA) && time + 6 >= chip.Time && !chip.IsHit && !chip.IsMiss)
             {
                 KeyInput.Process(false, left[player], player);
                 left[player] = !left[player];

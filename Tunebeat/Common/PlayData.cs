@@ -54,6 +54,7 @@ namespace Tunebeat.Common
 
         public bool[] Auto = new bool[2] { false, false };
         public int AutoRoll = 15;
+        public string[] Replay = new string[2] { "", "" };
 
         public int[] GaugeType = new int[2] { 0, 0 };
         public int[] GaugeAutoShift = new int[2] { 0, 0 };

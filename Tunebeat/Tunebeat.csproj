@@ -64,8 +64,10 @@
     <Compile Include="Game\Process\GetNotes.cs" />
     <Compile Include="Game\Process\KeyInput.cs" />
     <Compile Include="Game\Notes.cs" />
+    <Compile Include="Game\Process\PlayMemory.cs" />
     <Compile Include="Game\Process\ProcessAuto.cs" />
     <Compile Include="Game\Process\ProcessNote.cs" />
+    <Compile Include="Game\Process\ProcessReplay.cs" />
     <Compile Include="Game\Score.cs" />
     <Compile Include="ModeSelect\ModeSelect.cs" />
     <Compile Include="Player\Player.cs" />

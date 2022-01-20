@@ -14,7 +14,7 @@ namespace Tunebeat.Game
     {
         public static void Update(bool Auto1P, bool Auto2P, bool Failed1P, bool Failed2P)
         {
-            if (Key.IsPushed(KEY_INPUT_F1))
+            if (Key.IsPushed(KEY_INPUT_F1) && !Game.IsReplay[0])
             {
                 Game.IsAuto[0] = !Game.IsAuto[0];
                 if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
@@ -25,7 +25,7 @@ namespace Tunebeat.Game
                     Score.Auto[0] = poor;
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
+            if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
             {
                 Game.IsAuto[1] = !Game.IsAuto[1];
                 if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
@@ -62,50 +62,58 @@ namespace Tunebeat.Game
                 SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strtime}.png");
             }
 
-            if (!Auto1P && !Failed1P)
+            if (!Auto1P && !Failed1P && !Game.IsReplay[0])
             {
                 if (Key.IsPushed(PlayData.Data.LEFTDON))
                 {
                     Process(true, true, 0);
+                    PlayMemory.AddData(0, Game.MainTimer.Value, true, true);
                 }
                 if (Key.IsPushed(PlayData.Data.RIGHTDON))
                 {
                     Process(true, false, 0);
+                    PlayMemory.AddData(0, Game.MainTimer.Value, true, false);
                 }
                 if (Key.IsPushed(PlayData.Data.LEFTKA))
                 {
                     Process(false, true, 0);
+                    PlayMemory.AddData(0, Game.MainTimer.Value, false, true);
                 }
                 if (Key.IsPushed(PlayData.Data.RIGHTKA))
                 {
                     Process(false, false, 0);
+                    PlayMemory.AddData(0, Game.MainTimer.Value, false, false);
                 }
             }
 
-            if (!Auto2P && !Failed2P && PlayData.Data.IsPlay2P)
+            if (!Auto2P && !Failed2P && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
             {
                 if (Key.IsPushed(PlayData.Data.LEFTDON2P))
                 {
                     Process(true, true, 1);
+                    PlayMemory.AddData(1, Game.MainTimer.Value, true, true);
                 }
                 if (Key.IsPushed(PlayData.Data.RIGHTDON2P))
                 {
                     Process(true, false, 1);
+                    PlayMemory.AddData(1, Game.MainTimer.Value, true, false);
                 }
                 if (Key.IsPushed(PlayData.Data.LEFTKA2P))
                 {
                     Process(false, true, 1);
+                    PlayMemory.AddData(1, Game.MainTimer.Value, false, true);
                 }
                 if (Key.IsPushed(PlayData.Data.RIGHTKA2P))
                 {
                     Process(false, false, 1);
+                    PlayMemory.AddData(1, Game.MainTimer.Value, false, false);
                 }
             }
 
             if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
             {
                 #region 開始前
-                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) && !Game.IsReplay[0])
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                     {
@@ -134,14 +142,14 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(KEY_INPUT_LEFT))
                     {
-                        PlayData.Data.InputAdjust[0] += 0.5;
+                        Game.Adjust[0] += 0.5;
                     }
                     if (Key.IsPushed(KEY_INPUT_RIGHT))
                     {
-                        PlayData.Data.InputAdjust[0] -= 0.5;
+                        Game.Adjust[0] -= 0.5;
                     }
                 }
-                if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                     {
@@ -170,34 +178,34 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(KEY_INPUT_LEFT))
                     {
-                        PlayData.Data.InputAdjust[1] += 0.5;
+                        Game.Adjust[1] += 0.5;
                     }
                     if (Key.IsPushed(KEY_INPUT_RIGHT))
                     {
-                        PlayData.Data.InputAdjust[1] -= 0.5;
+                        Game.Adjust[1] -= 0.5;
                     }
                 }
-                if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL))
+                if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL) && !Game.IsReplay[0])
                 {
                     PlayData.Data.UseSudden[0] = !PlayData.Data.UseSudden[0];
                 }
-                if (!Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushed(KEY_INPUT_RCONTROL) && PlayData.Data.IsPlay2P)
+                if (!Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushed(KEY_INPUT_RCONTROL) && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     PlayData.Data.UseSudden[1] = !PlayData.Data.UseSudden[1];
                 }
-                if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] < 1000)
+                if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] < 1000 && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, true, true);
                 }
-                if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] > 0)
+                if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] > 0 && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, false, true);
                 }
-                if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] < 1000 && PlayData.Data.IsPlay2P)
+                if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] < 1000 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, true, true);
                 }
-                if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] > 0 && PlayData.Data.IsPlay2P)
+                if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] > 0 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, false, true);
                 }
@@ -253,68 +261,81 @@ namespace Tunebeat.Game
             else if (Game.MainTimer.State != 0)
             {
                 #region プレイ中
-                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) && !Game.IsReplay[0])
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                     {
                         Notes.Scroll[0] += 0.25;
+                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                     {
                         Notes.Scroll[0] -= 0.25;
+                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                     }
                     if (Key.IsPushed(KEY_INPUT_LCONTROL))
                     {
                         PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
                     }
                 }
-                if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                     {
                         Notes.Scroll[1] += 0.25;
+                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
                     {
                         Notes.Scroll[1] -= 0.25;
+                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                     if (Key.IsPushed(KEY_INPUT_RCONTROL))
                     {
                         PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
+                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                 }
-                if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL))
+                if (!Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushed(KEY_INPUT_LCONTROL) && !Game.IsReplay[0])
                 {
                     Notes.UseSudden[0] = !Notes.UseSudden[0];
+                    PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                 }
-                if (!Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushed(KEY_INPUT_RCONTROL) && PlayData.Data.IsPlay2P)
+                if (!Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushed(KEY_INPUT_RCONTROL) && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.UseSudden[1] = !Notes.UseSudden[1];
+                    PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
-                if (Key.IsPushing(KEY_INPUT_Z) && Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0])
+                if (Key.IsPushing(KEY_INPUT_Z) && Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, true, false, true);
+                    PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] < 1000)
+                else if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] < 1000 && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, true);
+                    PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] > 0)
+                else if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] > 0 && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, false);
+                    PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
 
                 }
-                if (Key.IsPushing(KEY_INPUT_SLASH) && Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.IsPlay2P)
+                if (Key.IsPushing(KEY_INPUT_SLASH) && Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, true, false, true);
+                    PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] < 1000 && PlayData.Data.IsPlay2P)
+                else if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] < 1000 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, true);
+                    PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] > 0 && PlayData.Data.IsPlay2P)
+                else if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] > 0 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, false);
+                    PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
                 #endregion
                 for (int i = 0; i < 2; i++)
@@ -326,12 +347,17 @@ namespace Tunebeat.Game
                 }
             }
 
+            if (Key.IsPushed(KEY_INPUT_F11) && Game.IsSongPlay && !Game.MainSong.IsPlaying)
+            {
+                if (!Game.IsReplay[0]) PlayMemory.SaveData(0);
+                if (PlayData.Data.IsPlay2P && !Game.IsReplay[1]) PlayMemory.SaveData(1);
+            }
         }
 
         public static void Process(bool isDon, bool isLeft, int player)
         {
-            Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[player]);
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[player]);
+            Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
+            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
             EJudge judge;
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             if (Game.IsAuto[player])
@@ -344,7 +370,7 @@ namespace Tunebeat.Game
             }
             else
             {
-                judge = GetNotes.GetJudge(chip, Game.MainTimer.Value - PlayData.Data.InputAdjust[player]);
+                judge = GetNotes.GetJudge(chip, Game.MainTimer.Value - Game.Adjust[player]);
             }
             if (Game.MainTimer.State != 0)
             {
@@ -363,7 +389,7 @@ namespace Tunebeat.Game
             Sound[] taiko2P = new Sound[2];
             if (player == 0)
             {
-                if (chip != null && Math.Abs(Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+                if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
                     taiko[0] = SoundLoad.DON;
                     taiko[0].Volume = 1.5;
@@ -403,7 +429,7 @@ namespace Tunebeat.Game
             }
             else
             {
-                if (chip != null && Math.Abs(Game.MainTimer.Value - PlayData.Data.InputAdjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+                if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
                     taiko2P[0] = SoundLoad.DON2P;
                     taiko2P[0].Volume = 1.5;

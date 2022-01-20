@@ -129,12 +129,12 @@ namespace Tunebeat.Game
             for (int i = 0; i < 2; i++)
             {
                 GreenNumber[i] = GetGreenNumber(i);
-                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[i]);
+                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
                 if (chip != null && chip.RollCount == 0 && chip.ENote >= ENote.RollStart && chip.ENote != ENote.RollEnd)
                 {
                     ProcessNote.BalloonRemain[i] = ProcessNote.BalloonAmount(i);
                 }
-                if (chip != null && (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama) && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value - PlayData.Data.InputAdjust[i] && ProcessNote.BalloonRemain[i] > 0)
+                if (chip != null && (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama) && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value - Game.Adjust[i] && ProcessNote.BalloonRemain[i] > 0)
                 {
                     ProcessNote.BalloonRemain[i] = 0;
                     ProcessNote.BalloonList[i]++;
@@ -190,6 +190,7 @@ namespace Tunebeat.Game
 
                 //オートの処理呼び出し
                 ProcessAuto.Update(Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                ProcessReplay.Update(Game.IsReplay[player], player);
                 //ノーツが通り過ぎた時の処理
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
             }

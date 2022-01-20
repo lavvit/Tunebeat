@@ -55,6 +55,14 @@ namespace Tunebeat.SongSelect
         {
             if (Key.IsPushed(KEY_INPUT_RETURN))
             {
+                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                {
+                    Replay[0] = true;
+                }
+                else
+                {
+                    Replay[0] = false;
+                }
                 Program.SceneChange(new Game.Game());
             }
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
@@ -213,5 +221,7 @@ namespace Tunebeat.SongSelect
             else
                 PlayData.Data.GaugeAutoShift[player] = (int)EGaugeAutoShift.None;
         }
+
+        public static bool[] Replay = new bool[2];
     }
 }

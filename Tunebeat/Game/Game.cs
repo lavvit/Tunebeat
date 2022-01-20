@@ -9,6 +9,7 @@ using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
 using Tunebeat.Common;
+using Tunebeat.SongSelect;
 
 namespace Tunebeat.Game
 {
@@ -22,11 +23,14 @@ namespace Tunebeat.Game
             {
                 MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
                 IsAuto[i] = PlayData.Data.Auto[i];
+                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(PlayData.Data.Replay[i]) && File.Exists($@"{Path.GetDirectoryName(MainTJA[0].TJAPath)}\{Path.GetFileNameWithoutExtension(MainTJA[0].TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[i]}.{PlayData.Data.Replay[i]}.replaydata") ? true : false;
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
                 PushingTimer[i] = new Counter(0, 99, 1000, false);
+
+                if (IsReplay[i]) IsAuto[i] = false;
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
@@ -44,11 +48,39 @@ namespace Tunebeat.Game
             MeasureList = new List<Chip>();
             MeasureCount();
 
+            PlayMemory.Init();
+
             #region AddChildScene
             AddChildScene(new Notes());
             AddChildScene(new Score());
             #endregion
             base.Enable();
+        }
+
+        public override void Disable()
+        {
+            MainSong.Dispose();
+            MainImage.Dispose();
+            MainMovie.Dispose();
+            MainTimer.Reset();
+            IsSongPlay = false;
+            for (int i = 0; i < 4; i++)
+            {
+                HitTimer[i].Reset();
+                HitTimer2P[i].Reset();
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                PushedTimer[i].Reset();
+                PushingTimer[i].Reset();
+            }
+            Wait.Reset();
+            MeasureList = null;
+
+            PlayMemory.Dispose();
+            foreach (Scene scene in ChildScene)
+                scene?.Disable();
+            base.Disable();
         }
 
         public static void MeasureCount()
@@ -125,6 +157,8 @@ namespace Tunebeat.Game
                 Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
             }
             SetBalloon();
+            PlayMemory.Dispose();
+            PlayMemory.Init();
         }
 
         public static void MeasureUp(bool end = false)
@@ -212,29 +246,6 @@ namespace Tunebeat.Game
                 }
                 SetBalloon();
             }
-        }
-
-        public override void Disable()
-        {
-            MainSong.Dispose();
-            MainImage.Dispose();
-            MainMovie.Dispose();
-            MainTimer.Reset();
-            IsSongPlay = false;
-            for (int i = 0; i < 4; i++)
-            {
-                HitTimer[i].Reset();
-                HitTimer2P[i].Reset();
-            }
-            for (int i = 0; i < 2; i++)
-            {
-                PushedTimer[i].Reset();
-                PushingTimer[i].Reset();
-            }
-            Wait.Reset();
-            foreach (Scene scene in ChildScene)
-                scene?.Disable();
-            base.Disable();
         }
 
         public override void Draw()
@@ -346,11 +357,11 @@ namespace Tunebeat.Game
                 DrawString(520, 880, $"{ProcessNote.BalloonList[1]}", 0xffffff);
             }
 
-            DrawString(700, 160, $"NowAdjust:{PlayData.Data.InputAdjust[0]}", 0xffffff);
+            DrawString(700, 160, $"NowAdjust:{Adjust[0]}", 0xffffff);
             DrawString(700, 180, $"Average:{Score.msAverage[0]}", 0xffffff);
             if (PlayData.Data.IsPlay2P && chip[1] != null)
             {
-                DrawString(700, 780, $"NowAdjust:{PlayData.Data.InputAdjust[1]}", 0xffffff);
+                DrawString(700, 780, $"NowAdjust:{Adjust[1]}", 0xffffff);
                 DrawString(700, 800, $"Average:{Score.msAverage[1]}", 0xffffff);
             }
 
@@ -376,7 +387,13 @@ namespace Tunebeat.Game
             Wait.Tick();
             Wait.Start();
             if (Wait.Value == Wait.End) Wait.Stop();
-            if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart)) MainTimer.Start();
+            if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart))
+            {
+                MainTimer.Start();
+                PlayData.Data.InputAdjust[0] = Adjust[0];
+                PlayMemory.InitSetting(0, MainTimer.Begin, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
+                if (PlayData.Data.IsPlay2P) { PlayMemory.InitSetting(1, MainTimer.Begin, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]); PlayData.Data.InputAdjust[1] = Adjust[1]; }
+            }
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(PlayMeasure == 0 ? true : false); if (PlayData.Data.PlayMovie) { MainMovie.Play(PlayMeasure == 0 ? true : false); } IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
@@ -421,21 +438,25 @@ namespace Tunebeat.Game
 
             if (MainTimer.Value % 2000 <= 10 && MainTimer.Value > 0 && Score.Active.State != 0 && Score.Active.Value < Score.Active.End)
             {
-                if (Score.msAverage[0] > 0.5 && PlayData.Data.AutoAdjust[0])
+                if (Score.msAverage[0] > 0.5 && PlayData.Data.AutoAdjust[0] && !IsReplay[0])
                 {
-                    PlayData.Data.InputAdjust[0] += 0.5;
+                    Adjust[0] += 0.5;
+                    PlayMemory.AddSetting(0, MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
                 }
-                if (Score.msAverage[0] < -0.5 && PlayData.Data.AutoAdjust[0])
+                if (Score.msAverage[0] < -0.5 && PlayData.Data.AutoAdjust[0] && !IsReplay[0])
                 {
-                    PlayData.Data.InputAdjust[0] -= 0.5;
+                    Adjust[0] -= 0.5;
+                    PlayMemory.AddSetting(0, MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
                 }
-                if (Score.msAverage[1] > 0.5 && PlayData.Data.AutoAdjust[1] && PlayData.Data.IsPlay2P)
+                if (Score.msAverage[1] > 0.5 && PlayData.Data.AutoAdjust[1] && !IsReplay[1] && PlayData.Data.IsPlay2P)
                 {
-                    PlayData.Data.InputAdjust[1] += 0.5;
+                    Adjust[1] += 0.5;
+                    PlayMemory.AddSetting(1, MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]);
                 }
-                if (Score.msAverage[1] < -0.5 && PlayData.Data.AutoAdjust[1] && PlayData.Data.IsPlay2P)// && !IsAuto[1])
+                if (Score.msAverage[1] < -0.5 && PlayData.Data.AutoAdjust[1] && !IsReplay[1] && PlayData.Data.IsPlay2P)
                 {
-                    PlayData.Data.InputAdjust[1] -= 0.5;
+                    Adjust[1] -= 0.5;
+                    PlayMemory.AddSetting(1, MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]);
                 }
             }
 
@@ -461,8 +482,9 @@ namespace Tunebeat.Game
         public static Movie MainMovie;
         public static List<Scene> ChildScene = new List<Scene>();
         public static bool IsSongPlay;
-        public static bool[] IsAuto = new bool[2], Failed = new bool[2];
+        public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[2];
+        public static double[] Adjust = new double[2];
         public static int PlayMeasure;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();

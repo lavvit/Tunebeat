@@ -152,8 +152,8 @@ namespace Tunebeat.Game
                 }
             }
 
-            Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[0]);
-            Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - PlayData.Data.InputAdjust[1]);
+            Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[0]);
+            Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - Game.Adjust[1]);
             ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
             ERoll roll2p = rnowchip2p != null ? ProcessNote.RollState(rnowchip2p) : ERoll.None;
             if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter.Reset(); RollCounter.Start(); }
