@@ -627,7 +627,7 @@ namespace Tunebeat.Game
 
         public static void AddGauge(EJudge judge, int player)
         {
-            if (Game.MainTimer.State == 0) return;
+            if (Game.MainTimer.State == 0 && GaugeType[player] >= EGauge.Hard) return;
 
             double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes };
             double[] gauge = new double[6];
@@ -688,7 +688,45 @@ namespace Tunebeat.Game
                     GaugeList[player][5] = 0.0;
                 }
             }
-            
+            ShiftGauge(player);
+        }
+
+
+        public static void DeleteGauge(int player)
+        {
+            double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes };
+            double[] gauge = new double[6];
+
+            for (int i = 0; i < 6; i++)
+            {
+                if ((100.0 / gaugepernote[player]) >= Auto[player])
+                {
+                    gauge[i] = -gaugepernote[player];
+                }
+            }
+            gauge[3] = 0; gauge[4] = 0; gauge[5] = 0;
+            for (int i = 0; i < 6; i++)
+            {
+                GaugeList[player][i] += gauge[i];
+                if (GaugeList[player][i] >= 100.0)
+                {
+                    GaugeList[player][i] = 100.0;
+                }
+                if (GaugeList[player][i] <= 0.0)
+                {
+                    GaugeList[player][i] = 0.0;
+                }
+                if (GaugeList[player][5] < 1.0)
+                {
+                    GaugeList[player][5] = 0.0;
+                }
+            }
+
+            ShiftGauge(player);
+        }
+
+        public static void ShiftGauge(int player)
+        {
             switch ((EGaugeAutoShift)PlayData.Data.GaugeAutoShift[player])
             {
                 case EGaugeAutoShift.ToNormal:
@@ -780,7 +818,7 @@ namespace Tunebeat.Game
                                 {
                                     GaugeType[player] = EGauge.Easy;
                                 }
-                                
+
                                 break;
                         }
                     }

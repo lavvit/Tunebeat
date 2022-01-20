@@ -219,6 +219,7 @@ namespace Tunebeat.Game
                                 Score.Auto[i]--;
                                 Score.Combo[i]--;
                                 Score.MaxCombo[i]--;
+                                Score.DeleteGauge(i);
                             }
                             else
                             {
@@ -249,6 +250,7 @@ namespace Tunebeat.Game
                                 Score.Auto[i]--;
                                 Score.Combo[i]--;
                                 Score.MaxCombo[i]--;
+                                Score.DeleteGauge(i);
                             }
                             else
                             {
