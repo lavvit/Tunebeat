@@ -486,7 +486,20 @@ namespace Tunebeat.Game
                 scene?.Update();
 
             KeyInput.Update(IsAuto[0], IsAuto[1], Failed[0], Failed[1]);
-          
+
+            if (!PlayData.Data.IsPlay2P && Failed[0])
+            {
+                switch ((EGaugeAutoShift)PlayData.Data.GaugeAutoShift[0])
+                {
+                    case EGaugeAutoShift.None:
+                        MainSong.Stop();
+                        MainMovie.Stop();
+                        break;
+                    case EGaugeAutoShift.Retry:
+                        Reset();
+                        break;
+                }
+            }
 
             base.Update();
         }
