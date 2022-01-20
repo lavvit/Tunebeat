@@ -35,6 +35,8 @@ namespace Tunebeat.Common
         public bool ShowResultScreen = false;
 
         public bool ShowGraph = false;
+        public bool ShowBestScore = true;
+        public string BestScore = "";
         public int RivalType = 0;
         public double RivalPercent = 0;
         public int RivalRank = 0;

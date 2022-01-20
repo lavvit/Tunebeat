@@ -20,19 +20,22 @@ namespace Tunebeat.Game
                 if (judge != EJudge.Through)
                 {
                     Score.AddScore(judge, player);
-                    Score.DrawJudge(player, chip.ENote == ENote.DON || chip.ENote == ENote.KA ? true : false);
-                    Score.msJudge[player] = (Game.MainTimer.Value - Game.Adjust[player] - chip.Time);
+                    if (player < 2)
+                    {
+                        Score.DrawJudge(player, chip.ENote == ENote.DON || chip.ENote == ENote.KA ? true : false);
+                        Score.msJudge[player] = Game.MainTimer.Value - Game.Adjust[player] - chip.Time;
+                        if (Game.MainTimer.State != 0 && judge < EJudge.Poor)
+                        {
+                            Score.Active.Reset();
+                            Score.Active.Start();
+                            Score.msSum[player] += Score.msJudge[player];
+                            Score.Hit[player]++;
+                        }
+                    }
                     chip.IsHit = true;
                     if (judge == EJudge.Bad || judge == EJudge.Poor)
                     {
                         chip.IsMiss = true;
-                    }
-                    else if (Game.MainTimer.State != 0 && judge != EJudge.Auto)
-                    {
-                        Score.Active.Reset();
-                        Score.Active.Start();
-                        Score.msSum[player] += (Game.MainTimer.Value - Game.Adjust[player] - chip.Time);
-                        Score.Hit[player]++;
                     }
                 }
                 else

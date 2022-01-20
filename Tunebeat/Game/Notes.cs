@@ -191,6 +191,7 @@ namespace Tunebeat.Game
                 //オートの処理呼び出し
                 ProcessAuto.Update(Game.IsAuto[player], chip, Game.MainTimer.Value, player);
                 ProcessReplay.Update(Game.IsReplay[player], player);
+                ProcessReplay.UnderUpdate();
                 //ノーツが通り過ぎた時の処理
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
             }

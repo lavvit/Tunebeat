@@ -15,9 +15,12 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 EXScore[i] = 0;
+            }
+            for (int i = 0; i < 2; i++)
+            {
                 Perfect[i] = 0;
                 Great[i] = 0;
                 Good[i] = 0;
@@ -497,6 +500,18 @@ namespace Tunebeat.Game
 
             TextureLoad.Game_Graph.Draw(499, 163, new Rectangle((int)(1000 - 1000 * hitpercent), 64 * 2, (int)(1000 * hitpercent), 64));
 
+            if (PlayMemory.BestData.Score > 0)
+            {
+                double bestallnotes = PlayMemory.BestData.Score;
+                double bestnotes = EXScore[2];
+                double bestpercent = bestnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                double bestallpercent = bestallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                TextureLoad.Game_Graph.Draw(499, 163 - 76, new Rectangle((int)(1000 - 1000 * bestallpercent), 64 * 3, (int)(1000 * bestallpercent), 64));
+                TextureLoad.Game_Graph.Draw(499, 163 - 76, new Rectangle((int)(1000 - 1000 * bestpercent), 64, (int)(1000 * bestpercent), 64));
+                int num = (int)hitnotes * 2 - (int)bestnotes;
+                DrawMiniNumber(499 + 8, 183 - 76, $"{(num >= 0 ? "+" : "")}{num}", num < 0 ? 1 : 0);
+            }
+
             switch ((ERival)PlayData.Data.RivalType)
             {
                 case ERival.Percent:
@@ -506,6 +521,7 @@ namespace Tunebeat.Game
                     TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * value), 0, (int)(1000 * value), 64));
                     int num = (int)hitnotes * 2 - (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * value);
                     DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(num >= 0 ? "+" : "")}{num}", num < 0 ? 1 : 0);
+                    DrawNumber(499 - 178, 181 - 76 * 2, $"{PlayData.Data.RivalPercent,6:F2}%", 0);
                     break;
                 case ERival.Rank:
                     double rpercent = GetRankToPercent((ERank)PlayData.Data.RivalRank, 0);
@@ -514,6 +530,17 @@ namespace Tunebeat.Game
                     TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rvalue), 0, (int)(1000 * rvalue), 64));
                     int rnum = (int)hitnotes * 2 - (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * rvalue);
                     DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rnum >= 0 ? "+" : "")}{rnum}", rnum < 0 ? 1 : 0);
+                    TextureLoad.Result_Rank.Draw(499 - 152, 175 - 76 * 2, new Rectangle(0, PlayData.Data.RivalRank > 7 ? 45 * 7 : 45 * PlayData.Data.RivalRank, 161, 45));
+                    break;
+                case ERival.PlayScore:
+                    double rivalallnotes = PlayMemory.RivalData.Score;
+                    double rivalnotes = EXScore[3];
+                    double rivalpercent = rivalnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                    double rivalallpercent = rivalallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalallpercent), 64 * 3, (int)(1000 * rivalallpercent), 64));
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalpercent), 0, (int)(1000 * rivalpercent), 64));
+                    int rivalnum = (int)hitnotes * 2 - (int)rivalnotes;
+                    DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rivalnum >= 0 ? "+" : "")}{rivalnum}", rivalnum < 0 ? 1 : 0);
                     break;
             }
 
@@ -523,42 +550,52 @@ namespace Tunebeat.Game
 
         public static void AddScore(EJudge judge, int player)
         {
-            AddGauge(judge, player);
-            DisplayJudge[player] = judge;
+            if (player < 2)
+            {
+                AddGauge(judge, player);
+                DisplayJudge[player] = judge;
+                switch (judge)
+                {
+                    case EJudge.Perfect:
+                        Perfect[player]++;
+                        Combo[player]++;
+                        if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
+                        break;
+                    case EJudge.Great:
+                        Great[player]++;
+                        Combo[player]++;
+                        if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
+                        break;
+                    case EJudge.Good:
+                        Good[player]++;
+                        Combo[player]++;
+                        if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
+                        break;
+                    case EJudge.Bad:
+                        Bad[player]++;
+                        Combo[player] = 0;
+                        break;
+                    case EJudge.Poor:
+                    case EJudge.Through:
+                        Poor[player]++;
+                        Combo[player] = 0;
+                        break;
+                    case EJudge.Auto:
+                        Auto[player]++;
+                        Combo[player]++;
+                        if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
+                        break;
+                    default:
+                        break;
+                }
+            }
             switch (judge)
             {
                 case EJudge.Perfect:
-                    Perfect[player]++;
                     EXScore[player] += 2;
-                    Combo[player]++;
-                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
                     break;
                 case EJudge.Great:
-                    Great[player]++;
                     EXScore[player] += 1;
-                    Combo[player]++;
-                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
-                    break;
-                case EJudge.Good:
-                    Good[player]++;
-                    Combo[player]++;
-                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
-                    break;
-                case EJudge.Bad:
-                    Bad[player]++;
-                    Combo[player] = 0;
-                    break;
-                case EJudge.Poor:
-                case EJudge.Through:
-                    Poor[player]++;
-                    Combo[player] = 0;
-                    break;
-                case EJudge.Auto:
-                    Auto[player]++;
-                    Combo[player]++;
-                    if (Combo[player] > MaxCombo[player]) MaxCombo[player]++;
-                    break;
-                default:
                     break;
             }
         }
@@ -1009,7 +1046,7 @@ namespace Tunebeat.Game
         }
 
         public static EGauge[] GaugeType = new EGauge[2];
-        public static int[] EXScore = new int[2], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
+        public static int[] EXScore = new int[4], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
             Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], AutoRoll = new int[2], Remain = new int[2], Combo = new int[2], MaxCombo = new int[2], NowRoll = new int[2];
         public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2], msSum = new double[2], msAverage = new double[2];
         public static double[][] GaugeList = new double[2][], ClearRate = new double[2][];

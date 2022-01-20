@@ -18,23 +18,30 @@ namespace Tunebeat.Game
         public override void Enable()
         {
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            
-            for (int i = 0; i < 2; i++)
+            MainTJA[0] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
+            MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
+            MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
+            MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
+
+            for (int i = 0; i < 7; i++)
             {
                 MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
                 IsAuto[i] = PlayData.Data.Auto[i];
-                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(PlayData.Data.Replay[i]) && File.Exists($@"{Path.GetDirectoryName(MainTJA[0].TJAPath)}\{Path.GetFileNameWithoutExtension(MainTJA[0].TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[i]}.{PlayData.Data.Replay[i]}.replaydata") ? true : false;
+                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(PlayData.Data.Replay[i]) && File.Exists($@"{Path.GetDirectoryName(MainTJA[i].TJAPath)}\{Path.GetFileNameWithoutExtension(MainTJA[i].TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[i]}.{PlayData.Data.Replay[i]}.replaydata") ? true : false;
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
                 PushingTimer[i] = new Counter(0, 99, 1000, false);
+                Adjust[i] = PlayData.Data.InputAdjust[i];
 
                 if (IsReplay[i]) IsAuto[i] = false;
             }
-            MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
-            MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
-            MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
+            Adjust[2] = Adjust[3] = PlayData.Data.InputAdjust[0];
 
             for (int i = 0; i < 4; i++)
             {
@@ -125,13 +132,19 @@ namespace Tunebeat.Game
             IsSongPlay = false;
             for (int i = 0; i < 2; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
                 Failed[i] = false;
             }
+            for (int i = 0; i < 7; i++)
+            {
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
+            }
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 4; i++)
             {
                 Score.EXScore[i] = 0;
+            }
+            for (int i = 0; i < 2; i++)
+            {
                 Score.Perfect[i] = 0;
                 Score.Great[i] = 0;
                 Score.Good[i] = 0;
@@ -475,7 +488,7 @@ namespace Tunebeat.Game
             ChildScene.Add(scene);
         }
 
-        public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[2];
+        public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[7];
         public static Counter MainTimer, Wait;
         public static Sound MainSong;
         public static Texture MainImage;
@@ -484,7 +497,7 @@ namespace Tunebeat.Game
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[2];
-        public static double[] Adjust = new double[2];
+        public static double[] Adjust = new double[4];
         public static int PlayMeasure;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();

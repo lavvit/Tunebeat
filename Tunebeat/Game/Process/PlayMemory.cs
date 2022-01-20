@@ -27,13 +27,18 @@ namespace Tunebeat.Game
             {
                 ReplayData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.Replay[0]}.replaydata");
             }
-                
             if (PlayData.Data.IsPlay2P && !string.IsNullOrEmpty(PlayData.Data.Replay[1]))
             {
                 ReplayData2P = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{PlayData.Data.Replay[1]}.replaydata");
             }
-            if (!string.IsNullOrEmpty(PlayData.Data.RivalScore))
+            if (!string.IsNullOrEmpty(PlayData.Data.BestScore) && PlayData.Data.ShowGraph && PlayData.Data.ShowBestScore)
+            {
+                BestData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.BestScore}.replaydata");
+            }
+            if (!string.IsNullOrEmpty(PlayData.Data.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
+            {
                 RivalData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.RivalScore}.replaydata");
+            }
         }
 
         public static void Dispose()
