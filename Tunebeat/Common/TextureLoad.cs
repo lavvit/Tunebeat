@@ -52,6 +52,9 @@ namespace Tunebeat.Common
             Game_Gauge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Gauge.png");
             Game_Gauge_Base = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Gauge_Base.png");
             Game_Judge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Judge.png");
+            Game_Graph = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Graph.png");
+            Game_Graph_Base = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Graph_Base.png");
+            Game_Rank = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Rank.png");
             Game_Number = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Number.png");
             Game_Number_Mini = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Number_Mini.png");
 
@@ -98,6 +101,9 @@ namespace Tunebeat.Common
             Game_Gauge,
             Game_Gauge_Base,
             Game_Judge,
+            Game_Graph,
+            Game_Graph_Base,
+            Game_Rank,
             Game_Number,
             Game_Number_Mini;
         public static Texture[] Game_Don = new Texture[2],

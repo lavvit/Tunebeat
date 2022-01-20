@@ -86,6 +86,11 @@ namespace Tunebeat.Game
                 DrawNumber(495 + 15, 286 + 465 + 8, $"{Gauge[1],5:F1}%", 0);
             }
 
+            if (!PlayData.Data.IsPlay2P && PlayData.Data.ShowGraph)
+            {
+                DrawGraph();
+            }
+
             DrawJudge();
 
             DrawNumber(0, 292, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2), 9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
@@ -160,7 +165,7 @@ namespace Tunebeat.Game
 
                 DrawNumber(Notes.NotesP[0].X + 160, Notes.NotesP[0].Y + 82, $"{NowRoll[0]}", 0);
             }
-            if (RollCounter2P.State != 0)
+            if (PlayData.Data.IsPlay2P && RollCounter2P.State != 0)
             {
                 if ((roll2p == ERoll.Roll || roll2p == ERoll.ROLL)) NowRoll[1] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[1];
                 else if ((roll2p == ERoll.Balloon || roll2p == ERoll.Kusudama)) NowRoll[1] = ProcessNote.BalloonRemain[1];
@@ -476,6 +481,44 @@ namespace Tunebeat.Game
             }
             //if (Combo[player] >= 10)
                 DrawNumber(411 - 12 * Digit(Combo[player]), 372 + 262 * player, $"{Combo[player]}", color);
+        }
+
+        public static void DrawGraph()
+        {
+            TextureLoad.Game_Graph_Base.Draw(495, 0);
+
+            double allnotes = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];
+            double hitnotes = EXScore[0] > 0 ? EXScore[0] / 2.0 : Auto[0];
+            double percent = allnotes > 0 ? hitnotes / allnotes : 0;
+            double hitpercent = hitnotes / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes;
+            double allpercent = allnotes / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes;
+            int score = (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * percent * 2);
+            ERank rank = GetRank(score, 0);
+
+            TextureLoad.Game_Graph.Draw(499, 163, new Rectangle((int)(1000 - 1000 * hitpercent), 64 * 2, (int)(1000 * hitpercent), 64));
+
+            switch ((ERival)PlayData.Data.RivalType)
+            {
+                case ERival.Percent:
+                    double allvalue = PlayData.Data.RivalPercent / 100.0;
+                    double value = allvalue * allpercent;
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * allvalue), 64 * 3, (int)(1000 * allvalue), 64));
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * value), 0, (int)(1000 * value), 64));
+                    int num = (int)hitnotes * 2 - (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * value);
+                    DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(num >= 0 ? "+" : "")}{num}", num < 0 ? 1 : 0);
+                    break;
+                case ERival.Rank:
+                    double rpercent = GetRankToPercent((ERank)PlayData.Data.RivalRank, 0);
+                    double rvalue = rpercent * allpercent;
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rpercent), 64 * 3, (int)(1000 * rpercent), 64));
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rvalue), 0, (int)(1000 * rvalue), 64));
+                    int rnum = (int)hitnotes * 2 - (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * rvalue);
+                    DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rnum >= 0 ? "+" : "")}{rnum}", rnum < 0 ? 1 : 0);
+                    break;
+            }
+
+            DrawNumber(1536, 196, $"{score, 4}", 0);
+            TextureLoad.Game_Rank.Draw(1622, 152, new Rectangle(0, 90 * (int)rank, 161 * 2, 45 * 2));
         }
 
         public static void AddScore(EJudge judge, int player)
@@ -899,6 +942,32 @@ namespace Tunebeat.Game
             }
         }
 
+        public static double GetRankToPercent(ERank rank, int player)
+        {
+            switch (rank)
+            {
+                case ERank.MAX:
+                    return 1.0;
+                case ERank.AAA:
+                    return 8.0 / 9;
+                case ERank.AA:
+                    return 7.0 / 9;
+                case ERank.A:
+                    return 6.0 / 9;
+                case ERank.B:
+                    return 5.0/ 9;
+                case ERank.C:
+                    return 4.0 / 9;
+                case ERank.D:
+                    return 3.0 / 9;
+                case ERank.E:
+                    return 2.0 / 9;
+                case ERank.F:
+                default:
+                    return 0;
+            }
+        }
+
         public static void DrawNumber(double x, double y, string num, int type)
         {
             foreach (char ch in num)
@@ -995,5 +1064,13 @@ namespace Tunebeat.Game
         AA,
         AAA,
         MAX
+    }
+
+    public enum ERival
+    {
+        None,
+        Percent,
+        Rank,
+        PlayScore
     }
 }

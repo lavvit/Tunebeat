@@ -34,6 +34,12 @@ namespace Tunebeat.Common
         public bool QuickStart = false;
         public bool ShowResultScreen = false;
 
+        public bool ShowGraph = false;
+        public int RivalType = 0;
+        public double RivalPercent = 0;
+        public int RivalRank = 0;
+        public string RivalScore = "";
+
         public double PlaySpeed = 1.0;
         public bool ChangeSESpeed = true;
 

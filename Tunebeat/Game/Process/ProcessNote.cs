@@ -13,6 +13,8 @@ namespace Tunebeat.Game
     {
         public static void Process(EJudge judge, Chip chip, bool isDon, int player)
         {
+            if (Math.Abs(Game.MainTimer.Value - chip.Time) > GetNotes.range[4] && Game.MainTimer.State != 0) return;
+
             if ((isDon && (chip.ENote == ENote.Don || chip.ENote == ENote.DON)) || (!isDon && (chip.ENote == ENote.Ka || chip.ENote == ENote.KA)))
             {
                 if (judge != EJudge.Through)

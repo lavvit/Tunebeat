@@ -19,6 +19,7 @@ namespace Tunebeat.Game
                 Game.IsAuto[0] = !Game.IsAuto[0];
                 if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
                 {
+                    PlayData.Data.Auto[0] = Game.IsAuto[0];
                     int poor = Score.Poor[0];
                     Score.Poor[0] = Score.Auto[0];
                     Score.Auto[0] = poor;
@@ -29,6 +30,7 @@ namespace Tunebeat.Game
                 Game.IsAuto[1] = !Game.IsAuto[1];
                 if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
                 {
+                    PlayData.Data.Auto[1] = Game.IsAuto[1];
                     int poor = Score.Poor[1];
                     Score.Poor[1] = Score.Auto[1];
                     Score.Auto[1] = poor;
@@ -51,6 +53,13 @@ namespace Tunebeat.Game
             if (Key.IsPushed(KEY_INPUT_Q))
             {
                 Game.Reset();
+            }
+
+            if (Key.IsPushed(KEY_INPUT_F12))
+            {
+                DateTime time = DateTime.Now;
+                string strtime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
+                SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strtime}.png");
             }
 
             if (!Auto1P && !Failed1P)
