@@ -122,7 +122,11 @@ namespace Tunebeat.Game
                             if (PlayData.Data.NHSSpeed[0] < 20) PlayData.Data.NHSSpeed[0]++;
                             Notes.PreGreen[0] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[0]);
                         }
-                        else PlayData.Data.ScrollSpeed[0] += 0.25;
+                        else
+                        {
+                            PlayData.Data.ScrollSpeed[0] += 0.25;
+                            Game.ScrollRemain[0] += 0.25;
+                        }
                         Notes.PreGreen[0] = Notes.GetGreenNumber(0, 0.25);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
@@ -132,7 +136,11 @@ namespace Tunebeat.Game
                             if (PlayData.Data.NHSSpeed[0] > 0) PlayData.Data.NHSSpeed[0]--;
                             Notes.PreGreen[0] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[0]);
                         }
-                        else PlayData.Data.ScrollSpeed[0] -= 0.25;
+                        else
+                        {
+                            PlayData.Data.ScrollSpeed[0] -= 0.25;
+                            Game.ScrollRemain[0] -= 0.25;
+                        }
                         Notes.PreGreen[0] = Notes.GetGreenNumber(0, -0.25);
                     }
                     if (Key.IsPushed(KEY_INPUT_LCONTROL))
@@ -158,7 +166,11 @@ namespace Tunebeat.Game
                             if (PlayData.Data.NHSSpeed[1] < 20) PlayData.Data.NHSSpeed[1]++;
                             Notes.PreGreen[1] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[1]);
                         }
-                        else PlayData.Data.ScrollSpeed[1] += 0.25;
+                        else
+                        {
+                            PlayData.Data.ScrollSpeed[1] += 0.25;
+                            Game.ScrollRemain[1] += 0.25;
+                        }
                         Notes.PreGreen[1] = Notes.GetGreenNumber(1, 0.25);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
@@ -168,7 +180,11 @@ namespace Tunebeat.Game
                             if (PlayData.Data.NHSSpeed[1] > 0) PlayData.Data.NHSSpeed[1]--;
                             Notes.PreGreen[1] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[1]);
                         }
-                        else PlayData.Data.ScrollSpeed[1] -= 0.25;
+                        else
+                        {
+                            PlayData.Data.ScrollSpeed[1] -= 0.25;
+                            Game.ScrollRemain[1] -= 0.25;
+                        }
                         Notes.PreGreen[1] = Notes.GetGreenNumber(1, -0.25);
                     }
                     if (Key.IsPushed(KEY_INPUT_RCONTROL))
@@ -266,11 +282,13 @@ namespace Tunebeat.Game
                     if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                     {
                         Notes.Scroll[0] += 0.25;
+                        Game.ScrollRemain[0] += 0.25;
                         PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                     {
                         Notes.Scroll[0] -= 0.25;
+                        Game.ScrollRemain[0] -= 0.25;
                         PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                     }
                     if (Key.IsPushed(KEY_INPUT_LCONTROL))
@@ -283,11 +301,13 @@ namespace Tunebeat.Game
                     if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                     {
                         Notes.Scroll[1] += 0.25;
+                        Game.ScrollRemain[1] += 0.25;
                         PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
                     {
                         Notes.Scroll[1] -= 0.25;
+                        Game.ScrollRemain[1] -= 0.25;
                         PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                     if (Key.IsPushed(KEY_INPUT_RCONTROL))

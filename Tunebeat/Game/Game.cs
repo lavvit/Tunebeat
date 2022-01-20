@@ -439,13 +439,20 @@ namespace Tunebeat.Game
                 {
                     TimeRemain = 0;
                 }
-                if (TimeRemain > 0)
+                if (TimeRemain != 0)
                 {
                     TimeRemain /= 1.2;
                 }
-                if (TimeRemain < 0)
+            }
+            for (int i = 0; i < 2; i++)
+            {
+                if (Math.Abs(ScrollRemain[i]) < 0.0001)
                 {
-                    TimeRemain /= 1.2;
+                    ScrollRemain[i] = 0;
+                }
+                if (ScrollRemain[i] != 0)
+                {
+                    ScrollRemain[i] /= 1.25;
                 }
             }
 
@@ -497,7 +504,7 @@ namespace Tunebeat.Game
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[2];
-        public static double[] Adjust = new double[4];
+        public static double[] Adjust = new double[4], ScrollRemain = new double[2];
         public static int PlayMeasure;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();

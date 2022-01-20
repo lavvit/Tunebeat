@@ -275,7 +275,7 @@ namespace Tunebeat.Game
         public static double NotesX(double chiptime, double timer, double bpm,  double scroll, int player)
         {
             double time = chiptime - timer;
-            double x = time * bpm * scroll * 2.0 * Scroll[player] / 335.2396;
+            double x = time * bpm * scroll * 2.0 * (Scroll[player] - Game.ScrollRemain[player]) / 335.2396;
             return x;
         }
 
@@ -356,7 +356,10 @@ namespace Tunebeat.Game
             double scroll = chip != null ? chip.Scroll : 1.0;
             int sudden = UseSudden[player] ? Sudden[player] : 0;
             double suddenrate = 1000.0 / (1000 - sudden);
+            double prescroll = Scroll[player];
             Scroll[player] = Math.Round(Showms[0] / (PreGreen[player] * bpm * scroll * 2.0 * suddenrate), 2, MidpointRounding.AwayFromZero);
+            Game.ScrollRemain[player] += Scroll[player] - prescroll;
+
             if (isLoad) PlayData.Data.ScrollSpeed[player] = Scroll[player];
         }
 
