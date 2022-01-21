@@ -47,6 +47,11 @@ namespace Tunebeat.Common
 
         public double PlaySpeed = 1.0;
         public bool ChangeSESpeed = true;
+        public bool[] Random = new bool[2] { false, false };
+        public int RandomRate = 100;
+        public bool[] Mirror = new bool[2] { false, false };
+        public bool[] Stelth = new bool[2] { false, false };
+        public int[] NotesChange = new int[2] { 0, 0 };
 
         public int[] ScrollType = new int[2] { 0, 0 };
         public double[] ScrollSpeed = new double[2] { 1.0, 1.0 };

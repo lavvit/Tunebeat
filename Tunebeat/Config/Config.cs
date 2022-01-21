@@ -241,6 +241,12 @@ namespace Tunebeat.Config
                         new string[] { "None", "Percent", "Rank", "PlayScore" }); OptionList.Add(RivalType);
                     PlaySpeed = new OptionDouble("PlaySpeed", PlayData.Data.PlaySpeed, 0, 255, "曲の再生速度を変更します。"); OptionList.Add(PlaySpeed);
                     ChangeSESpeed = new OptionBool("ChangeSESpeed", PlayData.Data.ChangeSESpeed, "曲の再生速度に合わせて効果音のピッチを調節します。"); OptionList.Add(ChangeSESpeed);
+                    Random = new OptionBool("Random", PlayData.Data.Random[0], "ノーツの色をランダムに変更します。"); OptionList.Add(Random);
+                    RandomRate = new OptionInt("RandomRate", PlayData.Data.RandomRate, 0, 100, "ランダムの割合を調節します。"); OptionList.Add(RandomRate);
+                    Mirror = new OptionBool("Mirror", PlayData.Data.Mirror[0], "ノーツの色を反転します。"); OptionList.Add(Mirror);
+                    Stelth = new OptionBool("Stelth", PlayData.Data.Stelth[0], "ノーツを見えなくします。"); OptionList.Add(Stelth);
+                    NotesChange = new OptionList("NotesChange", PlayData.Data.NotesChange[0], "ノーツの色を単色にします。",
+                        new string[] { "None", "RedOnly", "BlueOnly", "AllRed", "AllBlue" }); OptionList.Add(NotesChange);
                     ScrollType = new OptionList("ScrollType", PlayData.Data.ScrollType[0], "譜面が特殊な動きをするようになります。",
                         new string[] { "Normal", "BMSCROLL", "HBSCROLL" }); OptionList.Add(ScrollType);
                     ScrollSpeed = new OptionDouble("ScrollSpeed", PlayData.Data.ScrollSpeed[0], 0, 255, "譜面の流れる速さを変更します。"); OptionList.Add(ScrollSpeed);
@@ -276,6 +282,11 @@ namespace Tunebeat.Config
                     IsPlay2P = new OptionBool("Play2P", PlayData.Data.IsPlay2P, "2Pを使用します。"); OptionList.Add(IsPlay2P);
                     PlayCourse2P = new OptionList("PlayCourse", PlayData.Data.PlayCourse[1], "再生する難易度を変更します。(一時的設定)",
                         new string[] { "Easy", "Normal", "Hard", "Oni", "Edit" }); OptionList.Add(PlayCourse2P);
+                    Random2P = new OptionBool("Random", PlayData.Data.Random[1], "ノーツの色をランダムに変更します。"); OptionList.Add(Random2P);
+                    Mirror2P = new OptionBool("Mirror", PlayData.Data.Mirror[1], "ノーツの色を反転します。"); OptionList.Add(Mirror2P);
+                    Stelth2P = new OptionBool("Stelth", PlayData.Data.Stelth[1], "ノーツを見えなくします。"); OptionList.Add(Stelth2P);
+                    NotesChange2P = new OptionList("NotesChange", PlayData.Data.NotesChange[1], "ノーツの色を単色にします。",
+                        new string[] { "None", "RedOnly", "BlueOnly", "AllRed", "AllBlue" }); OptionList.Add(NotesChange2P);
                     ScrollType2P = new OptionList("ScrollType", PlayData.Data.ScrollType[1], "譜面が特殊な動きをするようになります。",
                         new string[] { "Normal", "BMSCROLL", "HBSCROLL" }); OptionList.Add(ScrollType2P);
                     ScrollSpeed2P = new OptionDouble("ScrollSpeed", PlayData.Data.ScrollSpeed[1], 0, 255, "譜面の流れる速さを変更します。"); OptionList.Add(ScrollSpeed2P);
@@ -338,6 +349,11 @@ namespace Tunebeat.Config
                     PlayData.Data.RivalType = RivalType.Value;
                     PlayData.Data.PlaySpeed = PlaySpeed.Value;
                     PlayData.Data.ChangeSESpeed = ChangeSESpeed.ON;
+                    PlayData.Data.Random[0] = Random.ON;
+                    PlayData.Data.RandomRate = RandomRate.Value;
+                    PlayData.Data.Mirror[0] = Mirror.ON;
+                    PlayData.Data.Stelth[0] = Stelth.ON;
+                    PlayData.Data.NotesChange[0] = NotesChange.Value;
                     PlayData.Data.ScrollType[0] = ScrollType.Value;
                     PlayData.Data.ScrollSpeed[0] = ScrollSpeed.Value;
                     PlayData.Data.UseSudden[0] = UseSudden.ON;
@@ -365,6 +381,10 @@ namespace Tunebeat.Config
                 case ELayer.PlayTJA2P:
                     PlayData.Data.IsPlay2P = IsPlay2P.ON;
                     PlayData.Data.PlayCourse[1] = PlayCourse2P.Value;
+                    PlayData.Data.Random[1] = Random2P.ON;
+                    PlayData.Data.Mirror[1] = Mirror2P.ON;
+                    PlayData.Data.Stelth[1] = Stelth2P.ON;
+                    PlayData.Data.NotesChange[1] = NotesChange2P.Value;
                     PlayData.Data.ScrollType[1] = ScrollType2P.Value;
                     PlayData.Data.ScrollSpeed[1] = ScrollSpeed2P.Value;
                     PlayData.Data.UseSudden[1] = UseSudden2P.ON;
@@ -404,11 +424,11 @@ namespace Tunebeat.Config
             Back
         }
         public static Option  Back, LEFTDON, RIGHTDON, LEFTKA, RIGHTKA, LEFTDON2P, RIGHTDON2P, LEFTKA2P, RIGHTKA2P;
-        public static OptionBool FullScreen, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, ShowGraph, ShowBestScore, ChangeSESpeed,
+        public static OptionBool FullScreen, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
-        public static OptionInt SkinColorR, SkinColorG, SkinColorB, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
+        public static OptionInt SkinColorR, SkinColorG, SkinColorB, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;
-        public static OptionList PlayCourse, PlayCourse2P, RivalType, RivalRank, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
+        public static OptionList PlayCourse, PlayCourse2P, RivalType, RivalRank, NotesChange, NotesChange2P, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;
         public static OptionString SkinName, SoundName, BGMName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
     }

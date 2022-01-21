@@ -27,7 +27,7 @@ namespace Tunebeat.SongSelect
         }
         public override void Draw()
         {
-            DrawBox(0, 0, 1919, 257, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
+            DrawBox(0, 0, 1919, 1079, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
             TextureLoad.SongSelect_Background.Draw(0, 0);
 
             #if DEBUG

@@ -18,15 +18,18 @@ namespace Tunebeat.Game
         public override void Enable()
         {
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            MainTJA[0] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
+            Random ran = new Random();
+            for (int i = 0; i < 2; i++)
+            {
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+            }
+            for (int i = 2; i < 7; i++)
+            {
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+            }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
             MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
-
-            for (int i = 0; i < 7; i++)
-            {
-                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
-            }
 
             for (int i = 0; i < 2; i++)
             {
@@ -134,9 +137,13 @@ namespace Tunebeat.Game
             {
                 Failed[i] = false;
             }
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 2; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed);
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+            }
+            for (int i = 2; i < 7; i++)
+            {
+                MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
             }
 
             for (int i = 0; i < 4; i++)

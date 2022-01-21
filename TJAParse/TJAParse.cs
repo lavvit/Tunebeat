@@ -9,7 +9,7 @@ namespace TJAParse
 {
     public class TJAParse
     {
-        public TJAParse(string path, double playspeed)
+        public TJAParse(string path, double playspeed, int random, bool mirror, int change)
         {
             TJAPath = path;
             Header = new Header();
@@ -48,8 +48,12 @@ namespace TJAParse
             foreach (string str in alltext)
                 Course.Load(str, Courses, Header, playspeed);
 
-            foreach (string str in alltext)
-                Course.RollDoubledCheck(Courses);
+            for (int i = 0; i < Courses.Length; i++)
+            {
+                Course.RandomizeChip(Courses[i], random, mirror, change);
+                Course.RollDoubledCheck(Courses[i]);
+            }
+
         }
 
         public string TJAPath;
