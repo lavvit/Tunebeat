@@ -206,16 +206,16 @@ namespace Tunebeat.Config
 		}
 		public override void Up()
 		{
-			if (++Value >= List.Count)
+			if (--Value < 0)
 			{
-				Value = 0;
+				Value = List.Count - 1;
 			}
 		}
 		public override void Down()
 		{
-			if (--Value < 0)
+			if (++Value >= List.Count)
 			{
-				Value = List.Count - 1;
+				Value = 0;
 			}
 		}
 		public override void Reset()
@@ -271,14 +271,18 @@ namespace Tunebeat.Config
 		}
 		public override void Up()
 		{
-			if (Value + 0.01 > Max)
+			Value += 0.01;
+			Value = Math.Round(Value, 2, MidpointRounding.AwayFromZero);
+			if (Value > Max)
 			{
 				Value = Max;
 			}
 		}
 		public override void Down()
 		{
-			if (Value - 0.01 < Min)
+			Value -= 0.01;
+			Value = Math.Round(Value, 2, MidpointRounding.AwayFromZero);
+			if (Value < Min)
 			{
 				Value = Min;
 			}
