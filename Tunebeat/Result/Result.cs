@@ -94,13 +94,6 @@ namespace Tunebeat.Result
                 if (PlayData.Data.IsPlay2P && !Game.Game.IsReplay[1]) PlayMemory.SaveData(1);
             }
 
-            if (Key.IsPushed(KEY_INPUT_F12))
-            {
-                DateTime time = DateTime.Now;
-                string strtime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
-                SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strtime}.png");
-            }
-
             base.Update();
         }
     }

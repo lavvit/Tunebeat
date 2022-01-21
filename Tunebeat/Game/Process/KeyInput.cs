@@ -55,13 +55,6 @@ namespace Tunebeat.Game
                 Game.Reset();
             }
 
-            if (Key.IsPushed(KEY_INPUT_F12))
-            {
-                DateTime time = DateTime.Now;
-                string strtime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
-                SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strtime}.png");
-            }
-
             if (!Auto1P && !Failed1P && !Game.IsReplay[0])
             {
                 if (Key.IsPushed(PlayData.Data.LEFTDON))

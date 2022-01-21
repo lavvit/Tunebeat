@@ -170,18 +170,18 @@ namespace Tunebeat.Game
             switch (PlayData.Data.JudgeType)
             {
                 case 1://Spica標準
-                    range[0] = 20;
-                    range[1] = 32;
-                    range[2] = 90;
-                    range[3] = 125;
-                    range[4] = 125;
+                    range[0] = 25.0;
+                    range[1] = 32.0;
+                    range[2] = 90.0;
+                    range[3] = 125.0;
+                    range[4] = 125.0;
                     break;
                 case 2://ハードモード
-                    range[0] = 12;
-                    range[1] = 20;
-                    range[2] = 78;
-                    range[3] = 113;
-                    range[4] = 113;
+                    range[0] = 12.0;
+                    range[1] = 20.0;
+                    range[2] = 78.0;
+                    range[3] = 113.0;
+                    range[4] = 113.0;
                     break;
             }
             if (PlayData.Data.Just) range[2] = 0;
@@ -198,7 +198,7 @@ namespace Tunebeat.Game
             }
             else return EJudge.Through;
         }
-        public static int[] range = new int[5] { PlayData.Data.JudgePerfect, PlayData.Data.JudgeGreat, PlayData.Data.JudgeGood, PlayData.Data.JudgeBad, PlayData.Data.JudgePoor };
+        public static double[] range = new double[5] { PlayData.Data.JudgePerfect, PlayData.Data.JudgeGreat, PlayData.Data.JudgeGood, PlayData.Data.JudgeBad, PlayData.Data.JudgePoor };
     }
 
     public enum EJudge

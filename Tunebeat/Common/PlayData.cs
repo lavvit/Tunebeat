@@ -22,10 +22,13 @@ namespace Tunebeat.Common
     }
     class Data
     {
+        public string Memo = "Tunebeatの設定ファイルです。値の項目は数値、true/falseはON/OFF、””で囲われた所は文字で入力してください(￥は使えません。お手数ですが\\か/に変換してください。)";
         public string SkinName = "Default";
         public string SoundName = "Default";
         public string BGMName = "Default";
         public int[] SkinColor = new int[3] { 128, 128, 128 };
+        public bool FullScreen = false;
+
         public string PlayFile = @"Songs/水天神術・時雨.tja";
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
@@ -64,11 +67,11 @@ namespace Tunebeat.Common
         public int[] Hazard = new int[2] { 0, 0 };
 
         public int JudgeType = 0;
-        public int JudgePerfect = 10;
-        public int JudgeGreat = 25;
-        public int JudgeGood = 75;
-        public int JudgeBad = 100;
-        public int JudgePoor = 120;
+        public double JudgePerfect = 10;
+        public double JudgeGreat = 25;
+        public double JudgeGood = 75;
+        public double JudgeBad = 100;
+        public double JudgePoor = 120;
         public bool Just = false;
         public double[] InputAdjust = new double[2] { 0, 0 };
         public bool[] AutoAdjust = new bool[2] { false, false };

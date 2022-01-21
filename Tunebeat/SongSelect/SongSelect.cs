@@ -76,13 +76,17 @@ namespace Tunebeat.SongSelect
 
             if (Key.IsPushed(KEY_INPUT_F1))
             {
+                Program.SceneChange(new Config.Config());
+            }
+            if (Key.IsPushed(KEY_INPUT_F3))
+            {
                 PlayData.Data.Auto[0] = !PlayData.Data.Auto[0];
             }
-            if (Key.IsPushed(KEY_INPUT_F2) && PlayData.Data.IsPlay2P)
+            if (Key.IsPushed(KEY_INPUT_F4) && PlayData.Data.IsPlay2P)
             {
                 PlayData.Data.Auto[1] = !PlayData.Data.Auto[1];
             }
-            if (Key.IsPushed(KEY_INPUT_F3))
+            if (Key.IsPushed(KEY_INPUT_F5))
             {
                 if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                 {
@@ -93,7 +97,7 @@ namespace Tunebeat.SongSelect
                     GaugeChange(0);
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_F4))
+            if (Key.IsPushed(KEY_INPUT_F6))
             {
                 if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                 {
@@ -104,11 +108,15 @@ namespace Tunebeat.SongSelect
                     GASChange(0);
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_F5))
+            if (Key.IsPushed(KEY_INPUT_F7))
             {
                 PlayData.Data.IsPlay2P = !PlayData.Data.IsPlay2P;
             }
-            if (Key.IsPushed(KEY_INPUT_F7))
+            if (Key.IsPushed(KEY_INPUT_F8))
+            {
+                PlayData.Data.ShowResultScreen = !PlayData.Data.ShowResultScreen;
+            }
+            if (Key.IsPushed(KEY_INPUT_F9))
             {
                 if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
                 {
@@ -119,7 +127,7 @@ namespace Tunebeat.SongSelect
                     PlayData.Data.Hazard[0]--;
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_F8))
+            if (Key.IsPushed(KEY_INPUT_F10))
             {
                 if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
                 {
@@ -129,13 +137,6 @@ namespace Tunebeat.SongSelect
                 {
                     PlayData.Data.Hazard[0]++;
                 }
-            }
-
-            if (Key.IsPushed(KEY_INPUT_F12))
-            {
-                DateTime time = DateTime.Now;
-                string strtime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
-                SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strtime}.png");
             }
 
             if (Key.IsPushed(KEY_INPUT_LEFT))
