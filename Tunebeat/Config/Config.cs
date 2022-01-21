@@ -254,7 +254,7 @@ namespace Tunebeat.Config
                     SuddenNumber = new OptionInt("SuddenNumber", PlayData.Data.SuddenNumber[0], 0, 1000, "Suddenの幅を変更します。"); OptionList.Add(SuddenNumber);
                     FloatingHiSpeed = new OptionBool("FloatingHiSpeed", PlayData.Data.FloatingHiSpeed[0], "見える時間(緑数字)を固定します。"); OptionList.Add(FloatingHiSpeed);
                     GreenNumber = new OptionInt("GreenNumber", PlayData.Data.GreenNumber[0], 0, 10000, "FHS時に固定する緑数字を設定します。"); OptionList.Add(GreenNumber);
-                    NormalHiSpeed = new OptionBool("NormalHiSpeed", PlayData.Data.NormalHiSpeed[0], "決まった緑数字に合わせてスクロールを調節します。(未完成)"); OptionList.Add(NormalHiSpeed);
+                    NormalHiSpeed = new OptionBool("NormalHiSpeed", PlayData.Data.NormalHiSpeed[0], "決まった緑数字に合わせてスクロールを調節します。"); OptionList.Add(NormalHiSpeed);
                     NHSSpeed = new OptionInt("NHSSpeed", PlayData.Data.NHSSpeed[0], 0, 20, "NHS時のスクロールを設定します。"); OptionList.Add(NHSSpeed);
                     Auto = new OptionBool("Auto", PlayData.Data.Auto[0], "自動で譜面をプレイします。"); OptionList.Add(Auto);
                     AutoRoll = new OptionInt("AutoRoll", PlayData.Data.AutoRoll, 0, 1000, "オート時の連打の秒間打数を設定します。"); OptionList.Add(AutoRoll);
@@ -294,7 +294,7 @@ namespace Tunebeat.Config
                     SuddenNumber2P = new OptionInt("SuddenNumber", PlayData.Data.SuddenNumber[1], 0, 1000, "Suddenの幅を変更します。"); OptionList.Add(SuddenNumber2P);
                     FloatingHiSpeed2P = new OptionBool("FloatingHiSpeed", PlayData.Data.FloatingHiSpeed[1], "見える時間(緑数字)を固定します。"); OptionList.Add(FloatingHiSpeed2P);
                     GreenNumber2P = new OptionInt("GreenNumber", PlayData.Data.GreenNumber[1], 0, 10000, "FHS時に固定する緑数字を設定します。"); OptionList.Add(GreenNumber2P);
-                    NormalHiSpeed2P = new OptionBool("NormalHiSpeed", PlayData.Data.NormalHiSpeed[1], "決まった緑数字に合わせてスクロールを調節します。(未完成)"); OptionList.Add(NormalHiSpeed2P);
+                    NormalHiSpeed2P = new OptionBool("NormalHiSpeed", PlayData.Data.NormalHiSpeed[1], "決まった緑数字に合わせてスクロールを調節します。"); OptionList.Add(NormalHiSpeed2P);
                     NHSSpeed2P = new OptionInt("NHSSpeed", PlayData.Data.NHSSpeed[1], 0, 20, "NHS時のスクロールを設定します。"); OptionList.Add(NHSSpeed2P);
                     Auto2P = new OptionBool("Auto", PlayData.Data.Auto[1], "自動で譜面をプレイします。"); OptionList.Add(Auto2P);
                     GaugeType2P = new OptionList("GaugeType", PlayData.Data.GaugeType[1], "ゲージの種類を変更します。",

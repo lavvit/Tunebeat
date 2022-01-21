@@ -21,9 +21,9 @@ namespace Tunebeat.Game
                 UseSudden[i] = PlayData.Data.UseSudden[i];
                 Sudden[i] = PlayData.Data.SuddenNumber[i];
                 Scroll[i] = PlayData.Data.ScrollSpeed[i];
-                if (PlayData.Data.NormalHiSpeed[i]) PreGreen[i] = SetGreenNumber(i, PlayData.Data.NHSSpeed[i]);
                 PreGreen[i] = PlayData.Data.GreenNumber[i];
                 NHSNumber[i] = PlayData.Data.NHSSpeed[i];
+                if (PlayData.Data.NormalHiSpeed[i]) SetNHSScroll(i, true);
                 if (PlayData.Data.FloatingHiSpeed[i]) SetScroll(i, true);
             }
             ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
@@ -78,7 +78,8 @@ namespace Tunebeat.Game
                 if (PlayData.Data.FloatingHiSpeed[0]) type = 1;
                 else if (PlayData.Data.NormalHiSpeed[0]) type = 2;
                 TextureLoad.Game_HiSpeed.Draw(NotesP[0].X - 24, NotesP[0].Y - 2, new Rectangle(0, 56 * type, 195, 56));
-                Score.DrawNumber(NotesP[0].X - 4, NotesP[0].Y + 20, $"{Scroll[0],6:F2}", 0);
+                Score.DrawNumber(PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0] ? NotesP[0].X + 16 : NotesP[0].X - 4, NotesP[0].Y + 18, $"{Scroll[0],6:F2}", 0);
+                if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0]) Score.DrawNumber(NotesP[0].X - 16, NotesP[0].Y + 18, $"{NHSNumber[0] + 1,2}", 0);
                 Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 348, $"{Sudden[0]}", 0);
                 Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 388, $"{(GreenNumber[0] > 0 ? GreenNumber[0] : 0)}", 5);
             }
@@ -88,7 +89,8 @@ namespace Tunebeat.Game
                 if (PlayData.Data.FloatingHiSpeed[1]) type = 1;
                 else if (PlayData.Data.NormalHiSpeed[1]) type = 2;
                 TextureLoad.Game_HiSpeed.Draw(NotesP[1].X - 24, NotesP[1].Y - 2, new Rectangle(0, 56 * type, 195, 56));
-                Score.DrawNumber(NotesP[1].X - 4, NotesP[1].Y + 20, $"{Scroll[1],6:F2}", 0);
+                Score.DrawNumber(PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1] ? NotesP[1].X + 16 : NotesP[1].X - 4, NotesP[1].Y + 18, $"{Scroll[1],6:F2}", 0);
+                if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1]) Score.DrawNumber(NotesP[1].X - 16, NotesP[1].Y + 18, $"{NHSNumber[1] + 1,2}", 0);
                 Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 616, $"{Sudden[1]}", 0);
                 Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 656, $"{(GreenNumber[1] > 0 ? GreenNumber[1] : 0)}", 5);
             }
@@ -112,11 +114,13 @@ namespace Tunebeat.Game
 
             if (UseSudden[0]) DrawString(1700, 360, $"{Sudden[0]}", 0xffffff);
             DrawString(1700, 400, $"{GreenNumber[0]}", 0x00ff00);
+            if (PlayData.Data.NormalHiSpeed[0]) DrawString(1600, 380, $"{NHSNumber[0] + 1}", 0x0000ff);
             if (PlayData.Data.FloatingHiSpeed[0]) DrawString(1600, 360, "FHS", 0xffffff);
             if (PlayData.Data.IsPlay2P)
             {
                 if (UseSudden[1]) DrawString(1700, 620, $"{Sudden[1]}", 0xffffff);
                 DrawString(1700, 660, $"{GreenNumber[1]}", 0x00ff00);
+                if (PlayData.Data.NormalHiSpeed[1]) DrawString(1600, 640, $"{NHSNumber[1] + 1}", 0x0000ff);
                 if (PlayData.Data.FloatingHiSpeed[1]) DrawString(1600, 620, "FHS", 0xffffff);
             }
 #endif
@@ -139,6 +143,7 @@ namespace Tunebeat.Game
                     ProcessNote.BalloonRemain[i] = 0;
                     ProcessNote.BalloonList[i]++;
                 }
+                if (PlayData.Data.NormalHiSpeed[i] && !PlayData.Data.FloatingHiSpeed[i]) SetNHSScroll(i, Game.MainTimer.State == 0);
             }
 
             if (Game.MainTimer.State == 0)
@@ -331,7 +336,7 @@ namespace Tunebeat.Game
 
         public static int GetGreenNumber(int player, double plusminus = 0)
         {
-            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             if (chip == null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll * (Scroll[player] + plusminus) : (Scroll[player] + plusminus);
@@ -341,16 +346,29 @@ namespace Tunebeat.Game
             return (int)(ms / (bpm * scroll * 2.0 * suddenrate));
         }
 
-        public static int SetGreenNumber(int player, int number)
+        public static void SetNHSScroll(int player, bool isLoad = false)
         {
-            int sudden = UseSudden[player] ? Sudden[player] : 0;
-            double suddenrate = 1000.0 / (1000 - sudden);
-            return (int)(NHSTargetGNum[number] / suddenrate);
+            Chip chip = new Chip();
+            for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+            {
+                if (Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i].ENote >= ENote.Don)
+                {
+                    chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                    break;
+                }
+            }
+            double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
+            double scroll = chip != null ? chip.Scroll : 1.0;
+            double prescroll = Scroll[player];
+            Scroll[player] = Math.Round(Showms[0] / (NHSTargetGNum[NHSNumber[player]] * bpm * scroll * 2), 2, MidpointRounding.AwayFromZero);
+            Game.ScrollRemain[player] += Scroll[player] - prescroll;
+
+            if (isLoad) PlayData.Data.ScrollSpeed[player] = Scroll[player];
         }
 
         public static void SetScroll(int player, bool isLoad = false)
         {
-            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             if (chip == null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll : 1.0;

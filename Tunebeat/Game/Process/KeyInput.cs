@@ -112,8 +112,10 @@ namespace Tunebeat.Game
                     {
                         if (PlayData.Data.NormalHiSpeed[0])
                         {
-                            if (PlayData.Data.NHSSpeed[0] < 20) PlayData.Data.NHSSpeed[0]++;
-                            Notes.PreGreen[0] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[0]);
+                            if (PlayData.Data.NHSSpeed[0] < 19)
+                            {
+                                PlayData.Data.NHSSpeed[0]++;
+                            }
                         }
                         else
                         {
@@ -126,8 +128,10 @@ namespace Tunebeat.Game
                     {
                         if (PlayData.Data.NormalHiSpeed[0])
                         {
-                            if (PlayData.Data.NHSSpeed[0] > 0) PlayData.Data.NHSSpeed[0]--;
-                            Notes.PreGreen[0] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[0]);
+                            if (PlayData.Data.NHSSpeed[0] > 0)
+                            {
+                                PlayData.Data.NHSSpeed[0]--;
+                            }
                         }
                         else
                         {
@@ -156,8 +160,10 @@ namespace Tunebeat.Game
                     {
                         if (PlayData.Data.NormalHiSpeed[1])
                         {
-                            if (PlayData.Data.NHSSpeed[1] < 20) PlayData.Data.NHSSpeed[1]++;
-                            Notes.PreGreen[1] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[1]);
+                            if (PlayData.Data.NHSSpeed[1] < 19)
+                            {
+                                PlayData.Data.NHSSpeed[1]++;
+                            }
                         }
                         else
                         {
@@ -170,8 +176,10 @@ namespace Tunebeat.Game
                     {
                         if (PlayData.Data.NormalHiSpeed[1])
                         {
-                            if (PlayData.Data.NHSSpeed[1] > 0) PlayData.Data.NHSSpeed[1]--;
-                            Notes.PreGreen[1] = Notes.SetGreenNumber(0, PlayData.Data.NHSSpeed[1]);
+                            if (PlayData.Data.NHSSpeed[1] > 0)
+                            {
+                                PlayData.Data.NHSSpeed[1]--;
+                            }
                         }
                         else
                         {
@@ -274,14 +282,28 @@ namespace Tunebeat.Game
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                     {
-                        Notes.Scroll[0] += 0.25;
-                        Game.ScrollRemain[0] += 0.25;
+                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                        {
+                            if (Notes.NHSNumber[0] < 19) Notes.NHSNumber[0]++;
+                        }
+                        else
+                        {
+                            Notes.Scroll[0] += 0.25;
+                            Game.ScrollRemain[0] += 0.25;
+                        }
                         PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                     {
-                        Notes.Scroll[0] -= 0.25;
-                        Game.ScrollRemain[0] -= 0.25;
+                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                        {
+                            if (Notes.NHSNumber[0] > 0) Notes.NHSNumber[0]--;
+                        }
+                        else
+                        {
+                            Notes.Scroll[0] -= 0.25;
+                            Game.ScrollRemain[0] -= 0.25;
+                        }
                         PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                     }
                     if (Key.IsPushed(KEY_INPUT_LCONTROL))
@@ -293,14 +315,28 @@ namespace Tunebeat.Game
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                     {
-                        Notes.Scroll[1] += 0.25;
-                        Game.ScrollRemain[1] += 0.25;
+                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                        {
+                            if (Notes.NHSNumber[1] < 19) Notes.NHSNumber[1]++;
+                        }
+                        else
+                        {
+                            Notes.Scroll[1] += 0.25;
+                            Game.ScrollRemain[1] += 0.25;
+                        }
                         PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
                     {
-                        Notes.Scroll[1] -= 0.25;
-                        Game.ScrollRemain[1] -= 0.25;
+                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                        {
+                            if (Notes.NHSNumber[1] > 0) Notes.NHSNumber[1]--;
+                        }
+                        else
+                        {
+                            Notes.Scroll[1] -= 0.25;
+                            Game.ScrollRemain[1] -= 0.25;
+                        }
                         PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                     }
                     if (Key.IsPushed(KEY_INPUT_RCONTROL))
@@ -319,33 +355,33 @@ namespace Tunebeat.Game
                     Notes.UseSudden[1] = !Notes.UseSudden[1];
                     PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
-                if (Key.IsPushing(KEY_INPUT_Z) && Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && !Game.IsReplay[0])
+                if (Key.IsPushing(KEY_INPUT_Z) && Key.IsPushing(KEY_INPUT_X) && Notes.UseSudden[0] && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, true, false, true);
                     PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_Z) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] < 1000 && !Game.IsReplay[0])
+                else if (Key.IsPushing(KEY_INPUT_Z) && Notes.UseSudden[0] && Notes.Sudden[0] < 1000 && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, true);
                     PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_X) && PlayData.Data.UseSudden[0] && Notes.Sudden[0] > 0 && !Game.IsReplay[0])
+                else if (Key.IsPushing(KEY_INPUT_X) && Notes.UseSudden[0] && Notes.Sudden[0] > 0 && !Game.IsReplay[0])
                 {
                     Notes.SetSudden(0, false);
                     PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
 
                 }
-                if (Key.IsPushing(KEY_INPUT_SLASH) && Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
+                if (Key.IsPushing(KEY_INPUT_SLASH) && Key.IsPushing(KEY_INPUT_BACKSLASH) && Notes.UseSudden[1] && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, true, false, true);
                     PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_SLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] < 1000 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
+                else if (Key.IsPushing(KEY_INPUT_SLASH) && Notes.UseSudden[1] && Notes.Sudden[1] < 1000 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, true);
                     PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                 }
-                else if (Key.IsPushing(KEY_INPUT_BACKSLASH) && PlayData.Data.UseSudden[1] && Notes.Sudden[1] > 0 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
+                else if (Key.IsPushing(KEY_INPUT_BACKSLASH) && Notes.UseSudden[1] && Notes.Sudden[1] > 0 && PlayData.Data.IsPlay2P && !Game.IsReplay[1])
                 {
                     Notes.SetSudden(1, false);
                     PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
