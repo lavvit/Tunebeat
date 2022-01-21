@@ -239,7 +239,10 @@ namespace Tunebeat.Config
                     ShowBestScore = new OptionBool("ShowBestScore", PlayData.Data.ShowBestScore, "自己ベスト記録のグラフを表示します。(重い場合は非表示にしてください)"); OptionList.Add(ShowBestScore);
                     RivalType = new OptionList("RivalType", PlayData.Data.RivalType, "ライバルを設定します。",
                         new string[] { "None", "Percent", "Rank", "PlayScore" }); OptionList.Add(RivalType);
-                    PlaySpeed = new OptionDouble("PlaySpeed", PlayData.Data.PlaySpeed, 0, 255, "曲の再生速度を変更します。"); OptionList.Add(PlaySpeed);
+                    RivalPercent = new OptionDouble("RivalPercent", PlayData.Data.RivalPercent, 0, 100, "Percent 使用時の目標スコアを設定します。"); OptionList.Add(RivalPercent);
+                    RivalRank = new OptionList("RivalPercent", PlayData.Data.RivalRank, "Rank 使用時の目標スコアを設定します。",
+                        new string[] { "F", "E", "D", "C", "B", "A", "AA", "AAA", "MAX" }); OptionList.Add(RivalRank);
+                    PlaySpeed = new OptionDouble("PlaySpeed", PlayData.Data.PlaySpeed, 0, 1000, "曲の再生速度を変更します。"); OptionList.Add(PlaySpeed);
                     ChangeSESpeed = new OptionBool("ChangeSESpeed", PlayData.Data.ChangeSESpeed, "曲の再生速度に合わせて効果音のピッチを調節します。"); OptionList.Add(ChangeSESpeed);
                     Random = new OptionBool("Random", PlayData.Data.Random[0], "ノーツの色をランダムに変更します。"); OptionList.Add(Random);
                     RandomRate = new OptionInt("RandomRate", PlayData.Data.RandomRate, 0, 100, "ランダムの割合を調節します。"); OptionList.Add(RandomRate);
@@ -347,6 +350,8 @@ namespace Tunebeat.Config
                     PlayData.Data.ShowGraph = ShowGraph.ON;
                     PlayData.Data.ShowBestScore = ShowBestScore.ON;
                     PlayData.Data.RivalType = RivalType.Value;
+                    PlayData.Data.RivalPercent = RivalPercent.Value;
+                    PlayData.Data.RivalRank = RivalRank.Value;
                     PlayData.Data.PlaySpeed = PlaySpeed.Value;
                     PlayData.Data.ChangeSESpeed = ChangeSESpeed.ON;
                     PlayData.Data.Random[0] = Random.ON;
