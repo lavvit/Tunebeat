@@ -78,6 +78,10 @@ namespace Tunebeat.SongSelect
             {
                 Program.SceneChange(new Config.Config());
             }
+            if (Key.IsPushed(KEY_INPUT_F2))
+            {
+                PlayData.Init();
+            }
             if (Key.IsPushed(KEY_INPUT_F3))
             {
                 PlayData.Data.Auto[0] = !PlayData.Data.Auto[0];

@@ -110,12 +110,9 @@ namespace Tunebeat.Game
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                     {
-                        if (PlayData.Data.NormalHiSpeed[0])
+                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
                         {
-                            if (PlayData.Data.NHSSpeed[0] < 19)
-                            {
-                                PlayData.Data.NHSSpeed[0]++;
-                            }
+                            if (PlayData.Data.NHSSpeed[0] < 19) PlayData.Data.NHSSpeed[0]++;
                         }
                         else
                         {
@@ -126,12 +123,9 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                     {
-                        if (PlayData.Data.NormalHiSpeed[0])
+                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
                         {
-                            if (PlayData.Data.NHSSpeed[0] > 0)
-                            {
-                                PlayData.Data.NHSSpeed[0]--;
-                            }
+                            if (PlayData.Data.NHSSpeed[0] > 0) PlayData.Data.NHSSpeed[0]--;
                         }
                         else
                         {
@@ -158,12 +152,9 @@ namespace Tunebeat.Game
                 {
                     if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                     {
-                        if (PlayData.Data.NormalHiSpeed[1])
+                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
                         {
-                            if (PlayData.Data.NHSSpeed[1] < 19)
-                            {
-                                PlayData.Data.NHSSpeed[1]++;
-                            }
+                            if (PlayData.Data.NHSSpeed[1] < 19) PlayData.Data.NHSSpeed[1]++;
                         }
                         else
                         {
@@ -174,12 +165,9 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
                     {
-                        if (PlayData.Data.NormalHiSpeed[1])
+                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
                         {
-                            if (PlayData.Data.NHSSpeed[1] > 0)
-                            {
-                                PlayData.Data.NHSSpeed[1]--;
-                            }
+                            if (PlayData.Data.NHSSpeed[1] > 0) PlayData.Data.NHSSpeed[1]--;
                         }
                         else
                         {

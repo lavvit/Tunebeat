@@ -201,6 +201,8 @@ namespace Tunebeat.Config
                     }
                     else
                     {
+                        //設定の保存
+                        PlayData.End();
                         Program.SceneChange(new SongSelect.SongSelect());
                     }
                 }
