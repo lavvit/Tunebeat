@@ -39,22 +39,19 @@ namespace TJAParse
                     header.GENRE = split[1];
                     break;
                 case "BPM":
-                    header.BPM = double.Parse(split[1]) * playspeed;
+                    header.BPM = !string.IsNullOrEmpty(split[1]) ? double.Parse(split[1]) * playspeed : 120;
                     break;
                 case "OFFSET":
-                    header.OFFSET = double.Parse(split[1]) / playspeed;
+                    header.OFFSET = !string.IsNullOrEmpty(split[1]) ? double.Parse(split[1]) / playspeed : 0;
                     break;
                 case "SONGVOL":
-                    header.SONGVOL = double.Parse(split[1]);
+                    header.SONGVOL = !string.IsNullOrEmpty(split[1]) ? double.Parse(split[1]) : 100;
                     break;
                 case "SEVOL":
-                    header.SEVOL = double.Parse(split[1]);
+                    header.SEVOL = !string.IsNullOrEmpty(split[1]) ? double.Parse(split[1]) : 100;
                     break;
                 case "DEMOSTART":
-                    header.DEMOSTART = double.Parse(split[1]);
-                    break;
-                case "SCOREMODE":
-                    header.SCOREMODE = double.Parse(split[1]);
+                    header.DEMOSTART = !string.IsNullOrEmpty(split[1]) ? double.Parse(split[1]) : 0;
                     break;
             }
         }

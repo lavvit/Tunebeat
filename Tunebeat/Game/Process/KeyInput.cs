@@ -50,7 +50,7 @@ namespace Tunebeat.Game
                 ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             }
 
-            if (Key.IsPushed(KEY_INPUT_Q))
+            if (Key.IsPushed(KEY_INPUT_Q) && Game.Wait.State == 0)
             {
                 Game.Reset();
             }

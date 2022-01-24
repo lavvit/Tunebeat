@@ -52,7 +52,7 @@ namespace Tunebeat.Game
                 HitTimer[i] = new Counter(0, 100, 1000, false);
                 HitTimer2P[i] = new Counter(0, 100, 1000, false);
             }
-            Wait = new Counter(0, 750, 1000, false);
+            Wait = new Counter(0, 500, 1000, false);
 
             PlayMeasure = 0;
             StartTime = 0;
@@ -131,8 +131,6 @@ namespace Tunebeat.Game
             MainMovie.Stop();
             if (PlayMeasure == 0) MainTimer.Reset();
             else MainTimer.Value = (int)StartTime;
-            MainSong.Time = StartTime / 1000;
-            if (PlayData.Data.PlayMovie) MainMovie.Time = StartTime;
             IsSongPlay = false;
             for (int i = 0; i < 2; i++)
             {
@@ -146,6 +144,8 @@ namespace Tunebeat.Game
             {
                 MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
             }
+            if (File.Exists(MainSong.FileName)) MainSong.Time = StartTime / 1000;
+            if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = StartTime;
 
             for (int i = 0; i < 4; i++)
             {
@@ -184,14 +184,15 @@ namespace Tunebeat.Game
 
         public static void MeasureUp(bool end = false)
         {
+            if (MeasureList.Count == 0) return;
             if (end)
             {
                 PlayMeasure = MeasureList.Count;
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 StartTime = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
-                MainSong.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time) / 1000;
-                if (PlayData.Data.PlayMovie) MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                if (File.Exists(MainSong.FileName)) MainSong.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time) / 1000;
+                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 SetBalloon();
             }
             else if (PlayMeasure < MeasureList.Count)
@@ -200,21 +201,22 @@ namespace Tunebeat.Game
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
-                MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
-                if (PlayData.Data.PlayMovie) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                if (File.Exists(MainSong.FileName)) MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
+                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 SetBalloon();
             }
         }
         public static void MeasureDown(bool home = false)
         {
+            if (MeasureList.Count == 0) return;
             if (home || PlayMeasure == 1)
             {
                 PlayMeasure = 0;
                 TimeRemain += MainTimer.Value + 2000;
                 StartTime = 0;
                 MainTimer.Value = -2000;
-                MainSong.Time = 0;
-                if (PlayData.Data.PlayMovie) MainMovie.Time = 0;
+                if (File.Exists(MainSong.FileName)) MainSong.Time = 0;
+                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = 0;
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
@@ -244,8 +246,8 @@ namespace Tunebeat.Game
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
-                MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
-                if (PlayData.Data.PlayMovie) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                if (File.Exists(MainSong.FileName)) MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
+                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
@@ -273,9 +275,7 @@ namespace Tunebeat.Game
 
         public override void Draw()
         {
-            string movie = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
-            movie = movie.Replace(".wmv", ".mp4");
-            if (PlayData.Data.PlayMovie && File.Exists(movie))
+            if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName))
             {
                 MainMovie.Volume = 0;
                 MainMovie.Draw(0, 0);
@@ -420,10 +420,23 @@ namespace Tunebeat.Game
                 PlayMemory.InitSetting(0, MainTimer.Begin, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
                 if (PlayData.Data.IsPlay2P) { PlayMemory.InitSetting(1, MainTimer.Begin, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]); PlayData.Data.InputAdjust[1] = Adjust[1]; }
             }
-            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay) { MainSong.Play(PlayMeasure == 0 ? true : false); if (PlayData.Data.PlayMovie) { MainMovie.Play(PlayMeasure == 0 ? true : false); } IsSongPlay = true;  MainSong.PlaySpeed = (PlayData.Data.PlaySpeed); }
+            if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay)
+            {
+                if (File.Exists(MainSong.FileName))
+                {
+                    MainSong.Play(PlayMeasure == 0 ? true : false);
+                    MainSong.PlaySpeed = PlayData.Data.PlaySpeed;
+                }
+                IsSongPlay = true;
+                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName))
+                {
+                    MainMovie.Play(PlayMeasure == 0 ? true : false);
+                }
+            }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 MainTimer.Stop();
+                MainMovie.Stop();
                 PlayData.End();
                 if (PlayData.Data.ShowResultScreen)
                 {
