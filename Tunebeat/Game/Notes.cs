@@ -246,7 +246,7 @@ namespace Tunebeat.Game
                             break;
                         case ENote.RollStart:
                         case ENote.ROLLStart:
-                            double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
+                            double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.RollEnd != null ? chip.RollEnd.Scroll : chip.Scroll, player);
                             if (rollx >= -715)
                             {
                                 TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);

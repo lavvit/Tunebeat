@@ -18,7 +18,6 @@ namespace Tunebeat.Game
         public override void Enable()
         {
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            Random ran = new Random();
             for (int i = 0; i < 2; i++)
             {
                 MainTJA[i] = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
@@ -29,7 +28,9 @@ namespace Tunebeat.Game
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
-            MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
+            string movie = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
+            movie = movie.Replace(".wmv", ".mp4");
+            MainMovie = new Movie(movie);
 
             for (int i = 0; i < 2; i++)
             {
@@ -51,7 +52,7 @@ namespace Tunebeat.Game
                 HitTimer[i] = new Counter(0, 100, 1000, false);
                 HitTimer2P[i] = new Counter(0, 100, 1000, false);
             }
-            Wait = new Counter(0, 500, 1000, false);
+            Wait = new Counter(0, 750, 1000, false);
 
             PlayMeasure = 0;
             StartTime = 0;
@@ -131,7 +132,7 @@ namespace Tunebeat.Game
             if (PlayMeasure == 0) MainTimer.Reset();
             else MainTimer.Value = (int)StartTime;
             MainSong.Time = StartTime / 1000;
-            MainMovie.Time = StartTime;
+            if (PlayData.Data.PlayMovie) MainMovie.Time = StartTime;
             IsSongPlay = false;
             for (int i = 0; i < 2; i++)
             {
@@ -190,7 +191,7 @@ namespace Tunebeat.Game
                 StartTime = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 MainSong.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time) / 1000;
-                MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                if (PlayData.Data.PlayMovie) MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 SetBalloon();
             }
             else if (PlayMeasure < MeasureList.Count)
@@ -200,7 +201,7 @@ namespace Tunebeat.Game
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
-                MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                if (PlayData.Data.PlayMovie) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 SetBalloon();
             }
         }
@@ -213,7 +214,7 @@ namespace Tunebeat.Game
                 StartTime = 0;
                 MainTimer.Value = -2000;
                 MainSong.Time = 0;
-                MainMovie.Time = 0;
+                if (PlayData.Data.PlayMovie) MainMovie.Time = 0;
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
@@ -244,7 +245,7 @@ namespace Tunebeat.Game
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
-                MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                if (PlayData.Data.PlayMovie) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
@@ -272,7 +273,9 @@ namespace Tunebeat.Game
 
         public override void Draw()
         {
-            if (PlayData.Data.PlayMovie && File.Exists($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}"))
+            string movie = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
+            movie = movie.Replace(".wmv", ".mp4");
+            if (PlayData.Data.PlayMovie && File.Exists(movie))
             {
                 MainMovie.Volume = 0;
                 MainMovie.Draw(0, 0);
@@ -340,7 +343,8 @@ namespace Tunebeat.Game
             if (MainTimer.State == 0 && !IsSongPlay)
             {
                 DrawString(720, 356, $"{PlayMeasure}/{MeasureList.Count}", 0xffffff);
-                DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
+                if (Wait.State != 0) DrawString(720, 376, "PLEASE WAIT...", 0xffffff);
+                else DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
             }
 
             Chip nchip = GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value, true);
@@ -420,6 +424,7 @@ namespace Tunebeat.Game
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 MainTimer.Stop();
+                PlayData.End();
                 if (PlayData.Data.ShowResultScreen)
                 {
                     Program.SceneChange(new Result.Result());
