@@ -110,6 +110,30 @@ namespace Tunebeat.Game
                 DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
 
+            for (int i = 0; i < 6; i++)
+            {
+                TextureLoad.Game_Judge.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+            }
+            DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+            DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
+            DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
+            DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
+            DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
+            DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+            if (PlayData.Data.IsPlay2P)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    TextureLoad.Game_Judge.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                }
+                DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
+                DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
+                DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
+                DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
+                DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+            }
+
             int[] rankvalue = new int[] { 0, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 4 / 9,
                 Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 6 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 8 / 9,
                 Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 10 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 12 / 9,
@@ -185,7 +209,7 @@ namespace Tunebeat.Game
             DrawString(0, 380, $"BD:{Bad[0]}", 0xffffff);
             DrawString(0, 400, $"PR:{Poor[0]}", 0xffffff);
             DrawString(0, 420, $"AT:{Auto[0]}", 0xffffff);
-            DrawString(0, 440, $"RL:{Roll[0]}({RollYellow[0]},{RollBalloon[0]})", 0xffffff);
+            DrawString(0, 440, $"RL:{Roll[0] + AutoRoll[0]}({RollYellow[0]},{RollBalloon[0]})", 0xffffff);
 
             DrawString(200, 300, $"{Gauge[0]}", 0xffffff);
             DrawString(200, 320, $"Total:{Total[0]}", 0xffffff);
@@ -209,7 +233,7 @@ namespace Tunebeat.Game
                 DrawString(0, 640, $"BD:{Bad[1]}", 0xffffff);
                 DrawString(0, 660, $"PR:{Poor[1]}", 0xffffff);
                 DrawString(0, 680, $"AT:{Auto[1]}", 0xffffff);
-                DrawString(0, 700, $"RL:{Roll[1]}({RollYellow[1]},{RollBalloon[1]})", 0xffffff);
+                DrawString(0, 700, $"RL:{Roll[1] + AutoRoll[1]}({RollYellow[1]},{RollBalloon[1]})", 0xffffff);
 
                 DrawString(200, 560, $"{Gauge[1]}", 0xffffff);
                 DrawString(200, 580, $"Total:{Total[1]}", 0xffffff);

@@ -347,8 +347,24 @@ namespace Tunebeat.Game
                 else DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
             }
 
+            DrawString(1600, 1020, $"{MainTJA[0].Header.TITLE}", 0xffffff);
+            DrawString(1600, 1040, $"{MainTJA[0].Header.SUBTITLE}", 0xffffff);
+            DrawString(370, 296, $"{MainTJA[0].Courses[Course[0]].COURSE} Lv.{MainTJA[0].Courses[Course[0]].LEVEL}", 0xffffff);
+            if (MainTJA[0].Courses[Course[0]].ScrollType != EScroll.Normal)
+            {
+                DrawString(378, 316, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
+            }
+            if (PlayData.Data.IsPlay2P)
+            {
+                DrawString(370, 706, $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}", 0xffffff);
+                if (MainTJA[0].Courses[Course[1]].ScrollType != EScroll.Normal)
+                {
+                    DrawString(378, 726, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
+                }
+            }
+
             Chip nchip = GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value, true);
-            if (nchip != null && nchip.Lyric != null) DrawString(960, 1000, nchip.Lyric, 0x0000ff);
+            if (nchip != null && nchip.Lyric != null) DrawString(640, 1000, nchip.Lyric, 0x0000ff);
 
 
             #if DEBUG
