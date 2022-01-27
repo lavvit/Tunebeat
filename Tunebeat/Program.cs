@@ -72,8 +72,8 @@ namespace Tunebeat
                 if (ScreenShot.Value == ScreenShot.End) ScreenShot.Stop();
                 if (ScreenShot.State != 0)
                 {
-                    DrawBox(0, 1040, 480, 1080, 0x000000, TRUE);
-                    DrawString(20, 1052, $"ScreenShot has been Saved! : {strTime}.png", 0xffffff);
+                    DrawBox(0, 1040, 530, 1080, 0x000000, TRUE);
+                    DrawString(20, 1052, $"スクリーンショットが保存されました! : {strTime}.png", 0xffffff);
                 }
             }
         }

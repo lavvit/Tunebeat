@@ -18,17 +18,261 @@ namespace Tunebeat.SongSelect
     {
         public override void Enable()
         {
+            if (File.Exists(PlayData.Data.PlayFile))
+            {
+                NowTJA = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, 0, false, 0);
+            }
+            FontFamily family = new FontFamily("Arial");
+            TitleFont = new FontRender(family, 56, 2, FontStyle.Regular);
+            SubTitleFont = new FontRender(family, 32, 2, FontStyle.Regular);
+            Title = new Texture();
+            SubTitle = new Texture();
+            Alart = new Counter(0, 1000, 1000, false);
             base.Enable();
         }
 
         public override void Disable()
         {
+            NowTJA = null;
+            TitleFont = null;
+            SubTitleFont = null;
+            Title = null;
+            SubTitle = null;
+            Alart.Reset();
             base.Disable();
         }
         public override void Draw()
         {
             DrawBox(0, 0, 1919, 1079, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
             TextureLoad.SongSelect_Background.Draw(0, 0);
+
+            TextureLoad.SongSelect_Bar.Draw(1180, -90 + 60 * 10);//表示するだけ
+            for (int i = 0; i < 10; i++)
+            {
+                TextureLoad.SongSelect_Bar.Draw(1212, -90 + 60 * i);//表示するだけ
+            }
+            for (int i = 11; i < 21; i++)
+            {
+                TextureLoad.SongSelect_Bar.Draw(1212, -90 + 60 * i);//表示するだけ
+            }
+
+            int[] difXY = new int[2] { 72, 500 - 60 };
+            TextureLoad.SongSelect_Difficulty_Base.Draw(difXY[0], difXY[1]);
+            if (PlayData.Data.IsPlay2P)
+            {
+                TextureLoad.SongSelect_Difficulty_Base.Draw(difXY[0], difXY[1] + 163, new Rectangle(0, 132, 814, 31));
+            }
+            DrawString(80, 200, $"{PlayData.Data.PlayFile}", 0xffffff);
+            if (NowTJA != null)
+            {
+                if (!string.IsNullOrEmpty(NowTJA.Header.GENRE))
+                {
+                    DrawString(80, 280, NowTJA.Header.GENRE, 0xffffff);
+                }
+                if (!string.IsNullOrEmpty(NowTJA.Header.TITLE))
+                {
+                    DrawString(80, 320, NowTJA.Header.TITLE, 0xffffff);
+                    //Title = TitleFont.GetTexture(NowTJA.Header.TITLE, 900, true);
+                    //Title.Draw(80, 200);
+                }
+                if (!string.IsNullOrEmpty(NowTJA.Header.SUBTITLE))
+                {
+                    DrawString(80, 360, NowTJA.Header.SUBTITLE, 0xffffff);
+                    //SubTitle = TitleFont.GetTexture(NowTJA.Header.SUBTITLE, 900, true);
+                    //SubTitle.Draw(80, 200);
+                }
+                DrawString(800, 360, $"BPM:{NowTJA.Header.BPM}", 0xffffff);
+                for (int i = 0; i < 5; i++)
+                {
+                    if (i == PlayData.Data.PlayCourse[0] || (PlayData.Data.IsPlay2P && i == PlayData.Data.PlayCourse[1]))
+                    {
+                        switch (i)
+                        {
+                            case (int)ECourse.Easy:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0xff5f3f);
+                                break;
+                            case (int)ECourse.Normal:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x9fff3f);
+                                break;
+                            case (int)ECourse.Hard:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x3fbfff);
+                                break;
+                            case (int)ECourse.Oni:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0xff3f9f);
+                                break;
+                            case (int)ECourse.Edit:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x9f3fff);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (i)
+                        {
+                            case (int)ECourse.Easy:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x7f2f1f);
+                                break;
+                            case (int)ECourse.Normal:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x4f7f1f);
+                                break;
+                            case (int)ECourse.Hard:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x1f5f7f);
+                                break;
+                            case (int)ECourse.Oni:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x7f1f4f);
+                                break;
+                            case (int)ECourse.Edit:
+                                TextureLoad.SongSelect_Difficulty.Color = Color.FromArgb(0x4f1f7f);
+                                break;
+                        }
+                    }
+                    if (NowTJA.Courses[i].ListChip.Count > 0)
+                    {
+                        TextureLoad.SongSelect_Difficulty.Draw(difXY[0] + 22 + 156 * i, difXY[1] + 8);
+                        TextureLoad.SongSelect_Difficulty_Course.Draw(difXY[0] + 22 + 156 * i, difXY[1] + 100);
+                        Score.DrawNumber(difXY[0] + 94 + 156 * i - 12 * Score.Digit(NowTJA.Courses[i].LEVEL), difXY[1] + 42, $"{NowTJA.Courses[i].LEVEL}", 0);
+                    }
+                    if (i == PlayData.Data.PlayCourse[0] || (PlayData.Data.IsPlay2P && i == PlayData.Data.PlayCourse[1]))
+                    {
+                        TextureLoad.SongSelect_Difficulty_Cursor.Draw(difXY[0] + 22 + 156 * i, difXY[1] + 8);
+                    }
+                }
+                if (NowTJA.Courses[PlayData.Data.PlayCourse[0]].LEVEL > 0)
+                {
+                    int lev = NowTJA.Courses[PlayData.Data.PlayCourse[0]].LEVEL < 12 ? NowTJA.Courses[PlayData.Data.PlayCourse[0]].LEVEL : 12;
+                    for (int i = 0; i < lev; i++)
+                    {
+                        switch (PlayData.Data.PlayCourse[0])
+                        {
+                            case (int)ECourse.Easy:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0xff5f3f);
+                                break;
+                            case (int)ECourse.Normal:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x9fff3f);
+                                break;
+                            case (int)ECourse.Hard:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x3fbfff);
+                                break;
+                            case (int)ECourse.Oni:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0xff3f9f);
+                                break;
+                            case (int)ECourse.Edit:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x9f3fff);
+                                break;
+                        }
+                        TextureLoad.SongSelect_Difficulty_Level.Draw(difXY[0] + 12 + 66 * i, difXY[1] + 136);
+                        if (NowTJA.Courses[PlayData.Data.PlayCourse[0]].LEVEL > 12)
+                        {
+
+                            for (int j = 0; j < NowTJA.Courses[PlayData.Data.PlayCourse[0]].LEVEL - 12; j++)
+                            {
+                                switch (PlayData.Data.PlayCourse[0])
+                                {
+                                    case (int)ECourse.Easy:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x7f2f1f);
+                                        break;
+                                    case (int)ECourse.Normal:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x4f7f1f);
+                                        break;
+                                    case (int)ECourse.Hard:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x1f5f7f);
+                                        break;
+                                    case (int)ECourse.Oni:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x7f1f4f);
+                                        break;
+                                    case (int)ECourse.Edit:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x4f1f7f);
+                                        break;
+                                }
+                                TextureLoad.SongSelect_Difficulty_Level.Draw(difXY[0] + 12 + 66 * j, difXY[1] + 136);
+                            }
+                        }
+                    }
+                }
+                if (PlayData.Data.IsPlay2P && NowTJA.Courses[PlayData.Data.PlayCourse[1]].LEVEL > 0)
+                {
+                    int lev = NowTJA.Courses[PlayData.Data.PlayCourse[1]].LEVEL < 12 ? NowTJA.Courses[PlayData.Data.PlayCourse[1]].LEVEL : 12;
+                    for (int i = 0; i < lev; i++)
+                    {
+                        switch (PlayData.Data.PlayCourse[1])
+                        {
+                            case (int)ECourse.Easy:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0xff5f3f);
+                                break;
+                            case (int)ECourse.Normal:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x9fff3f);
+                                break;
+                            case (int)ECourse.Hard:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x3fbfff);
+                                break;
+                            case (int)ECourse.Oni:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0xff3f9f);
+                                break;
+                            case (int)ECourse.Edit:
+                                TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x9f3fff);
+                                break;
+                        }
+                        TextureLoad.SongSelect_Difficulty_Level.Draw(difXY[0] + 12 + 66 * i, difXY[1] + 136 + 31);
+                        if (NowTJA.Courses[PlayData.Data.PlayCourse[1]].LEVEL > 12)
+                        {
+
+                            for (int j = 0; j < NowTJA.Courses[PlayData.Data.PlayCourse[1]].LEVEL - 12; j++)
+                            {
+                                switch (PlayData.Data.PlayCourse[1])
+                                {
+                                    case (int)ECourse.Easy:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x7f2f1f);
+                                        break;
+                                    case (int)ECourse.Normal:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x4f7f1f);
+                                        break;
+                                    case (int)ECourse.Hard:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x1f5f7f);
+                                        break;
+                                    case (int)ECourse.Oni:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x7f1f4f);
+                                        break;
+                                    case (int)ECourse.Edit:
+                                        TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x4f1f7f);
+                                        break;
+                                }
+                                TextureLoad.SongSelect_Difficulty_Level.Draw(difXY[0] + 12 + 66 * j, difXY[1] + 136 + 31);
+                            }
+                        }
+                    }
+                }
+            }
+            TextureLoad.SongSelect_Difficulty_TJA.Draw(difXY[0], difXY[1]);
+
+            DrawString(80, 640, "OPTION MENU (Beta mode)", 0xffffff);
+            DrawString(80, 680, "1P", 0xffffff);
+            if (PlayData.Data.Auto[0])
+            {
+                DrawString(110, 680, "AUTO", 0xffffff);
+            }
+            DrawString(80, 700, $"Gauge:{(EGauge)PlayData.Data.GaugeType[0]}", 0xffffff);
+            DrawString(80, 720, $"GAS:{(EGaugeAutoShift)PlayData.Data.GaugeAutoShift[0]}", 0xffffff);
+            DrawString(80, 740, $"GASmin:{(EGauge)PlayData.Data.GaugeAutoShiftMin[0]}", 0xffffff);
+            DrawString(80, 760, $"Hazard:{PlayData.Data.Hazard[0]}", 0xffffff);
+            if (PlayData.Data.IsPlay2P)
+            {
+                DrawString(240, 680, "2P", 0xffffff);
+                if (PlayData.Data.Auto[1])
+                {
+                    DrawString(270, 680, "AUTO", 0xffffff);
+                }
+                DrawString(240, 700, $"Gauge:{(EGauge)PlayData.Data.GaugeType[1]}", 0xffffff);
+                DrawString(240, 720, $"GAS:{(EGaugeAutoShift)PlayData.Data.GaugeAutoShift[1]}", 0xffffff);
+                DrawString(240, 740, $"GASmin:{(EGauge)PlayData.Data.GaugeAutoShiftMin[1]}", 0xffffff);
+                DrawString(240, 760, $"Hazard:{PlayData.Data.Hazard[1]}", 0xffffff);
+            }
+
+
+            if (Alart.State != 0)
+            {
+                DrawBox(0, 1040, 410, 1080, 0x000000, TRUE);
+                DrawString(20, 1052, $"TJAが見つかりません!パスを確認してください。", 0xffffff);
+            }
 
             #if DEBUG
             DrawString(0, 0, $"File:{PlayData.Data.PlayFile}", 0xffffff);
@@ -53,17 +297,28 @@ namespace Tunebeat.SongSelect
 
         public override void Update()
         {
+            Alart.Tick();
+            if (Alart.Value == Alart.End) Alart.Stop();
+
             if (Key.IsPushed(KEY_INPUT_RETURN))
             {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                if (File.Exists(PlayData.Data.PlayFile))
                 {
-                    Replay[0] = true;
+                    if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                    {
+                        Replay[0] = true;
+                    }
+                    else
+                    {
+                        Replay[0] = false;
+                    }
+                    Program.SceneChange(new Game.Game());
                 }
                 else
                 {
-                    Replay[0] = false;
+                    Alart.Reset();
+                    Alart.Start();
                 }
-                Program.SceneChange(new Game.Game());
             }
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
             {
@@ -81,6 +336,7 @@ namespace Tunebeat.SongSelect
             if (Key.IsPushed(KEY_INPUT_F2))
             {
                 PlayData.Init();
+                NowTJA = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, 0, false, 0);
             }
             if (Key.IsPushed(KEY_INPUT_F3))
             {
@@ -166,26 +422,6 @@ namespace Tunebeat.SongSelect
                 }
             }
 
-            if (Key.IsPushed(KEY_INPUT_F12))
-            {
-                OpenFileDialog ofd = new OpenFileDialog();
-
-                ofd.FileName = "水天神術・時雨.tja";
-                ofd.InitialDirectory = @"Songs\";
-                ofd.Filter = "TJAファイル(*.tja)|*.tja|すべてのファイル(*.*)|*.*";
-                ofd.FilterIndex = 1;
-                ofd.Title = "再生する譜面の選択";
-                ofd.RestoreDirectory = true;
-                ofd.CheckFileExists = true;
-                ofd.CheckPathExists = true;
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    PlayData.Data.PlayFile = ofd.InitialDirectory + ofd.FileName;
-                }
-                ofd.Dispose();
-            }
-
-
             base.Update();
         }
 
@@ -228,5 +464,9 @@ namespace Tunebeat.SongSelect
         }
 
         public static bool[] Replay = new bool[2];
+        public static FontRender TitleFont, SubTitleFont;
+        public static Texture Title, SubTitle;
+        public static TJAParse.TJAParse NowTJA;
+        public static Counter Alart;
     }
 }

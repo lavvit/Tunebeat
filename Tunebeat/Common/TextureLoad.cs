@@ -26,6 +26,15 @@ namespace Tunebeat.Common
             #endregion
             #region SongSelect
             SongSelect_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Background.png");
+            SongSelect_Bar = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Bar.png");
+            SongSelect_Clear = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Clear.png");
+            SongSelect_Difficulty = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty.png");
+            SongSelect_Difficulty_Base = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Base.png");
+            SongSelect_Difficulty_Course = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Course.png");
+            SongSelect_Difficulty_Cursor = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Cursor.png");
+            SongSelect_Difficulty_Level = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Level.png");
+            SongSelect_Difficulty_Number = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Number.png");
+            SongSelect_Difficulty_TJA = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_TJA.png");
             #endregion
             #region Game
             Game_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Background.png");
@@ -82,7 +91,16 @@ namespace Tunebeat.Common
         #region ModeSelect
         #endregion
         #region SongSelect
-        public static Texture SongSelect_Background;
+        public static Texture SongSelect_Background,
+            SongSelect_Bar,
+            SongSelect_Clear,
+            SongSelect_Difficulty,
+            SongSelect_Difficulty_Base,
+            SongSelect_Difficulty_Course,
+            SongSelect_Difficulty_Cursor,
+            SongSelect_Difficulty_Level,
+            SongSelect_Difficulty_Number,
+            SongSelect_Difficulty_TJA;
         #endregion
         #region Game
         public static Texture Game_Background,

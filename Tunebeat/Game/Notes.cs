@@ -164,7 +164,7 @@ namespace Tunebeat.Game
 
         public static void DrawNotes(int player)
         {
-            if ((PlayData.Data.PlayMovie && File.Exists($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Game.MainTJA[0].Header.BGMOVIE}")) || (PlayData.Data.ShowImage && File.Exists($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Game.MainTJA[0].Header.BGIMAGE}")))
+            if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
             {
                 TextureLoad.Game_Lane.Opacity = 0.5;
             }
