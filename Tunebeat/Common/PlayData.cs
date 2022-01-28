@@ -29,7 +29,8 @@ namespace Tunebeat.Common
         public int[] SkinColor = new int[3] { 128, 128, 128 };
         public bool FullScreen = false;
 
-        public string PlayFile = @"Songs/水天神術・時雨.tja";
+        public string PlayFolder = "Songs";
+        public string PlaySong = "水天神術・時雨";
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
         public bool ShowImage = true;

@@ -94,6 +94,22 @@ namespace Tunebeat.Game
                 Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 616, $"{Sudden[1]}", 0);
                 Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 656, $"{(GreenNumber[1] > 0 ? GreenNumber[1] : 0)}", 5);
             }
+            if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+            {
+                TextureLoad.Game_Base_DP.Opacity = 0.75;
+                TextureLoad.Game_Base.Opacity = 0.75;
+                TextureLoad.Game_Lane_Frame_DP.Opacity = 0.75;
+                TextureLoad.Game_Lane_Frame.Opacity = 0.75;
+                TextureLoad.Game_Gauge_Base.Opacity = 0.75;
+            }
+            else
+            {
+                TextureLoad.Game_Base_DP.Opacity = 1.0;
+                TextureLoad.Game_Base.Opacity = 1.0;
+                TextureLoad.Game_Lane_Frame_DP.Opacity = 1.0;
+                TextureLoad.Game_Lane_Frame.Opacity = 1.0;
+                TextureLoad.Game_Gauge_Base.Opacity = 1.0;
+            }
 
             if (PlayData.Data.IsPlay2P)
             {
@@ -176,7 +192,14 @@ namespace Tunebeat.Game
             Chip nchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
             if (nchip != null && nchip.IsGogo)
             {
-                TextureLoad.Game_Lane_Gogo.Opacity = 0.5;
+                if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                {
+                    TextureLoad.Game_Lane_Gogo.Opacity = 0.25;
+                }
+                else
+                {
+                    TextureLoad.Game_Lane_Gogo.Opacity = 0.5;
+                }
                 TextureLoad.Game_Lane_Gogo.BlendMode = BlendMode.Add;
                 TextureLoad.Game_Lane_Gogo.Draw(NotesP[player].X - 22, NotesP[player].Y);
             }

@@ -18,9 +18,14 @@ namespace Tunebeat.SongSelect
     {
         public override void Enable()
         {
-            if (File.Exists(PlayData.Data.PlayFile))
+            string path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}.tja";
+            if (!File.Exists(path))
             {
-                NowTJA = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, 0, false, 0);
+                path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}/{PlayData.Data.PlaySong}.tja";
+            }
+            if (File.Exists(path))
+            {
+                NowTJA = new TJAParse.TJAParse(path, PlayData.Data.PlaySpeed, 0, false, 0);
             }
             FontFamily family = new FontFamily("Arial");
             TitleFont = new FontRender(family, 56, 2, FontStyle.Regular);
@@ -62,7 +67,12 @@ namespace Tunebeat.SongSelect
             {
                 TextureLoad.SongSelect_Difficulty_Base.Draw(difXY[0], difXY[1] + 163, new Rectangle(0, 132, 814, 31));
             }
-            DrawString(80, 200, $"{PlayData.Data.PlayFile}", 0xffffff);
+            string path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}.tja";
+            if (!File.Exists(path))
+            {
+                path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}/{PlayData.Data.PlaySong}.tja";
+            }
+            DrawString(80, 200, $"{path}", 0xffffff);
             if (NowTJA != null)
             {
                 if (!string.IsNullOrEmpty(NowTJA.Header.GENRE))
@@ -322,7 +332,7 @@ namespace Tunebeat.SongSelect
             }
 
             #if DEBUG
-            DrawString(0, 0, $"File:{PlayData.Data.PlayFile}", 0xffffff);
+            DrawString(0, 0, $"File:{path}", 0xffffff);
             DrawString(0, 20, $"Course:{(ECourse)PlayData.Data.PlayCourse[0]}" + (PlayData.Data.IsPlay2P ? $"/{(ECourse)PlayData.Data.PlayCourse[1]}" : ""), 0xffffff);
             if (PlayData.Data.Auto[0])
             {
@@ -349,7 +359,12 @@ namespace Tunebeat.SongSelect
 
             if (Key.IsPushed(KEY_INPUT_RETURN))
             {
-                if (File.Exists(PlayData.Data.PlayFile))
+                string path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}.tja";
+                if (!File.Exists(path))
+                {
+                    path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}/{PlayData.Data.PlaySong}.tja";
+                }
+                if (File.Exists(path))
                 {
                     if (NowTJA.Courses[PlayData.Data.PlayCourse[0]].ListChip.Count > 0)
                     {
@@ -393,7 +408,12 @@ namespace Tunebeat.SongSelect
             if (Key.IsPushed(KEY_INPUT_F2))
             {
                 PlayData.Init();
-                NowTJA = new TJAParse.TJAParse(PlayData.Data.PlayFile, PlayData.Data.PlaySpeed, 0, false, 0);
+                string path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}.tja";
+                if (!File.Exists(path))
+                {
+                    path = $"{PlayData.Data.PlayFolder}/{PlayData.Data.PlaySong}/{PlayData.Data.PlaySong}.tja";
+                }
+                NowTJA = new TJAParse.TJAParse(path, PlayData.Data.PlaySpeed, 0, false, 0);
             }
             if (Key.IsPushed(KEY_INPUT_F3))
             {
