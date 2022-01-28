@@ -112,7 +112,7 @@ namespace Tunebeat.Game
 
             for (int i = 0; i < 6; i++)
             {
-                TextureLoad.Game_Judge.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
             }
             DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
             DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
@@ -124,7 +124,7 @@ namespace Tunebeat.Game
             {
                 for (int i = 0; i < 6; i++)
                 {
-                    TextureLoad.Game_Judge.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                    TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
                 }
                 DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
                 DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);

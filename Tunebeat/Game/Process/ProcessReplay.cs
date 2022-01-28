@@ -22,7 +22,7 @@ namespace Tunebeat.Game
 
             foreach (InputData input in data)
             {
-                if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < 60)
+                if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
                 {
                     KeyInput.Process(input.IsDon, input.IsLeft, player);
                     input.Hit = true;
@@ -55,7 +55,7 @@ namespace Tunebeat.Game
             {
                 foreach (InputData input in data)
                 {
-                    if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < 60)
+                    if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
                     {
                         Chip chip = GetNotes.GetNearNote(Game.MainTJA[5].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[2]);
                         Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[5].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[2]);
@@ -100,7 +100,7 @@ namespace Tunebeat.Game
             {
                 foreach (InputData input in rdata)
                 {
-                    if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < 60)
+                    if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
                     {
                         Chip chip = GetNotes.GetNearNote(Game.MainTJA[6].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[3]);
                         Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[6].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[3]);

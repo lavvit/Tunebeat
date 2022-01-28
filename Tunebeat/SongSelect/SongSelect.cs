@@ -241,6 +241,45 @@ namespace Tunebeat.SongSelect
                         }
                     }
                 }
+
+                DrawString(480, 640, "REPLAYDATA MENU (Beta mode)", 0xffffff);
+                if (!string.IsNullOrEmpty(PlayData.Data.BestScore) && File.Exists($@"{Path.GetDirectoryName(NowTJA.TJAPath)}\{Path.GetFileNameWithoutExtension(NowTJA.TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[0]}.{PlayData.Data.BestScore}.replaydata"))
+                {
+                    DrawString(480, 680, $"BestScore:{PlayData.Data.BestScore}", 0xffffff);
+                }
+                else
+                {
+                    DrawString(480, 680, "BestScore:None", 0xffffff);
+                }
+                if (!string.IsNullOrEmpty(PlayData.Data.RivalScore) && File.Exists($@"{Path.GetDirectoryName(NowTJA.TJAPath)}\{Path.GetFileNameWithoutExtension(NowTJA.TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[0]}.{PlayData.Data.RivalScore}.replaydata"))
+                {
+                    DrawString(480, 700, $"RivalScore:{PlayData.Data.RivalScore}", 0xffffff);
+                }
+                else
+                {
+                    DrawString(480, 700, "RivalScore:None", 0xffffff);
+                }
+                if (!string.IsNullOrEmpty(PlayData.Data.Replay[0]) && File.Exists($@"{Path.GetDirectoryName(NowTJA.TJAPath)}\{Path.GetFileNameWithoutExtension(NowTJA.TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[0]}.{PlayData.Data.Replay[0]}.replaydata"))
+                {
+                    DrawString(480, 720, $"ReplayScore1P:{PlayData.Data.Replay[0]}", 0xffffff);
+                    DrawString(800, 720, "Press LSHIFT & ENTER to playback", 0xffffff);
+                }
+                else
+                {
+                    DrawString(480, 720, "ReplayScore1P:None", 0xffffff);
+                }
+                if (PlayData.Data.IsPlay2P)
+                {
+                    if (!string.IsNullOrEmpty(PlayData.Data.Replay[1]) && File.Exists($@"{Path.GetDirectoryName(NowTJA.TJAPath)}\{Path.GetFileNameWithoutExtension(NowTJA.TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[1]}.{PlayData.Data.Replay[1]}.replaydata"))
+                    {
+                        DrawString(480, 740, $"ReplayScore2P:{PlayData.Data.Replay[1]}", 0xffffff);
+                        DrawString(800, 740, "Press RSHIFT & ENTER to playback", 0xffffff);
+                    }
+                    else
+                    {
+                        DrawString(480, 740, "ReplayScore2P:None", 0xffffff);
+                    }
+                }
             }
             TextureLoad.SongSelect_Difficulty_TJA.Draw(difXY[0], difXY[1]);
 
@@ -271,7 +310,15 @@ namespace Tunebeat.SongSelect
             if (Alart.State != 0)
             {
                 DrawBox(0, 1040, 410, 1080, 0x000000, TRUE);
-                DrawString(20, 1052, $"TJAが見つかりません!パスを確認してください。", 0xffffff);
+                switch (AlartType)
+                {
+                    case 0:
+                        DrawString(20, 1052, $"TJAが見つかりません!パスを確認してください。", 0xffffff);
+                        break;
+                    case 1:
+                        DrawString(20, 1052, $"譜面がありません!難易度を確認してください。", 0xffffff);
+                        break;
+                }
             }
 
             #if DEBUG
@@ -304,18 +351,28 @@ namespace Tunebeat.SongSelect
             {
                 if (File.Exists(PlayData.Data.PlayFile))
                 {
-                    if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                    if (NowTJA.Courses[PlayData.Data.PlayCourse[0]].ListChip.Count > 0)
                     {
-                        Replay[0] = true;
+                        if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                        {
+                            Replay[0] = true;
+                        }
+                        else
+                        {
+                            Replay[0] = false;
+                        }
+                        Program.SceneChange(new Game.Game());
                     }
                     else
                     {
-                        Replay[0] = false;
+                        AlartType = 1;
+                        Alart.Reset();
+                        Alart.Start();
                     }
-                    Program.SceneChange(new Game.Game());
                 }
                 else
                 {
+                    AlartType = 0;
                     Alart.Reset();
                     Alart.Start();
                 }
@@ -468,5 +525,6 @@ namespace Tunebeat.SongSelect
         public static Texture Title, SubTitle;
         public static TJAParse.TJAParse NowTJA;
         public static Counter Alart;
+        public static int AlartType;
     }
 }

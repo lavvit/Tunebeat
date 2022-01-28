@@ -41,7 +41,7 @@ namespace Tunebeat.Game
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
                 PushingTimer[i] = new Counter(0, 99, 1000, false);
-                Adjust[i] = PlayData.Data.InputAdjust[i];
+                Adjust[i] = !PlayData.Data.Auto[i] ? PlayData.Data.InputAdjust[i] : 0;
 
                 if (IsReplay[i]) IsAuto[i] = false;
             }
@@ -432,9 +432,9 @@ namespace Tunebeat.Game
             if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart))
             {
                 MainTimer.Start();
-                PlayData.Data.InputAdjust[0] = Adjust[0];
+                if (IsAuto[0]) PlayData.Data.InputAdjust[0] = Adjust[0];
                 PlayMemory.InitSetting(0, MainTimer.Begin, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
-                if (PlayData.Data.IsPlay2P) { PlayMemory.InitSetting(1, MainTimer.Begin, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]); PlayData.Data.InputAdjust[1] = Adjust[1]; }
+                if (PlayData.Data.IsPlay2P) { PlayMemory.InitSetting(1, MainTimer.Begin, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]); if (IsAuto[1]) PlayData.Data.InputAdjust[1] = Adjust[1]; }
             }
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay)
             {
