@@ -27,7 +27,12 @@ namespace Tunebeat
             ChangeWindowMode(PlayData.Data.FullScreen ? FALSE : TRUE);  //ウィンドウモード切替
             SetGraphMode(1920, 1080, 32); //ゲームサイズ決める
             SetWindowSize(1920, 1080); //ウィンドウサイズを決める
-            SetMainWindowText("Tunebeat"); //ソフト名決める
+            string Version = "";//AssemblyInfo?そんな回りくどいことはせんよ
+            #if DEBUG
+            #else
+            Version = "  Ver.Beta 0.1";
+            #endif
+            SetMainWindowText("Tunebeat" + Version); //ソフト名決める
             SetWindowStyleMode(7); //画面最大化できるようにする
             SetWindowSizeChangeEnableFlag(TRUE); //ウィンドウサイズ変えれるようにする
             SetAlwaysRunFlag(TRUE); //ソフトがアクティブじゃなくても処理続行するようにする
