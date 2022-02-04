@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Amaoto;
 using static DxLibDLL.DX;
 
@@ -13,6 +14,7 @@ namespace Tunebeat.Common
                 ConfigManager.SaveConfig(Data, "Config.json");
 
             Data = ConfigManager.GetConfig<Data>(@"Config.json");
+            if (Data.PlayFolder.Count > 1) Data.PlayFolder.RemoveAt(0);
         }
         public static void End()
         {
@@ -29,8 +31,7 @@ namespace Tunebeat.Common
         public int[] SkinColor = new int[3] { 128, 128, 128 };
         public bool FullScreen = false;
 
-        public string PlayFolder = "Songs";
-        public string PlaySong = "水天神術・時雨";
+        public List<string> PlayFolder = new List<string>() { "Songs" };
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
         public bool ShowImage = true;
