@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
-using System.Windows.Forms;
 using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
@@ -19,14 +18,18 @@ namespace Tunebeat.SongSelect
         public override void Enable()
         {
             FontFamily family = new FontFamily("Arial");
-            TitleFont = new FontRender(family, 56, 2, FontStyle.Regular);
-            SubTitleFont = new FontRender(family, 32, 2, FontStyle.Regular);
-            Title = new Texture();
-            SubTitle = new Texture();
+            if (family != null)
+            {
+                TitleFont = new FontRender(family, 56);
+                SubTitleFont = new FontRender(family, 32);
+                GenreFont = new FontRender(family, 32);
+            }
             Alart = new Counter(0, 1000, 1000, false);
             SongLoad.Init();
             if (SongLoad.SongData.Count > 0) NowTJA = SongLoad.SongData[NowSongNumber];
-
+            Title = new Texture();
+            SubTitle = new Texture();
+            Genre = new Texture();
             for (int i = 0; i < 2; i++)
             {
                 PushedTimer[i] = new Counter(0, 199, 1000, false);
@@ -44,8 +47,10 @@ namespace Tunebeat.SongSelect
             NowTJA = null;
             TitleFont = null;
             SubTitleFont = null;
+            GenreFont = null;
             Title = null;
             SubTitle = null;
+            Genre = null;
             Alart.Reset();
             SongLoad.Dispose();
 
@@ -141,18 +146,29 @@ namespace Tunebeat.SongSelect
                         if (!string.IsNullOrEmpty(NowTJA.Header.GENRE))
                         {
                             DrawString(80, 280, NowTJA.Header.GENRE, 0xffffff);
+                            if (GenreFont != null)
+                            {
+                                //Genre = GenreFont.GetTexture(NowTJA.Header.GENRE);
+                                Genre.Draw(80, 200);
+                            }
                         }
                         if (!string.IsNullOrEmpty(NowTJA.Header.TITLE))
                         {
                             DrawString(80, 320, NowTJA.Header.TITLE, 0xffffff);
-                            //Title = TitleFont.GetTexture(NowTJA.Header.TITLE, 900, true);
-                            //Title.Draw(80, 200);
+                            if (TitleFont != null)
+                            {
+                                //Title = TitleFont.GetTexture(NowTJA.Header.TITLE);
+                                Title.Draw(80, 200);
+                            }
                         }
                         if (!string.IsNullOrEmpty(NowTJA.Header.SUBTITLE))
                         {
                             DrawString(80, 360, NowTJA.Header.SUBTITLE, 0xffffff);
-                            //SubTitle = TitleFont.GetTexture(NowTJA.Header.SUBTITLE, 900, true);
-                            //SubTitle.Draw(80, 200);
+                            if (SubTitleFont != null)
+                            {
+                                //SubTitle = SubTitleFont.GetTexture(NowTJA.Header.SUBTITLE);
+                                SubTitle.Draw(80, 200);
+                            }
                         }
                         DrawString(800, 360, $"BPM:{NowTJA.Header.BPM}", 0xffffff);
                         for (int i = 0; i < 5; i++)
@@ -713,8 +729,8 @@ namespace Tunebeat.SongSelect
         }
 
         public static bool[] Replay = new bool[2];
-        public static FontRender TitleFont, SubTitleFont;
-        public static Texture Title, SubTitle;
+        public static FontRender TitleFont, SubTitleFont, GenreFont;
+        public static Texture Title, SubTitle,Genre;
         public static SongData NowTJA;
         public static Counter Alart;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];

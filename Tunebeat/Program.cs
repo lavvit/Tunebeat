@@ -46,6 +46,8 @@ namespace Tunebeat
             if (DxLib_Init() < 0) return;
             SetDrawScreen(DX_SCREEN_BACK);
 
+            //ChangeFont("Arial");
+
             //画像読み込み
             TextureLoad.Init();
             //音源読み込み
