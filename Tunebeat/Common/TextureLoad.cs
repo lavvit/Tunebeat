@@ -27,6 +27,9 @@ namespace Tunebeat.Common
             #region SongSelect
             SongSelect_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Background.png");
             SongSelect_Bar = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Bar.png");
+            SongSelect_Bar_Color = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Bar_Color.png");
+            SongSelect_Bar_Folder = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Bar_Folder.png");
+            SongSelect_Bar_Folder_Color = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Bar_Folder_Color.png");
             SongSelect_Clear = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Clear.png");
             SongSelect_Difficulty = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty.png");
             SongSelect_Difficulty_Base = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Base.png");
@@ -94,6 +97,9 @@ namespace Tunebeat.Common
         #region SongSelect
         public static Texture SongSelect_Background,
             SongSelect_Bar,
+            SongSelect_Bar_Color,
+            SongSelect_Bar_Folder,
+            SongSelect_Bar_Folder_Color,
             SongSelect_Clear,
             SongSelect_Difficulty,
             SongSelect_Difficulty_Base,
