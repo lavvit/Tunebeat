@@ -77,7 +77,7 @@ namespace Tunebeat.SongSelect
                         TextureLoad.SongSelect_Bar_Folder_Color.Color = NowTJA.BackColor;
                         TextureLoad.SongSelect_Bar_Folder_Color.Draw(1180, -90 + 60 * 10);
                         TextureLoad.SongSelect_Bar_Folder.Draw(1180, -90 + 60 * 10);
-                        DrawString(1300, -90 + 60 * 10 + 22, NowTJA.Title, (uint)ColorTranslator.ToWin32(NowTJA.FontColor));
+                        DrawString(1300 - 60, -90 + 60 * 10 + 22, NowTJA.Title, (uint)ColorTranslator.ToWin32(NowTJA.FontColor));
                         break;
                 }
 
@@ -99,7 +99,7 @@ namespace Tunebeat.SongSelect
                             TextureLoad.SongSelect_Bar_Folder_Color.Color = prev.BackColor;
                             TextureLoad.SongSelect_Bar_Folder_Color.Draw(1212, -90 + 60 * i);
                             TextureLoad.SongSelect_Bar_Folder.Draw(1212, -90 + 60 * i);
-                            DrawString(1342, -90 + 60 * i + 22, prev.Title, (uint)ColorTranslator.ToWin32(prev.FontColor));
+                            DrawString(1342 - 60, -90 + 60 * i + 22, prev.Title, (uint)ColorTranslator.ToWin32(prev.FontColor));
                             break;
                     }
 
@@ -122,7 +122,7 @@ namespace Tunebeat.SongSelect
                             TextureLoad.SongSelect_Bar_Folder_Color.Color = next.BackColor;
                             TextureLoad.SongSelect_Bar_Folder_Color.Draw(1212, -90 + 60 * i);
                             TextureLoad.SongSelect_Bar_Folder.Draw(1212, -90 + 60 * i);
-                            DrawString(1342, -90 + 60 * i + 22, next.Title, (uint)ColorTranslator.ToWin32(next.FontColor));
+                            DrawString(1342 - 60, -90 + 60 * i + 22, next.Title, (uint)ColorTranslator.ToWin32(next.FontColor));
                             break;
                     }
                 }
@@ -390,6 +390,13 @@ namespace Tunebeat.SongSelect
                 DrawString(80, 320, "TJAがありません。パスを確認し、ロードしてください。", 0xffffff);
             }
 
+            if (Input.IsEnable)
+            {
+                DrawBox(0, 1040, GetDrawStringWidth(Input.Text, Input.Position) + 50, 1080, 0x000000, TRUE);
+                DrawString(20, 1052, Input.Text, 0xffffff);
+                DrawString(16 + GetDrawStringWidth(Input.Text, Input.Position), 1052, "|", 0xffff00);
+            }
+
             if (Alart.State != 0)
             {
                 DrawBox(0, 1040, 410, 1080, 0x000000, TRUE);
@@ -432,216 +439,230 @@ namespace Tunebeat.SongSelect
             Alart.Tick();
             if (Alart.Value == Alart.End) Alart.Stop();
 
-            if (Key.IsPushed(PlayData.Data.LEFTKA))
+            if (Input.IsEnable)
             {
-                PushedTimer[0].Start();
-            }
-            if (Key.IsLeft(PlayData.Data.LEFTKA))
-            {
-                PushedTimer[0].Stop();
-                PushedTimer[0].Reset();
-                PushingTimer[0].Stop();
-                PushingTimer[0].Reset();
-            }
-            if (Key.IsPushed(PlayData.Data.RIGHTKA))
-            {
-                PushedTimer[1].Start();
-            }
-            if (Key.IsLeft(PlayData.Data.RIGHTKA))
-            {
-                PushedTimer[1].Stop();
-                PushedTimer[1].Reset();
-                PushingTimer[1].Stop();
-                PushingTimer[1].Reset();
-            }
-            for (int i = 0; i < 2; i++)
-            {
-                if (PushedTimer[i].Value == PushedTimer[i].End)
+                if (Key.IsPushed(KEY_INPUT_RETURN))
                 {
-                    PushingTimer[i].Start();
+                    Input.End();
                 }
             }
-
-            if ((Key.IsPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End)) && NowTJA != null)
+            else
             {
-                SoundLoad.Ka.Play();
-                NowTJA = NowTJA.Prev;
-                if (NowSongNumber <= 0) NowSongNumber = SongLoad.SongData.Count - 1;
-                else NowSongNumber--;
-                PushingTimer[0].Reset();
-            }
-            if ((Key.IsPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End)) && NowTJA != null)
-            {
-                SoundLoad.Ka.Play();
-                NowTJA = NowTJA.Next;
-                if (NowSongNumber >= SongLoad.SongData.Count - 1) NowSongNumber = 0;
-                else NowSongNumber++;
-                PushingTimer[1].Reset();
-            }
-
-            if ((Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
-            {
-                SoundLoad.Don.Play();
-                switch (NowTJA.Type)
+                if (Key.IsPushed(PlayData.Data.LEFTKA))
                 {
-                    case EType.Score:
-                        if (File.Exists(NowTJA.Path))
-                        {
-                            if (NowTJA.Course[PlayData.Data.PlayCourse[0]].IsEnable)
+                    PushedTimer[0].Start();
+                }
+                if (Key.IsLeft(PlayData.Data.LEFTKA))
+                {
+                    PushedTimer[0].Stop();
+                    PushedTimer[0].Reset();
+                    PushingTimer[0].Stop();
+                    PushingTimer[0].Reset();
+                }
+                if (Key.IsPushed(PlayData.Data.RIGHTKA))
+                {
+                    PushedTimer[1].Start();
+                }
+                if (Key.IsLeft(PlayData.Data.RIGHTKA))
+                {
+                    PushedTimer[1].Stop();
+                    PushedTimer[1].Reset();
+                    PushingTimer[1].Stop();
+                    PushingTimer[1].Reset();
+                }
+                for (int i = 0; i < 2; i++)
+                {
+                    if (PushedTimer[i].Value == PushedTimer[i].End)
+                    {
+                        PushingTimer[i].Start();
+                    }
+                }
+
+                if ((Key.IsPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End)) && NowTJA != null)
+                {
+                    SoundLoad.Ka.Play();
+                    NowTJA = NowTJA.Prev;
+                    if (NowSongNumber <= 0) NowSongNumber = SongLoad.SongData.Count - 1;
+                    else NowSongNumber--;
+                    PushingTimer[0].Reset();
+                }
+                if ((Key.IsPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End)) && NowTJA != null)
+                {
+                    SoundLoad.Ka.Play();
+                    NowTJA = NowTJA.Next;
+                    if (NowSongNumber >= SongLoad.SongData.Count - 1) NowSongNumber = 0;
+                    else NowSongNumber++;
+                    PushingTimer[1].Reset();
+                }
+
+                if ((Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
+                {
+                    SoundLoad.Don.Play();
+                    switch (NowTJA.Type)
+                    {
+                        case EType.Score:
+                            if (File.Exists(NowTJA.Path))
                             {
-                                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                                if (NowTJA.Course[PlayData.Data.PlayCourse[0]].IsEnable)
                                 {
-                                    Replay[0] = true;
+                                    if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                                    {
+                                        Replay[0] = true;
+                                    }
+                                    else
+                                    {
+                                        Replay[0] = false;
+                                    }
+                                    Program.SceneChange(new Game.Game());
                                 }
                                 else
                                 {
-                                    Replay[0] = false;
+                                    AlartType = 1;
+                                    Alart.Reset();
+                                    Alart.Start();
                                 }
-                                Program.SceneChange(new Game.Game());
                             }
                             else
                             {
-                                AlartType = 1;
+                                AlartType = 0;
                                 Alart.Reset();
                                 Alart.Start();
                             }
-                        }
-                        else
-                        {
-                            AlartType = 0;
-                            Alart.Reset();
-                            Alart.Start();
-                        }
-                        break;
-                    case EType.Folder:
-                        SongLoad.FolderFloor++;
-                        SongLoad.SongData = new List<SongData>();
-                        SongLoad.FolderData = new List<string>();
-                        NowPath = NowTJA.Path;
-                        SongLoad.Load(SongLoad.SongData, NowTJA.Path);
-                        NowSongNumber = 0;
-                        NowTJA = SongLoad.SongData[NowSongNumber];
-                        break;
-                    case EType.Back:
-                        string title = NowTJA.Title;
-                        SongLoad.FolderFloor--;
-                        SongLoad.SongData = new List<SongData>();
-                        SongLoad.FolderData = new List<string>();
-                        NowPath = NowTJA.Path;
-                        SongLoad.Load(SongLoad.SongData, NowTJA.Path);
-                        for (int i = 0; i < SongLoad.SongData.Count; i++)
-                        {
-                            if (SongLoad.SongData[i].Title == title)
+                            break;
+                        case EType.Folder:
+                            SongLoad.FolderFloor++;
+                            SongLoad.SongData = new List<SongData>();
+                            SongLoad.FolderData = new List<string>();
+                            NowPath = NowTJA.Path;
+                            SongLoad.Load(SongLoad.SongData, NowTJA.Path);
+                            NowSongNumber = 0;
+                            NowTJA = SongLoad.SongData[NowSongNumber];
+                            break;
+                        case EType.Back:
+                            string title = NowTJA.Title;
+                            SongLoad.FolderFloor--;
+                            SongLoad.SongData = new List<SongData>();
+                            SongLoad.FolderData = new List<string>();
+                            NowPath = NowTJA.Path;
+                            SongLoad.Load(SongLoad.SongData, NowTJA.Path);
+                            for (int i = 0; i < SongLoad.SongData.Count; i++)
                             {
-                                NowSongNumber = i;
-                                break;
+                                if (SongLoad.SongData[i].Title == title)
+                                {
+                                    NowSongNumber = i;
+                                    break;
+                                }
                             }
-                        }
-                        NowTJA = SongLoad.SongData[NowSongNumber];
-                        break;
+                            NowTJA = SongLoad.SongData[NowSongNumber];
+                            break;
+                    }
                 }
-            }
-            if (Key.IsPushed(KEY_INPUT_ESCAPE))
-            {
-                Program.SceneChange(new Title.Title());
-            }
-            if (Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushing(KEY_INPUT_DELETE))
-            {
-                Program.SceneChange(new Game.Game());
-            }
+                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                {
+                    Program.SceneChange(new Title.Title());
+                }
+                if (Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushing(KEY_INPUT_DELETE))
+                {
+                    Program.SceneChange(new Game.Game());
+                }
 
-            if (Key.IsPushed(KEY_INPUT_F1))
-            {
-                Program.SceneChange(new Config.Config());
-            }
-            if (Key.IsPushed(KEY_INPUT_F2))
-            {
-                PlayData.Init();
-                SongLoad.Init();
-            }
-            if (Key.IsPushed(KEY_INPUT_F3))
-            {
-                PlayData.Data.Auto[0] = !PlayData.Data.Auto[0];
-            }
-            if (Key.IsPushed(KEY_INPUT_F4) && PlayData.Data.IsPlay2P)
-            {
-                PlayData.Data.Auto[1] = !PlayData.Data.Auto[1];
-            }
-            if (Key.IsPushed(KEY_INPUT_F5))
-            {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(KEY_INPUT_F1))
                 {
-                    GaugeChange(1);
+                    Program.SceneChange(new Config.Config());
                 }
-                else
+                if (Key.IsPushed(KEY_INPUT_F2))
                 {
-                    GaugeChange(0);
+                    PlayData.Init();
+                    SongLoad.Init();
                 }
-            }
-            if (Key.IsPushed(KEY_INPUT_F6))
-            {
-                if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(KEY_INPUT_F3))
                 {
-                    GASChange(1);
+                    PlayData.Data.Auto[0] = !PlayData.Data.Auto[0];
                 }
-                else
+                if (Key.IsPushed(KEY_INPUT_F4) && PlayData.Data.IsPlay2P)
                 {
-                    GASChange(0);
+                    PlayData.Data.Auto[1] = !PlayData.Data.Auto[1];
                 }
-            }
-            if (Key.IsPushed(KEY_INPUT_F7))
-            {
-                PlayData.Data.IsPlay2P = !PlayData.Data.IsPlay2P;
-            }
-            if (Key.IsPushed(KEY_INPUT_F8))
-            {
-                PlayData.Data.ShowResultScreen = !PlayData.Data.ShowResultScreen;
-            }
-            if (Key.IsPushed(KEY_INPUT_F9))
-            {
-                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(KEY_INPUT_F5))
                 {
-                    PlayData.Data.Hazard[1]--;
+                    if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                    {
+                        GaugeChange(1);
+                    }
+                    else
+                    {
+                        GaugeChange(0);
+                    }
                 }
-                else
+                if (Key.IsPushed(KEY_INPUT_F6))
                 {
-                    PlayData.Data.Hazard[0]--;
+                    if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                    {
+                        GASChange(1);
+                    }
+                    else
+                    {
+                        GASChange(0);
+                    }
                 }
-            }
-            if (Key.IsPushed(KEY_INPUT_F10))
-            {
-                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(KEY_INPUT_F7))
                 {
-                    PlayData.Data.Hazard[1]++;
+                    PlayData.Data.IsPlay2P = !PlayData.Data.IsPlay2P;
                 }
-                else
+                if (Key.IsPushed(KEY_INPUT_F8))
                 {
-                    PlayData.Data.Hazard[0]++;
+                    PlayData.Data.ShowResultScreen = !PlayData.Data.ShowResultScreen;
                 }
-            }
+                if (Key.IsPushed(KEY_INPUT_F9))
+                {
+                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    {
+                        PlayData.Data.Hazard[1]--;
+                    }
+                    else
+                    {
+                        PlayData.Data.Hazard[0]--;
+                    }
+                }
+                if (Key.IsPushed(KEY_INPUT_F10))
+                {
+                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    {
+                        PlayData.Data.Hazard[1]++;
+                    }
+                    else
+                    {
+                        PlayData.Data.Hazard[0]++;
+                    }
+                }
 
-            if (Key.IsPushed(KEY_INPUT_LEFT))
-            {
-                SoundLoad.Ka.Play();
-                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(KEY_INPUT_LEFT))
                 {
-                    CourseChange(true, 1);
+                    SoundLoad.Ka.Play();
+                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    {
+                        CourseChange(true, 1);
+                    }
+                    else
+                    {
+                        CourseChange(true, 0);
+                    }
                 }
-                else
+                if (Key.IsPushed(KEY_INPUT_RIGHT))
                 {
-                    CourseChange(true, 0);
+                    SoundLoad.Ka.Play();
+                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    {
+                        CourseChange(false, 1);
+                    }
+                    else
+                    {
+                        CourseChange(false, 0);
+                    }
                 }
-            }
-            if (Key.IsPushed(KEY_INPUT_RIGHT))
-            {
-                SoundLoad.Ka.Play();
-                if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(KEY_INPUT_SLASH))
                 {
-                    CourseChange(false, 1);
-                }
-                else
-                {
-                    CourseChange(false, 0);
+                    Input.Init();
                 }
             }
 

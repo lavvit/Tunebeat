@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Amaoto;
 
 namespace Tunebeat.Config
 {
@@ -60,7 +61,8 @@ namespace Tunebeat.Config
 		Int,
 		List,
 		Double,
-		String
+		String,
+		StrList
 	}
 
 	public class OptionBool : Option
@@ -321,7 +323,7 @@ namespace Tunebeat.Config
 
 		public OptionString()
 		{
-			Type = OptionType.Int;
+			Type = OptionType.String;
 			Text = "";
 			Preset = "";
 			Selecting = false;
@@ -334,6 +336,16 @@ namespace Tunebeat.Config
 		public override void Enter()
 		{
 			Selecting = !Selecting;
+			if (Selecting)
+            {
+				Input.Init();
+				Input.Text = Text;
+            }
+			else
+            {
+				Text = Input.Text;
+				Input.End();
+            }
 		}
 		public override void Up()
 		{
@@ -344,16 +356,18 @@ namespace Tunebeat.Config
 		public override void Reset()
 		{
 			Text = Preset;
+			Input.End();
 		}
 		public void StringInit(string name, string start, string info)
 		{
 			Init(name, info);
 			Text = start;
+			Preset = start;
 			Selecting = false;
 		}
 		public override object objAmount()
 		{
-			return Text;
+			return Input.IsEnable ? Input.Text : Text;
 		}
 		public override int GetIndex()
 		{
@@ -362,6 +376,97 @@ namespace Tunebeat.Config
 		public override void SetIndex(object index)
 		{
 			Text = $"{index}";
+		}
+	}
+
+	public class OptionStrList : Option
+	{
+		public List<string> Text, Preset;
+		public string Preview;
+		public bool Selecting;
+		public int Max;
+
+		public OptionStrList()
+		{
+			Type = OptionType.StrList;
+			Text = new List<string>();
+			Preset = new List<string>();
+			Preview = "";
+			Max = 0;
+			Selecting = false;
+		}
+		public OptionStrList(string name, List<string> start, string info)
+			: this()
+		{
+			StringInit(name, start, info);
+		}
+		public override void Enter()
+		{
+			Selecting = !Selecting;
+			if (Selecting)
+			{
+				Input.Init();
+				Input.Text = Preview;
+			}
+			else
+			{
+				Preview = Input.Text;
+				Text = new List<string>();
+				string[] strArray = Input.Text.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+				if (Max == 0)
+                {
+					for (int i = 0; i < strArray.Length; i++)
+					{
+						Text.Add(strArray[i]);
+					}
+				}
+				else
+                {
+					for (int i = 0; i < strArray.Length && i < Max; i++)
+					{
+						Text.Add(strArray[i]);
+					}
+				}
+				Input.End();
+			}
+		}
+		public override void Up()
+		{
+		}
+		public override void Down()
+		{
+		}
+		public override void Reset()
+		{
+			Text = Preset;
+			Input.End();
+		}
+		public void StringInit(string name, List<string> start, string info, int max = 0)
+		{
+			Init(name, info);
+			Text = start;
+			Preset = start;
+			Max = max;
+			foreach (string str in start)
+            {
+				Preview = Preview + ";" + str;
+            }
+			Preview = Preview.Remove(0, 1);
+			Selecting = false;
+		}
+		public override object objAmount()
+		{
+			string str = Input.IsEnable ? Input.Text : Preview;
+			//str = str.Replace(";", ";\n    ");
+			return str;
+		}
+		public override int GetIndex()
+		{
+			return !string.IsNullOrEmpty(Preview) ? 1 : 0;
+		}
+		public override void SetIndex(object index)
+		{
+			Preview = $"{index}";
 		}
 	}
 }

@@ -15,6 +15,7 @@ namespace Tunebeat.Title
     {
         public override void Enable()
         {
+            Config = false;
             base.Enable();
         }
 
@@ -82,8 +83,14 @@ namespace Tunebeat.Title
                     PlayData.Data.SkinColor[2]--;
                 }
             }
+            if (Key.IsPushed(KEY_INPUT_F1))
+            {
+                Config = true;
+                Program.SceneChange(new Config.Config());
+            }
 
             base.Update();
         }
+        public static bool Config;
     }
 }

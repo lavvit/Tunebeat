@@ -53,12 +53,19 @@ namespace Tunebeat.Config
                 for (int i = 0; i < OptionList.Count; i++)
                 {
                     Option list = OptionList[i];
-                    DrawString(400, 200 + 20 * i, $"{list.Name}", !InLayer ? 0x808080 : (Cursor == i ? 0xff0000 : (uint)0xffffff));
+                    DrawString(300, 200 + 20 * i, $"{list.Name}", !InLayer ? 0x808080 : (Cursor == i ? 0xff0000 : (uint)0xffffff));
                     if (InLayer && Cursor == i)
                     {
-                        DrawString(380, 200 + 20 * i, ">", 0xff0000);
-                        DrawString(1000, 200, $"{list.Info}", 0xffffff);
-                        if (list.objAmount() != null) DrawString(1000, 240, $"Now:{list.objAmount()}", Selecting ? 0xffff00 : (uint)0xffffff);
+                        DrawString(280, 200 + 20 * i, ">", 0xff0000);
+                        DrawString(600, 200, $"{list.Info}", 0xffffff);
+                        if (list.objAmount() != null)
+                        {
+                            DrawString(600, 240, $"Now:{list.objAmount()}", Selecting && list.Type < OptionType.String ? 0xffff00 : (uint)0xffffff);
+                            if (Input.IsEnable)
+                            {
+                                DrawString(632 + GetDrawStringWidth(Input.Text, Input.Position), 240, "|", 0xffff00);
+                            }
+                        }
 
                         if ((ELayer)Layer == ELayer.System && i >= 1 && i <= 3)
                         {
@@ -129,8 +136,8 @@ namespace Tunebeat.Config
                     }
                     else
                     {
-                        if (Layer-- <= 0) Layer = 0;
-                        else Change();
+                        if (Layer-- <= 0) Layer = (int)ELayer.Back;
+                        Change();
                     }
                     PushingTimer[0].Reset();
                 }
@@ -146,8 +153,8 @@ namespace Tunebeat.Config
                     }
                     else
                     {
-                        if (Layer++ >= (int)ELayer.Back) Layer = (int)ELayer.Back;
-                        else Change();
+                        if (Layer++ >= (int)ELayer.Back) Layer = 0;
+                        Change();
                     }
                     PushingTimer[1].Reset();
                 }
@@ -156,13 +163,24 @@ namespace Tunebeat.Config
                     if (Selecting)
                     {
                         Selecting = false;
+                        if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
+                        {
+                            OptionList[Cursor].Enter();
+                            if (OptionList[Cursor].Name == "PlayFolder")
+                                SongSelect.SongSelect.NowSongNumber = 0;
+                        }
                         UpdateConfig();
                     }
                     else if (InLayer)
                     {
-                        if (OptionList[Cursor].Type == OptionType.Int || OptionList[Cursor].Type == OptionType.Double)
+                        if (OptionList[Cursor].Type == OptionType.Int || OptionList[Cursor].Type == OptionType.List || OptionList[Cursor].Type == OptionType.Double)
                         {
                             Selecting = true;
+                        }
+                        else if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
+                        {
+                            Selecting = true;
+                            OptionList[Cursor].Enter();
                         }
                         else if (Cursor == OptionList.Count - 1)
                         {
@@ -179,7 +197,8 @@ namespace Tunebeat.Config
                     {
                         if (Layer == (int)ELayer.Back)
                         {
-                            Program.SceneChange(new SongSelect.SongSelect());
+                            if (Title.Title.Config) Program.SceneChange(new Title.Title());
+                            else Program.SceneChange(new SongSelect.SongSelect());
                         }
                         else if (OptionList.Count > 0)
                         {
@@ -203,7 +222,8 @@ namespace Tunebeat.Config
                     {
                         //設定の保存
                         PlayData.End();
-                        Program.SceneChange(new SongSelect.SongSelect());
+                        if (Title.Title.Config) Program.SceneChange(new Title.Title());
+                        else Program.SceneChange(new SongSelect.SongSelect());
                     }
                 }
             }
@@ -224,6 +244,10 @@ namespace Tunebeat.Config
             {
                 case ELayer.System:
                     FullScreen = new OptionBool("FullScreen", PlayData.Data.FullScreen, "全画面表示とウィンドウ表示を切り替えます。"); OptionList.Add(FullScreen);
+                    SkinName = new OptionString("SkinName", PlayData.Data.SkinName, "使用する画像のフォルダを変更します。"); OptionList.Add(SkinName);
+                    SoundName = new OptionString("SoundName", PlayData.Data.SoundName, "使用する効果音のフォルダを変更します。"); OptionList.Add(SoundName);
+                    BGMName = new OptionString("BGMName", PlayData.Data.BGMName, "使用するBGMのフォルダを変更します。"); OptionList.Add(BGMName);
+                    PlayFolder = new OptionStrList("PlayFolder", PlayData.Data.PlayFolder, "読み込むフォルダを変更します。(セミコロン(;)で区切ることにより複数のパスを指定できます。)"); OptionList.Add(PlayFolder);
                     SkinColorR = new OptionInt("SkinColor - R", PlayData.Data.SkinColor[0], 0, 255, "スキンの色を変更します。(Red)"); OptionList.Add(SkinColorR);
                     SkinColorG = new OptionInt("SkinColor - G", PlayData.Data.SkinColor[1], 0, 255, "スキンの色を変更します。(Green)"); OptionList.Add(SkinColorG);
                     SkinColorB = new OptionInt("SkinColor - B", PlayData.Data.SkinColor[2], 0, 255, "スキンの色を変更します。(Blue)"); OptionList.Add(SkinColorB);
@@ -339,8 +363,12 @@ namespace Tunebeat.Config
                 case ELayer.System:
                     PlayData.Data.FullScreen = FullScreen.ON;
                     ChangeWindowMode(PlayData.Data.FullScreen ? FALSE : TRUE);  //ウィンドウモード切替
+                    PlayData.Data.SkinName = SkinName.Text;
                     TextureLoad.Init();
-
+                    PlayData.Data.SoundName = SoundName.Text;
+                    PlayData.Data.BGMName = BGMName.Text;
+                    SoundLoad.Init();
+                    PlayData.Data.PlayFolder = PlayFolder.Text;
                     PlayData.Data.SkinColor = new int[3] { SkinColorR.Value, SkinColorG.Value, SkinColorB.Value };
                     PlayData.Data.ShowImage = ShowImage.ON;
                     PlayData.Data.PlayMovie = PlayMovie.ON;
@@ -416,7 +444,7 @@ namespace Tunebeat.Config
         }
 
         public static int Layer, Cursor;
-        public static bool InLayer, Selecting;
+        public static bool InLayer, Selecting, FromTitle;
         public static List<Option> OptionList;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
 
@@ -438,5 +466,6 @@ namespace Tunebeat.Config
         public static OptionList PlayCourse, PlayCourse2P, RivalType, RivalRank, NotesChange, NotesChange2P, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;
         public static OptionString SkinName, SoundName, BGMName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
+        public static OptionStrList PlayFolder;
     }
 }
