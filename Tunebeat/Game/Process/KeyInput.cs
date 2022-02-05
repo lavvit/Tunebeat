@@ -40,14 +40,18 @@ namespace Tunebeat.Game
             if ((Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 20))
             {
                 PlayData.Data.AutoRoll--;
-                ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
-                ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                for (int i = 0; i < 5; i++)
+                {
+                    ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                }
             }
             if (Key.IsPushed(KEY_INPUT_F4) || (Key.IsPushing(KEY_INPUT_F4) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
             {
                 PlayData.Data.AutoRoll++;
-                ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
-                ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                for (int i = 0; i < 5; i++)
+                {
+                    ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                }
             }
 
             if (Key.IsPushed(KEY_INPUT_Q) && Game.Wait.State == 0)
@@ -397,7 +401,7 @@ namespace Tunebeat.Game
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
             EJudge judge;
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-            if (Game.IsAuto[player])
+            if (PlayData.Data.PreviewType == 3 || Game.IsAuto[player])
             {
                 judge = EJudge.Auto;
             }
@@ -424,7 +428,7 @@ namespace Tunebeat.Game
 
             Sound[] taiko = new Sound[2];
             Sound[] taiko2P = new Sound[2];
-            if (player == 0)
+            if (player == 0 || PlayData.Data.PreviewType == 3)
             {
                 if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
                 {
@@ -440,7 +444,7 @@ namespace Tunebeat.Game
                     taiko[1] = SoundLoad.Ka;
                     taiko[1].Volume = 1.0;
                 }
-                if (PlayData.Data.IsPlay2P)
+                if (PlayData.Data.IsPlay2P && PlayData.Data.PreviewType < 3)
                 {
                     taiko[0].Pan = -255;
                     taiko[1].Pan = -255;
@@ -497,62 +501,30 @@ namespace Tunebeat.Game
                 else taiko2P[1].Play();
             }
 
-            if (player == 0)
+            if (isDon)
             {
-                if (isDon)
+                if (isLeft)
                 {
-                    if (isLeft)
-                    {
-                        Game.HitTimer[0].Reset();
-                        Game.HitTimer[0].Start();
-                    }
-                    else
-                    {
-                        Game.HitTimer[1].Reset();
-                        Game.HitTimer[1].Start();
-                    }
+                    Game.HitTimer[player][0].Reset();
+                    Game.HitTimer[player][0].Start();
                 }
                 else
                 {
-                    if (isLeft)
-                    {
-                        Game.HitTimer[2].Reset();
-                        Game.HitTimer[2].Start();
-                    }
-                    else
-                    {
-                        Game.HitTimer[3].Reset();
-                        Game.HitTimer[3].Start();
-                    }
+                    Game.HitTimer[player][1].Reset();
+                    Game.HitTimer[player][1].Start();
                 }
             }
             else
             {
-                if (isDon)
+                if (isLeft)
                 {
-                    if (isLeft)
-                    {
-                        Game.HitTimer2P[0].Reset();
-                        Game.HitTimer2P[0].Start();
-                    }
-                    else
-                    {
-                        Game.HitTimer2P[1].Reset();
-                        Game.HitTimer2P[1].Start();
-                    }
+                    Game.HitTimer[player][2].Reset();
+                    Game.HitTimer[player][2].Start();
                 }
                 else
                 {
-                    if (isLeft)
-                    {
-                        Game.HitTimer2P[2].Reset();
-                        Game.HitTimer2P[2].Start();
-                    }
-                    else
-                    {
-                        Game.HitTimer2P[3].Reset();
-                        Game.HitTimer2P[3].Start();
-                    }
+                    Game.HitTimer[player][3].Reset();
+                    Game.HitTimer[player][3].Start();
                 }
             }
         }

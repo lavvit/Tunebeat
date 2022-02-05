@@ -52,11 +52,28 @@ namespace Tunebeat.Game
             }
             Adjust[2] = Adjust[3] = PlayData.Data.InputAdjust[0];
 
-            for (int i = 0; i < 4; i++)
+            if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
             {
-                HitTimer[i] = new Counter(0, 100, 1000, false);
-                HitTimer2P[i] = new Counter(0, 100, 1000, false);
+                int count = 0;
+                for (int i = 4; i >= 0; i--)
+                {
+                    if (MainTJA[count].Courses[i].ListChip.Count > 0)
+                    {
+                        Course[count] = i;
+                        count++;
+                    }
+                }
             }
+
+            for (int i = 0; i < 5; i++)
+            {
+                HitTimer[i] = new Counter[4];
+                for (int j = 0; j < 4; j++)
+                {
+                    HitTimer[i][j] = new Counter(0, 100, 1000, false);
+                }
+            }
+            
             Wait = new Counter(0, 500, 1000, false);
 
             PlayMeasure = 0;
@@ -80,10 +97,12 @@ namespace Tunebeat.Game
             MainMovie.Dispose();
             MainTimer.Reset();
             IsSongPlay = false;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
-                HitTimer[i].Reset();
-                HitTimer2P[i].Reset();
+                for (int j = 0; j < 4; j++)
+                {
+                    HitTimer[i][j].Reset();
+                }
             }
             for (int i = 0; i < 2; i++)
             {
@@ -294,55 +313,53 @@ namespace Tunebeat.Game
                 DrawBox(0, 0, 1919, 1079, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
                 TextureLoad.Game_Background.Draw(0, 0);
             }
-            
+
 
             foreach (Scene scene in ChildScene)
                 scene?.Draw();
 
-            if (HitTimer[0].State == TimerState.Started)
+            for (int i = 0; i < 5; i++)
             {
-                TextureLoad.Game_Don[0].Opacity = 1.0 - ((double)HitTimer[0].Value / HitTimer[0].End);
-                TextureLoad.Game_Don[0].Draw(362, Notes.NotesP[0].Y + 47);
+                if (HitTimer[i][0].State == TimerState.Started)
+                {
+                    TextureLoad.Game_Don[i][0].Opacity = 1.0 - ((double)HitTimer[i][0].Value / HitTimer[i][0].End);
+                    TextureLoad.Game_Don[i][0].Draw(362, Notes.NotesP[0].Y + 47);
+                }
+                if (HitTimer[i][1].State == TimerState.Started)
+                {
+                    TextureLoad.Game_Don[i][1].Opacity = 1.0 - ((double)HitTimer[i][1].Value / HitTimer[i][1].End);
+                    TextureLoad.Game_Don[i][1].Draw(362, Notes.NotesP[0].Y + 47);
+                }
+                if (HitTimer[i][2].State == TimerState.Started)
+                {
+                    TextureLoad.Game_Ka[i][0].Opacity = 1.0 - ((double)HitTimer[i][2].Value / HitTimer[i][2].End);
+                    TextureLoad.Game_Ka[i][0].Draw(362, Notes.NotesP[0].Y + 47);
+                }
+                if (HitTimer[i][3].State == TimerState.Started)
+                {
+                    TextureLoad.Game_Ka[i][1].Opacity = 1.0 - ((double)HitTimer[i][3].Value / HitTimer[i][3].End);
+                    TextureLoad.Game_Ka[i][1].Draw(362, Notes.NotesP[0].Y + 47);
+                }
             }
-            if (HitTimer[1].State == TimerState.Started)
+
+            if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
             {
-                TextureLoad.Game_Don[1].Opacity = 1.0 - ((double)HitTimer[1].Value / HitTimer[1].End);
-                TextureLoad.Game_Don[1].Draw(362, Notes.NotesP[0].Y + 47);
+                for (int i = 0; i < 5; i++)
+                {
+                    if (MainTJA[i].Courses[Course[i]].ListChip.Count > 0)
+                    {
+                        if (i > 0 && Course[i] == Course[i - 1]) break;
+                        Score.DrawCombo(i);
+                    }
+                }
             }
-            if (HitTimer[2].State == TimerState.Started)
+            else
             {
-                TextureLoad.Game_Ka[0].Opacity = 1.0 - ((double)HitTimer[2].Value / HitTimer[2].End);
-                TextureLoad.Game_Ka[0].Draw(362, Notes.NotesP[0].Y + 47);
-            }
-            if (HitTimer[3].State == TimerState.Started)
-            {
-                TextureLoad.Game_Ka[1].Opacity = 1.0 - ((double)HitTimer[3].Value / HitTimer[3].End);
-                TextureLoad.Game_Ka[1].Draw(362, Notes.NotesP[0].Y + 47);
-            }
-            if (HitTimer2P[0].State == TimerState.Started)
-            {
-                TextureLoad.Game_Don2P[0].Opacity = 1.0 - ((double)HitTimer2P[0].Value / HitTimer2P[0].End);
-                TextureLoad.Game_Don2P[0].Draw(362, Notes.NotesP[0].Y + 47 + 262);
-            }
-            if (HitTimer2P[1].State == TimerState.Started)
-            {
-                TextureLoad.Game_Don2P[1].Opacity = 1.0 - ((double)HitTimer2P[1].Value / HitTimer2P[1].End);
-                TextureLoad.Game_Don2P[1].Draw(362, Notes.NotesP[0].Y + 47 + 262);
-            }
-            if (HitTimer2P[2].State == TimerState.Started)
-            {
-                TextureLoad.Game_Ka2P[0].Opacity = 1.0 - ((double)HitTimer2P[2].Value / HitTimer2P[2].End);
-                TextureLoad.Game_Ka2P[0].Draw(362, Notes.NotesP[0].Y + 47 + 262);
-            }
-            if (HitTimer2P[3].State == TimerState.Started)
-            {
-                TextureLoad.Game_Ka2P[1].Opacity = 1.0 - ((double)HitTimer2P[3].Value / HitTimer2P[3].End);
-                TextureLoad.Game_Ka2P[1].Draw(362, Notes.NotesP[0].Y + 47 + 262);
-            }
-            Score.DrawCombo(0);
-            if (PlayData.Data.IsPlay2P)
-            {
-                Score.DrawCombo(1);
+                Score.DrawCombo(0);
+                if (PlayData.Data.IsPlay2P)
+                {
+                    Score.DrawCombo(1);
+                }
             }
 
             if (MainTimer.State == 0 && !IsSongPlay)
@@ -445,10 +462,12 @@ namespace Tunebeat.Game
         public override void Update()
         {
             MainTimer.Tick();
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
-                HitTimer[i].Tick();
-                HitTimer2P[i].Tick();
+                for (int j = 0; j < 4; j++)
+                {
+                    HitTimer[i][j].Tick();
+                }
             }
             for (int i = 0; i < 2; i++)
             {
@@ -589,11 +608,12 @@ namespace Tunebeat.Game
         public static string TJAPath, lyric;
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
-        public static int[] Course = new int[2];
-        public static double[] Adjust = new double[4], ScrollRemain = new double[2];
+        public static int[] Course = new int[5];
+        public static double[] Adjust = new double[5], ScrollRemain = new double[5];
         public static int PlayMeasure;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();
-        public static Counter[] HitTimer = new Counter[4], HitTimer2P = new Counter[4], PushedTimer = new Counter[2], PushingTimer = new Counter[2];
+        public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
+        public static Counter[][] HitTimer = new Counter[5][];
     }
 }

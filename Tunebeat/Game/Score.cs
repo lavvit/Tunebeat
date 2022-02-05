@@ -563,7 +563,14 @@ namespace Tunebeat.Game
                     break;
             }
             //if (Combo[player] >= 10)
+            if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
+            {
+                DrawNumber(411 - 12 * Digit(Combo[player]), Notes.NotesP[player].Y + 82, $"{Combo[player]}", color);
+            }
+            else
+            {
                 DrawNumber(411 - 12 * Digit(Combo[player]), Notes.NotesP[0].Y + 82 + 262 * player, $"{Combo[player]}", color);
+            }
         }
 
         public static void DrawGraph()
@@ -632,10 +639,12 @@ namespace Tunebeat.Game
 
         public static void AddScore(EJudge judge, int player)
         {
-            if (player < 2)
             {
-                AddGauge(judge, player);
-                DisplayJudge[player] = judge;
+                if (player < 2)
+                {
+                    AddGauge(judge, player);
+                    DisplayJudge[player] = judge;
+                }
                 switch (judge)
                 {
                     case EJudge.Perfect:
@@ -684,7 +693,7 @@ namespace Tunebeat.Game
 
         public static void AddRoll(int player)
         {
-            if (Game.IsAuto[player])
+            if (PlayData.Data.PreviewType == 3 || Game.IsAuto[player])
             {
                 AutoRoll[player]++;
             }
@@ -696,7 +705,7 @@ namespace Tunebeat.Game
         }
         public static void AddBalloon(int player)
         {
-            if (Game.IsAuto[player])
+            if (PlayData.Data.PreviewType == 3 || Game.IsAuto[player])
             {
                 AutoRoll[player]++;
             }
@@ -1166,8 +1175,8 @@ namespace Tunebeat.Game
         }
 
         public static EGauge[] GaugeType = new EGauge[2];
-        public static int[] EXScore = new int[4], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[2], Auto = new int[2],
-            Hit = new int[2], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], AutoRoll = new int[2], Remain = new int[2], Combo = new int[2], MaxCombo = new int[2], NowRoll = new int[2];
+        public static int[] EXScore = new int[5], Perfect = new int[2], Great = new int[2], Good = new int[2], Bad = new int[2], Poor = new int[5], Auto = new int[5],
+            Hit = new int[5], Roll = new int[2], RollYellow = new int[2], RollBalloon = new int[2], AutoRoll = new int[5], Remain = new int[5], Combo = new int[5], MaxCombo = new int[5], NowRoll = new int[5];
         public static double[] msJudge = new double[2], Gauge = new double[2], Total = new double[2], GoodRate = new double[2], BadRate = new double[2], PoorRate = new double[2], msSum = new double[2], msAverage = new double[2];
         public static double[][] GaugeList = new double[2][], ClearRate = new double[2][];
         public static bool[] Cleared = new bool[2];

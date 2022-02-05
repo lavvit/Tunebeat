@@ -53,14 +53,15 @@ namespace Tunebeat.Common
             Game_Lane_Frame_DP = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Frame_DP.png");
             Game_Sudden = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Sudden.png");
             Game_HiSpeed = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}HiSpeed.png");
-            Game_Don[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_L.png");
-            Game_Don[1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_R.png");
-            Game_Ka[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_L.png");
-            Game_Ka[1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_R.png");
-            Game_Don2P[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_L.png");
-            Game_Don2P[1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_R.png");
-            Game_Ka2P[0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_L.png");
-            Game_Ka2P[1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_R.png");
+            for (int i = 0; i < 5; i++)
+            {
+                Game_Don[i] = new Texture[2];
+                Game_Ka[i] = new Texture[2];
+                Game_Don[i][0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_L.png");
+                Game_Don[i][1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Don_R.png");
+                Game_Ka[i][0] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_L.png");
+                Game_Ka[i][1] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Ka_R.png");
+            }
             Game_Gauge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Gauge.png");
             Game_Gauge_Base = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Gauge_Base.png");
             Game_Judge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Judge.png");
@@ -132,11 +133,9 @@ namespace Tunebeat.Common
             Game_Rank,
             Game_Number,
             Game_Number_Mini;
-        public static Texture[] Game_Don = new Texture[2],
-            Game_Ka = new Texture[2],
-            Game_Don2P = new Texture[2],
-            Game_Ka2P = new Texture[2],
-            Game_Bomb = new Texture[12];
+        public static Texture[] Game_Bomb = new Texture[12];
+        public static Texture[][] Game_Don = new Texture[5][],
+            Game_Ka = new Texture[5][];
         #endregion
         #region Result
         public static Texture Result_Background,

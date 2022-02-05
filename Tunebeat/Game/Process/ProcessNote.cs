@@ -52,8 +52,8 @@ namespace Tunebeat.Game
                 if (!chip.IsMiss)
                     if (GetNotes.GetJudge(chip, time) == EJudge.Through)
                     {
-                        EJudge judge = Game.IsAuto[player] ? EJudge.Auto : EJudge.Through;
-                        if (!Game.IsAuto[player]) Score.AddScore(judge, player);
+                        EJudge judge = PlayData.Data.PreviewType == 3 || Game.IsAuto[player] ? EJudge.Auto : EJudge.Through;
+                        if (PlayData.Data.PreviewType < 3 && !Game.IsAuto[player]) Score.AddScore(judge, player);
                         Process(judge, chip, isDon, player);
                         chip.IsHit = false;
                         chip.IsMiss = true;
@@ -130,7 +130,7 @@ namespace Tunebeat.Game
             return Game.MainTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
         }
 
-        public static int[] NowRoll = new int[2], BalloonRemain = new int[2], BalloonList = new int[2];
+        public static int[] NowRoll = new int[5], BalloonRemain = new int[5], BalloonList = new int[5];
     }
 
     public enum ERoll

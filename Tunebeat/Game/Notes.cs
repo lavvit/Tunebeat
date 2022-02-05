@@ -38,105 +38,147 @@ namespace Tunebeat.Game
                 default:
                     NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };
                     break;
+                case EPreviewType.AllCourses:
+                    for (int i = 1; i < 5; i++)
+                    {
+                        Scroll[i] = PlayData.Data.ScrollSpeed[0];
+                    }
+                    NotesP = new Point[5] { new Point(521, 85), new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
+                    break;
             }
-            ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
-            ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+            for (int i = 0; i < 5; i++)
+            {
+                ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+            }
             base.Enable();
         }
 
         public override void Disable()
         {
-            ProcessAuto.RollTimer.Reset();
-            ProcessAuto.RollTimer2P.Reset();
+            for (int i = 0; i < 5; i++)
+            {
+                ProcessAuto.RollTimer[i].Reset();
+            }
             base.Disable();
         }
 
         public override void Draw()
         {
-            if (Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.Normal)
+            if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
             {
-                DrawNotes(0);
+                for (int i = 0; i < 5; i++)
+                {
+                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    {
+                        if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
+                        DrawNotes(i);
+
+                        if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                        {
+                            TextureLoad.Game_Base.Opacity = 0.75;
+                            TextureLoad.Game_Lane_Frame.Opacity = 0.75;
+                            TextureLoad.Game_Gauge_Base.Opacity = 0.75;
+                        }
+                        else
+                        {
+                            TextureLoad.Game_Base.Opacity = 1.0;
+                            TextureLoad.Game_Lane_Frame.Opacity = 1.0;
+                            TextureLoad.Game_Gauge_Base.Opacity = 1.0;
+                        }
+                        TextureLoad.Game_Base.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
+                        TextureLoad.Game_Base.Draw(0, NotesP[i].Y - 4);
+                        TextureLoad.Game_Base_Info.Draw(0, NotesP[i].Y - 4);
+                        TextureLoad.Game_Lane_Frame.Draw(495, NotesP[i].Y - 4);
+                    }
+                }
             }
             else
             {
-                DrawNotes(0);
-                //DrawNotesHBS(0, Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
-            }
-            if (PlayData.Data.IsPlay2P)
-            {
-                if (Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
+                if (Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.Normal)
                 {
-                    DrawNotes(1);
+                    DrawNotes(0);
                 }
                 else
                 {
-                    DrawNotes(1);
-                    //DrawNotesHBS(1, Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.HBSCROLL ? true : false);
+                    DrawNotes(0);
+                    //DrawNotesHBS(0, Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
                 }
-            }
+                if (PlayData.Data.IsPlay2P)
+                {
+                    if (Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
+                    {
+                        DrawNotes(1);
+                    }
+                    else
+                    {
+                        DrawNotes(1);
+                        //DrawNotesHBS(1, Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.HBSCROLL ? true : false);
+                    }
+                }
 
-            TextureLoad.Game_Sudden.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
-            if (UseSudden[0])
-            {
-                TextureLoad.Game_Sudden.Draw(NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), NotesP[0].Y);
-            }
-            if (UseSudden[1] && PlayData.Data.IsPlay2P)
-            {
-                TextureLoad.Game_Sudden.Draw(NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), NotesP[1].Y);
-            }
+                TextureLoad.Game_Sudden.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
+                if (UseSudden[0])
+                {
+                    TextureLoad.Game_Sudden.Draw(NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), NotesP[0].Y);
+                }
+                if (UseSudden[1] && PlayData.Data.IsPlay2P)
+                {
+                    TextureLoad.Game_Sudden.Draw(NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), NotesP[1].Y);
+                }
 
-            if (Key.IsPushing(KEY_INPUT_LSHIFT))
-            {
-                int type = 0;
-                if (PlayData.Data.FloatingHiSpeed[0]) type = 1;
-                else if (PlayData.Data.NormalHiSpeed[0]) type = 2;
-                TextureLoad.Game_HiSpeed.Draw(NotesP[0].X - 24, NotesP[0].Y - 2, new Rectangle(0, 56 * type, 195, 56));
-                Score.DrawNumber(PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0] ? NotesP[0].X + 16 : NotesP[0].X - 4, NotesP[0].Y + 18, $"{Scroll[0],6:F2}", 0);
-                if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0]) Score.DrawNumber(NotesP[0].X - 16, NotesP[0].Y + 18, $"{NHSNumber[0] + 1,2}", 0);
-                Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 348, $"{Sudden[0]}", 0);
-                Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 388, $"{(GreenNumber[0] > 0 ? GreenNumber[0] : 0)}", 5);
-            }
-            if (Key.IsPushing(KEY_INPUT_RSHIFT))
-            {
-                int type = 0;
-                if (PlayData.Data.FloatingHiSpeed[1]) type = 1;
-                else if (PlayData.Data.NormalHiSpeed[1]) type = 2;
-                TextureLoad.Game_HiSpeed.Draw(NotesP[1].X - 24, NotesP[1].Y - 2, new Rectangle(0, 56 * type, 195, 56));
-                Score.DrawNumber(PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1] ? NotesP[1].X + 16 : NotesP[1].X - 4, NotesP[1].Y + 18, $"{Scroll[1],6:F2}", 0);
-                if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1]) Score.DrawNumber(NotesP[1].X - 16, NotesP[1].Y + 18, $"{NHSNumber[1] + 1,2}", 0);
-                Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 616, $"{Sudden[1]}", 0);
-                Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 656, $"{(GreenNumber[1] > 0 ? GreenNumber[1] : 0)}", 5);
-            }
-            if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
-            {
-                TextureLoad.Game_Base_DP.Opacity = 0.75;
-                TextureLoad.Game_Base.Opacity = 0.75;
-                TextureLoad.Game_Lane_Frame_DP.Opacity = 0.75;
-                TextureLoad.Game_Lane_Frame.Opacity = 0.75;
-                TextureLoad.Game_Gauge_Base.Opacity = 0.75;
-            }
-            else
-            {
-                TextureLoad.Game_Base_DP.Opacity = 1.0;
-                TextureLoad.Game_Base.Opacity = 1.0;
-                TextureLoad.Game_Lane_Frame_DP.Opacity = 1.0;
-                TextureLoad.Game_Lane_Frame.Opacity = 1.0;
-                TextureLoad.Game_Gauge_Base.Opacity = 1.0;
-            }
+                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                {
+                    int type = 0;
+                    if (PlayData.Data.FloatingHiSpeed[0]) type = 1;
+                    else if (PlayData.Data.NormalHiSpeed[0]) type = 2;
+                    TextureLoad.Game_HiSpeed.Draw(NotesP[0].X - 24, NotesP[0].Y - 2, new Rectangle(0, 56 * type, 195, 56));
+                    Score.DrawNumber(PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0] ? NotesP[0].X + 16 : NotesP[0].X - 4, NotesP[0].Y + 18, $"{Scroll[0],6:F2}", 0);
+                    if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0]) Score.DrawNumber(NotesP[0].X - 16, NotesP[0].Y + 18, $"{NHSNumber[0] + 1,2}", 0);
+                    Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 348, $"{Sudden[0]}", 0);
+                    Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 388, $"{(GreenNumber[0] > 0 ? GreenNumber[0] : 0)}", 5);
+                }
+                if (Key.IsPushing(KEY_INPUT_RSHIFT))
+                {
+                    int type = 0;
+                    if (PlayData.Data.FloatingHiSpeed[1]) type = 1;
+                    else if (PlayData.Data.NormalHiSpeed[1]) type = 2;
+                    TextureLoad.Game_HiSpeed.Draw(NotesP[1].X - 24, NotesP[1].Y - 2, new Rectangle(0, 56 * type, 195, 56));
+                    Score.DrawNumber(PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1] ? NotesP[1].X + 16 : NotesP[1].X - 4, NotesP[1].Y + 18, $"{Scroll[1],6:F2}", 0);
+                    if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1]) Score.DrawNumber(NotesP[1].X - 16, NotesP[1].Y + 18, $"{NHSNumber[1] + 1,2}", 0);
+                    Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 616, $"{Sudden[1]}", 0);
+                    Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 656, $"{(GreenNumber[1] > 0 ? GreenNumber[1] : 0)}", 5);
+                }
+                if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                {
+                    TextureLoad.Game_Base_DP.Opacity = 0.75;
+                    TextureLoad.Game_Base.Opacity = 0.75;
+                    TextureLoad.Game_Lane_Frame_DP.Opacity = 0.75;
+                    TextureLoad.Game_Lane_Frame.Opacity = 0.75;
+                    TextureLoad.Game_Gauge_Base.Opacity = 0.75;
+                }
+                else
+                {
+                    TextureLoad.Game_Base_DP.Opacity = 1.0;
+                    TextureLoad.Game_Base.Opacity = 1.0;
+                    TextureLoad.Game_Lane_Frame_DP.Opacity = 1.0;
+                    TextureLoad.Game_Lane_Frame.Opacity = 1.0;
+                    TextureLoad.Game_Gauge_Base.Opacity = 1.0;
+                }
 
-            if (PlayData.Data.IsPlay2P)
-            {
-                TextureLoad.Game_Base_DP.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
-                TextureLoad.Game_Base_DP.Draw(0, NotesP[0].Y - 4);
-                TextureLoad.Game_Base_Info_DP.Draw(0, NotesP[0].Y - 4);
-                TextureLoad.Game_Lane_Frame_DP.Draw(495, NotesP[0].Y - 4);
-            }
-            else
-            {
-                TextureLoad.Game_Base.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
-                TextureLoad.Game_Base.Draw(0, NotesP[0].Y - 4);
-                TextureLoad.Game_Base_Info.Draw(0, NotesP[0].Y - 4);
-                TextureLoad.Game_Lane_Frame.Draw(495, NotesP[0].Y - 4);
+                if (PlayData.Data.IsPlay2P)
+                {
+                    TextureLoad.Game_Base_DP.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
+                    TextureLoad.Game_Base_DP.Draw(0, NotesP[0].Y - 4);
+                    TextureLoad.Game_Base_Info_DP.Draw(0, NotesP[0].Y - 4);
+                    TextureLoad.Game_Lane_Frame_DP.Draw(495, NotesP[0].Y - 4);
+                }
+                else
+                {
+                    TextureLoad.Game_Base.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
+                    TextureLoad.Game_Base.Draw(0, NotesP[0].Y - 4);
+                    TextureLoad.Game_Base_Info.Draw(0, NotesP[0].Y - 4);
+                    TextureLoad.Game_Lane_Frame.Draw(495, NotesP[0].Y - 4);
+                }
             }
 
 #if DEBUG
@@ -230,37 +272,31 @@ namespace Tunebeat.Game
                 }
 
                 //オートの処理呼び出し
-                ProcessAuto.Update(Game.IsAuto[player], chip, Game.MainTimer.Value, player);
-                ProcessReplay.Update(Game.IsReplay[player], player);
-                ProcessReplay.UnderUpdate();
+                ProcessAuto.Update(PlayData.Data.PreviewType == 3 ? true : Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                if (PlayData.Data.PreviewType < 3)
+                {
+                    ProcessReplay.Update(Game.IsReplay[player], player);
+                    ProcessReplay.UnderUpdate();
+                }
                 //ノーツが通り過ぎた時の処理
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
             }
             //連打のタイマー　なんでここ？？
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-            ProcessAuto.RollTimer.Tick();
-            ProcessAuto.RollTimer2P.Tick();
-            if (player == 0)
+            for (int i = 0; i < 5; i++)
             {
-                if (roll != ERoll.None)
-                {
-                    ProcessAuto.RollTimer.Start();
-                }
-                else
-                {
-                    ProcessAuto.RollTimer.Reset();
-                }
+                ProcessAuto.RollTimer[i].Tick();
             }
-            else
+            for (int i = 0; i < 5; i++)
             {
                 if (roll != ERoll.None)
                 {
-                    ProcessAuto.RollTimer2P.Start();
+                    ProcessAuto.RollTimer[i].Start();
                 }
                 else
                 {
-                    ProcessAuto.RollTimer2P.Reset();
+                    ProcessAuto.RollTimer[i].Reset();
                 }
             }
 
@@ -269,7 +305,7 @@ namespace Tunebeat.Game
                 Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
 
-                if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && !PlayData.Data.Stelth[player])
+                if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
                 {
                     switch (chip.ENote)
                     {
@@ -337,35 +373,26 @@ namespace Tunebeat.Game
                 //}
 
                 //オートの処理呼び出し
-                ProcessAuto.Update(Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                ProcessAuto.Update(PlayData.Data.PreviewType == 3 || Game.IsAuto[player], chip, Game.MainTimer.Value, player);
                 //ノーツが通り過ぎた時の処理
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
             }
             //連打のタイマー　なんでここ？？
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-            ProcessAuto.RollTimer.Tick();
-            ProcessAuto.RollTimer2P.Tick();
-            if (player == 0)
+            for (int i = 0; i < 5; i++)
             {
-                if (roll != ERoll.None)
-                {
-                    ProcessAuto.RollTimer.Start();
-                }
-                else
-                {
-                    ProcessAuto.RollTimer.Reset();
-                }
+                ProcessAuto.RollTimer[i].Tick();
             }
-            else
+            for (int i = 0; i < 5; i++)
             {
                 if (roll != ERoll.None)
                 {
-                    ProcessAuto.RollTimer2P.Start();
+                    ProcessAuto.RollTimer[i].Start();
                 }
                 else
                 {
-                    ProcessAuto.RollTimer2P.Reset();
+                    ProcessAuto.RollTimer[i].Reset();
                 }
             }
         }
@@ -442,9 +469,9 @@ namespace Tunebeat.Game
             if (PlayData.Data.FloatingHiSpeed[player]) SetScroll(player, isLoad);
         }
 
-        public static Point[] NotesP = new Point[2];
+        public static Point[] NotesP = new Point[5];
         public static int[] Showms = new int[2] { 256300, -37000 };
-        public static double[] Scroll = new double[2];
+        public static double[] Scroll = new double[5];
         public static bool[] UseSudden = new bool[2];
         public static int[] Sudden = new int[2], GreenNumber = new int[2], PreGreen = new int[2], NHSNumber = new int[2];
         public static int[] NHSTargetGNum = new int[20] { 1200, 1000, 800, 700, 650, 600, 550, 500, 480, 460,
