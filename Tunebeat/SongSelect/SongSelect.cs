@@ -517,6 +517,7 @@ namespace Tunebeat.SongSelect
                         SongLoad.FolderFloor++;
                         SongLoad.SongData = new List<SongData>();
                         SongLoad.FolderData = new List<string>();
+                        NowPath = NowTJA.Path;
                         SongLoad.Load(SongLoad.SongData, NowTJA.Path);
                         NowSongNumber = 0;
                         NowTJA = SongLoad.SongData[NowSongNumber];
@@ -526,6 +527,7 @@ namespace Tunebeat.SongSelect
                         SongLoad.FolderFloor--;
                         SongLoad.SongData = new List<SongData>();
                         SongLoad.FolderData = new List<string>();
+                        NowPath = NowTJA.Path;
                         SongLoad.Load(SongLoad.SongData, NowTJA.Path);
                         for (int i = 0; i < SongLoad.SongData.Count; i++)
                         {
@@ -696,5 +698,6 @@ namespace Tunebeat.SongSelect
         public static Counter Alart;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
         public static int AlartType, NowSongNumber;
+        public static string NowPath;
     }
 }

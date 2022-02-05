@@ -17,14 +17,15 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
+            TJAPath = SongSelect.SongSelect.NowTJA.Path;
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
             for (int i = 0; i < 2; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(SongSelect.SongSelect.NowTJA.Path, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
             }
             for (int i = 2; i < 7; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(SongSelect.SongSelect.NowTJA.Path, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
@@ -138,11 +139,11 @@ namespace Tunebeat.Game
             }
             for (int i = 0; i < 2; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(SongSelect.SongSelect.NowTJA.Path, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
             }
             for (int i = 2; i < 7; i++)
             {
-                MainTJA[i] = new TJAParse.TJAParse(SongSelect.SongSelect.NowTJA.Path, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
             }
             if (File.Exists(MainSong.FileName)) MainSong.Time = StartTime / 1000;
             if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = StartTime;
@@ -557,6 +558,7 @@ namespace Tunebeat.Game
         public static Texture MainImage;
         public static Movie MainMovie;
         public static List<Scene> ChildScene = new List<Scene>();
+        public static string TJAPath;
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[2];

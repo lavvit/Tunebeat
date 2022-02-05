@@ -5,9 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using TJAParse;
-using Amaoto;
 using Tunebeat.Common;
 
 namespace Tunebeat.SongSelect
@@ -18,8 +16,15 @@ namespace Tunebeat.SongSelect
         {
             SongData = new List<SongData>();
             FolderData = new List<string>();
-            FolderFloor = 0;
-            Load(SongData, PlayData.Data.PlayFolder);
+            if (!string.IsNullOrEmpty(SongSelect.NowPath) && FolderFloor != 0)
+            {
+                Load(SongData, SongSelect.NowPath);
+            }
+            else
+            {
+                FolderFloor = 0;
+                Load(SongData, PlayData.Data.PlayFolder);
+            }
         }
         public static void Dispose()
         {
@@ -263,8 +268,6 @@ namespace Tunebeat.SongSelect
                     {
                         str3 = strArray[0].Trim();
                         str4 = strArray[1].Trim();
-                        #region [ [AutoPlay] ]
-                        //-----------------------------
                         if (str3.Equals("GenreName"))
                         {
                             Name = str4;
@@ -278,8 +281,6 @@ namespace Tunebeat.SongSelect
                             FontColor = str4;
                         }
                         continue;
-                        //-----------------------------
-                        #endregion
                     }
                 }
             }
