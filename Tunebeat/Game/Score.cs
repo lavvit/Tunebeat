@@ -64,7 +64,7 @@ namespace Tunebeat.Game
         }
         public override void Draw()
         {
-            TextureLoad.Game_Gauge_Base.Draw(495, 286 - 48, new Rectangle(0, 0, 1425, 48));
+            TextureLoad.Game_Gauge_Base.Draw(495, Notes.NotesP[0].Y - 4 - 48, new Rectangle(0, 0, 1425, 48));
 
             int[] Color = new int[100];
             int[] Color2P = new int[100];
@@ -76,17 +76,17 @@ namespace Tunebeat.Game
 
             for (int i = 0; i < 100; i++)
             {
-                TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, 286 - 48 + 6, new Rectangle(Color[i], (int)Gauge[0] > i ? 40 : 0, 10, 40));
+                TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, Notes.NotesP[0].Y - 4 - 48 + 6, new Rectangle(Color[i], (int)Gauge[0] > i ? 40 : 0, 10, 40));
             }
-            DrawNumber(495 + 15, 286 - 48 + 12, $"{Gauge[0],5:F1}%", 0);
+            DrawNumber(495 + 15, Notes.NotesP[0].Y - 4 - 48 + 12, $"{Gauge[0],5:F1}%", 0);
             if (PlayData.Data.IsPlay2P)
             {
-                TextureLoad.Game_Gauge_Base.Draw(495, 286 + 465, new Rectangle(0, 48, 1425, 48));
+                TextureLoad.Game_Gauge_Base.Draw(495, Notes.NotesP[0].Y - 4 + 465, new Rectangle(0, 48, 1425, 48));
                 for (int i = 0; i < 100; i++)
                 {
-                    TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, 286 + 465 + 2, new Rectangle(Color2P[i], (int)Gauge[1] > i ? 40 : 0, 10, 40));
+                    TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, Notes.NotesP[0].Y - 4 + 465 + 2, new Rectangle(Color2P[i], (int)Gauge[1] > i ? 40 : 0, 10, 40));
                 }
-                DrawNumber(495 + 15, 286 + 465 + 8, $"{Gauge[1],5:F1}%", 0);
+                DrawNumber(495 + 15, Notes.NotesP[0].Y - 4 + 465 + 8, $"{Gauge[1],5:F1}%", 0);
             }
 
             if (!PlayData.Data.IsPlay2P && PlayData.Data.ShowGraph)
@@ -96,42 +96,98 @@ namespace Tunebeat.Game
 
             DrawJudge();
 
-            DrawNumber(0, 292, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2), 9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
-            DrawMiniNumber(136, 319, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 1);
+            DrawNumber(0, Notes.NotesP[0].Y + 2, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2), 9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
+            DrawMiniNumber(136, Notes.NotesP[0].Y + 29, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 1);
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
             Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
-            DrawNumber(0, 292 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
-            DrawNumber(0, 292 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
+            DrawNumber(0, Notes.NotesP[0].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
+            DrawNumber(0, Notes.NotesP[0].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
             if (PlayData.Data.IsPlay2P)
             {
-                DrawNumber(0, 292 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
-                DrawMiniNumber(136, 319 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
-                DrawNumber(72, 292 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
-                DrawNumber(0, 292 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
+                DrawNumber(0, Notes.NotesP[0].Y + 2 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
+                DrawMiniNumber(136, Notes.NotesP[0].Y + 29 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
+                DrawNumber(72, Notes.NotesP[0].Y + 2 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
+                DrawNumber(0, Notes.NotesP[0].Y + 2 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
             }
 
-            for (int i = 0; i < 6; i++)
+            switch ((EPreviewType)PlayData.Data.PreviewType)
             {
-                TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
-            }
-            DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
-            DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
-            DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
-            DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
-            DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
-            DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-            if (PlayData.Data.IsPlay2P)
-            {
-                for (int i = 0; i < 6; i++)
-                {
-                    TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
-                }
-                DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
-                DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
-                DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
-                DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
-                DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
-                DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                case EPreviewType.Up:
+                    for (int i = 0; i < 6; i++)
+                    {
+                        TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i + 512, new Rectangle(0, 42 * i, 134, 42));
+                    }
+                    DrawMiniNumber(160, 36 + 32 * 0 + 512, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+                    DrawMiniNumber(160, 36 + 32 * 1 + 512, $"{Great[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 2 + 512, $"{Good[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 3 + 512, $"{Bad[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 4 + 512, $"{Poor[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 5 + 512, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+                    if (PlayData.Data.IsPlay2P)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                        }
+                        DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                        DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                    }
+                    break;
+                case EPreviewType.Down:
+                    for (int i = 0; i < 6; i++)
+                    {
+                        TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                    }
+                    DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+                    DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+                    if (PlayData.Data.IsPlay2P)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i - 512, new Rectangle(0, 42 * i, 134, 42));
+                        }
+                        DrawMiniNumber(160, 836 + 32 * 0 - 512, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                        DrawMiniNumber(160, 836 + 32 * 1 - 512, $"{Great[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 2 - 512, $"{Good[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 3 - 512, $"{Bad[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 4 - 512, $"{Poor[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 5 - 512, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                    }
+                    break;
+                case EPreviewType.Normal:
+                default:
+                    for (int i = 0; i < 6; i++)
+                    {
+                        TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                    }
+                    DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+                    DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
+                    DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+                    if (PlayData.Data.IsPlay2P)
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                        }
+                        DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                        DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
+                        DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                    }
+                    break;
             }
 
             int[] rankvalue = new int[] { 0, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 4 / 9,
@@ -507,11 +563,13 @@ namespace Tunebeat.Game
                     break;
             }
             //if (Combo[player] >= 10)
-                DrawNumber(411 - 12 * Digit(Combo[player]), 372 + 262 * player, $"{Combo[player]}", color);
+                DrawNumber(411 - 12 * Digit(Combo[player]), Notes.NotesP[0].Y + 82 + 262 * player, $"{Combo[player]}", color);
         }
 
         public static void DrawGraph()
         {
+            if (PlayData.Data.PreviewType > 0) return;
+
             TextureLoad.Game_Graph_Base.Draw(495, 0);
 
             double allnotes = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];

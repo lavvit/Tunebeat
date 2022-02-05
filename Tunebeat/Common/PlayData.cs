@@ -32,6 +32,7 @@ namespace Tunebeat.Common
         public bool FullScreen = false;
 
         public List<string> PlayFolder = new List<string>() { "Songs" };
+        public int PreviewType = 0;
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;
         public bool ShowImage = true;

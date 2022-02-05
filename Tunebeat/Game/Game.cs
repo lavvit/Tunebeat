@@ -298,42 +298,42 @@ namespace Tunebeat.Game
             if (HitTimer[0].State == TimerState.Started)
             {
                 TextureLoad.Game_Don[0].Opacity = 1.0 - ((double)HitTimer[0].Value / HitTimer[0].End);
-                TextureLoad.Game_Don[0].Draw(362, 337);
+                TextureLoad.Game_Don[0].Draw(362, Notes.NotesP[0].Y + 47);
             }
             if (HitTimer[1].State == TimerState.Started)
             {
                 TextureLoad.Game_Don[1].Opacity = 1.0 - ((double)HitTimer[1].Value / HitTimer[1].End);
-                TextureLoad.Game_Don[1].Draw(362, 337);
+                TextureLoad.Game_Don[1].Draw(362, Notes.NotesP[0].Y + 47);
             }
             if (HitTimer[2].State == TimerState.Started)
             {
                 TextureLoad.Game_Ka[0].Opacity = 1.0 - ((double)HitTimer[2].Value / HitTimer[2].End);
-                TextureLoad.Game_Ka[0].Draw(362, 337);
+                TextureLoad.Game_Ka[0].Draw(362, Notes.NotesP[0].Y + 47);
             }
             if (HitTimer[3].State == TimerState.Started)
             {
                 TextureLoad.Game_Ka[1].Opacity = 1.0 - ((double)HitTimer[3].Value / HitTimer[3].End);
-                TextureLoad.Game_Ka[1].Draw(362, 337);
+                TextureLoad.Game_Ka[1].Draw(362, Notes.NotesP[0].Y + 47);
             }
             if (HitTimer2P[0].State == TimerState.Started)
             {
                 TextureLoad.Game_Don2P[0].Opacity = 1.0 - ((double)HitTimer2P[0].Value / HitTimer2P[0].End);
-                TextureLoad.Game_Don2P[0].Draw(362, 337 + 262);
+                TextureLoad.Game_Don2P[0].Draw(362, Notes.NotesP[0].Y + 47 + 262);
             }
             if (HitTimer2P[1].State == TimerState.Started)
             {
                 TextureLoad.Game_Don2P[1].Opacity = 1.0 - ((double)HitTimer2P[1].Value / HitTimer2P[1].End);
-                TextureLoad.Game_Don2P[1].Draw(362, 337 + 262);
+                TextureLoad.Game_Don2P[1].Draw(362, Notes.NotesP[0].Y + 47 + 262);
             }
             if (HitTimer2P[2].State == TimerState.Started)
             {
                 TextureLoad.Game_Ka2P[0].Opacity = 1.0 - ((double)HitTimer2P[2].Value / HitTimer2P[2].End);
-                TextureLoad.Game_Ka2P[0].Draw(362, 337 + 262);
+                TextureLoad.Game_Ka2P[0].Draw(362, Notes.NotesP[0].Y + 47 + 262);
             }
             if (HitTimer2P[3].State == TimerState.Started)
             {
                 TextureLoad.Game_Ka2P[1].Opacity = 1.0 - ((double)HitTimer2P[3].Value / HitTimer2P[3].End);
-                TextureLoad.Game_Ka2P[1].Draw(362, 337 + 262);
+                TextureLoad.Game_Ka2P[1].Draw(362, Notes.NotesP[0].Y + 47 + 262);
             }
             Score.DrawCombo(0);
             if (PlayData.Data.IsPlay2P)
@@ -350,17 +350,19 @@ namespace Tunebeat.Game
 
             DrawString(1600, 1020, $"{MainTJA[0].Header.TITLE}", 0xffffff);
             DrawString(1600, 1040, $"{MainTJA[0].Header.SUBTITLE}", 0xffffff);
-            DrawString(370, 296, $"{MainTJA[0].Courses[Course[0]].COURSE} Lv.{MainTJA[0].Courses[Course[0]].LEVEL}", 0xffffff);
+            string Lv1P = $"{MainTJA[0].Courses[Course[0]].COURSE} Lv.{MainTJA[0].Courses[Course[0]].LEVEL}";
+            DrawString(413 - GetDrawStringWidth(Lv1P, Lv1P.Length) / 2, Notes.NotesP[0].Y + 6, Lv1P, 0xffffff);
             if (MainTJA[0].Courses[Course[0]].ScrollType != EScroll.Normal)
             {
-                DrawString(378, 316, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
+                DrawString(378, Notes.NotesP[0].Y + 26, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
             }
             if (PlayData.Data.IsPlay2P)
             {
-                DrawString(370, 706, $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}", 0xffffff);
+                string Lv2P = $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}";
+                DrawString(413 - GetDrawStringWidth(Lv2P, Lv2P.Length) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
                 if (MainTJA[0].Courses[Course[1]].ScrollType != EScroll.Normal)
                 {
-                    DrawString(378, 726, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
+                    DrawString(378, Notes.NotesP[0].Y + 436, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
                 }
             }
 

@@ -26,6 +26,19 @@ namespace Tunebeat.Game
                 if (PlayData.Data.NormalHiSpeed[i]) SetNHSScroll(i, true);
                 if (PlayData.Data.FloatingHiSpeed[i]) SetScroll(i, true);
             }
+            switch ((EPreviewType)PlayData.Data.PreviewType)
+            {
+                case EPreviewType.Up:
+                    NotesP = new Point[2] { new Point(521, 52), new Point(521, 552 - 290 + 52) };
+                    break;
+                case EPreviewType.Down:
+                    NotesP = new Point[2] { new Point(521, PlayData.Data.IsPlay2P ? 1080 - 461 - 48 : 1080 - 199), new Point(521, 1080 - 199 - 48) };
+                    break;
+                case EPreviewType.Normal:
+                default:
+                    NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };
+                    break;
+            }
             ProcessAuto.RollTimer = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             ProcessAuto.RollTimer2P = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
             base.Enable();
@@ -114,16 +127,16 @@ namespace Tunebeat.Game
             if (PlayData.Data.IsPlay2P)
             {
                 TextureLoad.Game_Base_DP.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
-                TextureLoad.Game_Base_DP.Draw(0, 286);
-                TextureLoad.Game_Base_Info_DP.Draw(0, 286);
-                TextureLoad.Game_Lane_Frame_DP.Draw(495, 286);
+                TextureLoad.Game_Base_DP.Draw(0, NotesP[0].Y - 4);
+                TextureLoad.Game_Base_Info_DP.Draw(0, NotesP[0].Y - 4);
+                TextureLoad.Game_Lane_Frame_DP.Draw(495, NotesP[0].Y - 4);
             }
             else
             {
                 TextureLoad.Game_Base.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
-                TextureLoad.Game_Base.Draw(0, 286);
-                TextureLoad.Game_Base_Info.Draw(0, 286);
-                TextureLoad.Game_Lane_Frame.Draw(495, 286);
+                TextureLoad.Game_Base.Draw(0, NotesP[0].Y - 4);
+                TextureLoad.Game_Base_Info.Draw(0, NotesP[0].Y - 4);
+                TextureLoad.Game_Lane_Frame.Draw(495, NotesP[0].Y - 4);
             }
 
 #if DEBUG
@@ -429,12 +442,20 @@ namespace Tunebeat.Game
             if (PlayData.Data.FloatingHiSpeed[player]) SetScroll(player, isLoad);
         }
 
-        public static Point[] NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };
+        public static Point[] NotesP = new Point[2];
         public static int[] Showms = new int[2] { 256300, -37000 };
         public static double[] Scroll = new double[2];
         public static bool[] UseSudden = new bool[2];
         public static int[] Sudden = new int[2], GreenNumber = new int[2], PreGreen = new int[2], NHSNumber = new int[2];
         public static int[] NHSTargetGNum = new int[20] { 1200, 1000, 800, 700, 650, 600, 550, 500, 480, 460,
             440, 420, 400, 380, 360, 340, 320, 300, 280, 260 };
+    }
+
+    public enum EPreviewType
+    {
+        Normal,
+        Up,
+        Down,
+        AllCourses
     }
 }

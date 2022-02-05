@@ -259,7 +259,9 @@ namespace Tunebeat.Config
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
                 case ELayer.PlayTJA:
-                    PlayCourse = new OptionList("PlayCourse", PlayData.Data.PlayCourse[0], "再生する難易度を変更します。(一時的設定)",
+                    PreviewType = new OptionList("PreviewType", PlayData.Data.PreviewType, "再生の仕方を変更します。",
+                        new string[] { "Normal", "Up", "Down", "AllCourses" }); OptionList.Add(PreviewType);
+                    PlayCourse = new OptionList("PlayCourse", PlayData.Data.PlayCourse[0], "再生する難易度を変更します。",
                         new string[] { "Easy", "Normal", "Hard", "Oni", "Edit" }); OptionList.Add(PlayCourse);
                     ShowGraph = new OptionBool("ShowGraph", PlayData.Data.ShowGraph, "自分やライバルの記録と比較できるグラフを表示します。"); OptionList.Add(ShowGraph);
                     ShowBestScore = new OptionBool("ShowBestScore", PlayData.Data.ShowBestScore, "自己ベスト記録のグラフを表示します。(重い場合は非表示にしてください)"); OptionList.Add(ShowBestScore);
@@ -309,7 +311,7 @@ namespace Tunebeat.Config
                     break;
                 case ELayer.PlayTJA2P:
                     IsPlay2P = new OptionBool("Play2P", PlayData.Data.IsPlay2P, "2Pを使用します。"); OptionList.Add(IsPlay2P);
-                    PlayCourse2P = new OptionList("PlayCourse", PlayData.Data.PlayCourse[1], "再生する難易度を変更します。(一時的設定)",
+                    PlayCourse2P = new OptionList("PlayCourse", PlayData.Data.PlayCourse[1], "再生する難易度を変更します。",
                         new string[] { "Easy", "Normal", "Hard", "Oni", "Edit" }); OptionList.Add(PlayCourse2P);
                     Random2P = new OptionBool("Random", PlayData.Data.Random[1], "ノーツの色をランダムに変更します。"); OptionList.Add(Random2P);
                     Mirror2P = new OptionBool("Mirror", PlayData.Data.Mirror[1], "ノーツの色を反転します。"); OptionList.Add(Mirror2P);
@@ -376,6 +378,7 @@ namespace Tunebeat.Config
                     PlayData.Data.ShowResultScreen = ShowResultScreen.ON;
                     break;
                 case ELayer.PlayTJA:
+                    PlayData.Data.PreviewType = PreviewType.Value;
                     PlayData.Data.PlayCourse[0] = PlayCourse.Value;
                     PlayData.Data.ShowGraph = ShowGraph.ON;
                     PlayData.Data.ShowBestScore = ShowBestScore.ON;
@@ -463,7 +466,7 @@ namespace Tunebeat.Config
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
         public static OptionInt SkinColorR, SkinColorG, SkinColorB, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;
-        public static OptionList PlayCourse, PlayCourse2P, RivalType, RivalRank, NotesChange, NotesChange2P, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
+        public static OptionList PreviewType, PlayCourse, PlayCourse2P, RivalType, RivalRank, NotesChange, NotesChange2P, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;
         public static OptionString SkinName, SoundName, BGMName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
         public static OptionStrList PlayFolder;
