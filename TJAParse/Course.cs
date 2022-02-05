@@ -71,6 +71,7 @@ namespace TJAParse
                             NowInfo.ShowBarLine = true;
                             NowInfo.AddMeasure = true;
                             NowInfo.RollBegin = null;
+                            NowInfo.LyricText = null;
                         }
                         else if (str.StartsWith("#END"))
                         {

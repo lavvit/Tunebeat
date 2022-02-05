@@ -33,6 +33,10 @@ namespace Tunebeat.Game
             movie = movie.Replace(".wmv", ".mp4");
             MainMovie = new Movie(movie);
 
+            FontFamily family = new FontFamily("MS UI Gothic");
+            Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
+            SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
+
             for (int i = 0; i < 2; i++)
             {
                 IsAuto[i] = PlayData.Data.Auto[i];
@@ -348,8 +352,16 @@ namespace Tunebeat.Game
                 else DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
             }
 
-            DrawString(1600, 1020, $"{MainTJA[0].Header.TITLE}", 0xffffff);
-            DrawString(1600, 1040, $"{MainTJA[0].Header.SUBTITLE}", 0xffffff);
+            if ((PlayData.Data.PreviewType >= (int)EPreviewType.Down) || (PlayData.Data.PreviewType == (int)EPreviewType.Normal && !(PlayData.Data.IsPlay2P || PlayData.Data.ShowGraph)))
+            {
+                Title.Draw(1920 - Title.ActualSize.Width - 20, 20);
+                SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 70);
+            }
+            else 
+            {
+                Title.Draw(1920 - Title.ActualSize.Width - 20, 1010);
+                SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 1060);
+            }
             string Lv1P = $"{MainTJA[0].Courses[Course[0]].COURSE} Lv.{MainTJA[0].Courses[Course[0]].LEVEL}";
             DrawString(413 - GetDrawStringWidth(Lv1P, Lv1P.Length) / 2, Notes.NotesP[0].Y + 6, Lv1P, 0xffffff);
             if (MainTJA[0].Courses[Course[0]].ScrollType != EScroll.Normal)
@@ -360,14 +372,22 @@ namespace Tunebeat.Game
             {
                 string Lv2P = $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}";
                 DrawString(413 - GetDrawStringWidth(Lv2P, Lv2P.Length) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
-                if (MainTJA[0].Courses[Course[1]].ScrollType != EScroll.Normal)
+                if (MainTJA[1].Courses[Course[1]].ScrollType != EScroll.Normal)
                 {
                     DrawString(378, Notes.NotesP[0].Y + 436, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
                 }
             }
 
             Chip nchip = GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value, true);
-            if (nchip != null && nchip.Lyric != null) DrawString(640, 1000, nchip.Lyric, 0x0000ff);
+            if (nchip != null && nchip.Lyric != null)
+            {
+                if (lyric != nchip.Lyric)
+                {
+                    GenerateLyric(nchip);
+                    lyric = nchip.Lyric;
+                }
+                Lyric.Draw(960 - Lyric.ActualSize.Width / 2, 1000);
+            }
 
 
             #if DEBUG
@@ -416,6 +436,12 @@ namespace Tunebeat.Game
             base.Draw();
         }
 
+        public static void GenerateLyric(Chip chip)
+        {
+            FontFamily family = new FontFamily("MS UI Gothic");
+            Lyric = DrawFont.GetTexture(chip.Lyric, family, 56, 4, 0, Color.White, Color.Blue);
+            return;
+        }
         public override void Update()
         {
             MainTimer.Tick();
@@ -557,10 +583,10 @@ namespace Tunebeat.Game
         public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[7];
         public static Counter MainTimer, Wait;
         public static Sound MainSong;
-        public static Texture MainImage;
+        public static Texture MainImage, Title, SubTitle, Lyric;
         public static Movie MainMovie;
         public static List<Scene> ChildScene = new List<Scene>();
-        public static string TJAPath;
+        public static string TJAPath, lyric;
         public static bool IsSongPlay;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[2];
