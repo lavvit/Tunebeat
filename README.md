@@ -60,5 +60,5 @@ https://discord.gg/467xQnteQx
 
 ## 連絡先
 不具合報告、新規機能追加のリクエスト等、大歓迎です。  
-Twitter:[@LAVVIT_SUSHI](https://twitter.com/LAVVIT_SUSHI)
+Twitter:[@LAVVIT_SUSHI](https://twitter.com/LAVVIT_SUSHI)  
 Discord:らびぃ#9478
