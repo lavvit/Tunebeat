@@ -15,9 +15,14 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
                 EXScore[i] = 0;
+                Poor[i] = 0;
+                Auto[i] = 0;
+                AutoRoll[i] = 0;
+                Combo[i] = 0;
+                MaxCombo[i] = 0;
             }
             for (int i = 0; i < 2; i++)
             {
@@ -25,16 +30,11 @@ namespace Tunebeat.Game
                 Great[i] = 0;
                 Good[i] = 0;
                 Bad[i] = 0;
-                Poor[i] = 0;
-                Auto[i] = 0;
                 Roll[i] = 0;
-                AutoRoll[i] = 0;
                 RollYellow[i] = 0;
                 RollBalloon[i] = 0;
                 Gauge[i] = 0;
                 SetGauge(i);
-                Combo[i] = 0;
-                MaxCombo[i] = 0;
                 msSum[i] = 0;
                 Hit[i] = 0;
             }
@@ -44,8 +44,10 @@ namespace Tunebeat.Game
             JudgeCounter2P = new Counter(0, 200, 1000, false);
             JudgeCounterBig2P = new Counter(0, 500, 1000, false);
             BombAnimation = new Counter(0, 1023, 1000, false);
-            RollCounter = new Counter(0, 200, 1000, false);
-            RollCounter2P = new Counter(0, 200, 1000, false);
+            for (int i = 0; i < 5; i++)
+            {
+                RollCounter[i] = new Counter(0, 200, 1000, false);
+            }
             Active = new Counter(0, 1000, 1000, false);
             base.Enable();
         }
@@ -57,8 +59,10 @@ namespace Tunebeat.Game
             JudgeCounter2P.Reset();
             JudgeCounterBig2P.Reset();
             BombAnimation.Reset();
-            RollCounter.Reset();
-            RollCounter2P.Reset();
+            for (int i = 0; i < 5; i++)
+            {
+                RollCounter[i].Reset();
+            }
             Active.Reset();
             base.Disable();
         }
@@ -79,7 +83,7 @@ namespace Tunebeat.Game
                 TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, Notes.NotesP[0].Y - 4 - 48 + 6, new Rectangle(Color[i], (int)Gauge[0] > i ? 40 : 0, 10, 40));
             }
             DrawNumber(495 + 15, Notes.NotesP[0].Y - 4 - 48 + 12, $"{Gauge[0],5:F1}%", 0);
-            if (PlayData.Data.IsPlay2P)
+            if (PlayData.Data.IsPlay2P && PlayData.Data.PreviewType < 3)
             {
                 TextureLoad.Game_Gauge_Base.Draw(495, Notes.NotesP[0].Y - 4 + 465, new Rectangle(0, 48, 1425, 48));
                 for (int i = 0; i < 100; i++)
@@ -96,18 +100,41 @@ namespace Tunebeat.Game
 
             DrawJudge();
 
-            DrawNumber(0, Notes.NotesP[0].Y + 2, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2), 9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
-            DrawMiniNumber(136, Notes.NotesP[0].Y + 29, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 1);
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
-            Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
-            DrawNumber(0, Notes.NotesP[0].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
-            DrawNumber(0, Notes.NotesP[0].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
-            if (PlayData.Data.IsPlay2P)
+            if (PlayData.Data.PreviewType == 3)
             {
-                DrawNumber(0, Notes.NotesP[0].Y + 2 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
-                DrawMiniNumber(136, Notes.NotesP[0].Y + 29 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
-                DrawNumber(72, Notes.NotesP[0].Y + 2 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
-                DrawNumber(0, Notes.NotesP[0].Y + 2 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
+                int count = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    {
+                        if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
+                        count++;
+                    }
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    DrawNumber(0, Notes.NotesP[i].Y + 2, $"{(EXScore[i] > 0 ? EXScore[i] : Auto[i] * 2),9}", EXScore[i] > 0 || Auto[i] == 0 ? 0 : 5);
+                    DrawMiniNumber(136, Notes.NotesP[i].Y + 29, $"+{(EXScore[i] > 0 ? Roll[i] : AutoRoll[i]),4}", EXScore[i] > 0 || Auto[i] == 0 ? 0 : 1);
+                    Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value, true);
+                    DrawNumber(0, Notes.NotesP[i].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[i] : Notes.Scroll[i]),9:F2}", 0);//HS
+                    DrawNumber(0, Notes.NotesP[i].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[i].Header.BPM),9:F1}", 0);
+                }
+            }
+            else
+            {
+                DrawNumber(0, Notes.NotesP[0].Y + 2, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2),9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
+                DrawMiniNumber(136, Notes.NotesP[0].Y + 29, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 1);
+                Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
+                Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
+                DrawNumber(0, Notes.NotesP[0].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
+                DrawNumber(0, Notes.NotesP[0].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
+                if (PlayData.Data.IsPlay2P)
+                {
+                    DrawNumber(0, Notes.NotesP[0].Y + 2 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
+                    DrawMiniNumber(136, Notes.NotesP[0].Y + 29 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
+                    DrawNumber(72, Notes.NotesP[0].Y + 2 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
+                    DrawNumber(0, Notes.NotesP[0].Y + 2 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
+                }
             }
 
             switch ((EPreviewType)PlayData.Data.PreviewType)
@@ -163,7 +190,6 @@ namespace Tunebeat.Game
                     }
                     break;
                 case EPreviewType.Normal:
-                default:
                     for (int i = 0; i < 6; i++)
                     {
                         TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
@@ -235,24 +261,52 @@ namespace Tunebeat.Game
                 }
             }
 
-            Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[0]);
-            Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - Game.Adjust[1]);
-            ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
-            ERoll roll2p = rnowchip2p != null ? ProcessNote.RollState(rnowchip2p) : ERoll.None;
-            if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter.Reset(); RollCounter.Start(); }
-            if (roll2p != ERoll.None && !rnowchip2p.IsHit) { RollCounter2P.Reset(); RollCounter2P.Start(); }
-            if (RollCounter.State != 0)
+            if (PlayData.Data.PreviewType == 3)
             {
-                if ((roll == ERoll.Roll || roll == ERoll.ROLL)) NowRoll[0] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[0];
-                else if ((roll == ERoll.Balloon || roll == ERoll.Kusudama)) NowRoll[0] = ProcessNote.BalloonRemain[0];
+                int count = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    {
+                        if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
+                        count++;
+                    }
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
+                    ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
+                    if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter[i].Reset(); RollCounter[i].Start(); }
+                    if (RollCounter[i].State != 0)
+                    {
+                        if ((roll == ERoll.Roll || roll == ERoll.ROLL)) NowRoll[i] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[i];
+                        else if ((roll == ERoll.Balloon || roll == ERoll.Kusudama)) NowRoll[i] = ProcessNote.BalloonRemain[i];
 
-                DrawNumber(Notes.NotesP[0].X + 160, Notes.NotesP[0].Y + 82, $"{NowRoll[0]}", 0);
+                        DrawNumber(Notes.NotesP[i].X + 160, Notes.NotesP[i].Y + 82, $"{NowRoll[i]}", 0);
+                    }
+                }
             }
-            if (PlayData.Data.IsPlay2P && RollCounter2P.State != 0)
+            else
             {
-                if ((roll2p == ERoll.Roll || roll2p == ERoll.ROLL)) NowRoll[1] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[1];
-                else if ((roll2p == ERoll.Balloon || roll2p == ERoll.Kusudama)) NowRoll[1] = ProcessNote.BalloonRemain[1];
-                DrawNumber(Notes.NotesP[1].X + 160, Notes.NotesP[1].Y + 82, $"{NowRoll[1]}", 0);
+                Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[0]);
+                Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - Game.Adjust[1]);
+                ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
+                ERoll roll2p = rnowchip2p != null ? ProcessNote.RollState(rnowchip2p) : ERoll.None;
+                if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter[0].Reset(); RollCounter[0].Start(); }
+                if (roll2p != ERoll.None && !rnowchip2p.IsHit) { RollCounter[1].Reset(); RollCounter[1].Start(); }
+                if (RollCounter[0].State != 0)
+                {
+                    if ((roll == ERoll.Roll || roll == ERoll.ROLL)) NowRoll[0] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[0];
+                    else if ((roll == ERoll.Balloon || roll == ERoll.Kusudama)) NowRoll[0] = ProcessNote.BalloonRemain[0];
+
+                    DrawNumber(Notes.NotesP[0].X + 160, Notes.NotesP[0].Y + 82, $"{NowRoll[0]}", 0);
+                }
+                if (PlayData.Data.IsPlay2P && RollCounter[1].State != 0)
+                {
+                    if ((roll2p == ERoll.Roll || roll2p == ERoll.ROLL)) NowRoll[1] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[1];
+                    else if ((roll2p == ERoll.Balloon || roll2p == ERoll.Kusudama)) NowRoll[1] = ProcessNote.BalloonRemain[1];
+                    DrawNumber(Notes.NotesP[1].X + 160, Notes.NotesP[1].Y + 82, $"{NowRoll[1]}", 0);
+                }
             }
 
 
@@ -338,8 +392,10 @@ namespace Tunebeat.Game
             JudgeCounterBig2P.Tick();
             BombAnimation.Tick();
             BombAnimation.Start();
-            RollCounter.Tick();
-            RollCounter2P.Tick();
+            for (int i = 0; i < 5; i++)
+            {
+                RollCounter[i].Tick();
+            }
             Active.Tick();
             base.Update();
         }
@@ -1182,7 +1238,8 @@ namespace Tunebeat.Game
         public static bool[] Cleared = new bool[2];
         private static EJudge[] DisplayJudge = new EJudge[2];
         public static ERank[] Rank = new ERank[2];
-        public static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation, RollCounter, RollCounter2P, Active;
+        public static Counter JudgeCounter, JudgeCounterBig, JudgeCounter2P, JudgeCounterBig2P, BombAnimation, Active;
+        public static Counter[] RollCounter = new Counter[5];
 
         private struct STNumber
         {

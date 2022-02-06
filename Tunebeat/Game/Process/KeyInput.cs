@@ -426,80 +426,95 @@ namespace Tunebeat.Game
                 }
             }
 
-            Sound[] taiko = new Sound[2];
-            Sound[] taiko2P = new Sound[2];
-            if (player == 0 || PlayData.Data.PreviewType == 3)
+            Sound[][] taiko = new Sound[5][];
+            for (int i = 0; i < 5; i++)
             {
-                if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
-                {
-                    taiko[0] = SoundLoad.DON;
-                    taiko[0].Volume = 1.5;
-                    taiko[1] = SoundLoad.KA;
-                    taiko[1].Volume = 1.5;
-                }
-                else
-                {
-                    taiko[0] = SoundLoad.Don;
-                    taiko[0].Volume = 1.0;
-                    taiko[1] = SoundLoad.Ka;
-                    taiko[1].Volume = 1.0;
-                }
-                if (PlayData.Data.IsPlay2P && PlayData.Data.PreviewType < 3)
-                {
-                    taiko[0].Pan = -255;
-                    taiko[1].Pan = -255;
-                }
-                else
-                {
-                    taiko[0].Pan = 0;
-                    taiko[1].Pan = 0;
-                }
-                if (PlayData.Data.ChangeSESpeed)
-                {
-                    taiko[0].PlaySpeed = PlayData.Data.PlaySpeed;
-                    taiko[1].PlaySpeed = PlayData.Data.PlaySpeed;
-                }
-                else
-                {
-                    taiko[0].PlaySpeed = 1.0;
-                    taiko[1].PlaySpeed = 1.0;
-                }
-
-                if (isDon) taiko[0].Play();
-                else taiko[1].Play();
+                taiko[i] = new Sound[2];
+                taiko[i][0] = SoundLoad.Don[i];
+                taiko[i][1] = SoundLoad.Ka[i];
+            }
+            if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
+            {
+                taiko[player][0] = SoundLoad.DON[player];
+                taiko[player][0].Volume = 1.5;
+                taiko[player][1] = SoundLoad.KA[player];
+                taiko[player][1].Volume = 1.5;
             }
             else
             {
-                if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
-                {
-                    taiko2P[0] = SoundLoad.DON2P;
-                    taiko2P[0].Volume = 1.5;
-                    taiko2P[1] = SoundLoad.KA2P;
-                    taiko2P[1].Volume = 1.5;
-                }
-                else
-                {
-                    taiko2P[0] = SoundLoad.Don2P;
-                    taiko2P[0].Volume = 1.0;
-                    taiko2P[1] = SoundLoad.Ka2P;
-                    taiko2P[1].Volume = 1.0;
-                }
-                taiko2P[0].Pan = 255;
-                taiko2P[1].Pan = 255;
-                if (PlayData.Data.ChangeSESpeed)
-                {
-                    taiko2P[0].PlaySpeed = PlayData.Data.PlaySpeed;
-                    taiko2P[1].PlaySpeed = PlayData.Data.PlaySpeed;
-                }
-                else
-                {
-                    taiko2P[0].PlaySpeed = 1.0;
-                    taiko2P[1].PlaySpeed = 1.0;
-                }
-
-                if (isDon) taiko2P[0].Play();
-                else taiko2P[1].Play();
+                taiko[player][0] = SoundLoad.Don[player];
+                taiko[player][0].Volume = 1.0;
+                taiko[player][1] = SoundLoad.Ka[player];
+                taiko[player][1].Volume = 1.0;
             }
+
+            if (PlayData.Data.PreviewType == 3)
+            {
+                int count = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    {
+                        if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
+                        count++;
+                    }
+                }
+                switch (count)
+                {
+                    case 1:
+                        taiko[0][0].Pan = taiko[0][1].Pan = 0;
+                        break;
+                    case 2:
+                        taiko[0][0].Pan = taiko[0][1].Pan = -255;
+                        taiko[1][0].Pan = taiko[1][1].Pan = 255;
+                        break;
+                    case 3:
+                        taiko[0][0].Pan = taiko[0][1].Pan = -255;
+                        taiko[1][0].Pan = taiko[1][1].Pan = 0;
+                        taiko[2][0].Pan = taiko[2][1].Pan = 255;
+                        break;
+                    case 4:
+                        taiko[0][0].Pan = taiko[0][1].Pan = -255;
+                        taiko[1][0].Pan = taiko[1][1].Pan = -80;
+                        taiko[2][0].Pan = taiko[2][1].Pan = 80;
+                        taiko[3][0].Pan = taiko[3][1].Pan = 255;
+                        break;
+                    case 5:
+                        taiko[0][0].Pan = taiko[0][1].Pan = -255;
+                        taiko[1][0].Pan = taiko[1][1].Pan = -128;
+                        taiko[2][0].Pan = taiko[2][1].Pan = 0;
+                        taiko[3][0].Pan = taiko[3][1].Pan = 128;
+                        taiko[4][0].Pan = taiko[4][1].Pan = 255;
+                        break;
+                }
+            }
+            else
+            {
+                if (PlayData.Data.IsPlay2P)
+                {
+                    if (player == 0) taiko[0][0].Pan = taiko[0][1].Pan = -255;
+                    if (player == 1) taiko[1][0].Pan = taiko[1][1].Pan = 255;
+                }
+                else
+                {
+                    taiko[0][0].Pan = taiko[0][1].Pan = 0;
+                }
+            }
+            
+
+            if (PlayData.Data.ChangeSESpeed)
+            {
+                taiko[player][0].PlaySpeed = PlayData.Data.PlaySpeed;
+                taiko[player][1].PlaySpeed = PlayData.Data.PlaySpeed;
+            }
+            else
+            {
+                taiko[player][0].PlaySpeed = 1.0;
+                taiko[player][1].PlaySpeed = 1.0;
+            }
+
+            if (isDon) taiko[player][0].Play();
+            else taiko[player][1].Play();
 
             if (isDon)
             {

@@ -16,15 +16,32 @@ namespace TJAParse
             if (str.Length <= 0) return;
             var split = str.Split(':');
             if (split.Length < 2) return;
+            string allsplit;
             switch (split[0])
             {
                 case "TITLE":
-                    header.TITLE = split[1];
+                    allsplit = split[1];
+                    if (split.Length > 2)
+                    {
+                        for (int i = 2; i < split.Length; i++)
+                        {
+                            allsplit = allsplit + split[i];
+                        }
+                    }
+                    header.TITLE = allsplit;
                     break;
                 case "SUBTITLE":
                     if (split[1].StartsWith("++") || split[1].StartsWith("--"))
                         split[1] = split[1].Substring(2);
-                    header.SUBTITLE = split[1];
+                    allsplit = split[1];
+                    if (split.Length > 2)
+                    {
+                        for (int i = 2; i < split.Length; i++)
+                        {
+                            allsplit = allsplit + ":" + split[i];
+                        }
+                    }
+                    header.SUBTITLE = allsplit;
                     break;
                 case "WAVE":
                     header.WAVE = split[1];

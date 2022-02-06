@@ -43,7 +43,30 @@ namespace Tunebeat.Game
                     {
                         Scroll[i] = PlayData.Data.ScrollSpeed[0];
                     }
-                    NotesP = new Point[5] { new Point(521, 85), new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
+                    int count = 0;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                        {
+                            if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
+                            count++;
+                        }
+                    }
+                    switch (count)
+                    {
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            NotesP = new Point[3] { new Point(521, 290), new Point(521, 290 + 199), new Point(521, 290 + 199 * 2) };
+                            break;
+                        case 4:
+                            NotesP = new Point[4] { new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
+                            break;
+                        case 5:
+                            NotesP = new Point[5] { new Point(521, 85), new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
+                            break;
+                    }
                     break;
             }
             for (int i = 0; i < 5; i++)
@@ -288,16 +311,13 @@ namespace Tunebeat.Game
             {
                 ProcessAuto.RollTimer[i].Tick();
             }
-            for (int i = 0; i < 5; i++)
+            if (roll != ERoll.None)
             {
-                if (roll != ERoll.None)
-                {
-                    ProcessAuto.RollTimer[i].Start();
-                }
-                else
-                {
-                    ProcessAuto.RollTimer[i].Reset();
-                }
+                ProcessAuto.RollTimer[player].Start();
+            }
+            else
+            {
+                ProcessAuto.RollTimer[player].Reset();
             }
 
             for (int i = Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)

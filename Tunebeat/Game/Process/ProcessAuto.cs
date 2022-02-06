@@ -38,14 +38,11 @@ namespace Tunebeat.Game
                         left[player] = !left[player];
 
                     }
-                    for (int i = 0; i < 5; i++)
+                    if (RollTimer[player].Value == RollTimer[player].End)
                     {
-                        if (player == 0 && RollTimer[i].Value == RollTimer[i].End)
-                        {
-                            KeyInput.Process(true, left[i], 0);
-                            left[i] = !left[i];
-                            RollTimer[i].Value = RollTimer[i].Begin;
-                        }
+                        KeyInput.Process(true, left[player], player);
+                        left[player] = !left[player];
+                        RollTimer[player].Value = RollTimer[player].Begin;
                     }
                 }
             }

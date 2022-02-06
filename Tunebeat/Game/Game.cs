@@ -33,9 +33,12 @@ namespace Tunebeat.Game
             movie = movie.Replace(".wmv", ".mp4");
             MainMovie = new Movie(movie);
 
-            FontFamily family = new FontFamily("MS UI Gothic");
-            Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
-            SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
+            if (PlayData.Data.FontRendering)
+            {
+                FontFamily family = new FontFamily("MS UI Gothic");
+                Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
+                SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
+            }
 
             for (int i = 0; i < 2; i++)
             {
@@ -171,9 +174,14 @@ namespace Tunebeat.Game
             if (File.Exists(MainSong.FileName)) MainSong.Time = StartTime / 1000;
             if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = StartTime;
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
                 Score.EXScore[i] = 0;
+                Score.Poor[i] = 0;
+                Score.Auto[i] = 0;
+                Score.AutoRoll[i] = 0;
+                Score.Combo[i] = 0;
+                Score.MaxCombo[i] = 0;
             }
             for (int i = 0; i < 2; i++)
             {
@@ -181,16 +189,11 @@ namespace Tunebeat.Game
                 Score.Great[i] = 0;
                 Score.Good[i] = 0;
                 Score.Bad[i] = 0;
-                Score.Poor[i] = 0;
-                Score.Auto[i] = 0;
                 Score.Roll[i] = 0;
-                Score.AutoRoll[i] = 0;
                 Score.RollYellow[i] = 0;
                 Score.RollBalloon[i] = 0;
                 Score.Gauge[i] = 0;
                 Score.SetGauge(i);
-                Score.Combo[i] = 0;
-                Score.MaxCombo[i] = 0;
                 Score.msSum[i] = 0;
                 Score.Hit[i] = 0;
             }
@@ -199,7 +202,7 @@ namespace Tunebeat.Game
             {
                 Notes.UseSudden[i] = PlayData.Data.UseSudden[i];
                 Notes.Sudden[i] = PlayData.Data.SuddenNumber[i];
-                Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
+                if (PlayData.Data.PreviewType < 3) Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
             }
             SetBalloon();
             PlayMemory.Dispose();
@@ -323,22 +326,22 @@ namespace Tunebeat.Game
                 if (HitTimer[i][0].State == TimerState.Started)
                 {
                     TextureLoad.Game_Don[i][0].Opacity = 1.0 - ((double)HitTimer[i][0].Value / HitTimer[i][0].End);
-                    TextureLoad.Game_Don[i][0].Draw(362, Notes.NotesP[0].Y + 47);
+                    TextureLoad.Game_Don[i][0].Draw(362, Notes.NotesP[i].Y + 47);
                 }
                 if (HitTimer[i][1].State == TimerState.Started)
                 {
                     TextureLoad.Game_Don[i][1].Opacity = 1.0 - ((double)HitTimer[i][1].Value / HitTimer[i][1].End);
-                    TextureLoad.Game_Don[i][1].Draw(362, Notes.NotesP[0].Y + 47);
+                    TextureLoad.Game_Don[i][1].Draw(362, Notes.NotesP[i].Y + 47);
                 }
                 if (HitTimer[i][2].State == TimerState.Started)
                 {
                     TextureLoad.Game_Ka[i][0].Opacity = 1.0 - ((double)HitTimer[i][2].Value / HitTimer[i][2].End);
-                    TextureLoad.Game_Ka[i][0].Draw(362, Notes.NotesP[0].Y + 47);
+                    TextureLoad.Game_Ka[i][0].Draw(362, Notes.NotesP[i].Y + 47);
                 }
                 if (HitTimer[i][3].State == TimerState.Started)
                 {
                     TextureLoad.Game_Ka[i][1].Opacity = 1.0 - ((double)HitTimer[i][3].Value / HitTimer[i][3].End);
-                    TextureLoad.Game_Ka[i][1].Draw(362, Notes.NotesP[0].Y + 47);
+                    TextureLoad.Game_Ka[i][1].Draw(362, Notes.NotesP[i].Y + 47);
                 }
             }
 
@@ -371,39 +374,87 @@ namespace Tunebeat.Game
 
             if ((PlayData.Data.PreviewType >= (int)EPreviewType.Down) || (PlayData.Data.PreviewType == (int)EPreviewType.Normal && !(PlayData.Data.IsPlay2P || PlayData.Data.ShowGraph)))
             {
-                Title.Draw(1920 - Title.ActualSize.Width - 20, 20);
-                SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 70);
+                if (PlayData.Data.FontRendering)
+                {
+                    Title.Draw(1920 - Title.ActualSize.Width - 20, 40);
+                    SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 90);
+                }
+                else
+                {
+                    DrawString(1920 - GetDrawStringWidth(MainTJA[0].Header.TITLE, MainTJA[0].Header.TITLE.Length) - 20, 40, MainTJA[0].Header.TITLE, 0xffffff);
+                    DrawString(1920 - GetDrawStringWidth(MainTJA[0].Header.SUBTITLE, MainTJA[0].Header.SUBTITLE.Length) - 20, 90, MainTJA[0].Header.SUBTITLE, 0xffffff);
+                }
             }
             else 
             {
-                Title.Draw(1920 - Title.ActualSize.Width - 20, 1010);
-                SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 1060);
-            }
-            string Lv1P = $"{MainTJA[0].Courses[Course[0]].COURSE} Lv.{MainTJA[0].Courses[Course[0]].LEVEL}";
-            DrawString(413 - GetDrawStringWidth(Lv1P, Lv1P.Length) / 2, Notes.NotesP[0].Y + 6, Lv1P, 0xffffff);
-            if (MainTJA[0].Courses[Course[0]].ScrollType != EScroll.Normal)
-            {
-                DrawString(378, Notes.NotesP[0].Y + 26, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
-            }
-            if (PlayData.Data.IsPlay2P)
-            {
-                string Lv2P = $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}";
-                DrawString(413 - GetDrawStringWidth(Lv2P, Lv2P.Length) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
-                if (MainTJA[1].Courses[Course[1]].ScrollType != EScroll.Normal)
+                if (PlayData.Data.FontRendering)
                 {
-                    DrawString(378, Notes.NotesP[0].Y + 436, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
+                    Title.Draw(1920 - Title.ActualSize.Width - 20, 990);
+                    SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 1040);
+                }
+                else
+                {
+                    DrawString(1920 - GetDrawStringWidth(MainTJA[0].Header.TITLE, MainTJA[0].Header.TITLE.Length) - 20, 990, MainTJA[0].Header.TITLE, 0xffffff);
+                    DrawString(1920 - GetDrawStringWidth(MainTJA[0].Header.SUBTITLE, MainTJA[0].Header.SUBTITLE.Length) - 20, 1040, MainTJA[0].Header.SUBTITLE, 0xffffff);
+                }
+            }
+
+            if (PlayData.Data.PreviewType == 3)
+            {
+                int count = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (MainTJA[i].Courses[Course[i]].ListChip.Count > 0)
+                    {
+                        if (i > 0 && Course[i] == Course[i - 1]) break;
+                        count++;
+                    }
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    string Lv = $"{MainTJA[i].Courses[Course[i]].COURSE} Lv.{MainTJA[i].Courses[Course[i]].LEVEL}";
+                    DrawString(413 - GetDrawStringWidth(Lv, Lv.Length) / 2, Notes.NotesP[i].Y + 6, Lv, 0xffffff);
+                    if (MainTJA[i].Courses[Course[i]].ScrollType != EScroll.Normal)
+                    {
+                        DrawString(378, Notes.NotesP[i].Y + 26, $"{MainTJA[i].Courses[Course[i]].ScrollType}", 0xffffff);
+                    }
+                }
+            }
+            else
+            {
+                string Lv1P = $"{MainTJA[0].Courses[Course[0]].COURSE} Lv.{MainTJA[0].Courses[Course[0]].LEVEL}";
+                DrawString(413 - GetDrawStringWidth(Lv1P, Lv1P.Length) / 2, Notes.NotesP[0].Y + 6, Lv1P, 0xffffff);
+                if (MainTJA[0].Courses[Course[0]].ScrollType != EScroll.Normal)
+                {
+                    DrawString(378, Notes.NotesP[0].Y + 26, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
+                }
+                if (PlayData.Data.IsPlay2P)
+                {
+                    string Lv2P = $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}";
+                    DrawString(413 - GetDrawStringWidth(Lv2P, Lv2P.Length) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
+                    if (MainTJA[1].Courses[Course[1]].ScrollType != EScroll.Normal)
+                    {
+                        DrawString(378, Notes.NotesP[0].Y + 436, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
+                    }
                 }
             }
 
             Chip nchip = GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value, true);
             if (nchip != null && nchip.Lyric != null)
             {
-                if (lyric != nchip.Lyric)
+                if (PlayData.Data.FontRendering)
                 {
-                    GenerateLyric(nchip);
-                    lyric = nchip.Lyric;
+                    if (lyric != nchip.Lyric)
+                    {
+                        GenerateLyric(nchip);
+                        lyric = nchip.Lyric;
+                    }
+                    Lyric.Draw(960 - Lyric.ActualSize.Width / 2, 1000);
                 }
-                Lyric.Draw(960 - Lyric.ActualSize.Width / 2, 1000);
+                else
+                {
+                    if (!string.IsNullOrEmpty(nchip.Lyric)) DrawString(960 - GetDrawStringWidth(nchip.Lyric, nchip.Lyric.Length) / 2, 1000, nchip.Lyric, 0x0000ff);
+                }
             }
 
 

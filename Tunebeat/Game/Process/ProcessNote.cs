@@ -109,11 +109,11 @@ namespace Tunebeat.Game
                         {
                             if (RollState(chip) == ERoll.Balloon)
                             {
-                                SoundLoad.Balloon.Play();
+                                SoundLoad.Balloon[player].Play();
                             }
                             else
                             {
-                                SoundLoad.Kusudama.Play();
+                                SoundLoad.Kusudama[player].Play();
                             }
                             chip.IsHit = true;
                             BalloonList[player]++;

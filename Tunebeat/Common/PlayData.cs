@@ -30,6 +30,8 @@ namespace Tunebeat.Common
         public string BGMName = "Default";
         public int[] SkinColor = new int[3] { 128, 128, 128 };
         public bool FullScreen = false;
+        public bool FontRendering = true;
+        public string FontName = "";
 
         public List<string> PlayFolder = new List<string>() { "Songs" };
         public int PreviewType = 0;
