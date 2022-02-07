@@ -67,6 +67,8 @@ namespace Tunebeat
                 NowScene?.Draw();
                 NowScene?.Update();
 
+                if (PlayData.Data.FullScreen) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
+
                 if (Key.IsPushed(KEY_INPUT_F12))
                 {
                     DateTime time = DateTime.Now;
