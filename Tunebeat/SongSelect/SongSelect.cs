@@ -438,6 +438,7 @@ namespace Tunebeat.SongSelect
             int cursor = (int)Math.Round(length, 0, MidpointRounding.AwayFromZero);
             DrawString(200, 60, $"NowY:{length}", 0xffffff);
             DrawString(200, 80, $"NowYCursor:{cursor}", 0xffffff);
+            DrawString(200, 100, $"NowWheel:{Mouse.Wheel}", 0xffffff);
             DrawString(0, 60, $"Gauge:{(EGauge)PlayData.Data.GaugeType[0]}" + (PlayData.Data.IsPlay2P ? $"/{(EGauge)PlayData.Data.GaugeType[1]}" : ""), 0xffffff);
             DrawString(0, 80, $"GAS:{(EGaugeAutoShift)PlayData.Data.GaugeAutoShift[0]}" + (PlayData.Data.IsPlay2P ? $"/{(EGaugeAutoShift)PlayData.Data.GaugeAutoShift[1]}" : ""), 0xffffff);
             DrawString(0, 100, $"GASmin:{(EGauge)PlayData.Data.GaugeAutoShiftMin[0]}" + (PlayData.Data.IsPlay2P ? $"/{(EGauge)PlayData.Data.GaugeAutoShiftMin[1]}" : ""), 0xffffff);
@@ -495,7 +496,7 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
-                if ((Key.IsPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End)) && NowTJA != null)
+                if ((Key.IsPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End) || Mouse.Wheel < 0) && NowTJA != null)
                 {
                     SoundLoad.Ka[0].Play();
                     NowTJA = NowTJA.Prev;
@@ -503,7 +504,7 @@ namespace Tunebeat.SongSelect
                     else NowSongNumber--;
                     PushingTimer[0].Reset();
                 }
-                if ((Key.IsPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End)) && NowTJA != null)
+                if ((Key.IsPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End) || Mouse.Wheel > 0) && NowTJA != null)
                 {
                     SoundLoad.Ka[0].Play();
                     NowTJA = NowTJA.Next;
