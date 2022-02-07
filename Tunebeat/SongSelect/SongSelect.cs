@@ -69,6 +69,7 @@ namespace Tunebeat.SongSelect
                         TextureLoad.SongSelect_Bar_Color.Draw(1180, -90 + 60 * 10);
                         TextureLoad.SongSelect_Bar.Draw(1180, -90 + 60 * 10);
                         DrawString(1300, -90 + 60 * 10 + 22, NowTJA.Header.TITLE, (uint)ColorTranslator.ToWin32(NowTJA.FontColor));
+                        if (NowTJA.Course[PlayData.Data.PlayCourse[0]].IsEnable) Score.DrawNumber(1242 - 12 * Score.Digit(NowTJA.Course[PlayData.Data.PlayCourse[0]].LEVEL), -90 + 60 * 10 + 16, $"{NowTJA.Course[PlayData.Data.PlayCourse[0]].LEVEL}", 0);
                         break;
                     case EType.Folder:
                     case EType.Back:
@@ -90,14 +91,15 @@ namespace Tunebeat.SongSelect
                             TextureLoad.SongSelect_Bar_Color.Opacity = 0.75;
                             TextureLoad.SongSelect_Bar_Color.Draw(1212, -90 + 60 * i);
                             TextureLoad.SongSelect_Bar.Draw(1212, -90 + 60 * i);
-                            DrawString(1342, -90 + 60 * i + 22, prev.Header.TITLE, (uint)ColorTranslator.ToWin32(prev.FontColor));
+                            DrawString(1332, -90 + 60 * i + 22, prev.Header.TITLE, (uint)ColorTranslator.ToWin32(prev.FontColor));
+                            if (prev.Course[PlayData.Data.PlayCourse[0]].IsEnable) Score.DrawNumber(1242 + 32 - 12 * Score.Digit(prev.Course[PlayData.Data.PlayCourse[0]].LEVEL), -90 + 60 * i + 16, $"{prev.Course[PlayData.Data.PlayCourse[0]].LEVEL}", 0);
                             break;
                         case EType.Folder:
                         case EType.Back:
                             TextureLoad.SongSelect_Bar_Folder_Color.Color = prev.BackColor;
                             TextureLoad.SongSelect_Bar_Folder_Color.Draw(1212, -90 + 60 * i);
                             TextureLoad.SongSelect_Bar_Folder.Draw(1212, -90 + 60 * i);
-                            DrawString(1342 - 60, -90 + 60 * i + 22, prev.Title, (uint)ColorTranslator.ToWin32(prev.FontColor));
+                            DrawString(1332 - 60, -90 + 60 * i + 22, prev.Title, (uint)ColorTranslator.ToWin32(prev.FontColor));
                             break;
                     }
 
@@ -113,14 +115,15 @@ namespace Tunebeat.SongSelect
                             TextureLoad.SongSelect_Bar_Color.Opacity = 0.75;
                             TextureLoad.SongSelect_Bar_Color.Draw(1212, -90 + 60 * i);
                             TextureLoad.SongSelect_Bar.Draw(1212, -90 + 60 * i);
-                            DrawString(1342, -90 + 60 * i + 22, next.Header.TITLE, (uint)ColorTranslator.ToWin32(next.FontColor));
+                            DrawString(1332, -90 + 60 * i + 22, next.Header.TITLE, (uint)ColorTranslator.ToWin32(next.FontColor));
+                            if (next.Course[PlayData.Data.PlayCourse[0]].IsEnable) Score.DrawNumber(1242 + 32 - 12 * Score.Digit(next.Course[PlayData.Data.PlayCourse[0]].LEVEL), -90 + 60 * i + 16, $"{next.Course[PlayData.Data.PlayCourse[0]].LEVEL}", 0);
                             break;
                         case EType.Folder:
                         case EType.Back:
                             TextureLoad.SongSelect_Bar_Folder_Color.Color = next.BackColor;
                             TextureLoad.SongSelect_Bar_Folder_Color.Draw(1212, -90 + 60 * i);
                             TextureLoad.SongSelect_Bar_Folder.Draw(1212, -90 + 60 * i);
-                            DrawString(1342 - 60, -90 + 60 * i + 22, next.Title, (uint)ColorTranslator.ToWin32(next.FontColor));
+                            DrawString(1332 - 60, -90 + 60 * i + 22, next.Title, (uint)ColorTranslator.ToWin32(next.FontColor));
                             break;
                     }
                 }
