@@ -85,6 +85,7 @@ namespace Tunebeat.SongSelect
                     SongData songdata = new SongData()
                     {
                         Path = item,
+                        Title = parse.Header.TITLE,
                         Time = File.GetLastWriteTime(item),
                         Header = parse.Header,
                         Course = parse.Courses,
@@ -105,6 +106,7 @@ namespace Tunebeat.SongSelect
                     SongData songdata = new SongData()
                     {
                         Path = item,
+                        Title = parse.Header.TITLE,
                         Time = File.GetLastWriteTime(item),
                         Header = parse.Header,
                         Course = parse.Courses,
@@ -175,6 +177,7 @@ namespace Tunebeat.SongSelect
                     SongData songdata = new SongData()
                     {
                         Path = item,
+                        Title = parse.Header.TITLE,
                         Time = File.GetLastWriteTime(item),
                         Header = parse.Header,
                         Course = parse.Courses,
@@ -192,6 +195,7 @@ namespace Tunebeat.SongSelect
                 SongData songdata = new SongData()
                 {
                     Path = item,
+                    Title = parse.Header.TITLE,
                     Time = File.GetLastWriteTime(item),
                     Header = parse.Header,
                     Course = parse.Courses,
@@ -201,6 +205,17 @@ namespace Tunebeat.SongSelect
                 };
                 data.Add(songdata);
             }
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                data[i].Prev = data[(i + (data.Count - 1)) % data.Count];
+                data[i].Next = data[(i + 1) % data.Count];
+            }
+        }
+
+        public static void Sort(List<SongData> data, Comparison<SongData> comp)
+        {
+            data.Sort(comp);
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -230,10 +245,10 @@ namespace Tunebeat.SongSelect
 
     public enum EType
     {
-        Score,
-        Folder,
         Back,
-        Random
+        Folder,
+        Random,
+        Score
     }
 
     public class Folder

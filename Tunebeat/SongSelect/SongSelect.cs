@@ -733,6 +733,26 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
+                if (Key.IsPushed(KEY_INPUT_SPACE))
+                {
+                    string title = NowTJA.Title;
+                    SongLoad.Sort(SongLoad.SongData, (a, b) => {
+                        int result = a.Type - b.Type;
+                        return result != 0 ? result : a.Title.CompareTo(b.Title);
+                    });
+
+                    for (int i = 0; i < SongLoad.SongData.Count; i++)
+                    {
+                        if (SongLoad.SongData[i].Title == title)
+                        {
+                            NowSongNumber = i;
+                            break;
+                        }
+                    }
+                    NowTJA = SongLoad.SongData[NowSongNumber];
+                    if (PlayData.Data.FontRendering) FontLoad();
+                }
+
                 if (Key.IsPushed(KEY_INPUT_ESCAPE))
                 {
                     Program.SceneChange(new Title.Title());
