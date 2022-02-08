@@ -564,9 +564,9 @@ namespace Tunebeat.Game
                         {
                             Random random = new Random();
                             int r = random.Next(SongLoad.SongList.Count);
-                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable)
+                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != SongLoad.SongList[r].Path)
                             {
-                                SongSelect.SongSelect.NowTJA = SongLoad.SongList[r];
+                                TJAPath = SongLoad.SongList[r].Path;
                                 break;
                             }
                         }
