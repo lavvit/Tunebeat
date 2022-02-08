@@ -41,6 +41,7 @@ namespace Tunebeat.Common
         public bool PlayMovie = true;
         public bool QuickStart = false;
         public bool ShowResultScreen = false;
+        public bool PlayList = false;
 
         public bool ShowGraph = false;
         public bool ShowBestScore = true;

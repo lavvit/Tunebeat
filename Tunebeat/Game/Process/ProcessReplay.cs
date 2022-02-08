@@ -48,7 +48,7 @@ namespace Tunebeat.Game
         public static void UnderUpdate()
         {
             if (Game.MainTimer.State == 0) return;
-            if (PlayData.Data.IsPlay2P) return;
+            if (Game.Play2P) return;
 
             List<InputData> data = PlayMemory.BestData.Data;
             if (data != null)

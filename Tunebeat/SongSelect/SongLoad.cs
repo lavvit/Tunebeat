@@ -174,7 +174,7 @@ namespace Tunebeat.SongSelect
                 if (NowSort != ESort.None)
                 {
                     data.Sort(SortSystem[(int)NowSort]);
-                    SongData.Sort(SortSystem[(int)NowSort]);
+                    SongList.Sort(SortSystem[(int)NowSort]);
                 }
                 return;
             }
@@ -302,7 +302,6 @@ namespace Tunebeat.SongSelect
         {
             if (data == null) return;
             data.Sort(SortSystem[(int)comp]);
-            SongData.Sort(SortSystem[(int)comp]);
 
             for (int i = 0; i < data.Count; i++)
             {

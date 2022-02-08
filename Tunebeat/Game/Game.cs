@@ -54,6 +54,7 @@ namespace Tunebeat.Game
                 if (IsReplay[i]) IsAuto[i] = false;
             }
             Adjust[2] = Adjust[3] = PlayData.Data.InputAdjust[0];
+            Play2P = MainTJA[1].Courses[Course[1]].ListChip.Count > 0 ? PlayData.Data.IsPlay2P : false;
 
             if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
             {
@@ -359,7 +360,7 @@ namespace Tunebeat.Game
             else
             {
                 Score.DrawCombo(0);
-                if (PlayData.Data.IsPlay2P)
+                if (Play2P)
                 {
                     Score.DrawCombo(1);
                 }
@@ -372,7 +373,7 @@ namespace Tunebeat.Game
                 else DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
             }
 
-            if ((PlayData.Data.PreviewType >= (int)EPreviewType.Down) || (PlayData.Data.PreviewType == (int)EPreviewType.Normal && !(PlayData.Data.IsPlay2P || PlayData.Data.ShowGraph)))
+            if ((PlayData.Data.PreviewType >= (int)EPreviewType.Down) || (PlayData.Data.PreviewType == (int)EPreviewType.Normal && !(Play2P || PlayData.Data.ShowGraph)))
             {
                 if (PlayData.Data.FontRendering)
                 {
@@ -429,7 +430,7 @@ namespace Tunebeat.Game
                     DrawString(378, Notes.NotesP[0].Y + 26, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
                 }
                 if (IsAuto[0]) DrawString(258, Notes.NotesP[0].Y + 6, "AUTO PLAY", 0xffffff);
-                if (PlayData.Data.IsPlay2P)
+                if (Play2P)
                 {
                     string Lv2P = $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}";
                     DrawString(413 - GetDrawStringWidth(Lv2P, Lv2P.Length) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
@@ -466,10 +467,10 @@ namespace Tunebeat.Game
             DrawString(0, 40, $"{MainTJA[0].Header.SUBTITLE}", 0xffffff);
             DrawString(0, 60, $"{MainTJA[0].Header.BPM}", 0xffffff);
 
-            DrawString(0, 80, $"{MainTJA[0].Courses[Course[0]].COURSE}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].COURSE}" : ""), 0xffffff);
-            DrawString(0, 100, $"{MainTJA[0].Courses[Course[0]].LEVEL}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].LEVEL}" : ""), 0xffffff);
-            DrawString(0, 120, $"{MainTJA[0].Courses[Course[0]].TotalNotes}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
-            DrawString(0, 140, $"{MainTJA[0].Courses[Course[0]].ScrollType}" + (PlayData.Data.IsPlay2P ? $"/{MainTJA[0].Courses[Course[1]].ScrollType}" : ""), 0xffffff);
+            DrawString(0, 80, $"{MainTJA[0].Courses[Course[0]].COURSE}" + (Play2P ? $"/{MainTJA[0].Courses[Course[1]].COURSE}" : ""), 0xffffff);
+            DrawString(0, 100, $"{MainTJA[0].Courses[Course[0]].LEVEL}" + (Play2P ? $"/{MainTJA[0].Courses[Course[1]].LEVEL}" : ""), 0xffffff);
+            DrawString(0, 120, $"{MainTJA[0].Courses[Course[0]].TotalNotes}" + (Play2P ? $"/{MainTJA[0].Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
+            DrawString(0, 140, $"{MainTJA[0].Courses[Course[0]].ScrollType}" + (Play2P ? $"/{MainTJA[0].Courses[Course[1]].ScrollType}" : ""), 0xffffff);
             DrawString(200, 0, $"{PlayData.Data.AutoRoll}", 0xffffff);
 
             Chip[] chip = new Chip[2] { GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value), GetNotes.GetNowNote(MainTJA[0].Courses[Course[1]].ListChip, MainTimer.Value) };
@@ -482,7 +483,7 @@ namespace Tunebeat.Game
                 DrawString(520, 240, $"{ProcessNote.BalloonRemain[0]}", 0xffffff);
                 DrawString(520, 260, $"{ProcessNote.BalloonList[0]}", 0xffffff);
             }
-            if (PlayData.Data.IsPlay2P && chip[1] != null)
+            if (Play2P && chip[1] != null)
             {
                 DrawString(520, 780, $"{chip[1].ENote}", 0xffffff);
                 DrawString(520, 800, $"{chip[1].Time}", 0xffffff);
@@ -494,7 +495,7 @@ namespace Tunebeat.Game
 
             DrawString(700, 160, $"NowAdjust:{Adjust[0]}", 0xffffff);
             DrawString(700, 180, $"Average:{Score.msAverage[0]}", 0xffffff);
-            if (PlayData.Data.IsPlay2P && chip[1] != null)
+            if (Play2P && chip[1] != null)
             {
                 DrawString(700, 780, $"NowAdjust:{Adjust[1]}", 0xffffff);
                 DrawString(700, 800, $"Average:{Score.msAverage[1]}", 0xffffff);
@@ -535,7 +536,7 @@ namespace Tunebeat.Game
                 MainTimer.Start();
                 if (IsAuto[0]) PlayData.Data.InputAdjust[0] = Adjust[0];
                 PlayMemory.InitSetting(0, MainTimer.Begin, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
-                if (PlayData.Data.IsPlay2P) { PlayMemory.InitSetting(1, MainTimer.Begin, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]); if (IsAuto[1]) PlayData.Data.InputAdjust[1] = Adjust[1]; }
+                if (Play2P) { PlayMemory.InitSetting(1, MainTimer.Begin, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]); if (IsAuto[1]) PlayData.Data.InputAdjust[1] = Adjust[1]; }
             }
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay)
             {
@@ -555,13 +556,62 @@ namespace Tunebeat.Game
                 MainTimer.Stop();
                 MainMovie.Stop();
                 PlayData.End();
-                if (PlayData.Data.ShowResultScreen)
+                if (PlayData.Data.PlayList)
                 {
-                    Program.SceneChange(new Result.Result());
+                    if (SongSelect.SongSelect.Random)
+                    {
+                        for (int i = 0; i < 100000000; i++)
+                        {
+                            Random random = new Random();
+                            int r = random.Next(SongLoad.SongList.Count);
+                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable)
+                            {
+                                SongSelect.SongSelect.NowTJA = SongLoad.SongList[r];
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < SongLoad.SongList.Count; i++)
+                        {
+                            if (SongLoad.SongList[i] != null && TJAPath == SongLoad.SongList[i].Path)
+                            {
+                                TJAPath = SongLoad.SongList[i == SongLoad.SongList.Count - 1 ? 0 : i + 1].Path;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (PlayData.Data.FontRendering)
+                    {
+                        FontFamily family = new FontFamily("MS UI Gothic");
+                        Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
+                        SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
+                    }
+                    Reset();
+                    PlayMeasure = 0;
+                    StartTime = 0;
+                    MeasureList = new List<Chip>();
+                    MeasureCount();
+                    MainTimer.Value = -2000;
+                    MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
+                    MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
+                    string movie = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
+                    movie = movie.Replace(".wmv", ".mp4");
+                    MainMovie = new Movie(movie);
+                    Wait.Reset();
                 }
-                if (Key.IsPushed(KEY_INPUT_RETURN))
+                else
                 {
-                    Program.SceneChange(new SongSelect.SongSelect());
+                    if (PlayData.Data.ShowResultScreen)
+                    {
+                        Program.SceneChange(new Result.Result());
+                    }
+                    if (Key.IsPushed(KEY_INPUT_RETURN))
+                    {
+                        Program.SceneChange(new SongSelect.SongSelect());
+                    }
                 }
             }
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
@@ -612,12 +662,12 @@ namespace Tunebeat.Game
                     Adjust[0] -= 0.5;
                     PlayMemory.AddSetting(0, MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Adjust[0]);
                 }
-                if (Score.msAverage[1] > 0.5 && PlayData.Data.AutoAdjust[1] && !IsReplay[1] && PlayData.Data.IsPlay2P)
+                if (Score.msAverage[1] > 0.5 && PlayData.Data.AutoAdjust[1] && !IsReplay[1] && Play2P)
                 {
                     Adjust[1] += 0.5;
                     PlayMemory.AddSetting(1, MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]);
                 }
-                if (Score.msAverage[1] < -0.5 && PlayData.Data.AutoAdjust[1] && !IsReplay[1] && PlayData.Data.IsPlay2P)
+                if (Score.msAverage[1] < -0.5 && PlayData.Data.AutoAdjust[1] && !IsReplay[1] && Play2P)
                 {
                     Adjust[1] -= 0.5;
                     PlayMemory.AddSetting(1, MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Adjust[1]);
@@ -629,7 +679,7 @@ namespace Tunebeat.Game
 
             KeyInput.Update(IsAuto[0], IsAuto[1], Failed[0], Failed[1]);
 
-            if (!PlayData.Data.IsPlay2P && Failed[0])
+            if (!Play2P && Failed[0])
             {
                 switch ((EGaugeAutoShift)PlayData.Data.GaugeAutoShift[0])
                 {
@@ -659,7 +709,7 @@ namespace Tunebeat.Game
         public static Movie MainMovie;
         public static List<Scene> ChildScene = new List<Scene>();
         public static string TJAPath, lyric;
-        public static bool IsSongPlay;
+        public static bool IsSongPlay, Play2P;
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[5];
         public static double[] Adjust = new double[5], ScrollRemain = new double[5];

@@ -27,7 +27,7 @@ namespace Tunebeat.Game
             {
                 ReplayData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.Replay[0]}.replaydata");
             }
-            if (PlayData.Data.IsPlay2P && !string.IsNullOrEmpty(PlayData.Data.Replay[1]))
+            if (Game.Play2P && !string.IsNullOrEmpty(PlayData.Data.Replay[1]))
             {
                 ReplayData2P = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{PlayData.Data.Replay[1]}.replaydata");
             }

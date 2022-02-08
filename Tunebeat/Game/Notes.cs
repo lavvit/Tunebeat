@@ -32,7 +32,7 @@ namespace Tunebeat.Game
                     NotesP = new Point[2] { new Point(521, 52), new Point(521, 552 - 290 + 52) };
                     break;
                 case EPreviewType.Down:
-                    NotesP = new Point[2] { new Point(521, PlayData.Data.IsPlay2P ? 1080 - 461 - 48 : 1080 - 199), new Point(521, 1080 - 199 - 48) };
+                    NotesP = new Point[2] { new Point(521, Game.Play2P ? 1080 - 461 - 48 : 1080 - 199), new Point(521, 1080 - 199 - 48) };
                     break;
                 case EPreviewType.Normal:
                 default:
@@ -126,7 +126,7 @@ namespace Tunebeat.Game
                     DrawNotes(0);
                     //DrawNotesHBS(0, Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
                 }
-                if (PlayData.Data.IsPlay2P)
+                if (Game.Play2P)
                 {
                     if (Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
                     {
@@ -144,7 +144,7 @@ namespace Tunebeat.Game
                 {
                     TextureLoad.Game_Sudden.Draw(NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), NotesP[0].Y);
                 }
-                if (UseSudden[1] && PlayData.Data.IsPlay2P)
+                if (UseSudden[1] && Game.Play2P)
                 {
                     TextureLoad.Game_Sudden.Draw(NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), NotesP[1].Y);
                 }
@@ -188,7 +188,7 @@ namespace Tunebeat.Game
                     TextureLoad.Game_Gauge_Base.Opacity = 1.0;
                 }
 
-                if (PlayData.Data.IsPlay2P)
+                if (Game.Play2P)
                 {
                     TextureLoad.Game_Base_DP.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
                     TextureLoad.Game_Base_DP.Draw(0, NotesP[0].Y - 4);
@@ -210,7 +210,7 @@ namespace Tunebeat.Game
             DrawString(1700, 400, $"{GreenNumber[0]}", 0x00ff00);
             if (PlayData.Data.NormalHiSpeed[0]) DrawString(1600, 380, $"{NHSNumber[0] + 1}", 0x0000ff);
             if (PlayData.Data.FloatingHiSpeed[0]) DrawString(1600, 360, "FHS", 0xffffff);
-            if (PlayData.Data.IsPlay2P)
+            if (Game.Play2P)
             {
                 if (UseSudden[1]) DrawString(1700, 620, $"{Sudden[1]}", 0xffffff);
                 DrawString(1700, 660, $"{GreenNumber[1]}", 0x00ff00);

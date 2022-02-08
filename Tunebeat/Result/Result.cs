@@ -55,7 +55,7 @@ namespace Tunebeat.Result
 
             Score.DrawNumber(398, 960, $"{(Score.EXScore[0] > 0 ? Score.Roll[0] : Score.AutoRoll[0]),4}", Score.EXScore[0] == 0 && Score.AutoRoll[0] > 0 ? 5 : 0);
 
-            if (PlayData.Data.IsPlay2P)
+            if (Game.Game.Play2P)
             {
                 TextureLoad.Result_Panel.Draw(960, 0, new Rectangle(960, 0, 960, 1080));
 
@@ -91,7 +91,7 @@ namespace Tunebeat.Result
             if (Key.IsPushed(KEY_INPUT_F11))
             {
                 if (!Game.Game.IsReplay[0]) PlayMemory.SaveData(0);
-                if (PlayData.Data.IsPlay2P && !Game.Game.IsReplay[1]) PlayMemory.SaveData(1);
+                if (Game.Game.Play2P && !Game.Game.IsReplay[1]) PlayMemory.SaveData(1);
             }
 
             base.Update();

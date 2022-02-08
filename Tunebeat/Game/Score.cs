@@ -83,7 +83,7 @@ namespace Tunebeat.Game
                 TextureLoad.Game_Gauge.Draw(495 + 179 + 12 * i, Notes.NotesP[0].Y - 4 - 48 + 6, new Rectangle(Color[i], (int)Gauge[0] > i ? 40 : 0, 10, 40));
             }
             DrawNumber(495 + 15, Notes.NotesP[0].Y - 4 - 48 + 12, $"{Gauge[0],5:F1}%", 0);
-            if (PlayData.Data.IsPlay2P && PlayData.Data.PreviewType < 3)
+            if (Game.Play2P && PlayData.Data.PreviewType < 3)
             {
                 TextureLoad.Game_Gauge_Base.Draw(495, Notes.NotesP[0].Y - 4 + 465, new Rectangle(0, 48, 1425, 48));
                 for (int i = 0; i < 100; i++)
@@ -93,7 +93,7 @@ namespace Tunebeat.Game
                 DrawNumber(495 + 15, Notes.NotesP[0].Y - 4 + 465 + 8, $"{Gauge[1],5:F1}%", 0);
             }
 
-            if (!PlayData.Data.IsPlay2P && PlayData.Data.ShowGraph)
+            if (!Game.Play2P && PlayData.Data.ShowGraph)
             {
                 DrawGraph();
             }
@@ -128,7 +128,7 @@ namespace Tunebeat.Game
                 Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
                 DrawNumber(0, Notes.NotesP[0].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
                 DrawNumber(0, Notes.NotesP[0].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
-                if (PlayData.Data.IsPlay2P)
+                if (Game.Play2P)
                 {
                     DrawNumber(0, Notes.NotesP[0].Y + 2 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
                     DrawMiniNumber(136, Notes.NotesP[0].Y + 29 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
@@ -150,7 +150,7 @@ namespace Tunebeat.Game
                     DrawMiniNumber(160, 36 + 32 * 3 + 512, $"{Bad[0]}", 0);
                     DrawMiniNumber(160, 36 + 32 * 4 + 512, $"{Poor[0]}", 0);
                     DrawMiniNumber(160, 36 + 32 * 5 + 512, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-                    if (PlayData.Data.IsPlay2P)
+                    if (Game.Play2P)
                     {
                         for (int i = 0; i < 6; i++)
                         {
@@ -175,7 +175,7 @@ namespace Tunebeat.Game
                     DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
                     DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
                     DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-                    if (PlayData.Data.IsPlay2P)
+                    if (Game.Play2P)
                     {
                         for (int i = 0; i < 6; i++)
                         {
@@ -200,7 +200,7 @@ namespace Tunebeat.Game
                     DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
                     DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
                     DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-                    if (PlayData.Data.IsPlay2P)
+                    if (Game.Play2P)
                     {
                         for (int i = 0; i < 6; i++)
                         {
@@ -242,7 +242,7 @@ namespace Tunebeat.Game
                 DrawString(Notes.NotesP[0].X + 800, Notes.NotesP[0].Y + 86, $"RL:{Roll[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 106, $"Rank:{Rank[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 106, $"{rank}{((EXScore[0] + Auto[0] == Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes) || (rank == Rank[0]) ? "+" : "")}{EXScore[0] + Auto[0] * 2 - rankvalue[(int)rank]}", 0xffffff);
-                if (PlayData.Data.IsPlay2P)
+                if (Game.Play2P)
                 {
                     ERank rank2p = Rank[1];
                     if (Math.Abs(EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)Rank[1]]) > Math.Abs(EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)Rank[1] + 1]))
@@ -301,7 +301,7 @@ namespace Tunebeat.Game
 
                     DrawNumber(Notes.NotesP[0].X + 160, Notes.NotesP[0].Y + 82, $"{NowRoll[0]}", 0);
                 }
-                if (PlayData.Data.IsPlay2P && RollCounter[1].State != 0)
+                if (Game.Play2P && RollCounter[1].State != 0)
                 {
                     if ((roll2p == ERoll.Roll || roll2p == ERoll.ROLL)) NowRoll[1] = Game.MainTimer.State == 0 ? 0 : ProcessNote.NowRoll[1];
                     else if ((roll2p == ERoll.Balloon || roll2p == ERoll.Kusudama)) NowRoll[1] = ProcessNote.BalloonRemain[1];
@@ -333,7 +333,7 @@ namespace Tunebeat.Game
                 DrawString(600, 280, $"{msJudge[0]}", 0xffffff);
             }
 
-            if (PlayData.Data.IsPlay2P)
+            if (Game.Play2P)
             {
                 DrawString(0, 560, $"SC:{EXScore[1]}", 0xffffff);
                 if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 560, Remain[1] > 0 ? $"MAX-{Remain[1]}" : "MAX+0", 0xffffff);
@@ -368,7 +368,7 @@ namespace Tunebeat.Game
             Cleared[0] = Gauge[0] >= ClearRate[0][(int)GaugeType[0]] ? true : false;
             Rank[0] = GetRank(EXScore[0] + Auto[0] * 2, 0);
             msAverage[0] = Hit[0] > 0 ? msSum[0] / Hit[0] : 0;
-            if (PlayData.Data.IsPlay2P)
+            if (Game.Play2P)
             {
                 Remain[1] = Hit[1] * 2 - EXScore[1];
                 Gauge[1] = GaugeList[1][(int)GaugeType[1]];
@@ -381,7 +381,7 @@ namespace Tunebeat.Game
             {
                 Game.Failed[0] = true;
             }
-            if (PlayData.Data.IsPlay2P && GaugeType[1] >= EGauge.Hard && Gauge[1] == 0 && (PlayData.Data.GaugeAutoShift[1] == (int)EGaugeAutoShift.None || PlayData.Data.GaugeAutoShift[1] == (int)EGaugeAutoShift.Retry))
+            if (Game.Play2P && GaugeType[1] >= EGauge.Hard && Gauge[1] == 0 && (PlayData.Data.GaugeAutoShift[1] == (int)EGaugeAutoShift.None || PlayData.Data.GaugeAutoShift[1] == (int)EGaugeAutoShift.Retry))
             {
                 Game.Failed[1] = true;
             }

@@ -257,6 +257,7 @@ namespace Tunebeat.Config
                     PlayMovie = new OptionBool("PlayMovie", PlayData.Data.PlayMovie, "BGMOVIEに記述された動画を背景に表示します。"); OptionList.Add(PlayMovie);
                     QuickStart = new OptionBool("QuickStart", PlayData.Data.QuickStart, "自動的に譜面を再生します。"); OptionList.Add(QuickStart);
                     ShowResultScreen = new OptionBool("ShowResultScreen", PlayData.Data.ShowResultScreen, "リザルト画面を表示します。"); OptionList.Add(ShowResultScreen);
+                    PlayList = new OptionBool("PlayList", PlayData.Data.PlayList, "プレイが終了したらすぐ次の譜面を再生します。"); OptionList.Add(PlayList);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -380,6 +381,7 @@ namespace Tunebeat.Config
                     PlayData.Data.PlayMovie = PlayMovie.ON;
                     PlayData.Data.QuickStart = QuickStart.ON;
                     PlayData.Data.ShowResultScreen = ShowResultScreen.ON;
+                    PlayData.Data.PlayList = PlayList.ON;
                     break;
                 case ELayer.PlayTJA:
                     PlayData.Data.PreviewType = PreviewType.Value;
@@ -466,7 +468,7 @@ namespace Tunebeat.Config
             Back
         }
         public static Option  Back, LEFTDON, RIGHTDON, LEFTKA, RIGHTKA, LEFTDON2P, RIGHTDON2P, LEFTKA2P, RIGHTKA2P;
-        public static OptionBool FullScreen, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
+        public static OptionBool FullScreen, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
         public static OptionInt SkinColorR, SkinColorG, SkinColorB, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;

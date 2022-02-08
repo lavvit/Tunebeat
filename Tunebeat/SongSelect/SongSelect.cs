@@ -629,6 +629,7 @@ namespace Tunebeat.SongSelect
                     if (SongLoad.NowSort == ESort.Rate_Low) SongLoad.NowSort = ESort.None;
                     else SongLoad.NowSort++;
                     SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
+                    SongLoad.Sort(SongLoad.SongList, SongLoad.NowSort);
 
                     for (int i = 0; i < SongLoad.SongData.Count; i++)
                     {
@@ -779,6 +780,13 @@ namespace Tunebeat.SongSelect
                             {
                                 Replay[0] = false;
                             }
+                            Random = false;
+                            NowSListNumber = NowSongNumber;
+                            for (int i = 0; i < SongLoad.SongData.Count; i++)
+                            {
+                                if (SongLoad.SongData[i].Type != EType.Score)
+                                    NowSListNumber--;
+                            }
                             Program.SceneChange(new Game.Game());
                         }
                         else
@@ -818,6 +826,7 @@ namespace Tunebeat.SongSelect
                             {
                                 Replay[0] = false;
                             }
+                            Random = true;
                             Program.SceneChange(new Game.Game());
                         }
                         else
@@ -935,7 +944,8 @@ namespace Tunebeat.SongSelect
         public static SongData NowTJA;
         public static Counter Alart;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
-        public static int AlartType, NowSongNumber;
+        public static int AlartType, NowSongNumber, NowSListNumber;
+        public static bool Random;
         public static string NowPath;
     }
 }
