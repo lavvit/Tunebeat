@@ -192,16 +192,6 @@ namespace TJAParse
                         case "LEVEL":
                             courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) ? int.Parse(split[1]) : 0;
                             break;
-                        case "BALLOON":
-                            var splitballoon = split[1].Split(',');
-                            foreach (var sb in splitballoon)
-                                if (sb != "" && splitballoon.Length >= 1)
-                                    courses[NowCourse].BALLOON.Add(int.Parse(sb));
-                            break;
-                        case "TOTAL":
-                            courses[NowCourse].TOTAL = double.Parse(split[1]);
-                            break;
-
                     }
                 }
                 else

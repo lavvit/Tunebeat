@@ -428,6 +428,7 @@ namespace Tunebeat.Game
                 {
                     DrawString(378, Notes.NotesP[0].Y + 26, $"{MainTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
                 }
+                if (IsAuto[0]) DrawString(258, Notes.NotesP[0].Y + 6, "AUTO PLAY", 0xffffff);
                 if (PlayData.Data.IsPlay2P)
                 {
                     string Lv2P = $"{MainTJA[1].Courses[Course[1]].COURSE} Lv.{MainTJA[1].Courses[Course[1]].LEVEL}";
@@ -436,6 +437,7 @@ namespace Tunebeat.Game
                     {
                         DrawString(378, Notes.NotesP[0].Y + 436, $"{MainTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
                     }
+                    if (IsAuto[1]) DrawString(258, Notes.NotesP[0].Y + 416, "AUTO PLAY", 0xffffff);
                 }
             }
 
