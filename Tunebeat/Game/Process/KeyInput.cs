@@ -390,8 +390,8 @@ namespace Tunebeat.Game
 
             if (Key.IsPushed(KEY_INPUT_F11) && Game.IsSongPlay && !Game.MainSong.IsPlaying)
             {
-                if (!Game.IsReplay[0]) PlayMemory.SaveData(0);
-                if (Game.Play2P && !Game.IsReplay[1]) PlayMemory.SaveData(1);
+                if (!Game.IsReplay[0] && !Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(0);
+                if (Game.Play2P && !Game.IsReplay[1] & Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(1);
             }
         }
 

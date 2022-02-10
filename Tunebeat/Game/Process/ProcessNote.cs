@@ -17,6 +17,7 @@ namespace Tunebeat.Game
 
             if ((isDon && (chip.ENote == ENote.Don || chip.ENote == ENote.DON)) || (!isDon && (chip.ENote == ENote.Ka || chip.ENote == ENote.KA)))
             {
+                PlayMemory.AddChip(player, chip, Game.MainTimer.Value, judge);
                 if (judge != EJudge.Through)
                 {
                     Score.AddScore(judge, player);

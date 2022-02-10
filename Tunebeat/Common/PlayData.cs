@@ -25,6 +25,7 @@ namespace Tunebeat.Common
     class Data
     {
         public string Memo = "Tunebeatの設定ファイルです。値の項目は数値、true/falseはON/OFF、””で囲われた所は文字で入力してください(￥は使えません。お手数ですが\\か/に変換してください。)";
+        public string PlayerName = "";
         public string SkinName = "Default";
         public string SoundName = "Default";
         public string BGMName = "Default";
@@ -42,6 +43,7 @@ namespace Tunebeat.Common
         public bool QuickStart = false;
         public bool ShowResultScreen = false;
         public bool PlayList = false;
+        public bool SaveScore = false;
 
         public bool ShowGraph = false;
         public bool ShowBestScore = true;

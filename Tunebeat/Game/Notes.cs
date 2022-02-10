@@ -26,49 +26,7 @@ namespace Tunebeat.Game
                 if (PlayData.Data.NormalHiSpeed[i]) SetNHSScroll(i, true);
                 if (PlayData.Data.FloatingHiSpeed[i]) SetScroll(i, true);
             }
-            switch ((EPreviewType)PlayData.Data.PreviewType)
-            {
-                case EPreviewType.Up:
-                    NotesP = new Point[2] { new Point(521, 52), new Point(521, 552 - 290 + 52) };
-                    break;
-                case EPreviewType.Down:
-                    NotesP = new Point[2] { new Point(521, Game.Play2P ? 1080 - 461 - 48 : 1080 - 199), new Point(521, 1080 - 199 - 48) };
-                    break;
-                case EPreviewType.Normal:
-                default:
-                    NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };
-                    break;
-                case EPreviewType.AllCourses:
-                    for (int i = 1; i < 5; i++)
-                    {
-                        Scroll[i] = PlayData.Data.ScrollSpeed[0];
-                    }
-                    int count = 0;
-                    for (int i = 0; i < 5; i++)
-                    {
-                        if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
-                        {
-                            if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
-                            count++;
-                        }
-                    }
-                    switch (count)
-                    {
-                        case 0:
-                        case 1:
-                        case 2:
-                        case 3:
-                            NotesP = new Point[3] { new Point(521, 290), new Point(521, 290 + 199), new Point(521, 290 + 199 * 2) };
-                            break;
-                        case 4:
-                            NotesP = new Point[4] { new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
-                            break;
-                        case 5:
-                            NotesP = new Point[5] { new Point(521, 85), new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
-                            break;
-                    }
-                    break;
-            }
+            SetNotesP();
             for (int i = 0; i < 5; i++)
             {
                 ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
@@ -487,6 +445,53 @@ namespace Tunebeat.Game
             }
             
             if (PlayData.Data.FloatingHiSpeed[player]) SetScroll(player, isLoad);
+        }
+
+        public static void SetNotesP()
+        {
+            switch ((EPreviewType)PlayData.Data.PreviewType)
+            {
+                case EPreviewType.Up:
+                    NotesP = new Point[2] { new Point(521, 52), new Point(521, 552 - 290 + 52) };
+                    break;
+                case EPreviewType.Down:
+                    NotesP = new Point[2] { new Point(521, Game.Play2P ? 1080 - 461 - 48 : 1080 - 199), new Point(521, 1080 - 199 - 48) };
+                    break;
+                case EPreviewType.Normal:
+                default:
+                    NotesP = new Point[2] { new Point(521, 290), new Point(521, 552) };
+                    break;
+                case EPreviewType.AllCourses:
+                    for (int i = 1; i < 5; i++)
+                    {
+                        Scroll[i] = PlayData.Data.ScrollSpeed[0];
+                    }
+                    int count = 0;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                        {
+                            if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
+                            count++;
+                        }
+                    }
+                    switch (count)
+                    {
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            NotesP = new Point[3] { new Point(521, 290), new Point(521, 290 + 199), new Point(521, 290 + 199 * 2) };
+                            break;
+                        case 4:
+                            NotesP = new Point[4] { new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
+                            break;
+                        case 5:
+                            NotesP = new Point[5] { new Point(521, 85), new Point(521, 85 + 199), new Point(521, 85 + 199 * 2), new Point(521, 85 + 199 * 3), new Point(521, 85 + 199 * 4) };
+                            break;
+                    }
+                    break;
+            }
         }
 
         public static Point[] NotesP = new Point[5];

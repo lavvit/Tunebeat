@@ -132,9 +132,10 @@ namespace Tunebeat.SongSelect
                         FontColor = Color.White,
                         BackColor = Color.Black,
                         Type = EType.Score,
+                        Score = new BestScore(item).ScoreData,
+                        ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
                     };
                     data.Add(songdata);
-                    SongList.Add(songdata);
                 }
             }
             foreach (string path in allpath)
@@ -154,6 +155,8 @@ namespace Tunebeat.SongSelect
                         FontColor = Color.White,
                         BackColor = Color.Black,
                         Type = EType.Score,
+                        Score = new BestScore(item).ScoreData,
+                        ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
                     };
                     data.Add(songdata);
                     SongList.Add(songdata);
@@ -268,6 +271,8 @@ namespace Tunebeat.SongSelect
                         FontColor = root.FontColor,
                         BackColor = root.BackColor,
                         Type = EType.Score,
+                        Score = new BestScore(item).ScoreData,
+                        ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
                     };
                     data.Add(songdata);
                 }
@@ -286,6 +291,8 @@ namespace Tunebeat.SongSelect
                     FontColor = root.FontColor,
                     BackColor = root.BackColor,
                     Type = EType.Score,
+                    Score = new BestScore(item).ScoreData,
+                    ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
                 };
                 data.Add(songdata);
             }
@@ -356,6 +363,8 @@ namespace Tunebeat.SongSelect
         public EType Type;
         public SongData Prev;
         public SongData Next;
+        public ScoreData Score;
+        public List<string> ScoreList;
         public Color FontColor;
         public Color BackColor;
     }

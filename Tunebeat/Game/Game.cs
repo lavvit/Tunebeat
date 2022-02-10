@@ -19,13 +19,25 @@ namespace Tunebeat.Game
         {
             TJAPath = SongSelect.SongSelect.NowTJA.Path;
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            for (int i = 0; i < 2; i++)
+            if (PlayData.Data.PreviewType == 3)
             {
-                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                MainTJA = new TJAParse.TJAParse[5];
+                for (int i = 0; i < 2; i++)
+                {
+                    MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                }
+                for (int i = 2; i < 5; i++)
+                {
+                    MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                }
             }
-            for (int i = 2; i < 7; i++)
+            else
             {
-                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                MainTJA = new TJAParse.TJAParse[2];
+                for (int i = 0; i < 2; i++)
+                {
+                    MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                }
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
@@ -35,15 +47,15 @@ namespace Tunebeat.Game
 
             if (PlayData.Data.FontRendering)
             {
-                FontFamily family = new FontFamily("MS UI Gothic");
+                FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
                 Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
                 SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
             }
 
             for (int i = 0; i < 2; i++)
             {
-                IsAuto[i] = PlayData.Data.Auto[i];
-                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(PlayData.Data.Replay[i]) && File.Exists($@"{Path.GetDirectoryName(MainTJA[i].TJAPath)}\{Path.GetFileNameWithoutExtension(MainTJA[i].TJAPath)}.{(ECourse)PlayData.Data.PlayCourse[i]}.{PlayData.Data.Replay[i]}.replaydata") ? true : false;
+                IsAuto[i] = PlayData.Data.PreviewType == 3 ? true : PlayData.Data.Auto[i];
+                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[i]) && File.Exists(SongSelect.SongSelect.ReplayScore[i]) ? true : false;
                 Course[i] = PlayData.Data.PlayCourse[i];
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
@@ -164,13 +176,25 @@ namespace Tunebeat.Game
             {
                 Failed[i] = false;
             }
-            for (int i = 0; i < 2; i++)
+            if (PlayData.Data.PreviewType == 3)
             {
-                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                MainTJA = new TJAParse.TJAParse[5];
+                for (int i = 0; i < 2; i++)
+                {
+                    MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                }
+                for (int i = 2; i < 5; i++)
+                {
+                    MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                }
             }
-            for (int i = 2; i < 7; i++)
+            else
             {
-                MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                MainTJA = new TJAParse.TJAParse[2];
+                for (int i = 0; i < 2; i++)
+                {
+                    MainTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                }
             }
             if (File.Exists(MainSong.FileName)) MainSong.Time = StartTime / 1000;
             if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = StartTime;
@@ -206,8 +230,21 @@ namespace Tunebeat.Game
                 if (PlayData.Data.PreviewType < 3) Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
             }
             SetBalloon();
-            PlayMemory.Dispose();
-            PlayMemory.Init();
+
+            if (PlayMemory.BestData.Chip != null)
+            {
+                foreach (ChipData data in PlayMemory.BestData.Chip)
+                {
+                    data.Hit = false;
+                }
+            }
+            if (PlayMemory.RivalData.Chip != null)
+            {
+                foreach (ChipData data in PlayMemory.RivalData.Chip)
+                {
+                    data.Hit = false;
+                }
+            }
         }
 
         public static void MeasureUp(bool end = false)
@@ -266,6 +303,7 @@ namespace Tunebeat.Game
                         }
                     }
                 }
+                ProcessReplay.Back();
                 SetBalloon();
             }
             else if (PlayMeasure > 1)
@@ -297,6 +335,7 @@ namespace Tunebeat.Game
                         }
                     }
                 }
+                ProcessReplay.Back();
                 SetBalloon();
             }
         }
@@ -472,6 +511,7 @@ namespace Tunebeat.Game
             DrawString(0, 120, $"{MainTJA[0].Courses[Course[0]].TotalNotes}" + (Play2P ? $"/{MainTJA[0].Courses[Course[1]].TotalNotes}" : ""), 0xffffff);
             DrawString(0, 140, $"{MainTJA[0].Courses[Course[0]].ScrollType}" + (Play2P ? $"/{MainTJA[0].Courses[Course[1]].ScrollType}" : ""), 0xffffff);
             DrawString(200, 0, $"{PlayData.Data.AutoRoll}", 0xffffff);
+            DrawString(300, 0, $"{PlayMemory.ChipData.Count}", 0xffffff);
 
             Chip[] chip = new Chip[2] { GetNotes.GetNowNote(MainTJA[0].Courses[Course[0]].ListChip, MainTimer.Value), GetNotes.GetNowNote(MainTJA[0].Courses[Course[1]].ListChip, MainTimer.Value) };
             if (chip[0] != null)
@@ -509,7 +549,7 @@ namespace Tunebeat.Game
 
         public static void GenerateLyric(Chip chip)
         {
-            FontFamily family = new FontFamily("MS UI Gothic");
+            FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
             Lyric = DrawFont.GetTexture(chip.Lyric, family, 56, 4, 0, Color.White, Color.Blue);
             return;
         }
@@ -553,6 +593,7 @@ namespace Tunebeat.Game
             }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
+                if (PlayData.Data.SaveScore && !Play2P &&  PlayMeasure == 0 && MainTimer.State != 0) PlayMemory.SaveScore(0, Course[0]);
                 MainTimer.Stop();
                 MainMovie.Stop();
                 PlayData.End();
@@ -582,14 +623,27 @@ namespace Tunebeat.Game
                             }
                         }
                     }
+                    Reset();
+                    if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
+                    {
+                        int count = 0;
+                        for (int i = 4; i >= 0; i--)
+                        {
+                            if (MainTJA[count].Courses[i].ListChip.Count > 0)
+                            {
+                                Course[count] = i;
+                                count++;
+                            }
+                        }
+                    }
 
                     if (PlayData.Data.FontRendering)
                     {
-                        FontFamily family = new FontFamily("MS UI Gothic");
+                        FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
                         Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
                         SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
                     }
-                    Reset();
+                    Notes.SetNotesP();
                     PlayMeasure = 0;
                     StartTime = 0;
                     MeasureList = new List<Chip>();
@@ -702,7 +756,7 @@ namespace Tunebeat.Game
             ChildScene.Add(scene);
         }
 
-        public static TJAParse.TJAParse[] MainTJA = new TJAParse.TJAParse[7];
+        public static TJAParse.TJAParse[] MainTJA;
         public static Counter MainTimer, Wait;
         public static Sound MainSong;
         public static Texture MainImage, Title, SubTitle, Lyric;

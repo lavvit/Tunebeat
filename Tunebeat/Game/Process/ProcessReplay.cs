@@ -47,95 +47,75 @@ namespace Tunebeat.Game
 
         public static void UnderUpdate()
         {
-            if (Game.MainTimer.State == 0) return;
             if (Game.Play2P) return;
 
-            List<InputData> data = PlayMemory.BestData.Data;
+            List<ChipData> data = PlayMemory.BestData.Chip;
             if (data != null)
             {
-                foreach (InputData input in data)
+                foreach (ChipData chip in data)
                 {
-                    if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
+                    if (Game.MainTimer.Value + 6 >= chip.Time / PlayData.Data.PlaySpeed && !chip.Hit)
                     {
-                        Chip chip = GetNotes.GetNearNote(Game.MainTJA[5].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[2]);
-                        Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[5].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[2]);
-                        EJudge judge;
-                        ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-                        if (chip == null)
-                        {
-                            judge = EJudge.Through;
-                        }
-                        else
-                        {
-                            judge = GetNotes.GetJudge(chip, Game.MainTimer.Value - Game.Adjust[2]);
-                        }
-                        if (Game.MainTimer.State != 0)
-                        {
-                            if (chip != null && roll == ERoll.None)
-                            {
-
-                                ProcessNote.Process(judge, chip, input.IsDon, 2);
-                            }
-                        }
-                        input.Hit = true;
-                    }
-                }
-
-                List<InputSetting> setting = PlayMemory.BestData.Setting;
-                if (setting != null)
-                {
-                    foreach (InputSetting input in setting)
-                    {
-                        if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit)
-                        {
-                            Game.Adjust[2] = input.Adjust;
-                            input.Hit = true;
-                        }
+                        Score.AddScore(chip.judge, 2);
+                        chip.Hit = true;
                     }
                 }
             }
 
-            List<InputData> rdata = PlayMemory.RivalData.Data;
+            List<ChipData> rdata = PlayMemory.RivalData.Chip;
             if (rdata != null)
             {
-                foreach (InputData input in rdata)
+                foreach (ChipData chip in rdata)
                 {
-                    if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
+                    if (Game.MainTimer.Value + 6 >= chip.Time / PlayData.Data.PlaySpeed && !chip.Hit)
                     {
-                        Chip chip = GetNotes.GetNearNote(Game.MainTJA[6].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[3]);
-                        Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[6].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[3]);
-                        EJudge judge;
-                        ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-                        if (chip == null)
-                        {
-                            judge = EJudge.Through;
-                        }
-                        else
-                        {
-                            judge = GetNotes.GetJudge(chip, Game.MainTimer.Value - Game.Adjust[3]);
-                        }
-                        if (Game.MainTimer.State != 0)
-                        {
-                            if (chip != null && roll == ERoll.None)
-                            {
-
-                                ProcessNote.Process(judge, chip, input.IsDon, 3);
-                            }
-                        }
-                        input.Hit = true;
+                        Score.AddScore(chip.judge, 3);
+                        chip.Hit = true;
                     }
                 }
+            }
+        }
 
-                List<InputSetting> setting = PlayMemory.RivalData.Setting;
-                if (setting != null)
+        public static void Back()
+        {
+            if (Game.Play2P) return;
+
+            if (PlayMemory.BestData.Chip != null)
+            {
+                foreach (ChipData data in PlayMemory.BestData.Chip)
                 {
-                    foreach (InputSetting input in setting)
+                    if (data.Chip.Time >= Game.StartTime - 1 && data.Hit)
                     {
-                        if (Game.MainTimer.Value + 6 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit)
+                        switch (data.judge)
                         {
-                            Game.Adjust[3] = input.Adjust;
-                            input.Hit = true;
+                            case EJudge.Perfect:
+                                Score.EXScore[2] -= 2;
+                                break;
+                            case EJudge.Great:
+                                Score.EXScore[2] -= 1;
+                                break;
                         }
+                        data.Hit = false;
+                    }
+                }
+            }
+
+            if (PlayMemory.RivalData.Chip != null)
+            {
+                foreach (ChipData data in PlayMemory.RivalData.Chip)
+                {
+                    if (data.Chip.Time >= Game.StartTime - 1 && data.Hit)
+                    {
+                        switch (data.judge)
+                        {
+                            case EJudge.Perfect:
+                                Score.EXScore[3] -= 2;
+                                break;
+                            case EJudge.Great:
+                                Score.EXScore[3] -= 1;
+                                break;
+                        }
+                        data.Hit = false;
                     }
                 }
             }

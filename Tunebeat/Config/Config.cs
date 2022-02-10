@@ -244,6 +244,7 @@ namespace Tunebeat.Config
             {
                 case ELayer.System:
                     FullScreen = new OptionBool("FullScreen", PlayData.Data.FullScreen, "全画面表示とウィンドウ表示を切り替えます。"); OptionList.Add(FullScreen);
+                    PlayerName = new OptionString("PlayerName", PlayData.Data.PlayerName, "スコア等で使用する名前を変更します。"); OptionList.Add(PlayerName);
                     SkinName = new OptionString("SkinName", PlayData.Data.SkinName, "使用する画像のフォルダを変更します。"); OptionList.Add(SkinName);
                     SoundName = new OptionString("SoundName", PlayData.Data.SoundName, "使用する効果音のフォルダを変更します。"); OptionList.Add(SoundName);
                     BGMName = new OptionString("BGMName", PlayData.Data.BGMName, "使用するBGMのフォルダを変更します。"); OptionList.Add(BGMName);
@@ -258,6 +259,7 @@ namespace Tunebeat.Config
                     QuickStart = new OptionBool("QuickStart", PlayData.Data.QuickStart, "自動的に譜面を再生します。"); OptionList.Add(QuickStart);
                     ShowResultScreen = new OptionBool("ShowResultScreen", PlayData.Data.ShowResultScreen, "リザルト画面を表示します。"); OptionList.Add(ShowResultScreen);
                     PlayList = new OptionBool("PlayList", PlayData.Data.PlayList, "プレイが終了したらすぐ次の譜面を再生します。"); OptionList.Add(PlayList);
+                    SaveScore = new OptionBool("SaveScore", PlayData.Data.SaveScore, "記録を更新した時にスコアを保存します。"); OptionList.Add(SaveScore);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -367,6 +369,7 @@ namespace Tunebeat.Config
             {
                 case ELayer.System:
                     PlayData.Data.FullScreen = FullScreen.ON;
+                    PlayData.Data.PlayerName = PlayerName.Text;
                     ChangeWindowMode(PlayData.Data.FullScreen ? FALSE : TRUE);  //ウィンドウモード切替
                     PlayData.Data.SkinName = SkinName.Text;
                     TextureLoad.Init();
@@ -382,6 +385,7 @@ namespace Tunebeat.Config
                     PlayData.Data.QuickStart = QuickStart.ON;
                     PlayData.Data.ShowResultScreen = ShowResultScreen.ON;
                     PlayData.Data.PlayList = PlayList.ON;
+                    PlayData.Data.SaveScore = SaveScore.ON;
                     break;
                 case ELayer.PlayTJA:
                     PlayData.Data.PreviewType = PreviewType.Value;
@@ -468,13 +472,13 @@ namespace Tunebeat.Config
             Back
         }
         public static Option  Back, LEFTDON, RIGHTDON, LEFTKA, RIGHTKA, LEFTDON2P, RIGHTDON2P, LEFTKA2P, RIGHTKA2P;
-        public static OptionBool FullScreen, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
+        public static OptionBool FullScreen, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
         public static OptionInt SkinColorR, SkinColorG, SkinColorB, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;
         public static OptionList PreviewType, PlayCourse, PlayCourse2P, RivalType, RivalRank, NotesChange, NotesChange2P, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;
-        public static OptionString SkinName, SoundName, BGMName, FontName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
+        public static OptionString PlayerName, SkinName, SoundName, BGMName, FontName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
         public static OptionStrList PlayFolder;
     }
 }

@@ -645,7 +645,7 @@ namespace Tunebeat.Game
 
             TextureLoad.Game_Graph.Draw(499, 163, new Rectangle((int)(1000 - 1000 * hitpercent), 64 * 2, (int)(1000 * hitpercent), 64));
 
-            if (PlayMemory.BestData.Score > 0)
+            if (PlayMemory.BestData.Score > 0 && PlayMemory.BestData.Chip != null)
             {
                 double bestallnotes = PlayMemory.BestData.Score;
                 double bestnotes = EXScore[2];
@@ -678,14 +678,17 @@ namespace Tunebeat.Game
                     TextureLoad.Result_Rank.Draw(499 - 152, 175 - 76 * 2, new Rectangle(0, PlayData.Data.RivalRank > 7 ? 45 * 7 : 45 * PlayData.Data.RivalRank, 161, 45));
                     break;
                 case ERival.PlayScore:
-                    double rivalallnotes = PlayMemory.RivalData.Score;
-                    double rivalnotes = EXScore[3];
-                    double rivalpercent = rivalnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
-                    double rivalallpercent = rivalallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
-                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalallpercent), 64 * 3, (int)(1000 * rivalallpercent), 64));
-                    TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalpercent), 0, (int)(1000 * rivalpercent), 64));
-                    int rivalnum = (int)hitnotes * 2 - (int)rivalnotes;
-                    DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rivalnum >= 0 ? "+" : "")}{rivalnum}", rivalnum < 0 ? 1 : 0);
+                    if (PlayMemory.RivalData.Score > 0 && PlayMemory.RivalData.Chip != null)
+                    {
+                        double rivalallnotes = PlayMemory.RivalData.Score;
+                        double rivalnotes = EXScore[3];
+                        double rivalpercent = rivalnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                        double rivalallpercent = rivalallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                        TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalallpercent), 64 * 3, (int)(1000 * rivalallpercent), 64));
+                        TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalpercent), 0, (int)(1000 * rivalpercent), 64));
+                        int rivalnum = (int)hitnotes * 2 - (int)rivalnotes;
+                        DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rivalnum >= 0 ? "+" : "")}{rivalnum}", rivalnum < 0 ? 1 : 0);
+                    }
                     break;
             }
 
@@ -695,12 +698,22 @@ namespace Tunebeat.Game
 
         public static void AddScore(EJudge judge, int player)
         {
+            if (player < 2)
             {
-                if (player < 2)
-                {
-                    AddGauge(judge, player);
-                    DisplayJudge[player] = judge;
-                }
+                AddGauge(judge, player);
+                DisplayJudge[player] = judge;
+            }
+            switch (judge)
+            {
+                case EJudge.Perfect:
+                    EXScore[player] += 2;
+                    break;
+                case EJudge.Great:
+                    EXScore[player] += 1;
+                    break;
+            }
+            if (PlayData.Data.PreviewType == 3 || (PlayData.Data.PreviewType < 3 && player < 2))
+            {
                 switch (judge)
                 {
                     case EJudge.Perfect:
@@ -735,15 +748,6 @@ namespace Tunebeat.Game
                     default:
                         break;
                 }
-            }
-            switch (judge)
-            {
-                case EJudge.Perfect:
-                    EXScore[player] += 2;
-                    break;
-                case EJudge.Great:
-                    EXScore[player] += 1;
-                    break;
             }
         }
 
