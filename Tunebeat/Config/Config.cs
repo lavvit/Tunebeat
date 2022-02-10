@@ -252,6 +252,10 @@ namespace Tunebeat.Config
                     SkinColorR = new OptionInt("SkinColor - R", PlayData.Data.SkinColor[0], 0, 255, "スキンの色を変更します。(Red)"); OptionList.Add(SkinColorR);
                     SkinColorG = new OptionInt("SkinColor - G", PlayData.Data.SkinColor[1], 0, 255, "スキンの色を変更します。(Green)"); OptionList.Add(SkinColorG);
                     SkinColorB = new OptionInt("SkinColor - B", PlayData.Data.SkinColor[2], 0, 255, "スキンの色を変更します。(Blue)"); OptionList.Add(SkinColorB);
+                    PreviewSong = new OptionBool("PreviewSong", PlayData.Data.PreviewSong, "曲のプレビューを再生します。"); OptionList.Add(PreviewSong);
+                    SystemBGM = new OptionInt("Volume-SystemBGM", PlayData.Data.SystemBGM, 0, 100, "システムのBGMの音量を調節します。"); OptionList.Add(SystemBGM);
+                    GameBGM = new OptionInt("Volume-GameBGM", PlayData.Data.GameBGM, 0, 100, "演奏中の曲の音量を調節します。"); OptionList.Add(GameBGM);
+                    SE = new OptionInt("Volume-SE", PlayData.Data.SystemBGM, 0, 100, "効果音の音量を調節します。"); OptionList.Add(SE);
                     FontRendering = new OptionBool("FontRendering", PlayData.Data.FontRendering, "文字を指定したフォントで読み込みます。(エラーが出る場合はOFFにしてください)"); OptionList.Add(FontRendering);
                     FontName = new OptionString("FontName", PlayData.Data.FontName, "使用するフォントを変更します。(空白の場合デフォルトの設定を使用します。)"); OptionList.Add(FontName);
                     ShowImage = new OptionBool("ShowImage", PlayData.Data.ShowImage, "BGIMAGEに記述された画像を背景に表示します。"); OptionList.Add(ShowImage);
@@ -376,6 +380,10 @@ namespace Tunebeat.Config
                     PlayData.Data.SoundName = SoundName.Text;
                     PlayData.Data.BGMName = BGMName.Text;
                     SoundLoad.Init();
+                    PlayData.Data.PreviewSong = PreviewSong.ON;
+                    PlayData.Data.SystemBGM = SystemBGM.Value;
+                    PlayData.Data.GameBGM = GameBGM.Value;
+                    PlayData.Data.SE = SE.Value;
                     PlayData.Data.FontRendering = FontRendering.ON;
                     PlayData.Data.FontName = FontName.Text;
                     PlayData.Data.PlayFolder = PlayFolder.Text;
@@ -472,9 +480,9 @@ namespace Tunebeat.Config
             Back
         }
         public static Option  Back, LEFTDON, RIGHTDON, LEFTKA, RIGHTKA, LEFTDON2P, RIGHTDON2P, LEFTKA2P, RIGHTKA2P;
-        public static OptionBool FullScreen, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
+        public static OptionBool FullScreen, PreviewSong, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
-        public static OptionInt SkinColorR, SkinColorG, SkinColorB, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
+        public static OptionInt SkinColorR, SkinColorG, SkinColorB, SystemBGM, GameBGM, SE, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;
         public static OptionList PreviewType, PlayCourse, PlayCourse2P, RivalType, RivalRank, NotesChange, NotesChange2P, ScrollType, ScrollType2P, GaugeType, GaugeAutoShift, GaugeAutoShiftMin, GaugeType2P, GaugeAutoShift2P, GaugeAutoShiftMin2P, JudgeType;
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;

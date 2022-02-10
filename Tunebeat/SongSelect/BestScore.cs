@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Amaoto;
 using Tunebeat.Common;
+using Tunebeat.Game;
 
 namespace Tunebeat.SongSelect
 {
@@ -576,23 +577,108 @@ namespace Tunebeat.SongSelect
                         #region GageMode
                         if (str3.Equals($"GageMode1"))
                         {
-                            ScoreData.Score[0].GaugeType = int.Parse(str4);
+                            switch (int.Parse(str4))
+                            {
+                                case 0:
+                                    ScoreData.Score[0].GaugeType = (int)EGauge.Normal;
+                                    break;
+                                case 1:
+                                    ScoreData.Score[0].GaugeType = (int)EGauge.Hard;
+                                    break;
+                                case 2:
+                                    ScoreData.Score[0].GaugeType = (int)EGauge.EXHard;
+                                    break;
+                                case 3:
+                                    ScoreData.Score[0].GaugeType = (int)EGauge.Easy;
+                                    break;
+                                case 4:
+                                    ScoreData.Score[0].GaugeType = (int)EGauge.Assist;
+                                    break;
+                            }
                         }
                         if (str3.Equals($"GageMode2"))
                         {
-                            ScoreData.Score[1].GaugeType = int.Parse(str4);
+                            switch (int.Parse(str4))
+                            {
+                                case 0:
+                                    ScoreData.Score[1].GaugeType = (int)EGauge.Normal;
+                                    break;
+                                case 1:
+                                    ScoreData.Score[1].GaugeType = (int)EGauge.Hard;
+                                    break;
+                                case 2:
+                                    ScoreData.Score[1].GaugeType = (int)EGauge.EXHard;
+                                    break;
+                                case 3:
+                                    ScoreData.Score[1].GaugeType = (int)EGauge.Easy;
+                                    break;
+                                case 4:
+                                    ScoreData.Score[1].GaugeType = (int)EGauge.Assist;
+                                    break;
+                            }
                         }
                         if (str3.Equals($"GageMode3"))
                         {
-                            ScoreData.Score[2].GaugeType = int.Parse(str4);
+                            switch (int.Parse(str4))
+                            {
+                                case 0:
+                                    ScoreData.Score[2].GaugeType = (int)EGauge.Normal;
+                                    break;
+                                case 1:
+                                    ScoreData.Score[2].GaugeType = (int)EGauge.Hard;
+                                    break;
+                                case 2:
+                                    ScoreData.Score[2].GaugeType = (int)EGauge.EXHard;
+                                    break;
+                                case 3:
+                                    ScoreData.Score[2].GaugeType = (int)EGauge.Easy;
+                                    break;
+                                case 4:
+                                    ScoreData.Score[2].GaugeType = (int)EGauge.Assist;
+                                    break;
+                            }
                         }
                         if (str3.Equals($"GageMode4"))
                         {
-                            ScoreData.Score[3].GaugeType = int.Parse(str4);
+                            switch (int.Parse(str4))
+                            {
+                                case 0:
+                                    ScoreData.Score[3].GaugeType = (int)EGauge.Normal;
+                                    break;
+                                case 1:
+                                    ScoreData.Score[3].GaugeType = (int)EGauge.Hard;
+                                    break;
+                                case 2:
+                                    ScoreData.Score[3].GaugeType = (int)EGauge.EXHard;
+                                    break;
+                                case 3:
+                                    ScoreData.Score[3].GaugeType = (int)EGauge.Easy;
+                                    break;
+                                case 4:
+                                    ScoreData.Score[3].GaugeType = (int)EGauge.Assist;
+                                    break;
+                            }
                         }
                         if (str3.Equals($"GageMode5"))
                         {
-                            ScoreData.Score[4].GaugeType = int.Parse(str4);
+                            switch (int.Parse(str4))
+                            {
+                                case 0:
+                                    ScoreData.Score[4].GaugeType = (int)EGauge.Normal;
+                                    break;
+                                case 1:
+                                    ScoreData.Score[4].GaugeType = (int)EGauge.Hard;
+                                    break;
+                                case 2:
+                                    ScoreData.Score[4].GaugeType = (int)EGauge.EXHard;
+                                    break;
+                                case 3:
+                                    ScoreData.Score[4].GaugeType = (int)EGauge.Easy;
+                                    break;
+                                case 4:
+                                    ScoreData.Score[4].GaugeType = (int)EGauge.Assist;
+                                    break;
+                            }
                         }
                         #endregion
                         #region TechnicalPerfect

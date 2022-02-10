@@ -128,7 +128,6 @@ namespace Tunebeat.Game
             Wait.Reset();
             MeasureList = null;
 
-            PlayMemory.Dispose();
             foreach (Scene scene in ChildScene)
                 scene?.Disable();
             base.Disable();
@@ -655,6 +654,8 @@ namespace Tunebeat.Game
                     movie = movie.Replace(".wmv", ".mp4");
                     MainMovie = new Movie(movie);
                     Wait.Reset();
+
+                    DrawLog.Draw($"Now:{MainTJA[0].TJAPath}", 2000);
                 }
                 else
                 {
@@ -664,16 +665,14 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(KEY_INPUT_RETURN))
                     {
+                        PlayMemory.Dispose();
                         Program.SceneChange(new SongSelect.SongSelect());
                     }
                 }
             }
             if (Key.IsPushed(KEY_INPUT_ESCAPE))
             {
-                Program.SceneChange(new SongSelect.SongSelect());
-            }
-            if (Key.IsPushing(KEY_INPUT_LSHIFT) && Key.IsPushing(KEY_INPUT_RSHIFT) && Key.IsPushing(KEY_INPUT_DELETE))
-            {
+                PlayMemory.Dispose();
                 Program.SceneChange(new SongSelect.SongSelect());
             }
 

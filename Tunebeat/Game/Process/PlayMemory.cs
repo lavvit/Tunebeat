@@ -27,11 +27,11 @@ namespace Tunebeat.Game
             RivalData = new ReplayData();
             Saved = false;
 
-            if (!string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[0]))
+            if (Game.IsReplay[0] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[0]))
             {
                 ReplayData = ConfigManager.GetConfig<ReplayData>(SongSelect.SongSelect.ReplayScore[0]);
             }
-            if (Game.Play2P && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[1]))
+            if (Game.Play2P && Game.IsReplay[1] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[1]))
             {
                 ReplayData2P = ConfigManager.GetConfig<ReplayData>(SongSelect.SongSelect.ReplayScore[1]);
             }
@@ -84,7 +84,7 @@ namespace Tunebeat.Game
 
         public static void AddChip(int player, Chip chip, double time, EJudge judge)
         {
-            if ((player < 2 && Game.IsReplay[player]) || player >= 2) return;
+            if (player >= 2) return;
 
             List<ChipData> data = player == 0 ? ChipData : ChipData2P;
             ChipData chipdata = new ChipData()

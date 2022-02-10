@@ -34,6 +34,11 @@ namespace Tunebeat.Common
         public bool FontRendering = true;
         public string FontName = "";
 
+        public bool PreviewSong = true;
+        public int SystemBGM = 100;
+        public int GameBGM = 100;
+        public int SE = 100;
+
         public List<string> PlayFolder = new List<string>() { "Songs" };
         public int PreviewType = 0;
         public int[] PlayCourse = new int[2] { 3, 3 };
