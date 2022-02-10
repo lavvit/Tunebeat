@@ -17,7 +17,6 @@ namespace Tunebeat.SongSelect
     {
         public override void Enable()
         {
-            Alart = new Counter(0, 1000, 1000, false);
             SongLoad.Init();
             if (SongLoad.SongData.Count > 0) NowTJA = SongLoad.SongData[NowSongNumber];
             Title = new Texture();
@@ -45,7 +44,6 @@ namespace Tunebeat.SongSelect
             SubTitle = null;
             Genre = null;
             BPM = null;
-            Alart.Reset();
             SongLoad.Dispose();
 
             for (int i = 0; i < 2; i++)
@@ -451,30 +449,6 @@ namespace Tunebeat.SongSelect
                 DrawString(16 + GetDrawStringWidth(Input.Text, Input.Position), 1052, "|", 0xffff00);
             }
 
-            if (Alart.State != 0)
-            {
-                DrawBox(0, 1040, 410, 1080, 0x000000, TRUE);
-                switch (AlartType)
-                {
-                    case 0:
-                        DrawString(20, 1052, "TJAが見つかりません!パスを確認してください。", 0xffffff);
-                        break;
-                    case 1:
-                        DrawString(20, 1052, "譜面がありません!難易度を確認してください。", 0xffffff);
-                        break;
-                    case 2:
-                        if (SongLoad.NowSort != ESort.None)
-                        {
-                            DrawString(20, 1052, $"譜面を並び替えました! Sort:{SongLoad.NowSort}...", 0xffffff);
-                        }
-                        else
-                        {
-                            DrawString(20, 1052, $"譜面の並び順をデフォルトに戻しました!", 0xffffff);
-                        }
-                        break;
-                }
-            }
-
             #if DEBUG
             if (NowTJA != null)DrawString(0, 0, $"File:{NowTJA.Path}", 0xffffff);
             DrawString(200, 20, $"SongCount:{SongLoad.SongData.Count},{SongLoad.SongList.Count}", 0xffffff);
@@ -505,9 +479,6 @@ namespace Tunebeat.SongSelect
 
         public override void Update()
         {
-            Alart.Tick();
-            if (Alart.Value == Alart.End) Alart.Stop();
-
             if (Input.IsEnable)
             {
                 if (Key.IsPushed(KEY_INPUT_RETURN))
@@ -659,9 +630,16 @@ namespace Tunebeat.SongSelect
                     }
                     NowTJA = SongLoad.SongData[NowSongNumber];
                     if (PlayData.Data.FontRendering) FontLoad();
-                    AlartType = 2;
-                    Alart.Reset();
-                    Alart.Start();
+                    string str;
+                    if (SongLoad.NowSort != ESort.None)
+                    {
+                        str = $"譜面を並び替えました! Sort:{SongLoad.NowSort}...";
+                    }
+                    else
+                    {
+                        str = "譜面の並び順をデフォルトに戻しました!";
+                    }
+                    DrawLog.Draw(str);
                 }
 
                 if (Key.IsPushed(KEY_INPUT_ESCAPE))
@@ -880,16 +858,12 @@ namespace Tunebeat.SongSelect
                         }
                         else
                         {
-                            AlartType = 1;
-                            Alart.Reset();
-                            Alart.Start();
+                            DrawLog.Draw("譜面がありません!難易度を確認してください。");
                         }
                     }
                     else
                     {
-                        AlartType = 0;
-                        Alart.Reset();
-                        Alart.Start();
+                        DrawLog.Draw("TJAが見つかりません!パスを確認してください。");
                     }
                     break;
                 case EType.Random:
@@ -920,16 +894,12 @@ namespace Tunebeat.SongSelect
                         }
                         else
                         {
-                            AlartType = 1;
-                            Alart.Reset();
-                            Alart.Start();
+                            DrawLog.Draw("譜面がありません!難易度を確認してください。");
                         }
                     }
                     else
                     {
-                        AlartType = 0;
-                        Alart.Reset();
-                        Alart.Start();
+                        DrawLog.Draw("TJAが見つかりません!パスを確認してください。");
                     }
                     break;
                 case EType.Folder:
@@ -1081,10 +1051,9 @@ namespace Tunebeat.SongSelect
         public static bool[] Replay = new bool[2];
         public static Texture Title, SubTitle, Genre, BPM;
         public static SongData NowTJA;
-        public static Counter Alart;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
         public static List<string> SortedReplay;
-        public static int AlartType, NowSongNumber, NowSListNumber, NowRivalScore;
+        public static int NowSongNumber, NowSListNumber, NowRivalScore;
         public static int[] NowReplay = new int[2];
         public static bool Random;
         public static string NowPath, RivalScore;

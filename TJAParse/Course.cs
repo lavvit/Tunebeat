@@ -185,6 +185,10 @@ namespace TJAParse
                         }
                     }
                 }
+                foreach (Chip chip in courses[NowCourse].ListChip)
+                {
+                    chip.Time = Math.Round(chip.Time, 4, MidpointRounding.AwayFromZero);
+                }
             }
             else
             {

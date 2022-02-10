@@ -53,7 +53,7 @@ namespace Tunebeat
             //音源読み込み
             SoundLoad.Init();
 
-            ScreenShot = new Counter(0, 2000, 1000, false);
+            DrawLog.Init();
 
             SceneChange(new Title.Title());
         }
@@ -66,6 +66,7 @@ namespace Tunebeat
                 Mouse.Update();
                 NowScene?.Draw();
                 NowScene?.Update();
+                DrawLog.Update();
 
                 if (PlayData.Data.FullScreen) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
 
@@ -74,15 +75,7 @@ namespace Tunebeat
                     DateTime time = DateTime.Now;
                     strTime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
                     SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strTime}.png");
-                    ScreenShot.Reset();
-                    ScreenShot.Start();
-                }
-                ScreenShot.Tick();
-                if (ScreenShot.Value == ScreenShot.End) ScreenShot.Stop();
-                if (ScreenShot.State != 0)
-                {
-                    DrawBox(0, 1040, 530, 1080, 0x000000, TRUE);
-                    DrawString(20, 1052, $"スクリーンショットが保存されました! : {strTime}.png", 0xffffff);
+                    DrawLog.Draw($"スクリーンショットが保存されました! : {strTime}.png", 2000);
                 }
             }
         }
@@ -91,7 +84,6 @@ namespace Tunebeat
         {
             //設定の保存
             PlayData.End();
-            ScreenShot.Reset();
 
             DxLib_End();            
         }
@@ -106,7 +98,6 @@ namespace Tunebeat
         }
 
         public static Scene NowScene, OldScene;
-        public static Counter ScreenShot;
         public static string strTime;
     }
 }

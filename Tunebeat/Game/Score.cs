@@ -242,6 +242,7 @@ namespace Tunebeat.Game
                 DrawString(Notes.NotesP[0].X + 800, Notes.NotesP[0].Y + 86, $"RL:{Roll[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 106, $"Rank:{Rank[0]}", 0xffffff);
                 DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 106, $"{rank}{((EXScore[0] + Auto[0] == Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes) || (rank == Rank[0]) ? "+" : "")}{EXScore[0] + Auto[0] * 2 - rankvalue[(int)rank]}", 0xffffff);
+                if (!Game.Play2P && EXScore[0] > PlayMemory.BestData.Score) DrawString(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 106, "New Record", 0xffffff);
                 if (Game.Play2P)
                 {
                     ERank rank2p = Rank[1];
@@ -330,7 +331,7 @@ namespace Tunebeat.Game
             if (JudgeCounter.State == TimerState.Started || JudgeCounterBig.State == TimerState.Started)
             {
                 DrawString(600, 260, $"{DisplayJudge[0]}", 0xffffff);
-                DrawString(600, 280, $"{msJudge[0]}", 0xffffff);
+                DrawString(600, 280, $"{Math.Round(msJudge[0], 2, MidpointRounding.AwayFromZero)}", 0xffffff);
             }
 
             if (Game.Play2P)
@@ -354,7 +355,7 @@ namespace Tunebeat.Game
                 if (JudgeCounter2P.State == TimerState.Started || JudgeCounterBig2P.State == TimerState.Started)
                 {
                     DrawString(600, 520, $"{DisplayJudge[1]}", 0xffffff);
-                    DrawString(600, 540, $"{msJudge[1]}", 0xffffff);
+                    DrawString(600, 540, $"{Math.Round(msJudge[1], 2, MidpointRounding.AwayFromZero)}", 0xffffff);
                 }
             }
             #endif
@@ -645,16 +646,19 @@ namespace Tunebeat.Game
 
             TextureLoad.Game_Graph.Draw(499, 163, new Rectangle((int)(1000 - 1000 * hitpercent), 64 * 2, (int)(1000 * hitpercent), 64));
 
-            if (PlayMemory.BestData.Score > 0 && PlayMemory.BestData.Chip != null)
+            if (PlayMemory.BestData.Score > 0)
             {
                 double bestallnotes = PlayMemory.BestData.Score;
                 double bestnotes = EXScore[2];
                 double bestpercent = bestnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
                 double bestallpercent = bestallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
                 TextureLoad.Game_Graph.Draw(499, 163 - 76, new Rectangle((int)(1000 - 1000 * bestallpercent), 64 * 3, (int)(1000 * bestallpercent), 64));
-                TextureLoad.Game_Graph.Draw(499, 163 - 76, new Rectangle((int)(1000 - 1000 * bestpercent), 64, (int)(1000 * bestpercent), 64));
-                int num = (int)hitnotes * 2 - (int)bestnotes;
-                DrawMiniNumber(499 + 8, 183 - 76, $"{(num >= 0 ? "+" : "")}{num}", num < 0 ? 1 : 0);
+                if (PlayMemory.BestData.Chip != null)
+                {
+                    TextureLoad.Game_Graph.Draw(499, 163 - 76, new Rectangle((int)(1000 - 1000 * bestpercent), 64, (int)(1000 * bestpercent), 64));
+                    int num = (int)hitnotes * 2 - (int)bestnotes;
+                    DrawMiniNumber(499 + 8, 183 - 76, $"{(num >= 0 ? "+" : "")}{num}", num < 0 ? 1 : 0);
+                }
             }
 
             switch ((ERival)PlayData.Data.RivalType)
@@ -678,16 +682,19 @@ namespace Tunebeat.Game
                     TextureLoad.Result_Rank.Draw(499 - 152, 175 - 76 * 2, new Rectangle(0, PlayData.Data.RivalRank > 7 ? 45 * 7 : 45 * PlayData.Data.RivalRank, 161, 45));
                     break;
                 case ERival.PlayScore:
-                    if (PlayMemory.RivalData.Score > 0 && PlayMemory.RivalData.Chip != null)
+                    if (PlayMemory.RivalData.Score > 0)
                     {
                         double rivalallnotes = PlayMemory.RivalData.Score;
                         double rivalnotes = EXScore[3];
                         double rivalpercent = rivalnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
                         double rivalallpercent = rivalallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
                         TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalallpercent), 64 * 3, (int)(1000 * rivalallpercent), 64));
-                        TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalpercent), 0, (int)(1000 * rivalpercent), 64));
-                        int rivalnum = (int)hitnotes * 2 - (int)rivalnotes;
-                        DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rivalnum >= 0 ? "+" : "")}{rivalnum}", rivalnum < 0 ? 1 : 0);
+                        if (PlayMemory.RivalData.Chip != null)
+                        {
+                            TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalpercent), 0, (int)(1000 * rivalpercent), 64));
+                            int rivalnum = (int)hitnotes * 2 - (int)rivalnotes;
+                            DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rivalnum >= 0 ? "+" : "")}{rivalnum}", rivalnum < 0 ? 1 : 0);
+                        }
                     }
                     break;
             }
