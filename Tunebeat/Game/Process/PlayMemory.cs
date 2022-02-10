@@ -39,14 +39,17 @@ namespace Tunebeat.Game
             {
                 BestData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.PlayerName}.{new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore}.tbr");
             }
-            BestData.Score = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Score;
-            BestData.Perfect = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Perfect;
-            BestData.Great = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Great;
-            BestData.Good = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Good;
-            BestData.Bad = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Bad;
-            BestData.Poor = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Poor;
-            BestData.Roll = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Roll;
-            BestData.MaxCombo = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].MaxCombo;
+            if (new BestScore(Game.TJAPath).ScoreData != null)
+            {
+                BestData.Score = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Score;
+                BestData.Perfect = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Perfect;
+                BestData.Great = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Great;
+                BestData.Good = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Good;
+                BestData.Bad = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Bad;
+                BestData.Poor = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Poor;
+                BestData.Roll = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Roll;
+                BestData.MaxCombo = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].MaxCombo;
+            }
             if (!string.IsNullOrEmpty(SongSelect.SongSelect.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
             {
                 RivalData = ConfigManager.GetConfig<ReplayData>(SongSelect.SongSelect.RivalScore);

@@ -691,19 +691,12 @@ namespace Tunebeat.SongSelect
 
                 if (Key.IsPushed(KEY_INPUT_1))
                 {
-                    if (NowTJA.ScoreList != null && NowTJA.ScoreList.Count > 0)
+                    if (SortedReplay != null && SortedReplay.Count > 0)
                     {
                         SoundLoad.Ka[0].Play();
-                        for (int i = 0; i < NowTJA.ScoreList.Count; i++)
-                        {
-                            if (Path.GetFileNameWithoutExtension(NowTJA.ScoreList[NowRivalScore]).Replace($"{NowTJA.Title}.", "").StartsWith($"{ (ECourse)PlayData.Data.PlayCourse[0]}"))
-                            {
-                                RivalScore = NowTJA.ScoreList[NowRivalScore];
-                                break;
-                            }
-                            if (NowRivalScore >= NowTJA.ScoreList.Count - 1) NowRivalScore = 0;
-                            else NowRivalScore++;
-                        }
+                        if (NowRivalScore >= SortedReplay.Count - 1) NowRivalScore = 0;
+                        else NowRivalScore++;
+                        RivalScore = SortedReplay[NowRivalScore];
                     }
                 }
                 if (Key.IsPushed(KEY_INPUT_2))
@@ -711,16 +704,9 @@ namespace Tunebeat.SongSelect
                     if (NowTJA.ScoreList != null && NowTJA.ScoreList.Count > 0)
                     {
                         SoundLoad.Ka[0].Play();
-                        for (int i = 0; i < NowTJA.ScoreList.Count; i++)
-                        {
-                            if (Path.GetFileNameWithoutExtension(NowTJA.ScoreList[NowReplay[0]]).Replace($"{NowTJA.Title}.", "").StartsWith($"{ (ECourse)PlayData.Data.PlayCourse[0]}"))
-                            {
-                                ReplayScore[0] = NowTJA.ScoreList[NowReplay[0]];
-                                break;
-                            }
-                            if (NowReplay[0] >= NowTJA.ScoreList.Count - 1) NowReplay[0] = 0;
-                            else NowReplay[0]++;
-                        }
+                        if (NowReplay[0] >= SortedReplay.Count - 1) NowReplay[0] = 0;
+                        else NowReplay[0]++;
+                        ReplayScore[0] = SortedReplay[NowReplay[0]];
                     }
                 }
                 if (Key.IsPushed(KEY_INPUT_3))
@@ -728,16 +714,9 @@ namespace Tunebeat.SongSelect
                     if (NowTJA.ScoreList != null && NowTJA.ScoreList.Count > 0 && PlayData.Data.IsPlay2P)
                     {
                         SoundLoad.Ka[0].Play();
-                        for (int i = 0; i < NowTJA.ScoreList.Count; i++)
-                        {
-                            if (Path.GetFileNameWithoutExtension(NowTJA.ScoreList[NowReplay[1]]).Replace($"{NowTJA.Title}.", "").StartsWith($"{ (ECourse)PlayData.Data.PlayCourse[1]}"))
-                            {
-                                ReplayScore[1] = NowTJA.ScoreList[NowReplay[1]];
-                                break;
-                            }
-                            if (NowReplay[1] >= NowTJA.ScoreList.Count - 1) NowReplay[1] = 0;
-                            else NowReplay[1]++;
-                        }
+                        if (NowReplay[1] >= SortedReplay.Count - 1) NowReplay[1] = 0;
+                        else NowReplay[1]++;
+                        ReplayScore[1] = SortedReplay[NowReplay[1]];
                     }
                 }
 
@@ -990,30 +969,18 @@ namespace Tunebeat.SongSelect
             SortedReplay = new List<string>();
             if (NowTJA.ScoreList != null && NowTJA.ScoreList.Count > 0)
             {
-                NowTJA.ScoreList.Sort((a, b) => b.Substring(b.Length - 15, 14).CompareTo(a.Substring(a.Length - 15, 14)));
-                int count = 0;
-                for (int i = 0; i < NowTJA.ScoreList.Count; i++)
-                {
-                    if (Path.GetFileNameWithoutExtension(NowTJA.ScoreList[count]).Replace($"{NowTJA.Title}.", "").StartsWith($"{ (ECourse)PlayData.Data.PlayCourse[0]}"))
-                    {
-                        NowRivalScore = count;
-                        NowReplay[0] = count;
-                        NowReplay[1] = count;
-                        RivalScore = NowTJA.ScoreList[count];
-                        for (int j = 0; j < 2; j++)
-                        {
-                            ReplayScore[j] = NowTJA.ScoreList[NowReplay[count]];
-                        }
-                        break;
-                    }
-                    count++;
-                }
                 for (int i = 0; i < NowTJA.ScoreList.Count; i++)
                 {
                     if (Path.GetFileNameWithoutExtension(NowTJA.ScoreList[i]).Replace($"{NowTJA.Title}.", "").StartsWith($"{(ECourse)PlayData.Data.PlayCourse[0]}"))
                     {
                         SortedReplay.Add(NowTJA.ScoreList[i]);
                     }
+                }
+                SortedReplay.Sort((a, b) => b.Substring(b.Length - 15, 14).CompareTo(a.Substring(a.Length - 15, 14)));
+                RivalScore = SortedReplay[0];
+                for (int j = 0; j < 2; j++)
+                {
+                    ReplayScore[j] = SortedReplay[0];
                 }
             }
             else
