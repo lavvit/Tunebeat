@@ -283,7 +283,7 @@ namespace Tunebeat.Game
                 Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                 float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
 
-                if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
+                if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]) && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
                 {
                     switch (chip.ENote)
                     {

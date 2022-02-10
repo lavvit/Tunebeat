@@ -19,5 +19,6 @@ namespace TJAParse
         public static bool AddMeasure = false;
         public static Chip RollBegin = null;
         public static string LyricText = null;
+        public static double[] Sudden = new double[2];
     }
 }

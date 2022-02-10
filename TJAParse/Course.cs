@@ -72,6 +72,7 @@ namespace TJAParse
                             NowInfo.AddMeasure = true;
                             NowInfo.RollBegin = null;
                             NowInfo.LyricText = null;
+                            NowInfo.Sudden = new double[2] { 0.0, 0.0 };
                         }
                         else if (str.StartsWith("#END"))
                         {
@@ -92,7 +93,6 @@ namespace TJAParse
                         else if (str.StartsWith("#MEASURE"))
                         {
                             var SplitSlash = str.Replace("#MEASURE", "").Trim().Split('/');
-                            double[] mes = new double[2] { SplitSlash[1] != "" ? double.Parse(SplitSlash[1]) : 4, SplitSlash[0] != "" ? double.Parse(SplitSlash[0]) : 4 };
                             if (SplitSlash.Length > 1) NowInfo.Measure = double.Parse(SplitSlash[1]) / double.Parse(SplitSlash[0]);
                         }
                         else if (str.StartsWith("#BARLINEON"))
@@ -114,6 +114,12 @@ namespace TJAParse
                         else if (str.StartsWith("#LYRIC"))
                         {
                             NowInfo.LyricText = str.Replace("#LYRIC", "").Trim();
+                        }
+                        else if (str.StartsWith("#SUDDEN"))
+                        {
+                            var SplitSlash = str.Replace("#SUDDEN", "").Trim().Split(' ');
+                            if (SplitSlash.Length > 1) NowInfo.Sudden = new double[2] { double.Parse(SplitSlash[0]) * 1000.0, double.Parse(SplitSlash[1]) * 1000.0 };
+                            else NowInfo.Sudden = new double[2] { double.Parse(SplitSlash[0]) * 1000.0, double.Parse(SplitSlash[0]) * 1000.0 };
                         }
                     }
                     else
@@ -148,7 +154,8 @@ namespace TJAParse
                                     EChip = EChip.Note,
                                     ENote = (ENote)int.Parse(num.ToString()),
                                     CanShow = true,
-                                    Lyric = NowInfo.LyricText
+                                    Lyric = NowInfo.LyricText,
+                                    Sudden = NowInfo.Sudden
                                 };
 
                                 if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)

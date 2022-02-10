@@ -10,21 +10,19 @@ namespace TJAParse
     {
         public ENote ENote;
         public EChip EChip;
-        public EScroll EScroll;
         public double Time;
         public double Bpm;
         public double Scroll;
         public double Measure;
         public int RollCount;
-        public int Balloon;
-        public bool IsGogo;
         public bool IsHit;
+        public bool IsGogo;
         public bool IsMiss;
-        public bool IsRoll;
         public bool IsShow;
         public bool CanShow;
         public Chip RollEnd;
         public string Lyric;
+        public double[] Sudden;
     }
 
     public enum EChip
