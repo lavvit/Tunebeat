@@ -442,16 +442,16 @@ namespace Tunebeat.Game
             if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
             {
                 taiko[player][0] = SoundLoad.DON[player];
-                taiko[player][0].Volume = 1.5;
+                taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0) * 1.5;
                 taiko[player][1] = SoundLoad.KA[player];
-                taiko[player][1].Volume = 1.5;
+                taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0) * 1.5;
             }
             else
             {
                 taiko[player][0] = SoundLoad.Don[player];
-                taiko[player][0].Volume = 1.0;
+                taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
                 taiko[player][1] = SoundLoad.Ka[player];
-                taiko[player][1].Volume = 1.0;
+                taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
             }
 
             if (PlayData.Data.PreviewType == 3)

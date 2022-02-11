@@ -30,8 +30,10 @@ namespace Tunebeat.SongSelect
                 PushingTimer[i] = new Counter(0, 49, 1000, false);
             }
             SoundLoad.Don[0].Pan = 0;
+            SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
             if (PlayData.Data.PlaySpeed != 1.0 && PlayData.Data.ChangeSESpeed) SoundLoad.Don[0].PlaySpeed = PlayData.Data.PlaySpeed;
             SoundLoad.Ka[0].Pan = 0;
+            SoundLoad.Ka[0].Volume = PlayData.Data.SE / 100.0;
             if (PlayData.Data.PlaySpeed != 1.0 && PlayData.Data.ChangeSESpeed) SoundLoad.Ka[0].PlaySpeed = PlayData.Data.PlaySpeed;
             SetScore();
             if (PlayData.Data.PreviewSong)
@@ -486,6 +488,7 @@ namespace Tunebeat.SongSelect
         {
             if (Preview != null && Preview.IsEnable && !Preview.IsPlaying)
             {
+                Preview.Volume = PlayData.Data.SystemBGM / 100.0;
                 Preview.Play();
             }
             if (Preview != null && Preview.IsPlaying && Preview.Time < new TJAParse.TJAParse(NowTJA.Path).Header.DEMOSTART)
@@ -685,6 +688,7 @@ namespace Tunebeat.SongSelect
                     }
                     else
                     {
+                        if (Preview != null) { Preview.Stop(); Preview = null; }
                         Program.SceneChange(new Title.Title());
                     }
                 }
@@ -722,6 +726,7 @@ namespace Tunebeat.SongSelect
 
                 if (Key.IsPushed(KEY_INPUT_F1))
                 {
+                    if (Preview != null) { Preview.Stop(); Preview = null; }
                     Program.SceneChange(new Config.Config());
                 }
                 if (Key.IsPushed(KEY_INPUT_F2))

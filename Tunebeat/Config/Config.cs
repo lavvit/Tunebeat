@@ -255,7 +255,7 @@ namespace Tunebeat.Config
                     PreviewSong = new OptionBool("PreviewSong", PlayData.Data.PreviewSong, "曲のプレビューを再生します。"); OptionList.Add(PreviewSong);
                     SystemBGM = new OptionInt("Volume-SystemBGM", PlayData.Data.SystemBGM, 0, 100, "システムのBGMの音量を調節します。"); OptionList.Add(SystemBGM);
                     GameBGM = new OptionInt("Volume-GameBGM", PlayData.Data.GameBGM, 0, 100, "演奏中の曲の音量を調節します。"); OptionList.Add(GameBGM);
-                    SE = new OptionInt("Volume-SE", PlayData.Data.SystemBGM, 0, 100, "効果音の音量を調節します。"); OptionList.Add(SE);
+                    SE = new OptionInt("Volume-SE", PlayData.Data.SE, 0, 100, "効果音の音量を調節します。"); OptionList.Add(SE);
                     FontRendering = new OptionBool("FontRendering", PlayData.Data.FontRendering, "文字を指定したフォントで読み込みます。(エラーが出る場合はOFFにしてください)"); OptionList.Add(FontRendering);
                     FontName = new OptionString("FontName", PlayData.Data.FontName, "使用するフォントを変更します。(空白の場合デフォルトの設定を使用します。)"); OptionList.Add(FontName);
                     ShowImage = new OptionBool("ShowImage", PlayData.Data.ShowImage, "BGIMAGEに記述された画像を背景に表示します。"); OptionList.Add(ShowImage);

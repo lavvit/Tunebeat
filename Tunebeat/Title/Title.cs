@@ -43,6 +43,7 @@ namespace Tunebeat.Title
         {
             if (Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
+                SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
                 Program.SceneChange(new SongSelect.SongSelect());
             }

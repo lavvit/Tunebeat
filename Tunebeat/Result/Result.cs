@@ -146,6 +146,8 @@ namespace Tunebeat.Result
         {
             if (Key.IsPushed(KEY_INPUT_ESCAPE) || Key.IsPushed(KEY_INPUT_RETURN))
             {
+                SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
+                SoundLoad.Don[0].Play();
                 Program.SceneChange(new SongSelect.SongSelect());
             }
 

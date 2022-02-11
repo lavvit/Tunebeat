@@ -110,10 +110,12 @@ namespace Tunebeat.Game
                         {
                             if (RollState(chip) == ERoll.Balloon)
                             {
+                                SoundLoad.Balloon[player].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
                                 SoundLoad.Balloon[player].Play();
                             }
                             else
                             {
+                                SoundLoad.Kusudama[player].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
                                 SoundLoad.Kusudama[player].Play();
                             }
                             chip.IsHit = true;

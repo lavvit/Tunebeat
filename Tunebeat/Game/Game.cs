@@ -99,6 +99,16 @@ namespace Tunebeat.Game
 
             PlayMemory.Init();
 
+            for (int i = 0; i < 5; i++)
+            {
+                SoundLoad.Don[i].Volume = (PlayData.Data.SE / 100.0) * (MainTJA[0].Header.SEVOL / 100.0);
+                SoundLoad.DON[i].Volume = (PlayData.Data.SE / 100.0) * (MainTJA[0].Header.SEVOL / 100.0);
+                SoundLoad.Ka[i].Volume = (PlayData.Data.SE / 100.0) * (MainTJA[0].Header.SEVOL / 100.0);
+                SoundLoad.KA[i].Volume = (PlayData.Data.SE / 100.0) * (MainTJA[0].Header.SEVOL / 100.0);
+                SoundLoad.Balloon[i].Volume = (PlayData.Data.SE / 100.0) * (MainTJA[0].Header.SEVOL / 100.0);
+                SoundLoad.Kusudama[i].Volume = (PlayData.Data.SE / 100.0) * (MainTJA[0].Header.SEVOL / 100.0);
+            }
+            
             #region AddChildScene
             AddChildScene(new Notes());
             AddChildScene(new Score());
@@ -584,6 +594,7 @@ namespace Tunebeat.Game
                 {
                     MainSong.Play(PlayMeasure == 0 ? true : false);
                     MainSong.PlaySpeed = PlayData.Data.PlaySpeed;
+                    MainSong.Volume = (PlayData.Data.GameBGM / 100.0) * (MainTJA[0].Header.SONGVOL / 100.0);
                 }
                 IsSongPlay = true;
                 if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName))
