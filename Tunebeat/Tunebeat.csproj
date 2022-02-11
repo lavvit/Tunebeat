@@ -64,6 +64,7 @@
     <Compile Include="Common\TextureLoad.cs" />
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\OptionList.cs" />
+    <Compile Include="Game\Create.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Process\GetNotes.cs" />
     <Compile Include="Game\Process\KeyInput.cs" />

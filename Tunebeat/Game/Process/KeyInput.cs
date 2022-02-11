@@ -54,6 +54,12 @@ namespace Tunebeat.Game
                 }
             }
 
+            if (Key.IsPushed(KEY_INPUT_F8))
+            {
+                SoundLoad.Ka[0].Play();
+                Create.CreateMode = !Create.CreateMode;
+            }
+
             if (Key.IsPushed(KEY_INPUT_Q) && Game.Wait.State == 0)
             {
                 Game.Reset();

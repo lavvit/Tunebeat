@@ -102,6 +102,7 @@ namespace Tunebeat.Game
             #region AddChildScene
             AddChildScene(new Notes());
             AddChildScene(new Score());
+            AddChildScene(new Create());
             #endregion
             base.Enable();
         }
