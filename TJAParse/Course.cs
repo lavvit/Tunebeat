@@ -137,6 +137,15 @@ namespace TJAParse
                         for (int i = 0; i < str.Length; i++)
                         {
                             var num = str[i];
+                            if (num >= '0' && num <= '9')
+                            {
+                                courses[NowCourse].IsEnable = true;
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < str.Length; i++)
+                        {
+                            var num = str[i];
                             if (num == ',')
                             {
                                 NowInfo.MeasureCount++;
@@ -180,7 +189,6 @@ namespace TJAParse
                                 courses[NowCourse].ListChip.Add(chip);
 
                                 NowInfo.Time += 15000d / NowInfo.Bpm / NowInfo.Measure * (16d / courses[NowCourse].ListMeasureCount[NowInfo.MeasureCount < courses[NowCourse].ListMeasureCount.Count ? NowInfo.MeasureCount : courses[NowCourse].ListMeasureCount.Count - 1]);
-                                courses[NowCourse].IsEnable = true;
                             }
                         }
                     }
@@ -220,18 +228,21 @@ namespace TJAParse
                     }
                     else
                     {
-
-                        if (!((str[0] >= '0' && str[0] <= '9') || (str[str.Length - 1] >= '0' && str[str.Length - 1] <= '9') || str[0] == ',' || str[str.Length - 1] == ',')) return;
-
                         for (int i = 0; i < str.Length; i++)
                         {
                             var num = str[i];
                             if (num >= '0' && num <= '9')
                             {
-                                if (int.Parse(num.ToString()) >= (int)ENote.Don && int.Parse(num.ToString()) <= (int)ENote.KA)
-                                    courses[NowCourse].TotalNotes++;
-                                
                                 courses[NowCourse].IsEnable = true;
+                                break;
+                            }
+                        }
+                        for (int i = 0; i < str.Length; i++)
+                        {
+                            var num = str[i];
+                            if (num >= '0' && num <= '9' && int.Parse(num.ToString()) >= (int)ENote.Don && int.Parse(num.ToString()) <= (int)ENote.KA)
+                            {
+                                courses[NowCourse].TotalNotes++;
                             }
                         }
                     }

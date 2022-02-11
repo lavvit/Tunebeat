@@ -52,11 +52,12 @@ namespace Tunebeat.Game
                 SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
             }
 
+            RandomCourse = SongSelect.SongSelect.Course;
             for (int i = 0; i < 2; i++)
             {
                 IsAuto[i] = PlayData.Data.PreviewType == 3 ? true : PlayData.Data.Auto[i];
                 IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[i]) ? true : false;
-                Course[i] = SongSelect.SongSelect.EnableCourse(SongSelect.SongSelect.NowTJA.Course, i);
+                Course[i] = SongSelect.SongSelect.Random && PlayData.Data.PlayCourse[i] == 4 ? RandomCourse : SongSelect.SongSelect.EnableCourse(SongSelect.SongSelect.NowTJA.Course, i);
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
@@ -616,10 +617,24 @@ namespace Tunebeat.Game
                         {
                             Random random = new Random();
                             int r = random.Next(SongLoad.SongList.Count);
-                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != SongLoad.SongList[r].Path)
+                            if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
                             {
-                                TJAPath = SongLoad.SongList[r].Path;
-                                break;
+                                Random difran = new Random();
+                                int d = difran.Next(0, 2);
+                                RandomCourse = 3 + d;
+                                if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[RandomCourse].IsEnable && TJAPath != SongLoad.SongList[r].Path)
+                                {
+                                    TJAPath = SongLoad.SongList[r].Path;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != SongLoad.SongList[r].Path)
+                                {
+                                    TJAPath = SongLoad.SongList[r].Path;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -778,7 +793,7 @@ namespace Tunebeat.Game
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[5];
         public static double[] Adjust = new double[5], ScrollRemain = new double[5];
-        public static int PlayMeasure;
+        public static int PlayMeasure, RandomCourse;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];

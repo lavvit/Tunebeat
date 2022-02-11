@@ -450,7 +450,8 @@ namespace Tunebeat.SongSelect
 
             if (Input.IsEnable)
             {
-                DrawBox(0, 1040, GetDrawStringWidth(Input.Text, Input.Position) + 50, 1080, 0x000000, TRUE);
+                DrawBox(0, 1040, GetDrawStringWidth(Input.Text, Input.Text.Length) + 40, 1080, 0x000000, TRUE);
+                DrawBox(20 + 9 * Input.Selection.Start, 1040, 20 + 9 * Input.Selection.End, 1080, 0x0000ff, TRUE);
                 DrawString(20, 1052, Input.Text, 0xffffff);
                 DrawString(16 + GetDrawStringWidth(Input.Text, Input.Position), 1052, "|", 0xffff00);
             }
@@ -757,6 +758,14 @@ namespace Tunebeat.SongSelect
                 }
                 if (Key.IsPushed(KEY_INPUT_F5))
                 {
+                    PlayData.Data.IsPlay2P = !PlayData.Data.IsPlay2P;
+                }
+                if (Key.IsPushed(KEY_INPUT_F6))
+                {
+                    PlayData.Data.ShowGraph = !PlayData.Data.ShowGraph;
+                }
+                if (Key.IsPushed(KEY_INPUT_F7))
+                {
                     if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                     {
                         GaugeChange(1);
@@ -766,7 +775,7 @@ namespace Tunebeat.SongSelect
                         GaugeChange(0);
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_F6))
+                if (Key.IsPushed(KEY_INPUT_F8))
                 {
                     if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
                     {
@@ -776,14 +785,6 @@ namespace Tunebeat.SongSelect
                     {
                         GASChange(0);
                     }
-                }
-                if (Key.IsPushed(KEY_INPUT_F7))
-                {
-                    PlayData.Data.IsPlay2P = !PlayData.Data.IsPlay2P;
-                }
-                if (Key.IsPushed(KEY_INPUT_F8))
-                {
-                    PlayData.Data.ShowResultScreen = !PlayData.Data.ShowResultScreen;
                 }
                 if (Key.IsPushed(KEY_INPUT_F9))
                 {
@@ -891,10 +892,24 @@ namespace Tunebeat.SongSelect
                     {
                         Random random = new Random();
                         int r = random.Next(SongLoad.SongList.Count);
-                        if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[EnableCourse(NowTJA.Course, 0)].IsEnable)
+                        if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
                         {
-                            NowTJA = SongLoad.SongList[r];
-                            break;
+                            Random difran = new Random();
+                            int d = difran.Next(0, 2);
+                            Course = 3 + d;
+                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[Course].IsEnable)
+                            {
+                                NowTJA = SongLoad.SongList[r];
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable)
+                            {
+                                NowTJA = SongLoad.SongList[r];
+                                break;
+                            }
                         }
                     }
                     if (Preview != null) { Preview.Stop(); Preview = null; }
@@ -1114,7 +1129,7 @@ namespace Tunebeat.SongSelect
         public static SongData NowTJA;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
         public static Sound Preview;
-        public static int NowSongNumber, NowSListNumber, NowRivalScore;
+        public static int NowSongNumber, NowSListNumber, NowRivalScore, Course;
         public static int[] NowReplay = new int[2];
         public static bool Random;
         public static string NowPath, RivalScore;

@@ -9,7 +9,7 @@ namespace TJAParse
     public class Header
     {
         public string TITLE, SUBTITLE, WAVE, GENRE, BGIMAGE, BGMOVIE;
-        public double BPM, OFFSET, SONGVOL, SEVOL, DEMOSTART, SCOREMODE;
+        public double BPM, OFFSET, SONGVOL = 100, SEVOL = 100, DEMOSTART, SCOREMODE;
 
         public static void Load(string str, Header header, double playspeed)
         {
