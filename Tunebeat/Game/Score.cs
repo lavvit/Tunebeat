@@ -845,6 +845,7 @@ namespace Tunebeat.Game
                 {
                     GaugeList[player][5] = 0.0;
                 }
+                GaugeList[player][i] = Math.Round(GaugeList[player][i], 4, MidpointRounding.AwayFromZero);
             }
             ShiftGauge(player);
         }

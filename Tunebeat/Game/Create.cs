@@ -55,7 +55,6 @@ namespace Tunebeat.Game
         }
         public override void Draw()
         {
-            DrawString(1000, 0, $"{CreateMode}", 0xffffff);
             if (CreateMode)
             {
                 TextureLoad.Game_Notes.Draw(195 * 4 + 98, 520, new Rectangle(195 * 6, 0, 195 * 2, 195));

@@ -49,6 +49,7 @@ namespace Tunebeat.SongSelect
             {
                 r[i] = new Course();
             }
+            bool[] t = new bool[5];
             SongData random = new SongData()
             {
                 Path = "",
@@ -57,6 +58,7 @@ namespace Tunebeat.SongSelect
                 BackColor = Color.FromArgb((int)GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2])),
                 Course = r,
                 Type = EType.Random,
+                Enable = t,
             };
             data.Add(random);
 
@@ -72,6 +74,11 @@ namespace Tunebeat.SongSelect
                     foreach (string item in Directory.EnumerateFiles(directory, "*.tja", SearchOption.TopDirectoryOnly))
                     {
                         TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                        bool[] enable = new bool[5];
+                        for (int i = 0; i < 5; i++)
+                        {
+                            enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                        }
                         SongData songdata = new SongData()
                         {
                             Path = item,
@@ -80,6 +87,7 @@ namespace Tunebeat.SongSelect
                             Header = parse.Header,
                             Course = parse.Courses,
                             Type = EType.Score,
+                            Enable = enable,
                         };
                         SongList.Add(songdata);
                     }
@@ -106,6 +114,7 @@ namespace Tunebeat.SongSelect
                         BackColor = !string.IsNullOrEmpty(folder.BackColor) && int.TryParse(folder.BackColor.Substring(1, 6), System.Globalization.NumberStyles.HexNumber, null, out p) ? ColorTranslator.FromHtml(folder.BackColor.Substring(0, 7)) : Color.Gray,
                         Course = c,
                         Type = EType.Folder,
+                        Enable = t,
                     };
                     data.Add(songdata);
                     FolderData.Add(songdata.Path);
@@ -122,6 +131,32 @@ namespace Tunebeat.SongSelect
                         if (item.Contains(dir)) folder = new Folder(dir);
                     }
                     TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                    List<string>[] slist = new List<string>[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        slist[i] = new List<string>();
+                    }
+                    foreach (string file in Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly))
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (parse != null && Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.", "").StartsWith($"{(ECourse)i}"))
+                            {
+                                slist[i].Add(Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.{(ECourse)i}.", ""));
+                            }
+                        }
+                    }
+                    bool[] enable = new bool[5];
+                    int[] lamp = new int[5], notes = new int[5], score = new int[5];
+                    double[] rate = new double[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                        notes[i] = parse.Courses != null ? parse.Courses[i].TotalNotes : 0;
+                        lamp[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].ClearLamp : 0;
+                        score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
+                        rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / notes[i] * 100000.0 : 0;
+                    }
                     SongData songdata = new SongData()
                     {
                         Path = item,
@@ -133,7 +168,12 @@ namespace Tunebeat.SongSelect
                         BackColor = Color.Black,
                         Type = EType.Score,
                         Score = new BestScore(item).ScoreData,
-                        ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
+                        ScoreList = slist,
+                        Lamp = lamp,
+                        Enable = enable,
+                        EXScore = score,
+                        Notes = notes,
+                        Rate = rate,
                     };
                     data.Add(songdata);
                 }
@@ -145,6 +185,32 @@ namespace Tunebeat.SongSelect
                 {
                     if (DoubledCheck(item, FolderData)) break;
                     TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                    List<string>[] slist = new List<string>[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        slist[i] = new List<string>();
+                    }
+                    foreach (string file in Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly))
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (parse != null && Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.", "").StartsWith($"{(ECourse)i}"))
+                            {
+                                slist[i].Add(Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.{(ECourse)i}.", ""));
+                            }
+                        }
+                    }
+                    bool[] enable = new bool[5];
+                    int[] lamp = new int[5], notes = new int[5], score = new int[5];
+                    double[] rate = new double[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                        notes[i] = parse.Courses != null ? parse.Courses[i].TotalNotes : 0;
+                        lamp[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].ClearLamp : 0;
+                        score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
+                        rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / (double)notes[i] * 100000.0 : 0;
+                    }
                     SongData songdata = new SongData()
                     {
                         Path = item,
@@ -156,11 +222,27 @@ namespace Tunebeat.SongSelect
                         BackColor = Color.Black,
                         Type = EType.Score,
                         Score = new BestScore(item).ScoreData,
-                        ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
+                        ScoreList = slist,
+                        Lamp = lamp,
+                        Enable = enable,
+                        EXScore = score,
+                        Notes = notes,
+                        Rate = rate,
                     };
                     data.Add(songdata);
                     SongList.Add(songdata);
                 }
+            }
+            int s = 0;
+            for (int i = 0; i < data.Count; i++)
+            {
+                if (data[i].Type == EType.Score)
+                    s++;
+            }
+            if (s > 0)
+            {
+                data.Sort(SortSystem[(int)NowSort]);
+                SongList.Sort(SortSystem[(int)NowSort]);
             }
 
             for (int i = 0; i < data.Count; i++)
@@ -174,11 +256,8 @@ namespace Tunebeat.SongSelect
             if (FolderFloor == 0)
             {
                 Init();
-                if (NowSort != ESort.None)
-                {
-                    data.Sort(SortSystem[(int)NowSort]);
-                    SongList.Sort(SortSystem[(int)NowSort]);
-                }
+                data.Sort(SortSystem[(int)NowSort]);
+                SongList.Sort(SortSystem[(int)NowSort]);
                 return;
             }
             Folder fol = new Folder(path + @"\genre.ini");
@@ -188,6 +267,7 @@ namespace Tunebeat.SongSelect
             {
                 c[i] = new Course();
             }
+            bool[] t = new bool[5];
             SongData root = new SongData()
             {
                 Path = Path.GetDirectoryName(path),
@@ -196,6 +276,7 @@ namespace Tunebeat.SongSelect
                 FontColor = !string.IsNullOrEmpty(fol.FontColor) && int.TryParse(fol.FontColor.Substring(1, 6), System.Globalization.NumberStyles.HexNumber, null, out p) ? ColorTranslator.FromHtml(fol.FontColor.Substring(0, 7)) : Color.White,
                 BackColor = !string.IsNullOrEmpty(fol.BackColor) && int.TryParse(fol.BackColor.Substring(1, 6), System.Globalization.NumberStyles.HexNumber, null, out p) ? ColorTranslator.FromHtml(fol.BackColor.Substring(0, 7)) : Color.Gray,
                 Type = EType.Back,
+                Enable = t,
             };
             data.Add(root);
 
@@ -212,6 +293,7 @@ namespace Tunebeat.SongSelect
                 BackColor = !string.IsNullOrEmpty(fol.BackColor) && int.TryParse(fol.BackColor.Substring(1, 6), System.Globalization.NumberStyles.HexNumber, null, out p) ? ColorTranslator.FromHtml(fol.BackColor.Substring(0, 7)) : Color.Gray,
                 Course = r,
                 Type = EType.Random,
+                Enable = t,
             };
             data.Add(random);
 
@@ -224,6 +306,11 @@ namespace Tunebeat.SongSelect
                 foreach (string item in Directory.EnumerateFiles(directory, "*.tja", SearchOption.TopDirectoryOnly))
                 {
                     TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                    bool[] enable = new bool[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                    }
                     SongData songdata = new SongData()
                     {
                         Path = item,
@@ -232,6 +319,7 @@ namespace Tunebeat.SongSelect
                         Header = parse.Header,
                         Course = parse.Courses,
                         Type = EType.Score,
+                        Enable = enable,
                     };
                     SongList.Add(songdata);
                 }
@@ -250,6 +338,7 @@ namespace Tunebeat.SongSelect
                         FontColor = !string.IsNullOrEmpty(folder.FontColor) && int.TryParse(folder.FontColor.Substring(1, 6), System.Globalization.NumberStyles.HexNumber, null, out p) ? ColorTranslator.FromHtml(folder.FontColor.Substring(0, 7)) : Color.White,
                         BackColor = !string.IsNullOrEmpty(folder.BackColor) && int.TryParse(folder.BackColor.Substring(1, 6), System.Globalization.NumberStyles.HexNumber, null, out p) ? ColorTranslator.FromHtml(folder.BackColor.Substring(0, 7)) : Color.Gray,
                         Type = EType.Folder,
+                        Enable = t,
                     };
                     if (DoubledCheck(songdata.Path, FolderData, 1)) break;
                     data.Add(songdata);
@@ -261,6 +350,32 @@ namespace Tunebeat.SongSelect
                 {
                     if (DoubledCheck(item, FolderData)) break;
                     TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                    List<string>[] slist = new List<string>[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        slist[i] = new List<string>();
+                    }
+                    foreach (string file in Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly))
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (parse != null && Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.", "").StartsWith($"{(ECourse)i}"))
+                            {
+                                slist[i].Add(Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.{(ECourse)i}.", ""));
+                            }
+                        }
+                    }
+                    bool[] enable = new bool[5];
+                    int[] lamp = new int[5], notes = new int[5], score = new int[5];
+                    double[] rate = new double[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                        notes[i] = parse.Courses != null ? parse.Courses[i].TotalNotes : 0;
+                        lamp[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].ClearLamp : 0;
+                        score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
+                        rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / (double)notes[i] * 100000.0 : 0;
+                    }
                     SongData songdata = new SongData()
                     {
                         Path = item,
@@ -272,7 +387,12 @@ namespace Tunebeat.SongSelect
                         BackColor = root.BackColor,
                         Type = EType.Score,
                         Score = new BestScore(item).ScoreData,
-                        ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
+                        ScoreList = slist,
+                        Lamp = lamp,
+                        Enable = enable,
+                        EXScore = score,
+                        Notes = notes,
+                        Rate = rate,
                     };
                     data.Add(songdata);
                 }
@@ -281,6 +401,32 @@ namespace Tunebeat.SongSelect
             {
                 if (DoubledCheck(item, FolderData)) break;
                 TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                List<string>[] slist = new List<string>[5];
+                for (int i = 0; i < 5; i++)
+                {
+                    slist[i] = new List<string>();
+                }
+                foreach (string file in Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly))
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (parse != null && Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.", "").StartsWith($"{(ECourse)i}"))
+                        {
+                            slist[i].Add(Path.GetFileNameWithoutExtension(file).Replace($"{parse.Header.TITLE}.{(ECourse)i}.", ""));
+                        }
+                    }
+                }
+                bool[] enable = new bool[5];
+                int[] lamp = new int[5], notes = new int[5], score = new int[5];
+                double[] rate = new double[5];
+                for (int i = 0; i < 5; i++)
+                {
+                    enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                    notes[i] = parse.Courses != null ? parse.Courses[i].TotalNotes : 0;
+                    lamp[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].ClearLamp : 0;
+                    score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
+                    rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / (double)notes[i] * 100000.0 : 0;
+                }
                 SongData songdata = new SongData()
                 {
                     Path = item,
@@ -292,11 +438,17 @@ namespace Tunebeat.SongSelect
                     BackColor = root.BackColor,
                     Type = EType.Score,
                     Score = new BestScore(item).ScoreData,
-                    ScoreList = Directory.EnumerateFiles(Path.GetDirectoryName(item), "*.tbr", SearchOption.TopDirectoryOnly).ToList(),
+                    ScoreList = slist,
+                    Lamp = lamp,
+                    Enable = enable,
+                    EXScore = score,
+                    Notes = notes,
+                    Rate = rate,
                 };
                 data.Add(songdata);
             }
-            if (NowSort != ESort.None) data.Sort(SortSystem[(int)NowSort]);
+            data.Sort(SortSystem[(int)NowSort]);
+            SongList.Sort(SortSystem[(int)NowSort]);
 
             for (int i = 0; i < data.Count; i++)
             {
@@ -323,33 +475,50 @@ namespace Tunebeat.SongSelect
         public static List<SongData> SongList { get; set; }
         public static List<string> FolderData { get; set; }
 
-        public static Comparison<SongData>[] SortSystem = new Comparison<SongData>[13]
+        public static Comparison<SongData>[] SortSystem = new Comparison<SongData>[15]
             {
-                (a, b) => { int result = a.Type - b.Type; return result != 0 ? result : a.Path.CompareTo(b.Path); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : (b.Course != null ? b.Course[PlayData.Data.PlayCourse[0]].IsEnable : true).CompareTo(a.Course != null ? a.Course[PlayData.Data.PlayCourse[0]].IsEnable : false);
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    return resulta != 0 ? resulta : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
                     return resulta != 0 ? resulta : a.Title.CompareTo(b.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
                     return resulta != 0 ? resulta : b.Title.CompareTo(a.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : a.Course[PlayData.Data.PlayCourse[0]].LEVEL - b.Course[PlayData.Data.PlayCourse[0]].LEVEL; },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : b.Course[PlayData.Data.PlayCourse[0]].LEVEL - a.Course[PlayData.Data.PlayCourse[0]].LEVEL; },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : b.Time.CompareTo(a.Time); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : a.Time.CompareTo(b.Time); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : a.Title.CompareTo(b.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : b.Title.CompareTo(a.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : a.Title.CompareTo(b.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : b.Title.CompareTo(a.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : a.Title.CompareTo(b.Title); },
-                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Course[PlayData.Data.PlayCourse[0]].IsEnable.CompareTo(a.Course[PlayData.Data.PlayCourse[0]].IsEnable);
-                    return resulta != 0 ? resulta : b.Title.CompareTo(a.Title); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : a.Course[SongSelect.EnableCourse(a.Course, 0)].LEVEL - b.Course[SongSelect.EnableCourse(b.Course, 0)].LEVEL;
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : b.Course[SongSelect.EnableCourse(b.Course, 0)].LEVEL - a.Course[SongSelect.EnableCourse(a.Course, 0)].LEVEL;
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : b.Time.CompareTo(a.Time);
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : a.Time.CompareTo(b.Time);
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : b.Lamp[SongSelect.EnableCourse(b.Course, 0)] - a.Lamp[SongSelect.EnableCourse(a.Course, 0)];
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : a.Lamp[SongSelect.EnableCourse(a.Course, 0)] - b.Lamp[SongSelect.EnableCourse(b.Course, 0)];
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : b.Notes[SongSelect.EnableCourse(b.Course, 0)] - a.Notes[SongSelect.EnableCourse(a.Course, 0)];
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : a.Notes[SongSelect.EnableCourse(a.Course, 0)] - b.Notes[SongSelect.EnableCourse(b.Course, 0)];
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : b.EXScore[SongSelect.EnableCourse(b.Course, 0)] - a.EXScore[SongSelect.EnableCourse(a.Course, 0)];
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    int resultb = resulta != 0 ? resulta : a.EXScore[SongSelect.EnableCourse(a.Course, 0)] - b.EXScore[SongSelect.EnableCourse(b.Course, 0)];
+                    return resultb != 0 ? resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    double resultb = resulta != 0 ? resulta : b.Rate[SongSelect.EnableCourse(b.Course, 0)] - a.Rate[SongSelect.EnableCourse(a.Course, 0)];
+                    return resultb != 0 ? (int)resultb : a.Path.CompareTo(b.Path); },
+                (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
+                    double resultb = resulta != 0 ? resulta : a.Rate[SongSelect.EnableCourse(a.Course, 0)] - b.Rate[SongSelect.EnableCourse(b.Course, 0)];
+                    return resultb != 0 ? (int)resultb : a.Path.CompareTo(b.Path); },
             };
     }
 
@@ -364,7 +533,12 @@ namespace Tunebeat.SongSelect
         public SongData Prev;
         public SongData Next;
         public ScoreData Score;
-        public List<string> ScoreList;
+        public bool[] Enable = new bool[5];
+        public int[] Lamp = new int[5];
+        public int[] Notes = new int[5];
+        public int[] EXScore = new int[5];
+        public double[] Rate = new double[5];
+        public List<string>[] ScoreList = new List<string>[5];
         public Color FontColor;
         public Color BackColor;
     }
@@ -388,6 +562,8 @@ namespace Tunebeat.SongSelect
         Time_Old,
         Clear_High,
         Clear_Low,
+        Notes_High,
+        Notes_Low,
         Score_High,
         Score_Low,
         Rate_High,

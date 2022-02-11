@@ -55,8 +55,8 @@ namespace Tunebeat.Game
             for (int i = 0; i < 2; i++)
             {
                 IsAuto[i] = PlayData.Data.PreviewType == 3 ? true : PlayData.Data.Auto[i];
-                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[i]) && File.Exists(SongSelect.SongSelect.ReplayScore[i]) ? true : false;
-                Course[i] = PlayData.Data.PlayCourse[i];
+                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[i]) ? true : false;
+                Course[i] = SongSelect.SongSelect.EnableCourse(SongSelect.SongSelect.NowTJA.Course, i);
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);

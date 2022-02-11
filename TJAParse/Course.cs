@@ -228,8 +228,10 @@ namespace TJAParse
                             var num = str[i];
                             if (num >= '0' && num <= '9')
                             {
+                                if (int.Parse(num.ToString()) >= (int)ENote.Don && int.Parse(num.ToString()) <= (int)ENote.KA)
+                                    courses[NowCourse].TotalNotes++;
+                                
                                 courses[NowCourse].IsEnable = true;
-                                break;
                             }
                         }
                     }

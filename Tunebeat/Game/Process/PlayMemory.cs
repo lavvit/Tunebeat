@@ -29,11 +29,11 @@ namespace Tunebeat.Game
 
             if (Game.IsReplay[0] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[0]))
             {
-                ReplayData = ConfigManager.GetConfig<ReplayData>(SongSelect.SongSelect.ReplayScore[0]);
+                ReplayData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.ReplayScore[0]}.tbr");
             }
             if (Game.Play2P && Game.IsReplay[1] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[1]))
             {
-                ReplayData2P = ConfigManager.GetConfig<ReplayData>(SongSelect.SongSelect.ReplayScore[1]);
+                ReplayData2P = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.SongSelect.ReplayScore[1]}.tbr");
             }
             if (new BestScore(Game.TJAPath).ScoreData != null && !string.IsNullOrEmpty(new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore) && PlayData.Data.ShowGraph && PlayData.Data.ShowBestScore)
             {
@@ -52,7 +52,34 @@ namespace Tunebeat.Game
             }
             if (!string.IsNullOrEmpty(SongSelect.SongSelect.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
             {
-                RivalData = ConfigManager.GetConfig<ReplayData>(SongSelect.SongSelect.RivalScore);
+                RivalData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.RivalScore}.tbr");
+            }
+
+            if (ReplayData != null && ReplayData.Chip != null)
+            {
+                foreach (ChipData chipdata in ReplayData.Chip)
+                {
+                    foreach (Chip chip in Game.MainTJA[0].Courses[Game.Course[0]].ListChip)
+                    {
+                        if (chipdata.Chip.Time == chip.Time && chip.EChip == EChip.Note)
+                        {
+                            chip.ENote = chipdata.Chip.ENote;
+                        }
+                    }
+                }
+            }
+            if (ReplayData2P != null && ReplayData2P.Chip != null)
+            {
+                foreach (ChipData chipdata in ReplayData2P.Chip)
+                {
+                    foreach (Chip chip in Game.MainTJA[1].Courses[Game.Course[1]].ListChip)
+                    {
+                        if (chipdata.Chip.Time == chip.Time && chip.EChip == EChip.Note)
+                        {
+                            chip.ENote = chipdata.Chip.ENote;
+                        }
+                    }
+                }
             }
         }
 

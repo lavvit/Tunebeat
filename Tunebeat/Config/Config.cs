@@ -277,7 +277,7 @@ namespace Tunebeat.Config
                     RivalType = new OptionList("RivalType", PlayData.Data.RivalType, "ライバルを設定します。",
                         new string[] { "None", "Percent", "Rank", "PlayScore" }); OptionList.Add(RivalType);
                     RivalPercent = new OptionDouble("RivalPercent", PlayData.Data.RivalPercent, 0, 100, "Percent 使用時の目標スコアを設定します。"); OptionList.Add(RivalPercent);
-                    RivalRank = new OptionList("RivalPercent", PlayData.Data.RivalRank, "Rank 使用時の目標スコアを設定します。",
+                    RivalRank = new OptionList("RivalRank", PlayData.Data.RivalRank, "Rank 使用時の目標スコアを設定します。",
                         new string[] { "F", "E", "D", "C", "B", "A", "AA", "AAA", "MAX" }); OptionList.Add(RivalRank);
                     PlaySpeed = new OptionDouble("PlaySpeed", PlayData.Data.PlaySpeed, 0, 1000, "曲の再生速度を変更します。"); OptionList.Add(PlaySpeed);
                     ChangeSESpeed = new OptionBool("ChangeSESpeed", PlayData.Data.ChangeSESpeed, "曲の再生速度に合わせて効果音のピッチを調節します。"); OptionList.Add(ChangeSESpeed);
