@@ -39,6 +39,7 @@ namespace Tunebeat.Common
             SongSelect_Difficulty_Level = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Level.png");
             SongSelect_Difficulty_Number = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_Number.png");
             SongSelect_Difficulty_TJA = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Difficulty_TJA.png");
+            SongSelect_Number = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{SONG}Number.png");
             #endregion
             #region Game
             Game_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Background.png");
@@ -110,7 +111,8 @@ namespace Tunebeat.Common
             SongSelect_Difficulty_Cursor,
             SongSelect_Difficulty_Level,
             SongSelect_Difficulty_Number,
-            SongSelect_Difficulty_TJA;
+            SongSelect_Difficulty_TJA,
+            SongSelect_Number;
         #endregion
         #region Game
         public static Texture Game_Background,

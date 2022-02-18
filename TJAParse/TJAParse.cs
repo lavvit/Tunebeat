@@ -29,10 +29,8 @@ namespace TJAParse
             for (int i = 0; i < alltext.Count; i++)
             {
                 //コメント削除
-                if (alltext[i].Contains("////"))
-                    alltext[i] = alltext[i].Replace($"////{alltext[i].Split(new string[] { "////" }, StringSplitOptions.None)[1]}", "");
                 if (alltext[i].Contains("//"))
-                    alltext[i] = alltext[i].Replace($"//{alltext[i].Split(new string[] { "//" }, StringSplitOptions.None)[1]}", "");
+                    alltext[i] = alltext[i].Substring(0, alltext[i].IndexOf("//"));
                 //バグ対策
                 if (alltext.Count > 0 && alltext[i] == ",")
                     alltext[i] = alltext[i].Replace(",", "0,");
@@ -76,10 +74,8 @@ namespace TJAParse
             for (int i = 0; i < alltext.Count; i++)
             {
                 //コメント削除
-                if (alltext[i].Contains("////"))
-                    alltext[i] = alltext[i].Replace($"////{alltext[i].Split(new string[] { "////" }, StringSplitOptions.None)[1]}", "");
                 if (alltext[i].Contains("//"))
-                    alltext[i] = alltext[i].Replace($"//{alltext[i].Split(new string[] { "//" }, StringSplitOptions.None)[1]}", "");
+                    alltext[i] = alltext[i].Substring(0, alltext[i].IndexOf("//"));
                 //バグ対策
                 if (alltext.Count > 0 && alltext[i] == ",")
                     alltext[i] = alltext[i].Replace(",", "0,");
@@ -87,7 +83,7 @@ namespace TJAParse
 
             //ヘッダー読み込み
             foreach (string str in alltext)
-                Header.Load(str, Header, 1.0);
+                Header.Load(str, Header, 1.0, false);
             foreach (string str in alltext)
                 Course.Load(str, Courses, Header, 1.0, false);
         }

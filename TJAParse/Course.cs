@@ -35,7 +35,7 @@ namespace TJAParse
                             courses[NowCourse].COURSE = (ECourse)NowCourse;
                             break;
                         case "LEVEL":
-                            courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) ? int.Parse(split[1]) : 0;
+                            courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
                             break;
                         case "BALLOON":
                             var splitballoon = split[1].Split(',');
@@ -209,7 +209,7 @@ namespace TJAParse
                             courses[NowCourse].COURSE = (ECourse)NowCourse;
                             break;
                         case "LEVEL":
-                            courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) ? int.Parse(split[1]) : 0;
+                            courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
                             break;
                     }
                 }

@@ -78,7 +78,7 @@ namespace Tunebeat.SongSelect
                         if (NowTJA.Course[EnableCourse(NowTJA.Course, 0)].IsEnable)
                         {
                             if (NowTJA.Score != null) TextureLoad.SongSelect_Clear.Draw(1180 + 2, -90 + 2 + 60 * 10, new Rectangle(29 * NowTJA.Score.Score[EnableCourse(NowTJA.Course, 0)].ClearLamp, 0, 29, 56));
-                            Score.DrawNumber(1242 - 12 * Score.Digit(NowTJA.Course[EnableCourse(NowTJA.Course, 0)].LEVEL), -90 + 60 * 10 + 16, $"{NowTJA.Course[EnableCourse(NowTJA.Course, 0)].LEVEL}", 0);
+                            DrawNumber(1242 - 14 * Score.Digit(NowTJA.Course[EnableCourse(NowTJA.Course, 0)].LEVEL), -90 + 60 * 10 + 14, $"{NowTJA.Course[EnableCourse(NowTJA.Course, 0)].LEVEL}", EnableCourse(NowTJA.Course, 0) + 1);
                         }
 
                         break;
@@ -105,7 +105,7 @@ namespace Tunebeat.SongSelect
                             if (prev.Course[EnableCourse(prev.Course, 0)].IsEnable)
                             {
                                 if (prev.Score != null) TextureLoad.SongSelect_Clear.Draw(1212 + 2, -90 + 2 + 60 * i, new Rectangle(29 * prev.Score.Score[EnableCourse(prev.Course, 0)].ClearLamp, 0, 29, 56));
-                                Score.DrawNumber(1242 + 32 - 12 * Score.Digit(prev.Course[EnableCourse(prev.Course, 0)].LEVEL), -90 + 60 * i + 16, $"{prev.Course[EnableCourse(prev.Course, 0)].LEVEL}", 0);
+                                DrawNumber(1242 + 32 - 14 * Score.Digit(prev.Course[EnableCourse(prev.Course, 0)].LEVEL), -90 + 60 * i + 14, $"{prev.Course[EnableCourse(prev.Course, 0)].LEVEL}", EnableCourse(prev.Course, 0) + 1);
                             }
 
                             break;
@@ -133,7 +133,7 @@ namespace Tunebeat.SongSelect
                             if (next.Course[EnableCourse(next.Course, 0)].IsEnable)
                             {
                                 if (next.Score != null) TextureLoad.SongSelect_Clear.Draw(1212 + 2, -90 + 2 + 60 * i, new Rectangle(29 * next.Score.Score[EnableCourse(next.Course, 0)].ClearLamp, 0, 29, 56));
-                                Score.DrawNumber(1242 + 32 - 12 * Score.Digit(next.Course[EnableCourse(next.Course, 0)].LEVEL), -90 + 60 * i + 16, $"{next.Course[EnableCourse(next.Course, 0)].LEVEL}", 0);
+                                DrawNumber(1242 + 32 - 14 * Score.Digit(next.Course[EnableCourse(next.Course, 0)].LEVEL), -90 + 60 * i + 14, $"{next.Course[EnableCourse(next.Course, 0)].LEVEL}", EnableCourse(next.Course, 0) + 1);
                             }
 
                             break;
@@ -747,6 +747,7 @@ namespace Tunebeat.SongSelect
                 {
                     PlayData.Init();
                     SongLoad.Init();
+                    NowTJA = SongLoad.SongData[NowSongNumber];
                 }
                 if (Key.IsPushed(KEY_INPUT_F3))
                 {
@@ -1124,6 +1125,26 @@ namespace Tunebeat.SongSelect
                 PlayData.Data.GaugeAutoShift[player] = (int)EGaugeAutoShift.None;
         }
 
+        public static void DrawNumber(double x, double y, string num, int type)
+        {
+            foreach (char ch in num)
+            {
+                for (int i = 0; i < stNumber.Length; i++)
+                {
+                    if (ch == ' ')
+                    {
+                        break;
+                    }
+                    if (stNumber[i].ch == ch)
+                    {
+                        TextureLoad.SongSelect_Number.Draw(x, y, new Rectangle(stNumber[i].X, 30 * type, 30, 30));
+                        break;
+                    }
+                }
+                x += 28;
+            }
+        }
+
         public static bool[] Replay = new bool[2];
         public static Texture Title, SubTitle, Genre, BPM;
         public static SongData NowTJA;
@@ -1134,5 +1155,15 @@ namespace Tunebeat.SongSelect
         public static bool Random;
         public static string NowPath, RivalScore;
         public static string[] ReplayScore = new string[2];
+
+        private struct STNumber
+        {
+            public char ch;
+            public int X;
+        }
+        private static STNumber[] stNumber = new STNumber[11]
+        { new STNumber(){ ch = '0', X = 0 },new STNumber(){ ch = '1', X = 30 },new STNumber(){ ch = '2', X = 30 * 2 },new STNumber(){ ch = '3', X = 30 * 3 },new STNumber(){ ch = '4', X = 30 * 4 },
+        new STNumber(){ ch = '5', X = 30 * 5 },new STNumber(){ ch = '6', X = 30 * 6 },new STNumber(){ ch = '7', X = 30 * 7 },new STNumber(){ ch = '8', X = 30 * 8 },new STNumber(){ ch = '9', X = 30 * 9 },
+        new STNumber(){ ch = '+', X = 30 * 10 } };
     }
 }
