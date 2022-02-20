@@ -8,6 +8,7 @@ using System.Drawing;
 using static DxLibDLL.DX;
 using Amaoto;
 using Tunebeat.Common;
+using Tunebeat.Game;
 
 namespace Tunebeat.Title
 {
@@ -41,7 +42,7 @@ namespace Tunebeat.Title
 
         public override void Update()
         {
-            if (Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
+            if (Key.IsPushed(KEY_INPUT_RETURN) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
@@ -85,7 +86,7 @@ namespace Tunebeat.Title
                     PlayData.Data.SkinColor[2]--;
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_F1))
+            if (Key.IsPushed(PlayData.Data.MOVECONFIG))
             {
                 Config = true;
                 Program.SceneChange(new Config.Config());

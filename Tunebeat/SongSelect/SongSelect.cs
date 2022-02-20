@@ -504,11 +504,11 @@ namespace Tunebeat.SongSelect
             }
             else
             {
-                if (Key.IsPushed(PlayData.Data.LEFTKA))
+                if (KeyInput.ListPushed(PlayData.Data.LEFTKA))
                 {
                     PushedTimer[0].Start();
                 }
-                if (Key.IsLeft(PlayData.Data.LEFTKA))
+                if (KeyInput.ListLeft(PlayData.Data.LEFTKA))
                 {
                     if (PlayData.Data.FontRendering) FontLoad();
                     PushedTimer[0].Stop();
@@ -517,11 +517,11 @@ namespace Tunebeat.SongSelect
                     PushingTimer[0].Reset();
 
                 }
-                if (Key.IsPushed(PlayData.Data.RIGHTKA))
+                if (KeyInput.ListPushed(PlayData.Data.RIGHTKA))
                 {
                     PushedTimer[1].Start();
                 }
-                if (Key.IsLeft(PlayData.Data.RIGHTKA))
+                if (KeyInput.ListLeft(PlayData.Data.RIGHTKA))
                 {
                     if (PlayData.Data.FontRendering) FontLoad();
                     PushedTimer[1].Stop();
@@ -537,7 +537,7 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
-                if ((Key.IsPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End) || Mouse.Wheel > 0) && NowTJA != null)
+                if ((KeyInput.ListPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End) || Mouse.Wheel > 0) && NowTJA != null)
                 {
                     SoundLoad.Ka[0].Play();
                     NowTJA = NowTJA.Prev;
@@ -551,7 +551,7 @@ namespace Tunebeat.SongSelect
                     }
                     PushingTimer[0].Reset();
                 }
-                if ((Key.IsPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End) || Mouse.Wheel < 0) && NowTJA != null)
+                if ((KeyInput.ListPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End) || Mouse.Wheel < 0) && NowTJA != null)
                 {
                     SoundLoad.Ka[0].Play();
                     NowTJA = NowTJA.Next;
@@ -565,13 +565,13 @@ namespace Tunebeat.SongSelect
                     }
                     PushingTimer[1].Reset();
                 }
-                if (((Key.IsPushing(PlayData.Data.LEFTKA) && Key.IsPushed(PlayData.Data.RIGHTKA)) || (Key.IsPushed(PlayData.Data.LEFTKA) && Key.IsPushing(PlayData.Data.RIGHTKA))) && SongLoad.FolderFloor > 0)
+                if (((KeyInput.ListPushing(PlayData.Data.LEFTKA) && KeyInput.ListPushed(PlayData.Data.RIGHTKA)) || (KeyInput.ListPushed(PlayData.Data.LEFTKA) && KeyInput.ListPushing(PlayData.Data.RIGHTKA))) && SongLoad.FolderFloor > 0)
                 {
                     NowTJA = SongLoad.SongData[0];
                     Back();
                 }
 
-                if ((Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
+                if ((Key.IsPushed(KEY_INPUT_RETURN) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
                 {
                     SoundLoad.Don[0].Play();
                     Enter();

@@ -15,6 +15,14 @@ namespace Tunebeat.Common
 
             Data = ConfigManager.GetConfig<Data>(@"Config.json");
             if (Data.PlayFolder.Count > 1) Data.PlayFolder.RemoveAt(0);
+            if (Data.LEFTDON.Count > 1) Data.LEFTDON.RemoveAt(0);
+            if (Data.LEFTKA.Count > 1) Data.LEFTKA.RemoveAt(0);
+            if (Data.RIGHTDON.Count > 1) Data.RIGHTDON.RemoveAt(0);
+            if (Data.RIGHTKA.Count > 1) Data.RIGHTKA.RemoveAt(0);
+            if (Data.LEFTDON2P.Count > 1) Data.LEFTDON2P.RemoveAt(0);
+            if (Data.LEFTKA2P.Count > 1) Data.LEFTKA2P.RemoveAt(0);
+            if (Data.RIGHTDON2P.Count > 1) Data.RIGHTDON2P.RemoveAt(0);
+            if (Data.RIGHTKA2P.Count > 1) Data.RIGHTKA2P.RemoveAt(0);
         }
         public static void End()
         {
@@ -94,14 +102,15 @@ namespace Tunebeat.Common
         public double[] InputAdjust = new double[2] { 0, 0 };
         public bool[] AutoAdjust = new bool[2] { false, false };
 
-        public int LEFTDON = KEY_INPUT_F;
-        public int RIGHTDON = KEY_INPUT_J;
-        public int LEFTKA = KEY_INPUT_D;
-        public int RIGHTKA = KEY_INPUT_K;
+        public List<int> LEFTDON = new List<int>() { KEY_INPUT_F };
+        public List<int> RIGHTDON = new List<int>() { KEY_INPUT_J };
+        public List<int> LEFTKA = new List<int>() { KEY_INPUT_D };
+        public List<int> RIGHTKA = new List<int>() { KEY_INPUT_K };
+        public List<int> LEFTDON2P = new List<int>() { KEY_INPUT_V };
+        public List<int> RIGHTDON2P = new List<int>() { KEY_INPUT_M };
+        public List<int> LEFTKA2P = new List<int>() { KEY_INPUT_C };
+        public List<int> RIGHTKA2P = new List<int>() { KEY_INPUT_COMMA };
 
-        public int LEFTDON2P = KEY_INPUT_V;
-        public int RIGHTDON2P = KEY_INPUT_M;
-        public int LEFTKA2P = KEY_INPUT_C;
-        public int RIGHTKA2P = KEY_INPUT_COMMA;
+        public int MOVECONFIG = KEY_INPUT_F1;
     }
 }

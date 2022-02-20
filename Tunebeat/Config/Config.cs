@@ -60,7 +60,7 @@ namespace Tunebeat.Config
                         DrawString(600, 200, $"{list.Info}", 0xffffff);
                         if (list.objAmount() != null)
                         {
-                            DrawString(600, 240, $"Now:{list.objAmount()}", Selecting && list.Type < OptionType.String ? 0xffff00 : (uint)0xffffff);
+                            DrawString(600, 240, $"Now:{list.objAmount()}", Selecting && (list.Type < OptionType.String || list.Type >= OptionType.Key) ? 0xffff00 : (uint)0xffffff);
                             if (Input.IsEnable)
                             {
                                 DrawString(632 + GetDrawStringWidth(Input.Text, Input.Position), 240, "|", 0xffff00);
@@ -158,29 +158,51 @@ namespace Tunebeat.Config
                     }
                     PushingTimer[1].Reset();
                 }
+                for (int i = 0; i < 256; i++)
+                {
+                    if (Key.IsPushed(i) && Selecting)
+                    {
+                        if (OptionList[Cursor].Type == OptionType.Key)
+                        {
+                            Selecting = false;
+                            OptionList[Cursor].Enter();
+                            UpdateConfig();
+                        }
+                        else if (OptionList[Cursor].Type == OptionType.KeyList)
+                        {
+                            OptionList[Cursor].Add();
+                        }
+                    }
+                }
                 if (Key.IsPushed(KEY_INPUT_RETURN))
                 {
                     if (Selecting)
                     {
-                        Selecting = false;
-                        if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
+                        if (OptionList[Cursor].Type != OptionType.Key)
                         {
-                            OptionList[Cursor].Enter();
-                            if (OptionList[Cursor].Name == "PlayFolder")
-                                SongSelect.SongSelect.NowSongNumber = 0;
+                            Selecting = false;
+                            if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
+                            {
+                                OptionList[Cursor].Enter();
+                                if (OptionList[Cursor].Name == "PlayFolder")
+                                    SongSelect.SongSelect.NowSongNumber = 0;
+                            }
+                            UpdateConfig();
                         }
-                        UpdateConfig();
                     }
                     else if (InLayer)
                     {
-                        if (OptionList[Cursor].Type == OptionType.Int || OptionList[Cursor].Type == OptionType.List || OptionList[Cursor].Type == OptionType.Double)
+                        if (OptionList[Cursor].Type > OptionType.Bool)
                         {
                             Selecting = true;
-                        }
-                        else if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
-                        {
-                            Selecting = true;
-                            OptionList[Cursor].Enter();
+                            if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
+                            {
+                                OptionList[Cursor].Enter();
+                            }
+                            if (OptionList[Cursor].Type == OptionType.KeyList)
+                            {
+                                OptionList[Cursor].Start();
+                            }
                         }
                         else if (Cursor == OptionList.Count - 1)
                         {
@@ -352,15 +374,23 @@ namespace Tunebeat.Config
                 case ELayer.PlayBMS:
 
 
-                    Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
+                    //Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
                 case ELayer.PlayBMS2P:
 
 
-                    Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
+                    //Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
                 case ELayer.KeyConfig:
-
+                    MoveConfig = new OptionKey("MoveConfig", PlayData.Data.MOVECONFIG, "[タイトル・選曲] この画面に移行する"); OptionList.Add(MoveConfig);
+                    LeftDon = new OptionKeyList("LeftDon", PlayData.Data.LEFTDON, "[プレイ] 1P左側の面"); OptionList.Add(LeftDon);
+                    RightDon = new OptionKeyList("RightDon", PlayData.Data.RIGHTDON, "[プレイ] 1P右側の面"); OptionList.Add(RightDon);
+                    LeftKa = new OptionKeyList("LeftKa", PlayData.Data.LEFTKA, "[プレイ] 1P左側の縁"); OptionList.Add(LeftKa);
+                    RightKa = new OptionKeyList("RightKa", PlayData.Data.RIGHTKA, "[プレイ] 1P右側の縁"); OptionList.Add(RightKa);
+                    LeftDon2P = new OptionKeyList("LeftDon2P", PlayData.Data.LEFTDON2P, "[プレイ] 2P左側の面"); OptionList.Add(LeftDon2P);
+                    RightDon2P = new OptionKeyList("RightDon2P", PlayData.Data.RIGHTDON2P, "[プレイ] 2P右側の面"); OptionList.Add(RightDon2P);
+                    LeftKa2P = new OptionKeyList("LeftKa2P", PlayData.Data.LEFTKA2P, "[プレイ] 2P左側の縁"); OptionList.Add(LeftKa2P);
+                    RightKa2P = new OptionKeyList("RightKa2P", PlayData.Data.RIGHTKA2P, "[プレイ] 2P右側の縁"); OptionList.Add(RightKa2P);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -460,6 +490,15 @@ namespace Tunebeat.Config
                 case ELayer.PlayBMS:
                     break;
                 case ELayer.KeyConfig:
+                    PlayData.Data.MOVECONFIG = MoveConfig.Value;
+                    PlayData.Data.LEFTDON = LeftDon.Value;
+                    PlayData.Data.LEFTKA = LeftKa.Value;
+                    PlayData.Data.RIGHTDON = RightDon.Value;
+                    PlayData.Data.RIGHTKA = RightKa.Value;
+                    PlayData.Data.LEFTDON2P = LeftDon2P.Value;
+                    PlayData.Data.LEFTKA2P = LeftKa2P.Value;
+                    PlayData.Data.RIGHTDON2P = RightDon2P.Value;
+                    PlayData.Data.RIGHTKA2P = RightKa2P.Value;
                     break;
             }
         }
@@ -479,7 +518,7 @@ namespace Tunebeat.Config
             KeyConfig,
             Back
         }
-        public static Option  Back, LEFTDON, RIGHTDON, LEFTKA, RIGHTKA, LEFTDON2P, RIGHTDON2P, LEFTKA2P, RIGHTKA2P;
+        public static Option  Back;
         public static OptionBool FullScreen, PreviewSong, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
         public static OptionInt SkinColorR, SkinColorG, SkinColorB, SystemBGM, GameBGM, SE, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
@@ -488,5 +527,7 @@ namespace Tunebeat.Config
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;
         public static OptionString PlayerName, SkinName, SoundName, BGMName, FontName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
         public static OptionStrList PlayFolder;
+        public static OptionKey MoveConfig;
+        public static OptionKeyList LeftDon, LeftKa, RightDon, RightKa, LeftDon2P, LeftKa2P, RightDon2P, RightKa2P;
     }
 }

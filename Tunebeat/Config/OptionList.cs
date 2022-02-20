@@ -29,6 +29,12 @@ namespace Tunebeat.Config
 		public virtual void Enter()
 		{
 		}
+		public virtual void Add()
+		{
+		}
+		public virtual void Start()
+		{
+		}
 		public virtual void Up()
 		{
 		}
@@ -62,7 +68,9 @@ namespace Tunebeat.Config
 		List,
 		Double,
 		String,
-		StrList
+		StrList,
+		Key,
+		KeyList
 	}
 
 	public class OptionBool : Option
@@ -469,4 +477,258 @@ namespace Tunebeat.Config
 			Preview = $"{index}";
 		}
 	}
+
+	public class OptionKey : Option
+	{
+		public int Value, Preset;
+		public bool Selecting;
+
+		public OptionKey()
+		{
+			Type = OptionType.Key;
+			Value = 0;
+			Preset = 0;
+			Selecting = false;
+		}
+		public OptionKey(string name, int value, string info)
+			: this()
+		{
+			KeyInit(name, value, info);
+		}
+		public override void Enter()
+		{
+			for (int i = 0; i < 256; i++)
+            {
+				if (Key.IsPushing(i) && i != (int)KeyList.Esc && i != (int)KeyList.Enter && i != (int)KeyList.NumPad_Enter)
+                {
+					Value = i;
+				}
+            }
+			Selecting = !Selecting;
+		}
+		public override void Up()
+		{
+		}
+		public override void Down()
+		{
+		}
+		public override void Reset()
+		{
+			Value = Preset;
+		}
+		public void KeyInit(string name, int value, string info)
+		{
+			Init(name, info);
+			Value = value;
+			Preset = value;
+			Selecting = false;
+		}
+		public override object objAmount()
+		{
+			return (KeyList)Value;
+		}
+		public override int GetIndex()
+		{
+			return Value;
+		}
+		public override void SetIndex(object index)
+		{
+			Value = (int)index;
+		}
+	}
+
+	public class OptionKeyList : Option
+	{
+		public List<int> Value, Preset;
+		public bool Selecting;
+
+		public OptionKeyList()
+		{
+			Type = OptionType.KeyList;
+			Value = new List<int>();
+			Preset = new List<int>();
+			Selecting = false;
+		}
+		public OptionKeyList(string name, List<int> value, string info)
+			: this()
+		{
+			KeyListInit(name, value, info);
+		}
+		public override void Enter()
+		{
+			Selecting = !Selecting;
+		}
+		public override void Add()
+		{
+			for (int i = 0; i < 256; i++)
+			{
+				if (Key.IsPushing(i) && i != (int)KeyList.Esc && i != (int)KeyList.Enter && i != (int)KeyList.NumPad_Enter)
+				{
+					Value.Add(i);
+				}
+			}
+		}
+		public override void Start()
+		{
+			Value = new List<int>();
+		}
+		public override void Up()
+		{
+		}
+		public override void Down()
+		{
+		}
+		public override void Reset()
+		{
+			Value = Preset;
+		}
+		public void KeyListInit(string name, List<int> value, string info)
+		{
+			Init(name, info);
+			Value = value;
+			Preset = value;
+			Selecting = false;
+		}
+		public override object objAmount()
+		{
+			string str = "";
+			if (Value.Count > 0)
+            {
+				str = $"{(KeyList)Value[0]}";
+				if (Value.Count > 1)
+				{
+					for (int i = 1; i < Value.Count; i++)
+					{
+						str = $"{str} : {(KeyList)Value[i]}";
+
+					}
+				}
+			}
+			
+			return str;
+		}
+		public override int GetIndex()
+		{
+			return Value.Count > 0 ? 1 : 0;
+		}
+		public override void SetIndex(object index)
+		{
+			Value = (List<int>)index;
+		}
+	}
+
+	#region KeyList
+	public enum KeyList
+	{
+		Key_1 = 2,
+		Key_2 = 3,
+		Key_3 = 4,
+		Key_4 = 5,
+		Key_5 = 6,
+		Key_6 = 7,
+		Key_7 = 8,
+		Key_8 = 9,
+		Key_9 = 10,
+		Key_0 = 11,
+		A = 30,
+		B = 48,
+		C = 46,
+		D = 32,
+		E = 18,
+		F = 33,
+		G = 34,
+		H = 35,
+		I = 23,
+		J = 36,
+		K = 37,
+		L = 38,
+		M = 50,
+		N = 49,
+		O = 24,
+		P = 25,
+		Q = 16,
+		R = 19,
+		S = 31,
+		T = 20,
+		U = 22,
+		V = 47,
+		W = 17,
+		X = 45,
+		Y = 21,
+		Z = 44,
+		F1 = 59,
+		F2 = 60,
+		F3 = 61,
+		F4 = 62,
+		F5 = 63,
+		F6 = 64,
+		F7 = 65,
+		F8 = 66,
+		F9 = 67,
+		F10 = 68,
+		F11 = 87,
+		F12 = 88,
+		Back = 14,
+		Tab = 15,
+		Enter = 28,
+		LShift = 42,
+		RShift = 54,
+		LCtrl = 29,
+		RCtrl = 157,
+		Esc = 1,
+		Space = 57,
+		PgUp = 201,
+		PgDn = 209,
+		Home = 199,
+		End = 207,
+		Up = 200,
+		Down = 208,
+		Left = 203,
+		Right = 205,
+		Insert = 210,
+		Delete = 211,
+		Minus = 12,
+		Yen = 125,
+		Prevtrack = 144,
+		Period = 52,
+		Slash = 53,
+		LAlt = 56,
+		RAlt = 184,
+		Scroll = 70,
+		SemiColon = 39,
+		Colon = 146,
+		LBracket = 26,
+		RBracket = 27,
+		At = 145,
+		BackSlash = 43,
+		Comma = 51,
+		漢字 = 148,
+		変換 = 121,
+		無変換 = 123,
+		かな = 112,
+		Apps = 221,
+		CapsLock = 58,
+		SysRQ = 183,
+		Pause = 197,
+		LWindows = 219,
+		RWindows = 220,
+		NumPad_NumLock = 69,
+		NumPad_0 = 82,
+		NumPad_1 = 79,
+		NumPad_2 = 80,
+		NumPad_3 = 81,
+		NumPad_4 = 75,
+		NumPad_5 = 76,
+		NumPad_6 = 77,
+		NumPad_7 = 71,
+		NumPad_8 = 72,
+		NumPad_9 = 73,
+		NumPad_Multiply = 55,
+		NumPad_Add = 78,
+		NumPad_Subtract = 74,
+		NumPad_Decimal = 83,
+		NumPad_Divide = 181,
+		NumPad_Enter = 156
+	}
+    #endregion
 }
