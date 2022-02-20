@@ -52,7 +52,13 @@ namespace Tunebeat.Title
             {
                 Program.End();
             }
+            if (Key.IsPushed(PlayData.Data.MoveConfig))
+            {
+                Config = true;
+                Program.SceneChange(new Config.Config());
+            }
 
+            #if DEBUG
             if (Key.IsPushing(KEY_INPUT_1))
             {
                 if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[0] < 255)
@@ -86,11 +92,7 @@ namespace Tunebeat.Title
                     PlayData.Data.SkinColor[2]--;
                 }
             }
-            if (Key.IsPushed(PlayData.Data.MOVECONFIG))
-            {
-                Config = true;
-                Program.SceneChange(new Config.Config());
-            }
+            #endif
 
             base.Update();
         }

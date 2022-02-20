@@ -9,6 +9,7 @@ using static DxLibDLL.DX;
 using Amaoto;
 using TJAParse;
 using Tunebeat.Common;
+using Tunebeat.Config;
 using Tunebeat.SongSelect;
 
 namespace Tunebeat.Game
@@ -62,6 +63,7 @@ namespace Tunebeat.Game
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
                 PushingTimer[i] = new Counter(0, 99, 1000, false);
+                SuddenTimer[i] = new Counter(0, 499, 1000, false);
                 Adjust[i] = !PlayData.Data.Auto[i] ? PlayData.Data.InputAdjust[i] : 0;
 
                 if (IsReplay[i]) IsAuto[i] = false;
@@ -136,6 +138,7 @@ namespace Tunebeat.Game
             {
                 PushedTimer[i].Reset();
                 PushingTimer[i].Reset();
+                SuddenTimer[i].Reset();
             }
             Wait.Reset();
             MeasureList = null;
@@ -420,7 +423,7 @@ namespace Tunebeat.Game
             {
                 DrawString(720, 356, $"{PlayMeasure}/{MeasureList.Count}", 0xffffff);
                 if (Wait.State != 0) DrawString(720, 376, "PLEASE WAIT...", 0xffffff);
-                else DrawString(720, 376, "PRESS SPACE KEY", 0xffffff);
+                else DrawString(720, 376, $"PRESS {((KeyList)PlayData.Data.PlayStart).ToString().ToUpper()} KEY", 0xffffff);
             }
 
             if ((PlayData.Data.PreviewType >= (int)EPreviewType.Down) || (PlayData.Data.PreviewType == (int)EPreviewType.Normal && !(Play2P || PlayData.Data.ShowGraph)))
@@ -578,11 +581,12 @@ namespace Tunebeat.Game
             {
                 PushedTimer[i].Tick();
                 PushingTimer[i].Tick();
+                SuddenTimer[i].Tick();
             }
             Wait.Tick();
             Wait.Start();
             if (Wait.Value == Wait.End) Wait.Stop();
-            if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_SPACE) || PlayData.Data.QuickStart))
+            if (MainTimer.State == 0 && (Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.PlayStart) || PlayData.Data.QuickStart))
             {
                 MainTimer.Start();
                 if (IsAuto[0]) PlayData.Data.InputAdjust[0] = Adjust[0];
@@ -690,7 +694,7 @@ namespace Tunebeat.Game
                     {
                         Program.SceneChange(new Result.Result());
                     }
-                    if (Key.IsPushed(KEY_INPUT_RETURN))
+                    if (Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.PlayStart))
                     {
                         PlayMemory.Dispose();
                         Program.SceneChange(new SongSelect.SongSelect());
@@ -796,7 +800,7 @@ namespace Tunebeat.Game
         public static int PlayMeasure, RandomCourse;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();
-        public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
+        public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2], SuddenTimer = new Counter[2];
         public static Counter[][] HitTimer = new Counter[5][];
     }
 }

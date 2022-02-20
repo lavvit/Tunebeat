@@ -285,7 +285,7 @@ namespace Tunebeat.Config
                     QuickStart = new OptionBool("QuickStart", PlayData.Data.QuickStart, "自動的に譜面を再生します。"); OptionList.Add(QuickStart);
                     ShowResultScreen = new OptionBool("ShowResultScreen", PlayData.Data.ShowResultScreen, "リザルト画面を表示します。"); OptionList.Add(ShowResultScreen);
                     PlayList = new OptionBool("PlayList", PlayData.Data.PlayList, "プレイが終了したらすぐ次の譜面を再生します。"); OptionList.Add(PlayList);
-                    SaveScore = new OptionBool("SaveScore", PlayData.Data.SaveScore, "記録を更新した時にスコアを保存します。"); OptionList.Add(SaveScore);
+                    SaveScore = new OptionBool("SaveScore", PlayData.Data.SaveScore, "記録を更新した時に自動的にスコアを保存します。"); OptionList.Add(SaveScore);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -382,7 +382,6 @@ namespace Tunebeat.Config
                     //Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
                 case ELayer.KeyConfig:
-                    MoveConfig = new OptionKey("MoveConfig", PlayData.Data.MOVECONFIG, "[タイトル・選曲] この画面に移行する"); OptionList.Add(MoveConfig);
                     LeftDon = new OptionKeyList("LeftDon", PlayData.Data.LEFTDON, "[プレイ] 1P左側の面"); OptionList.Add(LeftDon);
                     RightDon = new OptionKeyList("RightDon", PlayData.Data.RIGHTDON, "[プレイ] 1P右側の面"); OptionList.Add(RightDon);
                     LeftKa = new OptionKeyList("LeftKa", PlayData.Data.LEFTKA, "[プレイ] 1P左側の縁"); OptionList.Add(LeftKa);
@@ -391,6 +390,27 @@ namespace Tunebeat.Config
                     RightDon2P = new OptionKeyList("RightDon2P", PlayData.Data.RIGHTDON2P, "[プレイ] 2P右側の面"); OptionList.Add(RightDon2P);
                     LeftKa2P = new OptionKeyList("LeftKa2P", PlayData.Data.LEFTKA2P, "[プレイ] 2P左側の縁"); OptionList.Add(LeftKa2P);
                     RightKa2P = new OptionKeyList("RightKa2P", PlayData.Data.RIGHTKA2P, "[プレイ] 2P右側の縁"); OptionList.Add(RightKa2P);
+                    ScreenShot = new OptionKey("ScreenShot", PlayData.Data.ScreenShot, "[共通] スクリーンショットを撮影する"); OptionList.Add(ScreenShot);
+                    MoveConfig = new OptionKey("MoveConfig", PlayData.Data.MoveConfig, "[タイトル・選曲] この画面に移行する"); OptionList.Add(MoveConfig);
+                    OpenOption = new OptionKey("OpenOption", PlayData.Data.OpenOption, "[選曲] オプションを開く"); OptionList.Add(OpenOption);
+                    PlayStart = new OptionKey("PlayStart", PlayData.Data.PlayStart, "[プレイ] 譜面の再生を開始する"); OptionList.Add(PlayStart);
+                    PlayReset = new OptionKey("PlayReset", PlayData.Data.PlayReset, "[プレイ] 譜面を停止し再読み込みする"); OptionList.Add(PlayReset);
+                    MeasureUp = new OptionKey("MeasureUp", PlayData.Data.MeasureUp, "[プレイ] 小節を1つ進める"); OptionList.Add(MeasureUp);
+                    MeasureDown = new OptionKey("MeasureDown", PlayData.Data.MeasureDown, "[プレイ] 小節を1つ戻す"); OptionList.Add(MeasureDown);
+                    JunpHome = new OptionKey("JunpHome", PlayData.Data.JunpHome, "[プレイ] 最初の小節に戻る"); OptionList.Add(JunpHome);
+                    JunpEnd = new OptionKey("JunpEnd", PlayData.Data.JunpEnd, "[プレイ] 最後の小節に進む"); OptionList.Add(JunpEnd);
+                    ChangeAuto = new OptionKey("ChangeAuto", PlayData.Data.ChangeAuto, "[プレイ] オートのON/OFFを切り替える"); OptionList.Add(ChangeAuto);
+                    ChangeAuto2P = new OptionKey("ChangeAuto2P", PlayData.Data.ChangeAuto2P, "[プレイ] 2PのオートのON/OFFを切り替える"); OptionList.Add(ChangeAuto2P);
+                    MoveCreate = new OptionKey("MoveCreate", PlayData.Data.MoveCreate, "[プレイ] 編集モードを起動する(開発中)"); OptionList.Add(MoveCreate);
+                    SaveReplay = new OptionKey("SaveReplay", PlayData.Data.SaveReplay, "[プレイ・リザルト] プレイデータを保存する"); OptionList.Add(SaveReplay);
+                    DisplaySudden = new OptionKey("DisplaySudden", PlayData.Data.DisplaySudden, "[プレイ] Suddenの情報を表示、2回押しでSuddenを表示/非表示する"); OptionList.Add(DisplaySudden);
+                    SuddenPlus = new OptionKey("SuddenPlus", PlayData.Data.SuddenPlus, "[プレイ] 隠す範囲を広げる"); OptionList.Add(SuddenPlus);
+                    SuddenMinus = new OptionKey("SuddenMinus", PlayData.Data.SuddenMinus, "[プレイ] 隠す範囲を狭める"); OptionList.Add(SuddenMinus);
+                    ChangeFHS = new OptionKey("ChangeFHS", PlayData.Data.ChangeFHS, "[プレイ] フローティングハイスピードを切り替える"); OptionList.Add(ChangeFHS);
+                    DisplaySudden2P = new OptionKey("DisplaySudden2P", PlayData.Data.DisplaySudden2P, "[プレイ] 2PのSuddenの情報を表示、2回押しでSuddenを表示/非表示する"); OptionList.Add(DisplaySudden2P);
+                    SuddenPlus2P = new OptionKey("SuddenPlus2P", PlayData.Data.SuddenPlus2P, "[プレイ] 2Pの隠す範囲を広げる"); OptionList.Add(SuddenPlus2P);
+                    SuddenMinus2P = new OptionKey("SuddenMinus2P", PlayData.Data.SuddenMinus2P, "[プレイ] 2Pの隠す範囲を狭める"); OptionList.Add(SuddenMinus2P);
+                    ChangeFHS2P = new OptionKey("ChangeFHS2P", PlayData.Data.ChangeFHS2P, "[プレイ] 2Pのフローティングハイスピードを切り替える"); OptionList.Add(ChangeFHS2P);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -490,7 +510,6 @@ namespace Tunebeat.Config
                 case ELayer.PlayBMS:
                     break;
                 case ELayer.KeyConfig:
-                    PlayData.Data.MOVECONFIG = MoveConfig.Value;
                     PlayData.Data.LEFTDON = LeftDon.Value;
                     PlayData.Data.LEFTKA = LeftKa.Value;
                     PlayData.Data.RIGHTDON = RightDon.Value;
@@ -499,6 +518,27 @@ namespace Tunebeat.Config
                     PlayData.Data.LEFTKA2P = LeftKa2P.Value;
                     PlayData.Data.RIGHTDON2P = RightDon2P.Value;
                     PlayData.Data.RIGHTKA2P = RightKa2P.Value;
+                    PlayData.Data.ScreenShot = ScreenShot.Value;
+                    PlayData.Data.MoveConfig = MoveConfig.Value;
+                    PlayData.Data.OpenOption = OpenOption.Value;
+                    PlayData.Data.PlayStart = PlayStart.Value;
+                    PlayData.Data.PlayReset = PlayReset.Value;
+                    PlayData.Data.DisplaySudden = DisplaySudden.Value;
+                    PlayData.Data.SuddenPlus = SuddenPlus.Value;
+                    PlayData.Data.SuddenMinus = SuddenMinus.Value;
+                    PlayData.Data.ChangeFHS = ChangeFHS.Value;
+                    PlayData.Data.DisplaySudden2P = DisplaySudden2P.Value;
+                    PlayData.Data.SuddenPlus2P = SuddenPlus2P.Value;
+                    PlayData.Data.SuddenMinus2P = SuddenMinus2P.Value;
+                    PlayData.Data.ChangeFHS2P = ChangeFHS2P.Value;
+                    PlayData.Data.MeasureUp = MeasureUp.Value;
+                    PlayData.Data.MeasureDown = MeasureDown.Value;
+                    PlayData.Data.JunpHome = JunpHome.Value;
+                    PlayData.Data.JunpEnd = JunpEnd.Value;
+                    PlayData.Data.ChangeAuto = ChangeAuto.Value;
+                    PlayData.Data.ChangeAuto2P = ChangeAuto2P.Value;
+                    PlayData.Data.MoveCreate = MoveCreate.Value;
+                    PlayData.Data.SaveReplay = SaveReplay.Value;
                     break;
             }
         }
@@ -527,7 +567,8 @@ namespace Tunebeat.Config
         public static OptionDouble RivalPercent, PlaySpeed, ScrollSpeed, ScrollSpeed2P, JudgePerfect, JudgeGreat, JudgeGood, JudgeBad, JudgePoor, InputAdjust, InputAdjust2P;
         public static OptionString PlayerName, SkinName, SoundName, BGMName, FontName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
         public static OptionStrList PlayFolder;
-        public static OptionKey MoveConfig;
+        public static OptionKey ScreenShot, MoveConfig, OpenOption, PlayStart, PlayReset, DisplaySudden, SuddenPlus, SuddenMinus, ChangeFHS, DisplaySudden2P, SuddenPlus2P, SuddenMinus2P, ChangeFHS2P,
+            MeasureUp, MeasureDown, JunpHome, JunpEnd, ChangeAuto, ChangeAuto2P, MoveCreate, SaveReplay;
         public static OptionKeyList LeftDon, LeftKa, RightDon, RightKa, LeftDon2P, LeftKa2P, RightDon2P, RightKa2P;
     }
 }

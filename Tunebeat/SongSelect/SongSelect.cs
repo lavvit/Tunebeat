@@ -738,7 +738,7 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
-                if (Key.IsPushed(KEY_INPUT_F1))
+                if (Key.IsPushed(PlayData.Data.MoveConfig))
                 {
                     if (Preview != null) { Preview.Stop(); Preview = null; }
                     Program.SceneChange(new Config.Config());

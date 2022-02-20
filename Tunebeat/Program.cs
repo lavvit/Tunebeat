@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using static DxLibDLL.DX;
 using Amaoto;
 using Tunebeat.Common;
@@ -70,10 +71,11 @@ namespace Tunebeat
 
                 if (PlayData.Data.FullScreen) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
 
-                if (Key.IsPushed(KEY_INPUT_F12))
+                if (Key.IsPushed(PlayData.Data.ScreenShot))
                 {
                     DateTime time = DateTime.Now;
                     strTime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
+                    if (!Directory.Exists("Capture")) Directory.CreateDirectory("Capture");
                     SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strTime}.png");
                     DrawLog.Draw($"スクリーンショットが保存されました! : {strTime}.png", 2000);
                 }

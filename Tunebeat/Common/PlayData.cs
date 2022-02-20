@@ -111,6 +111,27 @@ namespace Tunebeat.Common
         public List<int> LEFTKA2P = new List<int>() { KEY_INPUT_C };
         public List<int> RIGHTKA2P = new List<int>() { KEY_INPUT_COMMA };
 
-        public int MOVECONFIG = KEY_INPUT_F1;
+        public int ScreenShot = KEY_INPUT_F12;
+        public int MoveConfig = KEY_INPUT_F1;
+        public int OpenOption = KEY_INPUT_F2;
+        public int PlayStart = KEY_INPUT_SPACE;
+        public int PlayReset = KEY_INPUT_Q;
+        public int DisplaySudden = KEY_INPUT_LSHIFT;
+        public int SuddenPlus = KEY_INPUT_Z;
+        public int SuddenMinus = KEY_INPUT_X;
+        public int ChangeFHS = KEY_INPUT_LCONTROL;
+        public int DisplaySudden2P = KEY_INPUT_RSHIFT;
+        public int SuddenPlus2P = KEY_INPUT_SLASH;
+        public int SuddenMinus2P = KEY_INPUT_BACKSLASH;
+        public int ChangeFHS2P = KEY_INPUT_RCONTROL;
+        public int MeasureUp = KEY_INPUT_PGUP;
+        public int MeasureDown = KEY_INPUT_PGDN;
+        public int JunpHome = KEY_INPUT_HOME;
+        public int JunpEnd = KEY_INPUT_END;
+        public int ChangeAuto = KEY_INPUT_F1;
+        public int ChangeAuto2P = KEY_INPUT_F2;
+        public int MoveCreate = KEY_INPUT_F8;
+        public int SaveReplay = KEY_INPUT_F11;
+        //public int MoveTraining = KEY_INPUT_F9;
     }
 }

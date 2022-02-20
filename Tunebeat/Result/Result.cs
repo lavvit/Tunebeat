@@ -150,14 +150,14 @@ namespace Tunebeat.Result
                 SoundLoad.Don[0].Play();
                 Program.SceneChange(new SongSelect.SongSelect());
             }
-            if (Key.IsPushed(KEY_INPUT_Q))
+            if (Key.IsPushed(PlayData.Data.PlayReset))
             {
                 SoundLoad.Ka[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Ka[0].Play();
                 Program.SceneChange(new Game.Game());
             }
 
-            if (Key.IsPushed(KEY_INPUT_F11))
+            if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.Game.PlayMeasure == 0)
             {
                 if (!Game.Game.IsReplay[0]) PlayMemory.SaveData(0);
                 if (Game.Game.Play2P && !Game.Game.IsReplay[1]) PlayMemory.SaveData(1);
