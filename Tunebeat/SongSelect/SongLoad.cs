@@ -50,6 +50,18 @@ namespace Tunebeat.SongSelect
                 r[i] = new Course();
             }
             bool[] t = new bool[5];
+            SongData New = new SongData()
+            {
+                Path = "",
+                Title = "新しく譜面を作成",
+                FontColor = Color.White,
+                BackColor = Color.FromArgb((int)GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2])),
+                Course = r,
+                Type = EType.New,
+                Enable = t,
+            };
+            data.Add(New);
+
             SongData random = new SongData()
             {
                 Path = "",
@@ -546,6 +558,7 @@ namespace Tunebeat.SongSelect
     public enum EType
     {
         Back,
+        New,
         Folder,
         Random,
         Score

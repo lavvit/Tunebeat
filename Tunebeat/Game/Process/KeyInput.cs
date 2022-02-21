@@ -14,458 +14,654 @@ namespace Tunebeat.Game
     {
         public static void Update(bool Auto1P, bool Auto2P, bool Failed1P, bool Failed2P)
         {
-            if (Key.IsPushed(PlayData.Data.ChangeAuto) && !Game.IsReplay[0])
+            if (Create.Selecting)
             {
-                Game.IsAuto[0] = !Game.IsAuto[0];
+                if (Create.Cursor != 8)
+                {
+                    if (Key.IsPushed(KEY_INPUT_RETURN))
+                    {
+                        Create.Selecting = !Create.Selecting;
+                        switch (Create.Cursor)
+                        {
+                            case 0:
+                                Create.File.Title = Input.Text;
+                                break;
+                            case 1:
+                                Create.File.SubTitle = Input.Text;
+                                break;
+                            case 2:
+                                Create.File.Wave = Input.Text;
+                                break;
+                            case 3:
+                                Create.File.BGImage = Input.Text;
+                                break;
+                            case 4:
+                                Create.File.BGMovie = Input.Text;
+                                break;
+                            case 5:
+                                Create.File.Bpm = double.Parse(Input.Text);
+                                break;
+                            case 6:
+                                Create.File.Offset = double.Parse(Input.Text);
+                                break;
+                            case 7:
+                                Create.File.DemoStart = double.Parse(Input.Text);
+                                break;
+                            case 9:
+                                Create.File.Level[Game.Course[0]] = int.Parse(Input.Text);
+                                break;
+                            case 10:
+                                Create.File.Total[Game.Course[0]] = double.Parse(Input.Text);
+                                break;
+                        }
+                        Input.End();
+                    }
+                    if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                    {
+                        Create.Selecting = !Create.Selecting;
+                        Input.End();
+                    }
+                }
+                else
+                {
+                    if (Key.IsPushed(KEY_INPUT_RIGHT))
+                    {
+                        if (Game.Course[0] < 4)
+                            Game.Course[0]++;
+                        else
+                            Game.Course[0] = 0;
+                        Game.Reset();
+                    }
+                    if (Key.IsPushed(KEY_INPUT_LEFT))
+                    {
+                        if (Game.Course[0] > 0)
+                            Game.Course[0]--;
+                        else
+                            Game.Course[0] = 4;
+                        Game.Reset();
+                    }
+                    if (Key.IsPushed(KEY_INPUT_RETURN))
+                    {
+                        Create.Selecting = !Create.Selecting;
+                    }
+                }
+            }
+            else
+            {
+                if (Key.IsPushed(PlayData.Data.ChangeAuto) && !Game.IsReplay[0])
+                {
+                    Game.IsAuto[0] = !Game.IsAuto[0];
+                    if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
+                    {
+                        PlayData.Data.Auto[0] = Game.IsAuto[0];
+                        int poor = Score.Poor[0];
+                        Score.Poor[0] = Score.Auto[0];
+                        Score.Auto[0] = poor;
+                    }
+                }
+                if (Key.IsPushed(PlayData.Data.ChangeAuto2P) && Game.Play2P && !Game.IsReplay[1])
+                {
+                    Game.IsAuto[1] = !Game.IsAuto[1];
+                    if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
+                    {
+                        PlayData.Data.Auto[1] = Game.IsAuto[1];
+                        int poor = Score.Poor[1];
+                        Score.Poor[1] = Score.Auto[1];
+                        Score.Auto[1] = poor;
+                    }
+                }
+
+#if DEBUG
+                if ((Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 20))
+                {
+                    PlayData.Data.AutoRoll--;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                    }
+                }
+                if (Key.IsPushed(KEY_INPUT_F4) || (Key.IsPushing(KEY_INPUT_F4) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
+                {
+                    PlayData.Data.AutoRoll++;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
+                    }
+                }
+#endif
+
+                if (Key.IsPushed(PlayData.Data.PlayReset))
+                {
+                    Game.Reset();
+                }
+
+                if (!Auto1P && !Failed1P && !Game.IsReplay[0])
+                {
+                    if (ListPushed(PlayData.Data.LEFTDON))
+                    {
+                        Process(true, true, 0);
+                        PlayMemory.AddData(0, Game.MainTimer.Value, true, true);
+                    }
+                    if (ListPushed(PlayData.Data.RIGHTDON))
+                    {
+                        Process(true, false, 0);
+                        PlayMemory.AddData(0, Game.MainTimer.Value, true, false);
+                    }
+                    if (ListPushed(PlayData.Data.LEFTKA))
+                    {
+                        Process(false, true, 0);
+                        PlayMemory.AddData(0, Game.MainTimer.Value, false, true);
+                    }
+                    if (ListPushed(PlayData.Data.RIGHTKA))
+                    {
+                        Process(false, false, 0);
+                        PlayMemory.AddData(0, Game.MainTimer.Value, false, false);
+                    }
+                }
+                if (!Auto2P && !Failed2P && Game.Play2P && !Game.IsReplay[1])
+                {
+                    if (ListPushed(PlayData.Data.LEFTDON2P))
+                    {
+                        Process(true, true, 1);
+                        PlayMemory.AddData(1, Game.MainTimer.Value, true, true);
+                    }
+                    if (ListPushed(PlayData.Data.RIGHTDON2P))
+                    {
+                        Process(true, false, 1);
+                        PlayMemory.AddData(1, Game.MainTimer.Value, true, false);
+                    }
+                    if (ListPushed(PlayData.Data.LEFTKA2P))
+                    {
+                        Process(false, true, 1);
+                        PlayMemory.AddData(1, Game.MainTimer.Value, false, true);
+                    }
+                    if (ListPushed(PlayData.Data.RIGHTKA2P))
+                    {
+                        Process(false, false, 1);
+                        PlayMemory.AddData(1, Game.MainTimer.Value, false, false);
+                    }
+                }
+
                 if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
                 {
-                    PlayData.Data.Auto[0] = Game.IsAuto[0];
-                    int poor = Score.Poor[0];
-                    Score.Poor[0] = Score.Auto[0];
-                    Score.Auto[0] = poor;
-                }
-            }
-            if (Key.IsPushed(PlayData.Data.ChangeAuto2P) && Game.Play2P && !Game.IsReplay[1])
-            {
-                Game.IsAuto[1] = !Game.IsAuto[1];
-                if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
-                {
-                    PlayData.Data.Auto[1] = Game.IsAuto[1];
-                    int poor = Score.Poor[1];
-                    Score.Poor[1] = Score.Auto[1];
-                    Score.Auto[1] = poor;
-                }
-            }
-
-            #if DEBUG
-            if ((Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 20))
-            {
-                PlayData.Data.AutoRoll--;
-                for (int i = 0; i < 5; i++)
-                {
-                    ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
-                }
-            }
-            if (Key.IsPushed(KEY_INPUT_F4) || (Key.IsPushing(KEY_INPUT_F4) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
-            {
-                PlayData.Data.AutoRoll++;
-                for (int i = 0; i < 5; i++)
-                {
-                    ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
-                }
-            }
-            #endif
-
-            if (Key.IsPushed(PlayData.Data.MoveCreate))
-            {
-                SoundLoad.Ka[0].Play();
-                Create.CreateMode = !Create.CreateMode;
-            }
-            if (Key.IsPushed(PlayData.Data.PlayReset) && Game.Wait.State == 0)
-            {
-                Game.Reset();
-            }
-
-            if (!Auto1P && !Failed1P && !Game.IsReplay[0])
-            {
-                if (ListPushed(PlayData.Data.LEFTDON))
-                {
-                    Process(true, true, 0);
-                    PlayMemory.AddData(0, Game.MainTimer.Value, true, true);
-                }
-                if (ListPushed(PlayData.Data.RIGHTDON))
-                {
-                    Process(true, false, 0);
-                    PlayMemory.AddData(0, Game.MainTimer.Value, true, false);
-                }
-                if (ListPushed(PlayData.Data.LEFTKA))
-                {
-                    Process(false, true, 0);
-                    PlayMemory.AddData(0, Game.MainTimer.Value, false, true);
-                }
-                if (ListPushed(PlayData.Data.RIGHTKA))
-                {
-                    Process(false, false, 0);
-                    PlayMemory.AddData(0, Game.MainTimer.Value, false, false);
-                }
-            }
-            if (!Auto2P && !Failed2P && Game.Play2P && !Game.IsReplay[1])
-            {
-                if (ListPushed(PlayData.Data.LEFTDON2P))
-                {
-                    Process(true, true, 1);
-                    PlayMemory.AddData(1, Game.MainTimer.Value, true, true);
-                }
-                if (ListPushed(PlayData.Data.RIGHTDON2P))
-                {
-                    Process(true, false, 1);
-                    PlayMemory.AddData(1, Game.MainTimer.Value, true, false);
-                }
-                if (ListPushed(PlayData.Data.LEFTKA2P))
-                {
-                    Process(false, true, 1);
-                    PlayMemory.AddData(1, Game.MainTimer.Value, false, true);
-                }
-                if (ListPushed(PlayData.Data.RIGHTKA2P))
-                {
-                    Process(false, false, 1);
-                    PlayMemory.AddData(1, Game.MainTimer.Value, false, false);
-                }
-            }
-
-            if (Game.MainTimer.State == 0 && !Game.IsSongPlay)
-            {
-                #region 開始前
-                if (Key.IsPushed(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
-                {
-                    if (Game.SuddenTimer[0].State == 0)
+                    #region 開始前
+                    if (Key.IsPushed(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
                     {
-                        Game.SuddenTimer[0].Reset();
-                        Game.SuddenTimer[0].Start();
-                    }
-                    else
-                    {
-                        PlayData.Data.UseSudden[0] = !PlayData.Data.UseSudden[0];
-                        Game.SuddenTimer[0].Stop();
-                    }
-                }
-                if (Key.IsPushed(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
-                {
-                    if (Game.SuddenTimer[1].State == 0)
-                    {
-                        Game.SuddenTimer[1].Reset();
-                        Game.SuddenTimer[1].Start();
-                    }
-                    else
-                    {
-                        PlayData.Data.UseSudden[1] = !PlayData.Data.UseSudden[1];
-                        Game.SuddenTimer[1].Stop();
-                    }
-                }
-                if (Key.IsPushing(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
-                {
-                    #region Sudden1P
-                    if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
-                    {
-                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                        if (Game.SuddenTimer[0].State == 0)
                         {
-                            if (PlayData.Data.NHSSpeed[0] < 19) PlayData.Data.NHSSpeed[0]++;
+                            Game.SuddenTimer[0].Reset();
+                            Game.SuddenTimer[0].Start();
                         }
                         else
                         {
-                            PlayData.Data.ScrollSpeed[0] += 0.25;
-                            Game.ScrollRemain[0] += 0.25;
+                            PlayData.Data.UseSudden[0] = !PlayData.Data.UseSudden[0];
+                            Game.SuddenTimer[0].Stop();
                         }
-                        Notes.PreGreen[0] = Notes.GetGreenNumber(0, 0.25);
                     }
-                    if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                    if (Key.IsPushed(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
                     {
-                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                        if (Game.SuddenTimer[1].State == 0)
                         {
-                            if (PlayData.Data.NHSSpeed[0] > 0) PlayData.Data.NHSSpeed[0]--;
+                            Game.SuddenTimer[1].Reset();
+                            Game.SuddenTimer[1].Start();
                         }
                         else
                         {
-                            PlayData.Data.ScrollSpeed[0] -= 0.25;
-                            Game.ScrollRemain[0] -= 0.25;
+                            PlayData.Data.UseSudden[1] = !PlayData.Data.UseSudden[1];
+                            Game.SuddenTimer[1].Stop();
                         }
-                        Notes.PreGreen[0] = Notes.GetGreenNumber(0, -0.25);
                     }
-                    if (Key.IsPushed(KEY_INPUT_LEFT))
+                    if (Key.IsPushing(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
                     {
-                        Game.Adjust[0] += 0.5;
+                        #region Sudden1P
+                        if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                            {
+                                if (PlayData.Data.NHSSpeed[0] < 19) PlayData.Data.NHSSpeed[0]++;
+                            }
+                            else
+                            {
+                                PlayData.Data.ScrollSpeed[0] += 0.25;
+                                Game.ScrollRemain[0] += 0.25;
+                            }
+                            Notes.PreGreen[0] = Notes.GetGreenNumber(0, 0.25);
+                        }
+                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                            {
+                                if (PlayData.Data.NHSSpeed[0] > 0) PlayData.Data.NHSSpeed[0]--;
+                            }
+                            else
+                            {
+                                PlayData.Data.ScrollSpeed[0] -= 0.25;
+                                Game.ScrollRemain[0] -= 0.25;
+                            }
+                            Notes.PreGreen[0] = Notes.GetGreenNumber(0, -0.25);
+                        }
+                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        {
+                            Game.Adjust[0] += 0.5;
+                        }
+                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        {
+                            Game.Adjust[0] -= 0.5;
+                        }
+                        if (Key.IsPushing(PlayData.Data.SuddenPlus) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] < 1000)
+                        {
+                            Notes.SetSudden(0, true, true);
+                        }
+                        if (Key.IsPushing(PlayData.Data.SuddenMinus) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] > 0)
+                        {
+                            Notes.SetSudden(0, false, true);
+                        }
+                        if (Key.IsPushed(PlayData.Data.ChangeFHS))
+                        {
+                            PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
+                            Notes.PreGreen[0] = Notes.GetGreenNumber(0);
+                        }
+                        #endregion
                     }
-                    if (Key.IsPushed(KEY_INPUT_RIGHT))
+                    if (Key.IsPushing(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
                     {
-                        Game.Adjust[0] -= 0.5;
+                        #region Sudden2P
+                        if (ListPushed(PlayData.Data.LEFTKA2P) || ListPushed(PlayData.Data.RIGHTKA2P))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                            {
+                                if (PlayData.Data.NHSSpeed[1] < 19) PlayData.Data.NHSSpeed[1]++;
+                            }
+                            else
+                            {
+                                PlayData.Data.ScrollSpeed[1] += 0.25;
+                                Game.ScrollRemain[1] += 0.25;
+                            }
+                            Notes.PreGreen[1] = Notes.GetGreenNumber(1, 0.25);
+                        }
+                        if (ListPushed(PlayData.Data.LEFTDON2P) || ListPushed(PlayData.Data.RIGHTDON2P))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                            {
+                                if (PlayData.Data.NHSSpeed[1] > 0) PlayData.Data.NHSSpeed[1]--;
+                            }
+                            else
+                            {
+                                PlayData.Data.ScrollSpeed[1] -= 0.25;
+                                Game.ScrollRemain[1] -= 0.25;
+                            }
+                            Notes.PreGreen[1] = Notes.GetGreenNumber(1, -0.25);
+                        }
+                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        {
+                            Game.Adjust[1] += 0.5;
+                        }
+                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        {
+                            Game.Adjust[1] -= 0.5;
+                        }
+                        if (Key.IsPushing(PlayData.Data.SuddenPlus2P) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] < 1000)
+                        {
+                            Notes.SetSudden(1, true, true);
+                        }
+                        if (Key.IsPushing(PlayData.Data.SuddenMinus2P) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] > 0)
+                        {
+                            Notes.SetSudden(1, false, true);
+                        }
+                        if (Key.IsPushed(PlayData.Data.ChangeFHS2P))
+                        {
+                            PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
+                            Notes.PreGreen[1] = Notes.GetGreenNumber(1);
+                        }
+                        #endregion
                     }
-                    if (Key.IsPushing(PlayData.Data.SuddenPlus) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] < 1000)
+
+                    #region Timer
+                    if (Key.IsPushed(PlayData.Data.MeasureUp))
                     {
-                        Notes.SetSudden(0, true, true);
+                        Game.PushedTimer[0].Start();
                     }
-                    if (Key.IsPushing(PlayData.Data.SuddenMinus) && PlayData.Data.UseSudden[0] && PlayData.Data.SuddenNumber[0] > 0)
+                    if (Key.IsLeft(PlayData.Data.MeasureUp))
                     {
-                        Notes.SetSudden(0, false, true);
+                        Game.PushedTimer[0].Stop();
+                        Game.PushedTimer[0].Reset();
+                        Game.PushingTimer[0].Stop();
+                        Game.PushingTimer[0].Reset();
                     }
-                    if (Key.IsPushed(PlayData.Data.ChangeFHS))
+                    if (Key.IsPushed(PlayData.Data.MeasureDown))
                     {
-                        PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
-                        Notes.PreGreen[0] = Notes.GetGreenNumber(0);
+                        Game.PushedTimer[1].Start();
+                    }
+                    if (Key.IsLeft(PlayData.Data.MeasureDown))
+                    {
+                        Game.PushedTimer[1].Stop();
+                        Game.PushedTimer[1].Reset();
+                        Game.PushingTimer[1].Stop();
+                        Game.PushingTimer[1].Reset();
+                    }
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (Game.PushedTimer[i].Value == Game.PushedTimer[i].End)
+                        {
+                            Game.PushingTimer[i].Start();
+                        }
+                    }
+                    #endregion
+                    if ((Key.IsPushed(PlayData.Data.MeasureUp) || (Game.PushingTimer[0].Value == Game.PushingTimer[0].End)))
+                    {
+                        Game.MeasureUp();
+                        Game.PushingTimer[0].Reset();
+                    }
+                    if ((Key.IsPushed(PlayData.Data.MeasureDown) || (Game.PushingTimer[1].Value == Game.PushingTimer[1].End)))
+                    {
+                        Game.MeasureDown();
+                        Game.PushingTimer[1].Reset();
+                    }
+                    if (Key.IsPushed(PlayData.Data.JunpEnd))
+                    {
+                        Game.MeasureUp(true);
+                    }
+                    if (Key.IsPushed(PlayData.Data.JunpHome))
+                    {
+                        Game.MeasureDown(true);
                     }
                     #endregion
                 }
-                if (Key.IsPushing(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
+                else if (Game.MainTimer.State != 0)
                 {
-                    #region Sudden2P
-                    if (ListPushed(PlayData.Data.LEFTKA2P) || ListPushed(PlayData.Data.RIGHTKA2P))
+                    #region プレイ中
+                    if (Key.IsPushed(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
                     {
-                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                        if (Game.SuddenTimer[0].State == 0)
                         {
-                            if (PlayData.Data.NHSSpeed[1] < 19) PlayData.Data.NHSSpeed[1]++;
+                            Game.SuddenTimer[0].Reset();
+                            Game.SuddenTimer[0].Start();
                         }
                         else
                         {
-                            PlayData.Data.ScrollSpeed[1] += 0.25;
-                            Game.ScrollRemain[1] += 0.25;
+                            Notes.UseSudden[0] = !Notes.UseSudden[0];
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                            Game.SuddenTimer[0].Stop();
                         }
-                        Notes.PreGreen[1] = Notes.GetGreenNumber(1, 0.25);
                     }
-                    if (ListPushed(PlayData.Data.LEFTDON2P) || ListPushed(PlayData.Data.RIGHTDON2P))
+                    if (Key.IsPushed(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
                     {
-                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                        if (Game.SuddenTimer[1].State == 0)
                         {
-                            if (PlayData.Data.NHSSpeed[1] > 0) PlayData.Data.NHSSpeed[1]--;
+                            Game.SuddenTimer[1].Reset();
+                            Game.SuddenTimer[1].Start();
                         }
                         else
                         {
-                            PlayData.Data.ScrollSpeed[1] -= 0.25;
-                            Game.ScrollRemain[1] -= 0.25;
+                            Notes.UseSudden[1] = !Notes.UseSudden[1];
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                            Game.SuddenTimer[1].Stop();
                         }
-                        Notes.PreGreen[1] = Notes.GetGreenNumber(1, -0.25);
                     }
-                    if (Key.IsPushed(KEY_INPUT_LEFT))
+                    if (Key.IsPushing(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
                     {
-                        Game.Adjust[1] += 0.5;
+                        #region Sudden1P
+                        if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                            {
+                                if (Notes.NHSNumber[0] < 19) Notes.NHSNumber[0]++;
+                            }
+                            else
+                            {
+                                Notes.Scroll[0] += 0.25;
+                                Game.ScrollRemain[0] += 0.25;
+                            }
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                        }
+                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
+                            {
+                                if (Notes.NHSNumber[0] > 0) Notes.NHSNumber[0]--;
+                            }
+                            else
+                            {
+                                Notes.Scroll[0] -= 0.25;
+                                Game.ScrollRemain[0] -= 0.25;
+                            }
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                        }
+                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        {
+                            Game.Adjust[0] += 0.5;
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                        }
+                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        {
+                            Game.Adjust[0] -= 0.5;
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                        }
+                        if (Key.IsPushing(PlayData.Data.SuddenPlus) && Key.IsPushing(PlayData.Data.SuddenMinus) && Notes.UseSudden[0])
+                        {
+                            Notes.SetSudden(0, true, false, true);
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                        }
+                        else if (Key.IsPushing(PlayData.Data.SuddenPlus) && Notes.UseSudden[0] && Notes.Sudden[0] < 1000)
+                        {
+                            Notes.SetSudden(0, true);
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+                        }
+                        else if (Key.IsPushing(PlayData.Data.SuddenMinus) && Notes.UseSudden[0] && Notes.Sudden[0] > 0)
+                        {
+                            Notes.SetSudden(0, false);
+                            PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
+
+                        }
+                        if (Key.IsPushed(PlayData.Data.ChangeFHS))
+                        {
+                            PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
+                        }
+                        #endregion
                     }
-                    if (Key.IsPushed(KEY_INPUT_RIGHT))
+                    if (Key.IsPushing(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
                     {
-                        Game.Adjust[1] -= 0.5;
+                        #region Sudden2P
+                        if (ListPushed(PlayData.Data.LEFTKA2P) || ListPushed(PlayData.Data.RIGHTKA2P))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                            {
+                                if (Notes.NHSNumber[1] < 19) Notes.NHSNumber[1]++;
+                            }
+                            else
+                            {
+                                Notes.Scroll[1] += 0.25;
+                                Game.ScrollRemain[1] += 0.25;
+                            }
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        if (ListPushed(PlayData.Data.LEFTDON2P) || ListPushed(PlayData.Data.RIGHTDON2P))
+                        {
+                            if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
+                            {
+                                if (Notes.NHSNumber[1] > 0) Notes.NHSNumber[1]--;
+                            }
+                            else
+                            {
+                                Notes.Scroll[1] -= 0.25;
+                                Game.ScrollRemain[1] -= 0.25;
+                            }
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        {
+                            Game.Adjust[1] += 0.5;
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        {
+                            Game.Adjust[1] -= 0.5;
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        if (Key.IsPushing(PlayData.Data.SuddenPlus2P) && Key.IsPushing(PlayData.Data.SuddenMinus2P) && Notes.UseSudden[1])
+                        {
+                            Notes.SetSudden(1, true, false, true);
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        else if (Key.IsPushing(PlayData.Data.SuddenPlus2P) && Notes.UseSudden[1] && Notes.Sudden[1] < 1000)
+                        {
+                            Notes.SetSudden(1, true);
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        else if (Key.IsPushing(PlayData.Data.SuddenMinus2P) && Notes.UseSudden[1] && Notes.Sudden[1] > 0)
+                        {
+                            Notes.SetSudden(1, false);
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        if (Key.IsPushed(PlayData.Data.ChangeFHS2P))
+                        {
+                            PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
+                            PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
+                        }
+                        #endregion
                     }
-                    if (Key.IsPushing(PlayData.Data.SuddenPlus2P) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] < 1000)
+                    for (int i = 0; i < 2; i++)
                     {
-                        Notes.SetSudden(1, true, true);
-                    }
-                    if (Key.IsPushing(PlayData.Data.SuddenMinus2P) && PlayData.Data.UseSudden[1] && PlayData.Data.SuddenNumber[1] > 0)
-                    {
-                        Notes.SetSudden(1, false, true);
-                    }
-                    if (Key.IsPushed(PlayData.Data.ChangeFHS2P))
-                    {
-                        PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
-                        Notes.PreGreen[1] = Notes.GetGreenNumber(1);
+                        Game.PushedTimer[i].Stop();
+                        Game.PushedTimer[i].Reset();
+                        Game.PushingTimer[i].Stop();
+                        Game.PushingTimer[i].Reset();
                     }
                     #endregion
                 }
 
-                #region Timer
-                if (Key.IsPushed(PlayData.Data.MeasureUp))
+                if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.IsSongPlay && !Game.MainSong.IsPlaying && Game.PlayMeasure == 0)
                 {
-                    Game.PushedTimer[0].Start();
+                    if (!Game.IsReplay[0] && !Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(0);
+                    if (Game.Play2P && !Game.IsReplay[1] & Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(1);
                 }
-                if (Key.IsLeft(PlayData.Data.MeasureUp))
+
+                #region Create
+                int[] wid = new int[8] { 0, 29, 60, 75, 84, 90, 97, 104 };
+                if (Key.IsPushed(PlayData.Data.MoveCreate))
                 {
-                    Game.PushedTimer[0].Stop();
-                    Game.PushedTimer[0].Reset();
-                    Game.PushingTimer[0].Stop();
-                    Game.PushingTimer[0].Reset();
-                }
-                if (Key.IsPushed(PlayData.Data.MeasureDown))
-                {
-                    Game.PushedTimer[1].Start();
-                }
-                if (Key.IsLeft(PlayData.Data.MeasureDown))
-                {
-                    Game.PushedTimer[1].Stop();
-                    Game.PushedTimer[1].Reset();
-                    Game.PushingTimer[1].Stop();
-                    Game.PushingTimer[1].Reset();
-                }
-                for (int i = 0; i < 2; i++)
-                {
-                    if (Game.PushedTimer[i].Value == Game.PushedTimer[i].End)
+                    SoundLoad.Ka[0].Play();
+                    Create.CreateMode = !Create.CreateMode;
+                    Create.Preview = Create.CreateMode;
+                    Create.InfoMenu = false;
+                    if (Create.CreateMode && Game.MainTimer.State == 0)
                     {
-                        Game.PushingTimer[i].Start();
+                        Game.TimeRemain = -wid[Create.NowInput];
+                    }
+                    else if (Game.MainTimer.State == 0)
+                    {
+                        Game.TimeRemain = wid[Create.NowInput];
                     }
                 }
-                #endregion
-                if ((Key.IsPushed(PlayData.Data.MeasureUp) || (Game.PushingTimer[0].Value == Game.PushingTimer[0].End)) && Game.Wait.State == 0)
+                if (Create.CreateMode)
                 {
-                    Game.MeasureUp();
-                    Game.PushingTimer[0].Reset();
-                }
-                if ((Key.IsPushed(PlayData.Data.MeasureDown) || (Game.PushingTimer[1].Value == Game.PushingTimer[1].End)) && Game.Wait.State == 0)
-                {
-                    Game.MeasureDown();
-                    Game.PushingTimer[1].Reset();
-                }
-                if (Key.IsPushed(PlayData.Data.JunpEnd) && Game.Wait.State == 0)
-                {
-                    Game.MeasureUp(true);
-                }
-                if (Key.IsPushed(PlayData.Data.JunpHome) && Game.Wait.State == 0)
-                {
-                    Game.MeasureDown(true);
-                }
-                #endregion
-            }
-            else if (Game.MainTimer.State != 0)
-            {
-                #region プレイ中
-                if (Key.IsPushed(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
-                {
-                    if (Game.SuddenTimer[0].State == 0)
+                    if (Key.IsPushed(KEY_INPUT_RSHIFT) || Key.IsLeft(KEY_INPUT_RSHIFT))
                     {
-                        Game.SuddenTimer[0].Reset();
-                        Game.SuddenTimer[0].Start();
+                        Create.Preview = !Create.Preview;
+                        if (Create.Preview && Game.MainTimer.State == 0)
+                        {
+                            Game.TimeRemain = -wid[Create.NowInput];
+                        }
+                        else if (Game.MainTimer.State == 0)
+                        {
+                            Game.TimeRemain = wid[Create.NowInput];
+                        }
+                    }
+                    int[] inputlist = new int[8] { 4, 8, 12, 16, 20, 24, 32, 48 };
+                    if (Key.IsPushed(KEY_INPUT_DIVIDE))
+                    {
+                        SoundLoad.Ka[0].Play();
+                        if (Create.NowInput > 0) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput - 1];
+                        if (Create.NowInput-- <= 0) Create.NowInput = 0;
+                        Create.InputType = inputlist[Create.NowInput];
+                    }
+                    if (Key.IsPushed(KEY_INPUT_MULTIPLY))
+                    {
+                        SoundLoad.Ka[0].Play();
+                        if (Create.NowInput < 7) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput + 1];
+                        if (Create.NowInput++ >= 7) Create.NowInput = 7;
+                        Create.InputType = inputlist[Create.NowInput];
+                    }
+                    if (Create.AllText != null)
+                    {
+                        if ((Key.IsPushing(KEY_INPUT_SUBTRACT) || (Mouse.X >= 1280 && Mouse.Wheel > 0)) && Create.NowScroll > 0)
+                        {
+                            Create.NowScroll--;
+                        }
+                        if ((Key.IsPushing(KEY_INPUT_ADD) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 54 < Create.Course.Count)
+                        {
+                            Create.NowScroll++;
+                        }
+                    }
+                    if (Key.IsPushed(PlayData.Data.InfoMenu))
+                    {
+                        Create.InfoMenu = !Create.InfoMenu;
+                    }
+                    if (!Create.InfoMenu)
+                    {
+                        if (Key.IsPushed(KEY_INPUT_UP))
+                        {
+                            SoundLoad.Ka[0].Play();
+                            if (Create.NowColor-- <= 0) Create.NowColor = 7;
+                        }
+                        if (Key.IsPushed(KEY_INPUT_DOWN))
+                        {
+                            SoundLoad.Ka[0].Play();
+                            if (Create.NowColor++ >= 7) Create.NowColor = 0;
+                        }
                     }
                     else
                     {
-                        Notes.UseSudden[0] = !Notes.UseSudden[0];
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                        Game.SuddenTimer[0].Stop();
+                        if (Key.IsPushed(KEY_INPUT_UP))
+                        {
+                            if (Create.Cursor-- <= 0) Create.Cursor = 10;
+                        }
+                        if (Key.IsPushed(KEY_INPUT_DOWN))
+                        {
+                            if (Create.Cursor++ >= 10) Create.Cursor = 0;
+                        }
+                        if (Key.IsPushed(KEY_INPUT_RETURN))
+                        {
+                            Create.Selecting = !Create.Selecting;
+                            if (Create.Cursor != 8) Input.Init();
+                            switch (Create.Cursor)
+                            {
+                                case 0:
+                                    Input.Text = Create.File.Title;
+                                    break;
+                                case 1:
+                                    Input.Text = Create.File.SubTitle;
+                                    break;
+                                case 2:
+                                    Input.Text = Create.File.Wave;
+                                    break;
+                                case 3:
+                                    Input.Text = Create.File.BGImage;
+                                    break;
+                                case 4:
+                                    Input.Text = Create.File.BGMovie;
+                                    break;
+                                case 5:
+                                    Input.Text = $"{Create.File.Bpm}";
+                                    break;
+                                case 6:
+                                    Input.Text = $"{Create.File.Offset}";
+                                    break;
+                                case 7:
+                                    Input.Text = $"{Create.File.DemoStart}";
+                                    break;
+                                case 9:
+                                    Input.Text = $"{Create.File.Level[Game.Course[0]]}";
+                                    break;
+                                case 10:
+                                    Input.Text = $"{Create.File.Total[Game.Course[0]]}";
+                                    break;
+                            }
+                        }
                     }
                 }
-                if (Key.IsPushed(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
-                {
-                    if (Game.SuddenTimer[1].State == 0)
-                    {
-                        Game.SuddenTimer[1].Reset();
-                        Game.SuddenTimer[1].Start();
-                    }
-                    else
-                    {
-                        Notes.UseSudden[1] = !Notes.UseSudden[1];
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                        Game.SuddenTimer[1].Stop();
-                    }
-                }
-                if (Key.IsPushing(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
-                {
-                    #region Sudden1P
-                    if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
-                    {
-                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
-                        {
-                            if (Notes.NHSNumber[0] < 19) Notes.NHSNumber[0]++;
-                        }
-                        else
-                        {
-                            Notes.Scroll[0] += 0.25;
-                            Game.ScrollRemain[0] += 0.25;
-                        }
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                    }
-                    if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
-                    {
-                        if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
-                        {
-                            if (Notes.NHSNumber[0] > 0) Notes.NHSNumber[0]--;
-                        }
-                        else
-                        {
-                            Notes.Scroll[0] -= 0.25;
-                            Game.ScrollRemain[0] -= 0.25;
-                        }
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                    }
-                    if (Key.IsPushed(KEY_INPUT_LEFT))
-                    {
-                        Game.Adjust[0] += 0.5;
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                    }
-                    if (Key.IsPushed(KEY_INPUT_RIGHT))
-                    {
-                        Game.Adjust[0] -= 0.5;
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                    }
-                    if (Key.IsPushing(PlayData.Data.SuddenPlus) && Key.IsPushing(PlayData.Data.SuddenMinus) && Notes.UseSudden[0])
-                    {
-                        Notes.SetSudden(0, true, false, true);
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                    }
-                    else if (Key.IsPushing(PlayData.Data.SuddenPlus) && Notes.UseSudden[0] && Notes.Sudden[0] < 1000)
-                    {
-                        Notes.SetSudden(0, true);
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-                    }
-                    else if (Key.IsPushing(PlayData.Data.SuddenMinus) && Notes.UseSudden[0] && Notes.Sudden[0] > 0)
-                    {
-                        Notes.SetSudden(0, false);
-                        PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
-
-                    }
-                    if (Key.IsPushed(PlayData.Data.ChangeFHS))
-                    {
-                        PlayData.Data.FloatingHiSpeed[0] = !PlayData.Data.FloatingHiSpeed[0];
-                    }
-                    #endregion
-                }
-                if (Key.IsPushing(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
-                {
-                    #region Sudden2P
-                    if (ListPushed(PlayData.Data.LEFTKA2P) || ListPushed(PlayData.Data.RIGHTKA2P))
-                    {
-                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
-                        {
-                            if (Notes.NHSNumber[1] < 19) Notes.NHSNumber[1]++;
-                        }
-                        else
-                        {
-                            Notes.Scroll[1] += 0.25;
-                            Game.ScrollRemain[1] += 0.25;
-                        }
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    if (ListPushed(PlayData.Data.LEFTDON2P) || ListPushed(PlayData.Data.RIGHTDON2P))
-                    {
-                        if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
-                        {
-                            if (Notes.NHSNumber[1] > 0) Notes.NHSNumber[1]--;
-                        }
-                        else
-                        {
-                            Notes.Scroll[1] -= 0.25;
-                            Game.ScrollRemain[1] -= 0.25;
-                        }
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    if (Key.IsPushed(KEY_INPUT_LEFT))
-                    {
-                        Game.Adjust[1] += 0.5;
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    if (Key.IsPushed(KEY_INPUT_RIGHT))
-                    {
-                        Game.Adjust[1] -= 0.5;
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    if (Key.IsPushing(PlayData.Data.SuddenPlus2P) && Key.IsPushing(PlayData.Data.SuddenMinus2P) && Notes.UseSudden[1])
-                    {
-                        Notes.SetSudden(1, true, false, true);
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    else if (Key.IsPushing(PlayData.Data.SuddenPlus2P) && Notes.UseSudden[1] && Notes.Sudden[1] < 1000)
-                    {
-                        Notes.SetSudden(1, true);
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    else if (Key.IsPushing(PlayData.Data.SuddenMinus2P) && Notes.UseSudden[1] && Notes.Sudden[1] > 0)
-                    {
-                        Notes.SetSudden(1, false);
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    if (Key.IsPushed(PlayData.Data.ChangeFHS2P))
-                    {
-                        PlayData.Data.FloatingHiSpeed[1] = !PlayData.Data.FloatingHiSpeed[1];
-                        PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
-                    }
-                    #endregion
-                }
-                for (int i = 0; i < 2; i++)
-                {
-                    Game.PushedTimer[i].Stop();
-                    Game.PushedTimer[i].Reset();
-                    Game.PushingTimer[i].Stop();
-                    Game.PushingTimer[i].Reset();
-                }
-                #endregion
             }
-
-            if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.IsSongPlay && !Game.MainSong.IsPlaying && Game.PlayMeasure == 0)
-            {
-                if (!Game.IsReplay[0] && !Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(0);
-                if (Game.Play2P && !Game.IsReplay[1] & Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(1);
-            }
+            #endregion
         }
 
         public static bool ListPushed(List<int> keylist)

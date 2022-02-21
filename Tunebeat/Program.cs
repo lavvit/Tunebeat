@@ -39,7 +39,7 @@ namespace Tunebeat
             SetAlwaysRunFlag(TRUE); //ソフトがアクティブじゃなくても処理続行するようにする
             SetWindowSizeExtendRate(0.75f); //起動時のウィンドウサイズを設定 ( 1 = 100%)
             SetUseMaskScreenFlag(TRUE); //書かなくても良い。マスク使うときだけ書こう
-            SetWaitVSyncFlag(TRUE); //垂直同期にするかどうか
+            SetWaitVSyncFlag(FALSE); //垂直同期にするかどうか
             SetDoubleStartValidFlag(TRUE); //複数起動ができるようにするかどうか
             SetMultiThreadFlag(TRUE); //マルチスレッドで処理できるようにするかどうか
             SetUseASyncLoadFlag(TRUE); //非同期で画像を読み込むかどうか

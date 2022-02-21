@@ -40,6 +40,7 @@ namespace Tunebeat.SongSelect
             {
                 if (NowTJA.Type == EType.Score) Preview = new Sound($"{Path.GetDirectoryName(NowTJA.Path)}/{new TJAParse.TJAParse(NowTJA.Path).Header.WAVE}");
             }
+            CreateStep = 0;
             base.Enable();
         }
 
@@ -448,6 +449,17 @@ namespace Tunebeat.SongSelect
 
             if (!string.IsNullOrEmpty(PlayData.Data.PlayerName)) DrawString(80, 1000, $"Player:{PlayData.Data.PlayerName}", 0xffffff);
 
+            switch (CreateStep)
+            {
+                case 1:
+                    DrawBox(0, 1000, 240, 1040, 0x000000, TRUE);
+                    DrawString(20, 1012, "作成する譜面のフォルダを入力してください。", 0xffffff);
+                    break;
+                case 2:
+                    DrawBox(0, 1000, 240, 1040, 0x000000, TRUE);
+                    DrawString(20, 1012, "作成する譜面のファイル名を入力してください。", 0xffffff);
+                    break;
+            }
             if (Input.IsEnable)
             {
                 DrawBox(0, 1040, GetDrawStringWidth(Input.Text, Input.Text.Length) + 40, 1080, 0x000000, TRUE);
@@ -499,6 +511,30 @@ namespace Tunebeat.SongSelect
             {
                 if (Key.IsPushed(KEY_INPUT_RETURN))
                 {
+                    if (NowTJA.Type == EType.New)
+                    {
+                        switch (CreateStep)
+                        {
+                            case 1:
+                                CreateStep++;
+                                FolderName = Input.Text;
+                                Input.Init();
+                                break;
+                            case 2:
+                                FileName = Input.Text;
+                                Input.End();
+                                Program.SceneChange(new Game.Game());
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Input.End();
+                    }
+                }
+                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                {
+                    CreateStep = 0;
                     Input.End();
                 }
             }
@@ -747,6 +783,7 @@ namespace Tunebeat.SongSelect
                 {
                     PlayData.Init();
                     SongLoad.Init();
+                    if (!File.Exists(NowTJA.Path)) NowSongNumber--;
                     NowTJA = SongLoad.SongData[NowSongNumber];
                 }
                 if (Key.IsPushed(KEY_INPUT_F3))
@@ -957,6 +994,11 @@ namespace Tunebeat.SongSelect
                         if (NowTJA.Type == EType.Score) Preview = new Sound($"{Path.GetDirectoryName(NowTJA.Path)}/{new TJAParse.TJAParse(NowTJA.Path).Header.WAVE}");
                     }
                     break;
+                case EType.New:
+                    CreateStep++;
+                    Input.Init();
+                    Input.Text = PlayData.Data.PlayFolder[0];
+                    break;
                 case EType.Back:
                     Back();
                     break;
@@ -1035,7 +1077,7 @@ namespace Tunebeat.SongSelect
                 #endregion
             }
             string title = NowTJA.Title;
-            SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
+            //SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
             SongLoad.Sort(SongLoad.SongList, SongLoad.NowSort);
 
             for (int i = 0; i < SongLoad.SongData.Count; i++)
@@ -1150,10 +1192,10 @@ namespace Tunebeat.SongSelect
         public static SongData NowTJA;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
         public static Sound Preview;
-        public static int NowSongNumber, NowSListNumber, NowRivalScore, Course;
+        public static int NowSongNumber, NowSListNumber, NowRivalScore, Course, CreateStep;
         public static int[] NowReplay = new int[2];
         public static bool Random;
-        public static string NowPath, RivalScore;
+        public static string NowPath, RivalScore, FolderName, FileName;
         public static string[] ReplayScore = new string[2];
 
         private struct STNumber

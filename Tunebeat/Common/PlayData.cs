@@ -130,7 +130,10 @@ namespace Tunebeat.Common
         public int JunpEnd = KEY_INPUT_END;
         public int ChangeAuto = KEY_INPUT_F1;
         public int ChangeAuto2P = KEY_INPUT_F2;
-        public int MoveCreate = KEY_INPUT_F8;
+        public int MoveCreate = KEY_INPUT_F5;
+        public int InfoMenu = KEY_INPUT_F6;
+        public int AddMeasure = KEY_INPUT_F8;
+        public int RealTimeMapping = KEY_INPUT_F9;
         public int SaveReplay = KEY_INPUT_F11;
         //public int MoveTraining = KEY_INPUT_F9;
     }

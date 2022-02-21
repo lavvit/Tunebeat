@@ -400,17 +400,20 @@ namespace Tunebeat.Config
                     JunpHome = new OptionKey("JunpHome", PlayData.Data.JunpHome, "[プレイ] 最初の小節に戻る"); OptionList.Add(JunpHome);
                     JunpEnd = new OptionKey("JunpEnd", PlayData.Data.JunpEnd, "[プレイ] 最後の小節に進む"); OptionList.Add(JunpEnd);
                     ChangeAuto = new OptionKey("ChangeAuto", PlayData.Data.ChangeAuto, "[プレイ] オートのON/OFFを切り替える"); OptionList.Add(ChangeAuto);
-                    ChangeAuto2P = new OptionKey("ChangeAuto2P", PlayData.Data.ChangeAuto2P, "[プレイ] 2PのオートのON/OFFを切り替える"); OptionList.Add(ChangeAuto2P);
-                    MoveCreate = new OptionKey("MoveCreate", PlayData.Data.MoveCreate, "[プレイ] 編集モードを起動する(開発中)"); OptionList.Add(MoveCreate);
-                    SaveReplay = new OptionKey("SaveReplay", PlayData.Data.SaveReplay, "[プレイ・リザルト] プレイデータを保存する"); OptionList.Add(SaveReplay);
                     DisplaySudden = new OptionKey("DisplaySudden", PlayData.Data.DisplaySudden, "[プレイ] Suddenの情報を表示、2回押しでSuddenを表示/非表示する"); OptionList.Add(DisplaySudden);
                     SuddenPlus = new OptionKey("SuddenPlus", PlayData.Data.SuddenPlus, "[プレイ] 隠す範囲を広げる"); OptionList.Add(SuddenPlus);
                     SuddenMinus = new OptionKey("SuddenMinus", PlayData.Data.SuddenMinus, "[プレイ] 隠す範囲を狭める"); OptionList.Add(SuddenMinus);
                     ChangeFHS = new OptionKey("ChangeFHS", PlayData.Data.ChangeFHS, "[プレイ] フローティングハイスピードを切り替える"); OptionList.Add(ChangeFHS);
+                    ChangeAuto2P = new OptionKey("ChangeAuto2P", PlayData.Data.ChangeAuto2P, "[プレイ] 2PのオートのON/OFFを切り替える"); OptionList.Add(ChangeAuto2P);
                     DisplaySudden2P = new OptionKey("DisplaySudden2P", PlayData.Data.DisplaySudden2P, "[プレイ] 2PのSuddenの情報を表示、2回押しでSuddenを表示/非表示する"); OptionList.Add(DisplaySudden2P);
                     SuddenPlus2P = new OptionKey("SuddenPlus2P", PlayData.Data.SuddenPlus2P, "[プレイ] 2Pの隠す範囲を広げる"); OptionList.Add(SuddenPlus2P);
                     SuddenMinus2P = new OptionKey("SuddenMinus2P", PlayData.Data.SuddenMinus2P, "[プレイ] 2Pの隠す範囲を狭める"); OptionList.Add(SuddenMinus2P);
                     ChangeFHS2P = new OptionKey("ChangeFHS2P", PlayData.Data.ChangeFHS2P, "[プレイ] 2Pのフローティングハイスピードを切り替える"); OptionList.Add(ChangeFHS2P);
+                    SaveReplay = new OptionKey("SaveReplay", PlayData.Data.SaveReplay, "[プレイ・リザルト] プレイデータを保存する"); OptionList.Add(SaveReplay);
+                    MoveCreate = new OptionKey("MoveCreate", PlayData.Data.MoveCreate, "[プレイ] 編集モードを起動する(開発中)"); OptionList.Add(MoveCreate);
+                    InfoMenu = new OptionKey("InfoMenu", PlayData.Data.InfoMenu, "[編集] 譜面情報を編集する"); OptionList.Add(InfoMenu);
+                    AddMeasure = new OptionKey("AddMeasure", PlayData.Data.AddMeasure, "[編集] 譜面をテキストで追加する"); OptionList.Add(AddMeasure);
+                    RealTimeMapping = new OptionKey("RealTimeMapping", PlayData.Data.RealTimeMapping, "[編集] 押されたキーで譜面を追加する"); OptionList.Add(RealTimeMapping);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -538,6 +541,9 @@ namespace Tunebeat.Config
                     PlayData.Data.ChangeAuto = ChangeAuto.Value;
                     PlayData.Data.ChangeAuto2P = ChangeAuto2P.Value;
                     PlayData.Data.MoveCreate = MoveCreate.Value;
+                    PlayData.Data.InfoMenu = InfoMenu.Value;
+                    PlayData.Data.AddMeasure = AddMeasure.Value;
+                    PlayData.Data.RealTimeMapping = RealTimeMapping.Value;
                     PlayData.Data.SaveReplay = SaveReplay.Value;
                     break;
             }
@@ -568,7 +574,7 @@ namespace Tunebeat.Config
         public static OptionString PlayerName, SkinName, SoundName, BGMName, FontName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
         public static OptionStrList PlayFolder;
         public static OptionKey ScreenShot, MoveConfig, OpenOption, PlayStart, PlayReset, DisplaySudden, SuddenPlus, SuddenMinus, ChangeFHS, DisplaySudden2P, SuddenPlus2P, SuddenMinus2P, ChangeFHS2P,
-            MeasureUp, MeasureDown, JunpHome, JunpEnd, ChangeAuto, ChangeAuto2P, MoveCreate, SaveReplay;
+            MeasureUp, MeasureDown, JunpHome, JunpEnd, ChangeAuto, ChangeAuto2P, MoveCreate, InfoMenu, AddMeasure, RealTimeMapping, SaveReplay;
         public static OptionKeyList LeftDon, LeftKa, RightDon, RightKa, LeftDon2P, LeftKa2P, RightDon2P, RightKa2P;
     }
 }

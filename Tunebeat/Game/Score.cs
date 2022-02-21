@@ -137,83 +137,86 @@ namespace Tunebeat.Game
                 }
             }
 
-            switch ((EPreviewType)PlayData.Data.PreviewType)
+            if (!Create.CreateMode)
             {
-                case EPreviewType.Up:
-                    for (int i = 0; i < 6; i++)
-                    {
-                        TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i + 512, new Rectangle(0, 42 * i, 134, 42));
-                    }
-                    DrawMiniNumber(160, 36 + 32 * 0 + 512, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
-                    DrawMiniNumber(160, 36 + 32 * 1 + 512, $"{Great[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 2 + 512, $"{Good[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 3 + 512, $"{Bad[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 4 + 512, $"{Poor[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 5 + 512, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-                    if (Game.Play2P)
-                    {
+                switch ((EPreviewType)PlayData.Data.PreviewType)
+                {
+                    case EPreviewType.Up:
                         for (int i = 0; i < 6; i++)
                         {
-                            TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                            TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i + 512, new Rectangle(0, 42 * i, 134, 42));
                         }
-                        DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
-                        DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
-                    }
-                    break;
-                case EPreviewType.Down:
-                    for (int i = 0; i < 6; i++)
-                    {
-                        TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
-                    }
-                    DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
-                    DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-                    if (Game.Play2P)
-                    {
+                        DrawMiniNumber(160, 36 + 32 * 0 + 512, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+                        DrawMiniNumber(160, 36 + 32 * 1 + 512, $"{Great[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 2 + 512, $"{Good[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 3 + 512, $"{Bad[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 4 + 512, $"{Poor[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 5 + 512, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+                        if (Game.Play2P)
+                        {
+                            for (int i = 0; i < 6; i++)
+                            {
+                                TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                            }
+                            DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                            DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                        }
+                        break;
+                    case EPreviewType.Down:
                         for (int i = 0; i < 6; i++)
                         {
-                            TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i - 512, new Rectangle(0, 42 * i, 134, 42));
+                            TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
                         }
-                        DrawMiniNumber(160, 836 + 32 * 0 - 512, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
-                        DrawMiniNumber(160, 836 + 32 * 1 - 512, $"{Great[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 2 - 512, $"{Good[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 3 - 512, $"{Bad[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 4 - 512, $"{Poor[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 5 - 512, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
-                    }
-                    break;
-                case EPreviewType.Normal:
-                    for (int i = 0; i < 6; i++)
-                    {
-                        TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
-                    }
-                    DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
-                    DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
-                    DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
-                    if (Game.Play2P)
-                    {
+                        DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+                        DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+                        if (Game.Play2P)
+                        {
+                            for (int i = 0; i < 6; i++)
+                            {
+                                TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i - 512, new Rectangle(0, 42 * i, 134, 42));
+                            }
+                            DrawMiniNumber(160, 836 + 32 * 0 - 512, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                            DrawMiniNumber(160, 836 + 32 * 1 - 512, $"{Great[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 2 - 512, $"{Good[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 3 - 512, $"{Bad[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 4 - 512, $"{Poor[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 5 - 512, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                        }
+                        break;
+                    case EPreviewType.Normal:
                         for (int i = 0; i < 6; i++)
                         {
-                            TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                            TextureLoad.Game_Judge_Data.Draw(20, 24 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
                         }
-                        DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
-                        DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
-                        DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
-                    }
-                    break;
+                        DrawMiniNumber(160, 36 + 32 * 0, $"{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 1 : 0);
+                        DrawMiniNumber(160, 36 + 32 * 1, $"{Great[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 2, $"{Good[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 3, $"{Bad[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 4, $"{Poor[0]}", 0);
+                        DrawMiniNumber(160, 36 + 32 * 5, $"{Roll[0] + AutoRoll[0]}", AutoRoll[0] > 0 ? 1 : 0);
+                        if (Game.Play2P)
+                        {
+                            for (int i = 0; i < 6; i++)
+                            {
+                                TextureLoad.Game_Judge_Data.Draw(20, 824 + 32 * i, new Rectangle(0, 42 * i, 134, 42));
+                            }
+                            DrawMiniNumber(160, 836 + 32 * 0, $"{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 1 : 0);
+                            DrawMiniNumber(160, 836 + 32 * 1, $"{Great[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 2, $"{Good[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 3, $"{Bad[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 4, $"{Poor[1]}", 0);
+                            DrawMiniNumber(160, 836 + 32 * 5, $"{Roll[1] + AutoRoll[1]}", AutoRoll[1] > 0 ? 1 : 0);
+                        }
+                        break;
+                }
             }
 
             int[] rankvalue = new int[] { 0, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 4 / 9,
