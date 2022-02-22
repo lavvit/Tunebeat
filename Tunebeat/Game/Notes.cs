@@ -266,7 +266,7 @@ namespace Tunebeat.Game
                         color = new uint[6] { 0xff0000, 0x00ffff, 0x00ff00, 0x0000ff, 0x00ff00, 0x00ffff };
                         break;
                     case 32:
-                        color = new uint[8] { 0xff0000, 0xff8888, 0xffff00, 0xff8000, 0x0000ff, 0xff8000, 0xffff00, 0xff8000 };
+                        color = new uint[8] { 0xff0000, 0xff8000, 0xffff00, 0xff8000, 0x0000ff, 0xff8000, 0xffff00, 0xff8000 };
                         break;
                     case 48:
                         color = new uint[12] { 0xff0000, 0xff00ff, 0x00ffff, 0xffff00, 0x00ff00, 0xff00ff, 0x0000ff, 0xff00ff, 0x00ff00, 0xffff00, 0x00ffff, 0xff00ff };
@@ -288,105 +288,243 @@ namespace Tunebeat.Game
             }
             else TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
-            for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+            if (Create.CreateMode)
             {
-                Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
-                double time = chip.Time - Game.MainTimer.Value;
-                float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
-                if (Create.Preview && Game.MainTimer.State == 0)
+                List<BarLine> Bar = Create.File.Bar[Game.Course[player]];
+                for (int i = Bar.Count - 1; i >= 0; i--)
                 {
-                    x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
-                }
-                if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
-                {
-                    TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
-                }
-
-                //オートの処理呼び出し
-                ProcessAuto.Update(PlayData.Data.PreviewType == 3 ? true : Game.IsAuto[player], chip, Game.MainTimer.Value, player);
-                if (PlayData.Data.PreviewType < 3)
-                {
-                    ProcessReplay.Update(Game.IsReplay[player], player);
-                    ProcessReplay.UnderUpdate();
-                }
-                //ノーツが通り過ぎた時の処理
-                ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
-            }
-            //連打のタイマー　なんでここ？？
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-            for (int i = 0; i < 5; i++)
-            {
-                ProcessAuto.RollTimer[i].Tick();
-            }
-            if (roll != ERoll.None)
-            {
-                ProcessAuto.RollTimer[player].Start();
-            }
-            else
-            {
-                ProcessAuto.RollTimer[player].Reset();
-            }
-
-            for (int i = Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
-            {
-                Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
-                float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
-                if (Create.Preview && Game.MainTimer.State == 0)
-                {
-                    x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
-                }
-                if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]) && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
-                {
-                    switch (chip.ENote)
+                    if (Bar[i].IsShow)
                     {
-                        case ENote.Don:
-                        case ENote.Ka:
-                        case ENote.DON:
-                        case ENote.KA:
-                            if (x >= -715)
-                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle((int)chip.ENote * 195, 0, 195, 195));
-                            break;
-                        case ENote.RollStart:
-                        case ENote.ROLLStart:
-                            double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.RollEnd != null ? chip.RollEnd.Scroll : chip.Scroll, player);
-                            if (rollx >= -715)
+                        float x = (float)NotesX(Bar[i].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].BPM, Bar[i].Scroll, player);
+                        if (Create.Preview && Game.MainTimer.State == 0)
+                        {
+                            x = (float)NotesX(Bar[i].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].BPM, Bar[i].Scroll, player) - wid[Create.NowInput];
+                        }
+                        TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
+                    }
+                    for (int j = 0; j < Bar[i].Measure * 4; j++)
+                    {
+                        double time = Bar[i].Time;
+                        double bpm = Bar[i].BPM;
+                        double scroll = Bar[i].Scroll;
+                        for (int c = Bar[i].Chip.Count - 1; c >= 0; c--)
+                        {
+                            Chip chip = Bar[i].Chip[c];
+                            if (time == chip.Time)
                             {
-                                TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
-                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
-                                TextureLoad.Game_Notes.ScaleX = 1f;
-                                TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
-                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 5 : 8), 0, 195, 195)); //連打の先頭の顔
+                                bpm = chip.Bpm;
+                                scroll = chip.Scroll;
+                                break;
                             }
-                            break;
-                        case ENote.Balloon:
-                        case ENote.Kusudama:
-                            double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
-                            if (ballx >= -715)
+                        }
+                        float x = (float)NotesX(time, Game.MainTimer.Value + Game.TimeRemain, bpm, scroll, player);
+                        if (Create.Preview && Game.MainTimer.State == 0)
+                        {
+                            x = (float)NotesX(time, Game.MainTimer.Value + Game.TimeRemain, bpm, scroll, player) - wid[Create.NowInput];
+                        }
+                        double num = j * (1421.0 / 4) * Bar[i].Scroll;
+                        if (x <= 1500)
+                        {
+                            TextureLoad.Game_Notes.Opacity = 0.5;
+                            TextureLoad.Game_Notes.Draw(NotesP[player].X + x + num, NotesP[player].Y, new Rectangle(195 * 15, 0, 195, 195));
+                            TextureLoad.Game_Notes.Opacity = 1.0;
+                        }
+                    }
+                    for (int j = Bar[i].Chip.Count - 1; j >= 0; j--)
+                    {
+                        float x = (float)NotesX(Bar[i].Chip[j].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].Chip[j].Bpm, Bar[i].Chip[j].Scroll, player);
+                        if (Create.Preview && Game.MainTimer.State == 0)
+                        {
+                            x = (float)NotesX(Bar[i].Chip[j].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].Chip[j].Bpm, Bar[i].Chip[j].Scroll, player) - wid[Create.NowInput];
+                        }
+                        Chip chip = Bar[i].Chip[j];
+                        if (x <= 1500)
+                        {
+                            if (chip.ENote != ENote.Space && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]))
                             {
-                                if (Create.Preview)
+                                switch (chip.ENote)
                                 {
-                                    TextureLoad.Game_Notes.ScaleX = (float)(ballx - x);
-                                    TextureLoad.Game_Notes.Opacity = 0.5;
-                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
-                                    TextureLoad.Game_Notes.ScaleX = 1f;
-                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
-                                    TextureLoad.Game_Notes.Opacity = 1.0;
-                                }
-                                if (x > 0)
-                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
-                                else if (ballx > 0)
-                                    TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
-                                else
-                                {
-                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                    case ENote.Don:
+                                    case ENote.Ka:
+                                    case ENote.DON:
+                                    case ENote.KA:
+                                        if (x >= -715)
+                                            TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle((int)chip.ENote * 195, 0, 195, 195));
+                                        break;
+                                    case ENote.RollStart:
+                                    case ENote.ROLLStart:
+                                        double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.RollEnd != null ? chip.RollEnd.Scroll : chip.Scroll, player);
+                                        if (rollx >= -715)
+                                        {
+                                            TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
+                                            TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                                            TextureLoad.Game_Notes.ScaleX = 1f;
+                                            TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                                            TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 5 : 8), 0, 195, 195)); //連打の先頭の顔
+                                        }
+                                        break;
+                                    case ENote.Balloon:
+                                    case ENote.Kusudama:
+                                        double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
+                                        if (ballx >= -715)
+                                        {
+                                            if (Create.Preview)
+                                            {
+                                                TextureLoad.Game_Notes.ScaleX = (float)(ballx - x);
+                                                TextureLoad.Game_Notes.Opacity = 0.5;
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                                                TextureLoad.Game_Notes.ScaleX = 1f;
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                                                TextureLoad.Game_Notes.Opacity = 1.0;
+                                            }
+                                            if (x > 0)
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                            else if (ballx > 0)
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                            else
+                                            {
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                            }
+                                        }
+                                        break;
                                 }
                             }
-                            break;
+                        }
+                        double time = Bar[i].Chip[j].Time - Game.MainTimer.Value;
+                        if (!Create.Mapping)
+                        {
+                            //オートの処理呼び出し
+                            ProcessAuto.Update(Game.IsAuto[player], Bar[i].Chip[j], Game.MainTimer.Value, player);
+                            if (PlayData.Data.PreviewType < 3)
+                            {
+                                ProcessReplay.Update(Game.IsReplay[player], player);
+                                ProcessReplay.UnderUpdate();
+                            }
+                            //ノーツが通り過ぎた時の処理
+                            ProcessNote.PassNote(Bar[i].Chip[j], time, Bar[i].Chip[j].ENote == ENote.Ka || Bar[i].Chip[j].ENote == ENote.KA ? false : true, player);
+                        }
+                    }
+                }
+                if (!Create.Mapping)
+                {
+                    //連打のタイマー　なんでここ？？
+                    Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+                    ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
+                    for (int r = 0; r < 5; r++)
+                    {
+                        ProcessAuto.RollTimer[r].Tick();
+                    }
+                    if (roll != ERoll.None)
+                    {
+                        ProcessAuto.RollTimer[player].Start();
+                    }
+                    else
+                    {
+                        ProcessAuto.RollTimer[player].Reset();
                     }
                 }
             }
+            else
+            {
+                for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+                {
+                    Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                    double time = chip.Time - Game.MainTimer.Value;
+                    float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
+                    if (Create.Preview && Game.MainTimer.State == 0)
+                    {
+                        x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
+                    }
+                    if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
+                    {
+                        TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
+                    }
 
+                    //オートの処理呼び出し
+                    ProcessAuto.Update(PlayData.Data.PreviewType == 3 ? true : Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                    if (PlayData.Data.PreviewType < 3)
+                    {
+                        ProcessReplay.Update(Game.IsReplay[player], player);
+                        ProcessReplay.UnderUpdate();
+                    }
+                    //ノーツが通り過ぎた時の処理
+                    ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
+                }
+                //連打のタイマー　なんでここ？？
+                Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+                ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
+                for (int i = 0; i < 5; i++)
+                {
+                    ProcessAuto.RollTimer[i].Tick();
+                }
+                if (roll != ERoll.None)
+                {
+                    ProcessAuto.RollTimer[player].Start();
+                }
+                else
+                {
+                    ProcessAuto.RollTimer[player].Reset();
+                }
+
+                for (int i = Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
+                {
+                    Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                    float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
+                    if (Create.Preview && Game.MainTimer.State == 0)
+                    {
+                        x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
+                    }
+                    if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]) && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
+                    {
+                        switch (chip.ENote)
+                        {
+                            case ENote.Don:
+                            case ENote.Ka:
+                            case ENote.DON:
+                            case ENote.KA:
+                                if (x >= -715)
+                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle((int)chip.ENote * 195, 0, 195, 195));
+                                break;
+                            case ENote.RollStart:
+                            case ENote.ROLLStart:
+                                double rollx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.RollEnd != null ? chip.RollEnd.Scroll : chip.Scroll, player);
+                                if (rollx >= -715)
+                                {
+                                    TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
+                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                                    TextureLoad.Game_Notes.ScaleX = 1f;
+                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 5 : 8), 0, 195, 195)); //連打の先頭の顔
+                                }
+                                break;
+                            case ENote.Balloon:
+                            case ENote.Kusudama:
+                                double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
+                                if (ballx >= -715)
+                                {
+                                    if (Create.Preview)
+                                    {
+                                        TextureLoad.Game_Notes.ScaleX = (float)(ballx - x);
+                                        TextureLoad.Game_Notes.Opacity = 0.5;
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                                        TextureLoad.Game_Notes.ScaleX = 1f;
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                                        TextureLoad.Game_Notes.Opacity = 1.0;
+                                    }
+                                    if (x > 0)
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                    else if (ballx > 0)
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                    else
+                                    {
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         public static double NotesX(double chiptime, double timer, double bpm,  double scroll, int player)

@@ -511,7 +511,7 @@ namespace Tunebeat.SongSelect
             {
                 if (Key.IsPushed(KEY_INPUT_RETURN))
                 {
-                    if (NowTJA.Type == EType.New)
+                    if (NowTJA.Type == EType.New && CreateStep > 0)
                     {
                         switch (CreateStep)
                         {
@@ -868,10 +868,13 @@ namespace Tunebeat.SongSelect
                     if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
                     {
                         CourseChange(false, 1);
+                        SetScore();
                     }
                     else
                     {
                         CourseChange(false, 0);
+                        NowReplay[0] = 0;
+                        SetScore();
                     }
                 }
                 if (Key.IsPushed(KEY_INPUT_SLASH))
@@ -1077,7 +1080,7 @@ namespace Tunebeat.SongSelect
                 #endregion
             }
             string title = NowTJA.Title;
-            //SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
+            SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
             SongLoad.Sort(SongLoad.SongList, SongLoad.NowSort);
 
             for (int i = 0; i < SongLoad.SongData.Count; i++)

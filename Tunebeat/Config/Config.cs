@@ -412,8 +412,11 @@ namespace Tunebeat.Config
                     SaveReplay = new OptionKey("SaveReplay", PlayData.Data.SaveReplay, "[プレイ・リザルト] プレイデータを保存する"); OptionList.Add(SaveReplay);
                     MoveCreate = new OptionKey("MoveCreate", PlayData.Data.MoveCreate, "[プレイ] 編集モードを起動する(開発中)"); OptionList.Add(MoveCreate);
                     InfoMenu = new OptionKey("InfoMenu", PlayData.Data.InfoMenu, "[編集] 譜面情報を編集する"); OptionList.Add(InfoMenu);
-                    AddMeasure = new OptionKey("AddMeasure", PlayData.Data.AddMeasure, "[編集] 譜面をテキストで追加する"); OptionList.Add(AddMeasure);
+                    OpenText = new OptionKey("OpenText", PlayData.Data.OpenText, "[編集] 譜面をテキストで追加する"); OptionList.Add(OpenText);
+                    AddCommand = new OptionKey("AddCommand", PlayData.Data.AddCommand, "[編集] 命令文を追加する"); OptionList.Add(AddCommand);
+                    OpenTenplate = new OptionKey("OpenTenplate", PlayData.Data.OpenTenplate, "[編集] テンプレートに登録したテキストを追加する"); OptionList.Add(OpenTenplate);
                     RealTimeMapping = new OptionKey("RealTimeMapping", PlayData.Data.RealTimeMapping, "[編集] 押されたキーで譜面を追加する"); OptionList.Add(RealTimeMapping);
+                    SaveFile = new OptionKey("SaveFile", PlayData.Data.SaveFile, "[編集] 譜面を保存する"); OptionList.Add(SaveFile);
 
                     Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
@@ -542,8 +545,11 @@ namespace Tunebeat.Config
                     PlayData.Data.ChangeAuto2P = ChangeAuto2P.Value;
                     PlayData.Data.MoveCreate = MoveCreate.Value;
                     PlayData.Data.InfoMenu = InfoMenu.Value;
-                    PlayData.Data.AddMeasure = AddMeasure.Value;
+                    PlayData.Data.OpenText = OpenText.Value;
+                    PlayData.Data.AddCommand = AddCommand.Value;
+                    PlayData.Data.OpenTenplate = OpenTenplate.Value;
                     PlayData.Data.RealTimeMapping = RealTimeMapping.Value;
+                    PlayData.Data.SaveFile = SaveFile.Value;
                     PlayData.Data.SaveReplay = SaveReplay.Value;
                     break;
             }
@@ -574,7 +580,7 @@ namespace Tunebeat.Config
         public static OptionString PlayerName, SkinName, SoundName, BGMName, FontName, PlayFile, BestScore, RivalScore, Replay, Replay2P;
         public static OptionStrList PlayFolder;
         public static OptionKey ScreenShot, MoveConfig, OpenOption, PlayStart, PlayReset, DisplaySudden, SuddenPlus, SuddenMinus, ChangeFHS, DisplaySudden2P, SuddenPlus2P, SuddenMinus2P, ChangeFHS2P,
-            MeasureUp, MeasureDown, JunpHome, JunpEnd, ChangeAuto, ChangeAuto2P, MoveCreate, InfoMenu, AddMeasure, RealTimeMapping, SaveReplay;
+            MeasureUp, MeasureDown, JunpHome, JunpEnd, ChangeAuto, ChangeAuto2P, MoveCreate, InfoMenu, OpenText, AddCommand, OpenTenplate, RealTimeMapping, SaveFile, SaveReplay;
         public static OptionKeyList LeftDon, LeftKa, RightDon, RightKa, LeftDon2P, LeftKa2P, RightDon2P, RightKa2P;
     }
 }

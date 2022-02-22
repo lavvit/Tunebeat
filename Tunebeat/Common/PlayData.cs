@@ -102,6 +102,8 @@ namespace Tunebeat.Common
         public double[] InputAdjust = new double[2] { 0, 0 };
         public bool[] AutoAdjust = new bool[2] { false, false };
 
+        public List<string> Template = new List<string>();
+
         public List<int> LEFTDON = new List<int>() { KEY_INPUT_F };
         public List<int> RIGHTDON = new List<int>() { KEY_INPUT_J };
         public List<int> LEFTKA = new List<int>() { KEY_INPUT_D };
@@ -130,10 +132,13 @@ namespace Tunebeat.Common
         public int JunpEnd = KEY_INPUT_END;
         public int ChangeAuto = KEY_INPUT_F1;
         public int ChangeAuto2P = KEY_INPUT_F2;
-        public int MoveCreate = KEY_INPUT_F5;
-        public int InfoMenu = KEY_INPUT_F6;
-        public int AddMeasure = KEY_INPUT_F8;
-        public int RealTimeMapping = KEY_INPUT_F9;
+        public int MoveCreate = KEY_INPUT_F3;
+        public int InfoMenu = KEY_INPUT_F4;
+        public int OpenText = KEY_INPUT_F5;
+        public int AddCommand = KEY_INPUT_F6;
+        public int OpenTenplate = KEY_INPUT_F7;
+        public int RealTimeMapping = KEY_INPUT_F8;
+        public int SaveFile = KEY_INPUT_F9;
         public int SaveReplay = KEY_INPUT_F11;
         //public int MoveTraining = KEY_INPUT_F9;
     }

@@ -33,8 +33,11 @@ namespace Tunebeat.Common
                 Balloon[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Balloon.ogg");
                 Kusudama[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Kusudama.ogg");
             }
+            Metronome = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Metronome.ogg");
+            Metronome_Bar = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Metronome_Bar.ogg");
         }
 
+        public static Sound Metronome, Metronome_Bar;
         public static Sound[] Don = new Sound[5], Ka = new Sound[5], DON = new Sound[5], KA = new Sound[5], Balloon = new Sound[5], Kusudama = new Sound[5];
     }
 }

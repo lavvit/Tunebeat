@@ -21,6 +21,10 @@ namespace Tunebeat.Game
             TJAPath = !string.IsNullOrEmpty(SongSelect.SongSelect.FileName) ? $@"{SongSelect.SongSelect.FolderName}\{SongSelect.SongSelect.FileName}.tja" : SongSelect.SongSelect.NowTJA.Path;
             if (!File.Exists(TJAPath))
             {
+                if (!Directory.Exists(SongSelect.SongSelect.FolderName))
+                {
+                    Directory.CreateDirectory(SongSelect.SongSelect.FolderName);
+                }
                 using (StreamWriter streamWriter = new StreamWriter(TJAPath, false, Encoding.GetEncoding("SHIFT_JIS")))
                 {
                     streamWriter.WriteLine("TITLE:");
@@ -31,7 +35,7 @@ namespace Tunebeat.Game
                     streamWriter.WriteLine("SONGVOL:100");
                     streamWriter.WriteLine("SEVOL:100");
                     streamWriter.WriteLine("DEMOSTART:0");
-                    streamWriter.WriteLine("COURSE:3");
+                    streamWriter.WriteLine($"COURSE:{SongSelect.SongSelect.EnableCourse(SongSelect.SongSelect.NowTJA.Course, 0)}");
                     streamWriter.WriteLine("LEVEL:0");
                     streamWriter.WriteLine("#START");
                     streamWriter.WriteLine("0,");
@@ -261,6 +265,7 @@ namespace Tunebeat.Game
             }
             SetBalloon();
             Create.Read();
+            Create.BarLoad(Course[0]);
 
             MeasureList = new List<Chip>();
             MeasureCount();
@@ -611,6 +616,7 @@ namespace Tunebeat.Game
                 DrawString(700, 780, $"NowAdjust:{Adjust[1]}", 0xffffff);
                 DrawString(700, 800, $"Average:{Score.msAverage[1]}", 0xffffff);
             }
+            DrawString(720, 320, $"{NowMeasure}/{MeasureList.Count}", 0xffffff);
 
             if (IsSongPlay && !MainSong.IsPlaying) DrawString(0, 160, "PRESS ENTER", 0xffffff);
             #endif
@@ -650,7 +656,7 @@ namespace Tunebeat.Game
             }
             if (MainTimer.Value >= 0 && MainTimer.State != 0 && !MainSong.IsPlaying && !IsSongPlay)
             {
-                if (MainSong.IsEnable)
+                if (MainSong.IsEnable && File.Exists(MainSong.FileName))
                 {
                     MainSong.Play(PlayMeasure == 0 ? true : false);
                     if (PlayMeasure > 0) MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
@@ -796,6 +802,20 @@ namespace Tunebeat.Game
                 }
             }
 
+            if (MeasureList != null)
+            {
+                for (int i = MeasureList.Count - 1; i >= 0; i--)
+                {
+                    if (MeasureList[i].Time <= MainTimer.Value)
+                    {
+                        NowMeasure = i + 1;
+                        break;
+                    }
+                    NowMeasure = 0;
+                }
+            }
+            else NowMeasure = 0;
+
             if (MainTimer.Value % 2000 <= 10 && MainTimer.Value > 0 && Score.Active.State != 0 && Score.Active.Value < Score.Active.End)
             {
                 if (Score.msAverage[0] > 0.5 && PlayData.Data.AutoAdjust[0] && !IsReplay[0])
@@ -859,7 +879,7 @@ namespace Tunebeat.Game
         public static bool[] IsAuto = new bool[2], Failed = new bool[2], IsReplay = new bool[2];
         public static int[] Course = new int[5];
         public static double[] Adjust = new double[5], ScrollRemain = new double[5];
-        public static int PlayMeasure, RandomCourse;
+        public static int PlayMeasure, RandomCourse, NowMeasure;
         public static double StartTime, TimeRemain;
         public static List<Chip> MeasureList = new List<Chip>();
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2], SuddenTimer = new Counter[2];

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using Tunebeat.Common;
 using static DxLibDLL.DX;
 using Amaoto;
@@ -16,7 +17,7 @@ namespace Tunebeat.Game
         {
             if (Create.Selecting)
             {
-                if (Create.Cursor != 8)
+                if (Create.Cursor != 11)
                 {
                     if (Key.IsPushed(KEY_INPUT_RETURN))
                     {
@@ -31,27 +32,41 @@ namespace Tunebeat.Game
                                 break;
                             case 2:
                                 Create.File.Wave = Input.Text;
+                                if (!string.IsNullOrEmpty(Create.File.Wave)) Game.MainSong = new Sound($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.Wave}");
                                 break;
                             case 3:
                                 Create.File.BGImage = Input.Text;
+                                if (!string.IsNullOrEmpty(Create.File.BGImage)) Game.MainImage = new Texture($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.BGImage}");
                                 break;
                             case 4:
                                 Create.File.BGMovie = Input.Text;
+                                string movie = $"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.BGMovie}";
+                                movie = movie.Replace(".wmv", ".mp4");
+                                if (!string.IsNullOrEmpty(movie)) Game.MainMovie = new Movie(movie);
                                 break;
                             case 5:
-                                Create.File.Bpm = double.Parse(Input.Text);
+                                if (double.TryParse(Input.Text, out double d)) Create.File.Bpm = double.Parse(Input.Text);
                                 break;
                             case 6:
-                                Create.File.Offset = double.Parse(Input.Text);
+                                if (double.TryParse(Input.Text, out double dd)) Create.File.Offset = double.Parse(Input.Text);
                                 break;
                             case 7:
-                                Create.File.DemoStart = double.Parse(Input.Text);
+                                if (int.TryParse(Input.Text, out int s)) Create.File.SongVol = int.Parse(Input.Text);
+                                break;
+                            case 8:
+                                if (int.TryParse(Input.Text, out int ss)) Create.File.SeVol = int.Parse(Input.Text);
                                 break;
                             case 9:
-                                Create.File.Level[Game.Course[0]] = int.Parse(Input.Text);
+                                if (double.TryParse(Input.Text, out double de)) Create.File.DemoStart = double.Parse(Input.Text);
                                 break;
                             case 10:
-                                Create.File.Total[Game.Course[0]] = double.Parse(Input.Text);
+                                Create.File.Genre = Input.Text;
+                                break;
+                            case 12:
+                                if (int.TryParse(Input.Text, out int le)) Create.File.Level[Game.Course[0]] = int.Parse(Input.Text);
+                                break;
+                            case 13:
+                                if (double.TryParse(Input.Text, out double to)) Create.File.Total[Game.Course[0]] = double.Parse(Input.Text);
                                 break;
                         }
                         Input.End();
@@ -112,7 +127,7 @@ namespace Tunebeat.Game
                 }
 
 #if DEBUG
-                if ((Key.IsPushed(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_F3) && PlayData.Data.AutoRoll > 20))
+                if ((Key.IsPushed(KEY_INPUT_RBRACKET) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_RBRACKET) && PlayData.Data.AutoRoll > 20))
                 {
                     PlayData.Data.AutoRoll--;
                     for (int i = 0; i < 5; i++)
@@ -120,7 +135,7 @@ namespace Tunebeat.Game
                         ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_F4) || (Key.IsPushing(KEY_INPUT_F4) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
+                if (Key.IsPushed(KEY_INPUT_LBRACKET) || (Key.IsPushing(KEY_INPUT_LBRACKET) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
                 {
                     PlayData.Data.AutoRoll++;
                     for (int i = 0; i < 5; i++)
@@ -544,6 +559,7 @@ namespace Tunebeat.Game
                     Create.CreateMode = !Create.CreateMode;
                     Create.Preview = Create.CreateMode;
                     Create.InfoMenu = false;
+                    Create.BarLoad(Game.Course[0]);
                     if (Create.CreateMode && Game.MainTimer.State == 0)
                     {
                         Game.TimeRemain = -wid[Create.NowInput];
@@ -574,6 +590,7 @@ namespace Tunebeat.Game
                         if (Create.NowInput > 0) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput - 1];
                         if (Create.NowInput-- <= 0) Create.NowInput = 0;
                         Create.InputType = inputlist[Create.NowInput];
+                        //Create.BarInit(Game.Course[0]);
                     }
                     if (Key.IsPushed(KEY_INPUT_MULTIPLY))
                     {
@@ -581,6 +598,7 @@ namespace Tunebeat.Game
                         if (Create.NowInput < 7) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput + 1];
                         if (Create.NowInput++ >= 7) Create.NowInput = 7;
                         Create.InputType = inputlist[Create.NowInput];
+                        //Create.BarInit(Game.Course[0]);
                     }
                     if (Create.AllText != null)
                     {
@@ -592,6 +610,38 @@ namespace Tunebeat.Game
                         {
                             Create.NowScroll++;
                         }
+                    }
+                    if (Key.IsPushed(PlayData.Data.RealTimeMapping))
+                    {
+                        Create.Mapping = !Create.Mapping;
+                        if (Create.Mapping)
+                        {
+                            DrawLog.Draw("マッピングを開始します…");
+                        }
+                        if (!Create.Mapping)
+                        {
+                            DrawLog.Draw("マッピングをセーブしました!");
+                            Create.Save(Game.TJAPath);
+                            Game.Reset();
+                        }
+                    }
+                    if (Create.Mapping)
+                    {
+                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        {
+                            SoundLoad.Don[0].Play();
+                            Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, true);
+                        }
+                        if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
+                        {
+                            SoundLoad.Ka[0].Play();
+                            Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, false);
+                        }
+                    }
+                    if (Key.IsPushed(PlayData.Data.SaveFile))
+                    {
+                        DrawLog.Draw("セーブしました!");
+                        Create.Save(Game.TJAPath);
                     }
                     if (Key.IsPushed(PlayData.Data.InfoMenu))
                     {
@@ -614,32 +664,32 @@ namespace Tunebeat.Game
                     {
                         if (Key.IsPushed(KEY_INPUT_UP))
                         {
-                            if (Create.Cursor-- <= 0) Create.Cursor = 10;
+                            if (Create.Cursor-- <= 0) Create.Cursor = 13;
                         }
                         if (Key.IsPushed(KEY_INPUT_DOWN))
                         {
-                            if (Create.Cursor++ >= 10) Create.Cursor = 0;
+                            if (Create.Cursor++ >= 13) Create.Cursor = 0;
                         }
                         if (Key.IsPushed(KEY_INPUT_RETURN))
                         {
                             Create.Selecting = !Create.Selecting;
-                            if (Create.Cursor != 8) Input.Init();
+                            if (Create.Cursor != 11) Input.Init();
                             switch (Create.Cursor)
                             {
                                 case 0:
-                                    Input.Text = Create.File.Title;
+                                    if (!string.IsNullOrEmpty(Create.File.Title)) Input.Text = Create.File.Title;
                                     break;
                                 case 1:
-                                    Input.Text = Create.File.SubTitle;
+                                    if (!string.IsNullOrEmpty(Create.File.SubTitle)) Input.Text = Create.File.SubTitle;
                                     break;
                                 case 2:
-                                    Input.Text = Create.File.Wave;
+                                    if (!string.IsNullOrEmpty(Create.File.Wave)) Input.Text = Create.File.Wave;
                                     break;
                                 case 3:
-                                    Input.Text = Create.File.BGImage;
+                                    if (!string.IsNullOrEmpty(Create.File.BGImage)) Input.Text = Create.File.BGImage;
                                     break;
                                 case 4:
-                                    Input.Text = Create.File.BGMovie;
+                                    if (!string.IsNullOrEmpty(Create.File.BGMovie)) Input.Text = Create.File.BGMovie;
                                     break;
                                 case 5:
                                     Input.Text = $"{Create.File.Bpm}";
@@ -648,12 +698,21 @@ namespace Tunebeat.Game
                                     Input.Text = $"{Create.File.Offset}";
                                     break;
                                 case 7:
-                                    Input.Text = $"{Create.File.DemoStart}";
+                                    Input.Text = $"{Create.File.SongVol}";
+                                    break;
+                                case 8:
+                                    Input.Text = $"{Create.File.SeVol}";
                                     break;
                                 case 9:
-                                    Input.Text = $"{Create.File.Level[Game.Course[0]]}";
+                                    Input.Text = $"{Create.File.DemoStart}";
                                     break;
                                 case 10:
+                                    if (!string.IsNullOrEmpty(Create.File.Genre)) Input.Text = Create.File.Genre;
+                                    break;
+                                case 12:
+                                    Input.Text = $"{Create.File.Level[Game.Course[0]]}";
+                                    break;
+                                case 13:
                                     Input.Text = $"{Create.File.Total[Game.Course[0]]}";
                                     break;
                             }
@@ -702,6 +761,17 @@ namespace Tunebeat.Game
         {
             Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
             Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
+            if (Create.CreateMode)
+            {
+                List<Chip> list = new List<Chip>();
+                for (int i = 0; i < Create.File.Bar[Game.Course[player]].Count; i++)
+                {
+                    foreach (Chip c in Create.File.Bar[Game.Course[player]][i].Chip)
+                        list.Add(c);
+                }
+                chip = GetNotes.GetNearNote(list, Game.MainTimer.Value - Game.Adjust[player]);
+                nowchip = GetNotes.GetNowNote(list, Game.MainTimer.Value - Game.Adjust[player]);
+            }
             EJudge judge;
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             if (PlayData.Data.PreviewType == 3 || Game.IsAuto[player])

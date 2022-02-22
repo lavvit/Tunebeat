@@ -48,7 +48,6 @@ namespace Tunebeat.Common
             Game_Base_Info = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Base_Info.png");
             Game_Base_Info_DP = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Base_Info_DP.png");
             Game_Notes = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Notes.png");
-            Game_Notes_Ghost = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Notes.png");
             Game_Bar = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Bar.png");
             Game_Lane = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane.png");
             Game_Lane_Gogo = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Lane_Gogo.png");
@@ -122,7 +121,6 @@ namespace Tunebeat.Common
             Game_Base_Info,
             Game_Base_Info_DP,
             Game_Notes,
-            Game_Notes_Ghost,
             Game_Bar,
             Game_Lane,
             Game_Lane_Gogo,
