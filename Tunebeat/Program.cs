@@ -44,6 +44,7 @@ namespace Tunebeat
             SetMultiThreadFlag(TRUE); //マルチスレッドで処理できるようにするかどうか
             SetUseASyncLoadFlag(TRUE); //非同期で画像を読み込むかどうか
             SetBackgroundColor(0, 0, 0); //バックグラウンドの色指定
+            SetDragFileValidFlag(TRUE); //ファイルをD&Dで入れられるようにする
             if (DxLib_Init() < 0) return;
             SetDrawScreen(DX_SCREEN_BACK);
 

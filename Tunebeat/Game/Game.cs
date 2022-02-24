@@ -27,18 +27,17 @@ namespace Tunebeat.Game
                 }
                 using (StreamWriter streamWriter = new StreamWriter(TJAPath, false, Encoding.GetEncoding("SHIFT_JIS")))
                 {
-                    streamWriter.WriteLine("TITLE:");
+                    streamWriter.WriteLine($"TITLE:{SongSelect.SongSelect.FileName}");
                     streamWriter.WriteLine("SUBTITLE:--");
                     streamWriter.WriteLine("BPM:120");
-                    streamWriter.WriteLine("WAVE:");
+                    streamWriter.WriteLine($"WAVE:{SongSelect.SongSelect.FileName}.ogg");
                     streamWriter.WriteLine("OFFSET:-0");
                     streamWriter.WriteLine("SONGVOL:100");
                     streamWriter.WriteLine("SEVOL:100");
                     streamWriter.WriteLine("DEMOSTART:0");
-                    streamWriter.WriteLine($"COURSE:{SongSelect.SongSelect.EnableCourse(SongSelect.SongSelect.NowTJA.Course, 0)}");
+                    streamWriter.WriteLine($"COURSE:{SongSelect.SongSelect.NowTJA.Course}");
                     streamWriter.WriteLine("LEVEL:0");
                     streamWriter.WriteLine("#START");
-                    streamWriter.WriteLine("0,");
                     streamWriter.WriteLine("#END");
                 }
             }
@@ -264,6 +263,13 @@ namespace Tunebeat.Game
                 if (PlayData.Data.PreviewType < 3) Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
             }
             SetBalloon();
+
+            if (Create.Edited)
+            {
+                DrawLog.Draw("セーブしました!");
+                Create.Save(TJAPath);
+                Create.Edited = false;
+            }
             Create.Read();
             Create.BarLoad(Course[0]);
 
@@ -355,21 +361,49 @@ namespace Tunebeat.Game
                 if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = 0;
                 for (int i = 0; i < 2; i++)
                 {
-                    foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
+                    if (Create.CreateMode)
                     {
-                        if (chip.Time >= StartTime - 1 && chip.IsMiss)
+                        for (int j = 0; j < Create.File.Bar[Course[i]].Count; j++)
                         {
-                            chip.IsMiss = false;
-                            if (IsAuto[i])
+                            foreach (Chip chip in Create.File.Bar[Course[i]][j].Chip)
                             {
-                                Score.Auto[i]--;
-                                Score.Combo[i]--;
-                                Score.MaxCombo[i]--;
-                                Score.DeleteGauge(i);
+                                if (chip.Time >= StartTime - 1 && chip.IsMiss)
+                                {
+                                    chip.IsMiss = false;
+                                    if (IsAuto[i])
+                                    {
+                                        Score.Auto[i]--;
+                                        Score.Combo[i]--;
+                                        Score.MaxCombo[i]--;
+                                        Score.DeleteGauge(i);
+                                    }
+                                    else
+                                    {
+                                        Score.Poor[i]--;
+                                    }
+                                }
                             }
-                            else
+                        }
+                        
+                    }
+                    else
+                    {
+                        foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
+                        {
+                            if (chip.Time >= StartTime - 1 && chip.IsMiss)
                             {
-                                Score.Poor[i]--;
+                                chip.IsMiss = false;
+                                if (IsAuto[i])
+                                {
+                                    Score.Auto[i]--;
+                                    Score.Combo[i]--;
+                                    Score.MaxCombo[i]--;
+                                    Score.DeleteGauge(i);
+                                }
+                                else
+                                {
+                                    Score.Poor[i]--;
+                                }
                             }
                         }
                     }
@@ -646,7 +680,7 @@ namespace Tunebeat.Game
                 PushingTimer[i].Tick();
                 SuddenTimer[i].Tick();
             }
-            if (MainTimer.State == 0 && ((!(Create.CreateMode && Create.InfoMenu) && Key.IsPushed(KEY_INPUT_RETURN)) || Key.IsPushed(PlayData.Data.PlayStart) || PlayData.Data.QuickStart))
+            if (MainTimer.State == 0 && Create.CommandLayer == 0 && ((!(Create.CreateMode && Create.InfoMenu) && Key.IsPushed(KEY_INPUT_RETURN)) || Key.IsPushed(PlayData.Data.PlayStart) || PlayData.Data.QuickStart))
             {
                 MainTimer.Start();
                 if (IsAuto[0]) PlayData.Data.InputAdjust[0] = Adjust[0];
@@ -677,6 +711,12 @@ namespace Tunebeat.Game
                 PlayData.End();
                 if (Create.CreateMode)
                 {
+                    if (Create.Mapping)
+                    {
+                        Create.Mapping = !Create.Mapping;
+                        DrawLog.Draw("マッピングをセーブしました!");
+                        Create.Save(TJAPath);
+                    }
                     Reset();
                 }
                 else
@@ -769,7 +809,7 @@ namespace Tunebeat.Game
                     }
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_ESCAPE))
+            if (Key.IsPushed(KEY_INPUT_ESCAPE) && Create.CommandLayer < 2)
             {
                 PlayMemory.Dispose();
                 Program.SceneChange(new SongSelect.SongSelect());

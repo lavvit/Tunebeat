@@ -17,11 +17,13 @@ namespace Tunebeat.Game
         {
             if (Create.Selecting)
             {
+
                 if (Create.Cursor != 11)
                 {
                     if (Key.IsPushed(KEY_INPUT_RETURN))
                     {
                         Create.Selecting = !Create.Selecting;
+                        #region HeaderLoad
                         switch (Create.Cursor)
                         {
                             case 0:
@@ -69,12 +71,62 @@ namespace Tunebeat.Game
                                 if (double.TryParse(Input.Text, out double to)) Create.File.Total[Game.Course[0]] = double.Parse(Input.Text);
                                 break;
                         }
+                        #endregion
                         Input.End();
                     }
                     if (Key.IsPushed(KEY_INPUT_ESCAPE))
                     {
                         Create.Selecting = !Create.Selecting;
                         Input.End();
+                    }
+                    #region Timer
+                    if (Key.IsPushed(PlayData.Data.MeasureUp))
+                    {
+                        Game.PushedTimer[0].Start();
+                    }
+                    if (Key.IsLeft(PlayData.Data.MeasureUp))
+                    {
+                        Game.PushedTimer[0].Stop();
+                        Game.PushedTimer[0].Reset();
+                        Game.PushingTimer[0].Stop();
+                        Game.PushingTimer[0].Reset();
+                    }
+                    if (Key.IsPushed(PlayData.Data.MeasureDown))
+                    {
+                        Game.PushedTimer[1].Start();
+                    }
+                    if (Key.IsLeft(PlayData.Data.MeasureDown))
+                    {
+                        Game.PushedTimer[1].Stop();
+                        Game.PushedTimer[1].Reset();
+                        Game.PushingTimer[1].Stop();
+                        Game.PushingTimer[1].Reset();
+                    }
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (Game.PushedTimer[i].Value == Game.PushedTimer[i].End)
+                        {
+                            Game.PushingTimer[i].Start();
+                        }
+                    }
+                    #endregion
+                    if ((Key.IsPushed(PlayData.Data.MeasureUp) || (Game.PushingTimer[0].Value == Game.PushingTimer[0].End)))
+                    {
+                        Game.MeasureUp();
+                        Game.PushingTimer[0].Reset();
+                    }
+                    if ((Key.IsPushed(PlayData.Data.MeasureDown) || (Game.PushingTimer[1].Value == Game.PushingTimer[1].End)))
+                    {
+                        Game.MeasureDown();
+                        Game.PushingTimer[1].Reset();
+                    }
+                    if (Key.IsPushed(PlayData.Data.JunpEnd))
+                    {
+                        Game.MeasureUp(true);
+                    }
+                    if (Key.IsPushed(PlayData.Data.JunpHome))
+                    {
+                        Game.MeasureDown(true);
                     }
                 }
                 else
@@ -97,8 +149,30 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(KEY_INPUT_RETURN))
                     {
+                        if (!Game.MainTJA[0].Courses[Game.Course[0]].IsEnable)
+                        {
+                            Create.Save(Game.TJAPath);
+                            Game.Reset();
+                        }
                         Create.Selecting = !Create.Selecting;
                     }
+                }
+            }
+            else if (Create.CommandLayer == 2)
+            {
+                if (Key.IsPushed(KEY_INPUT_RETURN))
+                {
+                    if (!Create.DeleteMode) Create.AddCommand(Input.Text);
+                    else Create.DeleteCommand(Input.Text);
+                    Create.Save(Game.TJAPath);
+                    Game.Reset();
+                    Input.End();
+                    Create.CommandLayer = 0;
+                }
+                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                {
+                    Create.CommandLayer = 0;
+                    Input.End();
                 }
             }
             else
@@ -557,9 +631,14 @@ namespace Tunebeat.Game
                 {
                     SoundLoad.Ka[0].Play();
                     Create.CreateMode = !Create.CreateMode;
-                    Create.Preview = Create.CreateMode;
                     Create.InfoMenu = false;
-                    Create.BarLoad(Game.Course[0]);
+                    if (Key.IsPushing(KEY_INPUT_RSHIFT))
+                    {
+                        Create.BarInit(Game.Course[0]);
+                        Create.Save(Game.TJAPath);
+                    }
+                    else Create.BarLoad(Game.Course[0]);
+                    Game.Reset();
                     if (Create.CreateMode && Game.MainTimer.State == 0)
                     {
                         Game.TimeRemain = -wid[Create.NowInput];
@@ -590,7 +669,6 @@ namespace Tunebeat.Game
                         if (Create.NowInput > 0) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput - 1];
                         if (Create.NowInput-- <= 0) Create.NowInput = 0;
                         Create.InputType = inputlist[Create.NowInput];
-                        //Create.BarInit(Game.Course[0]);
                     }
                     if (Key.IsPushed(KEY_INPUT_MULTIPLY))
                     {
@@ -598,7 +676,90 @@ namespace Tunebeat.Game
                         if (Create.NowInput < 7) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput + 1];
                         if (Create.NowInput++ >= 7) Create.NowInput = 7;
                         Create.InputType = inputlist[Create.NowInput];
-                        //Create.BarInit(Game.Course[0]);
+                    }
+                    if (Create.CommandLayer > 0)
+                    {
+                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        {
+                            BarLine bar = Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1];
+                            Create.SelectedChip = (null, null);
+                            Create.SelectedChip = (bar, bar.Chip[0]);
+                            Input.Init();
+                            Create.CommandLayer++;
+                        }
+                    }
+                    if (Mouse.X >= Notes.NotesP[0].X - 22 && Mouse.Y >= Notes.NotesP[0].Y && Mouse.Y < Notes.NotesP[0].Y + 195 && Game.NowMeasure > 0 && Game.MainTimer.State == 0)
+                    {
+                        int chiprange = Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1].Chip.Count;
+                        int amount = Create.InputType;
+                        double width = (1920 - (Notes.NotesP[0].X - 22)) / (double)amount;
+                        double x;
+                        for (int i = 0; i < amount; i++)
+                        {
+                            x = Notes.NotesP[0].X - 22 + i * width;
+                            int nownote = i * (chiprange / Create.InputType);
+                            Chip chip = Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1].Chip[nownote];
+                            if (Mouse.X >= x && Mouse.X < x + width)
+                            {
+                                DrawString(1100, 500, $"Time:{chip.Time}", 0xffffff);
+                                if (Create.CommandLayer > 0)
+                                {
+                                    if (Mouse.IsPushed(MouseButton.Left))
+                                    {
+                                        Create.DeleteMode = false;
+                                        Create.SelectedChip = (null, null);
+                                        Create.SelectedChip = (Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1], chip);
+                                        Input.Init();
+                                        Create.CommandLayer++;
+                                    }
+                                    if (Mouse.IsPushed(MouseButton.Right))
+                                    {
+                                        Create.DeleteMode = true;
+                                        Create.SelectedChip = (null, null);
+                                        Create.SelectedChip = (Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1], chip);
+                                        Input.Init();
+                                        Create.CommandLayer++;
+                                    }
+                                }
+                                else
+                                {
+                                    ENote color = Create.NowColor == 7 ? ENote.Kusudama : (ENote)Create.NowColor + 1;
+                                    if (Mouse.IsPushing(MouseButton.Left) && !Create.RollEnd && chip.ENote < ENote.RollStart)
+                                    {
+                                        Create.Edited = true;
+                                        if (chip.ENote != color)
+                                        {
+                                            chip.ENote = color;
+                                        }
+                                    }
+                                    if (Mouse.IsPushing(MouseButton.Right))
+                                    {
+                                        Create.Edited = true;
+                                        chip.ENote = ENote.Space;
+                                        chip.RollEnd = null;
+                                    }
+
+                                    if (Mouse.IsPushed(MouseButton.Left))
+                                    {
+                                        if (Create.NowColor == 1 || Create.NowColor == 3)
+                                            SoundLoad.Ka[0].Play();
+                                        else
+                                            SoundLoad.Don[0].Play();
+                                        if (Create.RollEnd)
+                                        {
+                                            chip.ENote = ENote.RollEnd;
+                                            Create.RollBegin.RollEnd = chip;
+                                            Create.RollEnd = !Create.RollEnd;
+                                        }
+                                        else if (Create.NowColor >= 4)
+                                        {
+                                            if (Create.NowColor >= 4) Create.RollBegin = chip;
+                                            Create.RollEnd = !Create.RollEnd;
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     if (Create.AllText != null)
                     {
@@ -606,7 +767,7 @@ namespace Tunebeat.Game
                         {
                             Create.NowScroll--;
                         }
-                        if ((Key.IsPushing(KEY_INPUT_ADD) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 54 < Create.Course.Count)
+                        if ((Key.IsPushing(KEY_INPUT_ADD) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 54 < Create.Course[Game.Course[0]].Count)
                         {
                             Create.NowScroll++;
                         }
@@ -646,6 +807,11 @@ namespace Tunebeat.Game
                     if (Key.IsPushed(PlayData.Data.InfoMenu))
                     {
                         Create.InfoMenu = !Create.InfoMenu;
+                    }
+                    if (Key.IsPushed(PlayData.Data.AddCommand))
+                    {
+                        if (Create.CommandLayer > 0) Create.CommandLayer = 0;
+                        else Create.CommandLayer++;
                     }
                     if (!Create.InfoMenu)
                     {

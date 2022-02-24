@@ -277,6 +277,10 @@ namespace Tunebeat.Game
                 {
                     x = NotesP[0].X - 22 + i * width;
                     DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, color[i % (Create.InputType == 4 ? 2 : Create.InputType / 4)], TRUE);
+                    if (Mouse.X >= x && Mouse.X < x + width && Mouse.Y >= NotesP[0].Y && Mouse.Y < NotesP[0].Y + 195)
+                    {
+                        DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, 0xffffff, TRUE);
+                    }
                 }
                 SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
             }
@@ -293,20 +297,22 @@ namespace Tunebeat.Game
                 List<BarLine> Bar = Create.File.Bar[Game.Course[player]];
                 for (int i = Bar.Count - 1; i >= 0; i--)
                 {
-                    if (Bar[i].IsShow)
+                    if (Bar[i].IsShow && Game.MainTimer.Value > Bar[i].Time - 30000)
                     {
                         float x = (float)NotesX(Bar[i].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].BPM, Bar[i].Scroll, player);
                         if (Create.Preview && Game.MainTimer.State == 0)
                         {
                             x = (float)NotesX(Bar[i].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].BPM, Bar[i].Scroll, player) - wid[Create.NowInput];
                         }
-                        TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
+                        if (x <= 1500 && x >= -715) TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
                     }
                     for (int j = 0; j < Bar[i].Measure * 4; j++)
                     {
+                        #region function
                         double time = Bar[i].Time;
                         double bpm = Bar[i].BPM;
                         double scroll = Bar[i].Scroll;
+                        bool[] doubt = new bool[1000];
                         for (int c = Bar[i].Chip.Count - 1; c >= 0; c--)
                         {
                             Chip chip = Bar[i].Chip[c];
@@ -317,13 +323,33 @@ namespace Tunebeat.Game
                                 break;
                             }
                         }
+                        for (int c = Bar[i].Chip.Count - 1; c >= 0; c--)
+                        {
+                            Chip chip = Bar[i].Chip[c];
+                            if (chip.Time == Bar[i].Time + j * (60000.0 / Bar[i].BPM) && chip.ENote != ENote.Space && !chip.IsHit)
+                            {
+                                doubt[j] = true;
+                            }
+                        }
                         float x = (float)NotesX(time, Game.MainTimer.Value + Game.TimeRemain, bpm, scroll, player);
                         if (Create.Preview && Game.MainTimer.State == 0)
                         {
                             x = (float)NotesX(time, Game.MainTimer.Value + Game.TimeRemain, bpm, scroll, player) - wid[Create.NowInput];
                         }
                         double num = j * (1421.0 / 4) * Bar[i].Scroll;
-                        if (x <= 1500)
+                        double width = (1920 - (NotesP[0].X - 22)) / (double)Create.InputType;
+                        double xx;
+                        int select = -1;
+                        for (int v = 0; v < Create.InputType; v++)
+                        {
+                            xx = NotesP[0].X - 22 + v * width;
+                            if (Mouse.X >= xx && Mouse.X < xx + width && Mouse.Y >= NotesP[0].Y && Mouse.Y < NotesP[0].Y + 195 && Game.MainTimer.State == 0)
+                            {
+                                select = v;
+                            }
+                        }
+                        #endregion
+                        if (x <= 1500 && select != j && !doubt[j] && Game.MainTimer.Value > Bar[i].Time - 30000)
                         {
                             TextureLoad.Game_Notes.Opacity = 0.5;
                             TextureLoad.Game_Notes.Draw(NotesP[player].X + x + num, NotesP[player].Y, new Rectangle(195 * 15, 0, 195, 195));
@@ -332,12 +358,12 @@ namespace Tunebeat.Game
                     }
                     for (int j = Bar[i].Chip.Count - 1; j >= 0; j--)
                     {
-                        float x = (float)NotesX(Bar[i].Chip[j].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].Chip[j].Bpm, Bar[i].Chip[j].Scroll, player);
+                        Chip chip = Bar[i].Chip[j];
+                        float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                         if (Create.Preview && Game.MainTimer.State == 0)
                         {
-                            x = (float)NotesX(Bar[i].Chip[j].Time, Game.MainTimer.Value + Game.TimeRemain, Bar[i].Chip[j].Bpm, Bar[i].Chip[j].Scroll, player) - wid[Create.NowInput];
+                            x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
                         }
-                        Chip chip = Bar[i].Chip[j];
                         if (x <= 1500)
                         {
                             if (chip.ENote != ENote.Space && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]))
@@ -359,7 +385,9 @@ namespace Tunebeat.Game
                                             TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
                                             TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
                                             TextureLoad.Game_Notes.ScaleX = 1f;
-                                            TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                                            TextureLoad.Game_Notes.ScaleX = rollx + 1 < x ? -1f : 1f;
+                                            int xx = rollx + 1 < x ? 2 : 0;
+                                            TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112 + xx, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
                                             TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 5 : 8), 0, 195, 195)); //連打の先頭の顔
                                         }
                                         break;
@@ -373,18 +401,27 @@ namespace Tunebeat.Game
                                                 TextureLoad.Game_Notes.ScaleX = (float)(ballx - x);
                                                 TextureLoad.Game_Notes.Opacity = 0.5;
                                                 TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                                                TextureLoad.Game_Notes.ScaleX = ballx + 1 < x ? -1f : 1f;
+                                                int xx = ballx + 1 < x ? 2 : 0;
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112 + xx, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
                                                 TextureLoad.Game_Notes.ScaleX = 1f;
-                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
                                                 TextureLoad.Game_Notes.Opacity = 1.0;
                                             }
+                                            int mir = 0;
+                                            if (chip.Scroll * chip.Bpm < 0)
+                                            {
+                                                TextureLoad.Game_Notes.ScaleX = -1f;
+                                                mir = 195;
+                                            }
                                             if (x > 0)
-                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + x + mir, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                             else if (ballx > 0)
-                                                TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + mir, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                             else
                                             {
-                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                                TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx + mir, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                             }
+                                            TextureLoad.Game_Notes.ScaleX = 1f;
                                         }
                                         break;
                                 }
@@ -395,33 +432,51 @@ namespace Tunebeat.Game
                         {
                             //オートの処理呼び出し
                             ProcessAuto.Update(Game.IsAuto[player], Bar[i].Chip[j], Game.MainTimer.Value, player);
-                            if (PlayData.Data.PreviewType < 3)
-                            {
-                                ProcessReplay.Update(Game.IsReplay[player], player);
-                                ProcessReplay.UnderUpdate();
-                            }
                             //ノーツが通り過ぎた時の処理
                             ProcessNote.PassNote(Bar[i].Chip[j], time, Bar[i].Chip[j].ENote == ENote.Ka || Bar[i].Chip[j].ENote == ENote.KA ? false : true, player);
+                            
+                        }
+                    }
+                    if (!Create.Mapping)
+                    {
+                        //連打のタイマー　なんでここ？？
+                        Chip nowchip = GetNotes.GetNowNote(Create.ListAllChip, Game.MainTimer.Value);
+                        ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
+                        for (int r = 0; r < 5; r++)
+                        {
+                            ProcessAuto.RollTimer[r].Tick();
+                        }
+                        if (roll != ERoll.None)
+                        {
+                            ProcessAuto.RollTimer[player].Start();
+                        }
+                        else
+                        {
+                            ProcessAuto.RollTimer[player].Reset();
                         }
                     }
                 }
-                if (!Create.Mapping)
+                if (Mouse.X >= NotesP[0].X - 22 && Mouse.Y >= NotesP[0].Y && Mouse.Y < NotesP[0].Y + 195 && Game.MainTimer.State == 0)
                 {
-                    //連打のタイマー　なんでここ？？
-                    Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-                    ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
-                    for (int r = 0; r < 5; r++)
+                    int cur = (int)Math.Floor((Mouse.X - (NotesP[0].X - 22)) / (1421f / Create.InputType));
+                    Rectangle[] rec = new Rectangle[8] { new Rectangle(195 * 1, 0, 195 * 1, 195), new Rectangle(195 * 2, 0, 195 * 1, 195), new Rectangle(195 * 3, 0, 195 * 1, 195),
+                    new Rectangle(195 * 4, 0, 195 * 1, 195), new Rectangle(195 * 5, 0, 195 * 1, 195), new Rectangle(195 * 8, 0, 195 * 1, 195),
+                    new Rectangle(195 * 11, 0, 195 * 2, 195), new Rectangle(195 * 13, 0, 195 * 2, 195) };
+                    double width = (1920 - (NotesP[0].X - 22)) / (double)Create.InputType;
+                    TextureLoad.Game_Notes.Opacity = 0.5;
+                    if (Create.RollEnd)
                     {
-                        ProcessAuto.RollTimer[r].Tick();
+                        double x = (float)NotesX(Create.RollBegin.Time, Game.MainTimer.Value + Game.TimeRemain, Create.RollBegin.Bpm, Create.RollBegin.Scroll, player);
+                        double rollx = cur * width;
+                        TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
+                        TextureLoad.Game_Notes.Draw(NotesP[player].X - wid[Create.NowInput] + x - 3 + 112, NotesP[player].Y, new Rectangle(195 * (Create.RollBegin.ENote == ENote.RollStart || Create.RollBegin.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                        TextureLoad.Game_Notes.ScaleX = rollx + 1 < x ? -1f : 1f;
+                        int xx = rollx + 1 < x ? 2 : 0;
+                        TextureLoad.Game_Notes.Draw(NotesP[player].X - wid[Create.NowInput] + rollx - 4.5f + 112 + xx, NotesP[player].Y, new Rectangle(195 * (Create.RollBegin.ENote == ENote.RollStart || Create.RollBegin.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                        TextureLoad.Game_Notes.ScaleX = 1f;
                     }
-                    if (roll != ERoll.None)
-                    {
-                        ProcessAuto.RollTimer[player].Start();
-                    }
-                    else
-                    {
-                        ProcessAuto.RollTimer[player].Reset();
-                    }
+                    else TextureLoad.Game_Notes.Draw(NotesP[player].X - wid[Create.NowInput] + cur * width, NotesP[player].Y, rec[Create.NowColor]);
+                    TextureLoad.Game_Notes.Opacity = 1.0;
                 }
             }
             else
@@ -435,7 +490,7 @@ namespace Tunebeat.Game
                     {
                         x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
                     }
-                    if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
+                    if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715 && Game.MainTimer.Value > chip.Time - 30000)
                     {
                         TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
                     }
@@ -493,7 +548,9 @@ namespace Tunebeat.Game
                                     TextureLoad.Game_Notes.ScaleX = (float)(rollx - x);
                                     TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
                                     TextureLoad.Game_Notes.ScaleX = 1f;
-                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
+                                    TextureLoad.Game_Notes.ScaleX = rollx + 1 < x ? -1f : 1f;
+                                    int xx = rollx + 1 < x ? 2 : 0;
+                                    TextureLoad.Game_Notes.Draw(NotesP[player].X + rollx - 4.5f + 112 + xx, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 7 : 10), 0, 195, 195)); //連打の末端の顔
                                     TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.RollStart ? 5 : 8), 0, 195, 195)); //連打の先頭の顔
                                 }
                                 break;
@@ -507,18 +564,27 @@ namespace Tunebeat.Game
                                         TextureLoad.Game_Notes.ScaleX = (float)(ballx - x);
                                         TextureLoad.Game_Notes.Opacity = 0.5;
                                         TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
+                                        TextureLoad.Game_Notes.ScaleX = ballx + 1 < x ? -1f : 1f;
+                                        int xx = ballx + 1 < x ? 2 : 0;
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112 + xx, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
                                         TextureLoad.Game_Notes.ScaleX = 1f;
-                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
                                         TextureLoad.Game_Notes.Opacity = 1.0;
                                     }
+                                    int mir = 0;
+                                    if (chip.Scroll < 0)
+                                    {
+                                        TextureLoad.Game_Notes.ScaleX = -1f;
+                                        mir = 195;
+                                    }
                                     if (x > 0)
-                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + x, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + x + mir, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                     else if (ballx > 0)
-                                        TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + mir, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                     else
                                     {
-                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
+                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx + mir, NotesP[player].Y, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 11 : 13), 0, 390, 195));
                                     }
+                                    TextureLoad.Game_Notes.ScaleX = 1f;
                                 }
                                 break;
                         }

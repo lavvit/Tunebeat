@@ -529,7 +529,19 @@ namespace Tunebeat.SongSelect
                     }
                     else
                     {
-                        Input.End();
+                        if (Input.Text.ToLower().StartsWith("/boot"))
+                        {
+                            string file = Input.Text.Substring(5).Trim();
+                            if (File.Exists(file))
+                            {
+                                FolderName = Path.GetDirectoryName(file);
+                                FileName = Path.GetFileNameWithoutExtension(file);
+                                Input.End();
+                                Program.SceneChange(new Game.Game());
+                            }
+                            else Input.End();
+                        }
+                        else Input.End();
                     }
                 }
                 if (Key.IsPushed(KEY_INPUT_ESCAPE))
