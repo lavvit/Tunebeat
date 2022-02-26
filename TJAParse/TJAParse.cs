@@ -48,8 +48,8 @@ namespace TJAParse
 
             for (int i = 0; i < Courses.Length; i++)
             {
-                Course.RandomizeChip(Courses[i], random, mirror, change);
-                Course.RollDoubledCheck(Courses[i]);
+                Course.RandomizeChip(Courses[i].ListChip, random, mirror, change);
+                Course.RollDoubledCheck(Courses[i].ListChip);
             }
 
         }

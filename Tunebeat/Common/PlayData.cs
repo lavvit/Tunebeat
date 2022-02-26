@@ -134,7 +134,7 @@ namespace Tunebeat.Common
         public int ChangeAuto2P = KEY_INPUT_F2;
         public int MoveCreate = KEY_INPUT_F3;
         public int InfoMenu = KEY_INPUT_F4;
-        public int OpenText = KEY_INPUT_F5;
+        public int AddMeasure = KEY_INPUT_F5;
         public int AddCommand = KEY_INPUT_F6;
         public int OpenTenplate = KEY_INPUT_F7;
         public int RealTimeMapping = KEY_INPUT_F8;

@@ -18,7 +18,7 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
-            TJAPath = !string.IsNullOrEmpty(SongSelect.SongSelect.FileName) ? $@"{SongSelect.SongSelect.FolderName}\{SongSelect.SongSelect.FileName}.tja" : SongSelect.SongSelect.NowTJA.Path;
+            TJAPath = SongSelect.SongSelect.PlayMode > 0 ? $@"{SongSelect.SongSelect.FolderName}\{SongSelect.SongSelect.FileName}.tja" : SongSelect.SongSelect.NowTJA.Path;
             if (!File.Exists(TJAPath))
             {
                 if (!Directory.Exists(SongSelect.SongSelect.FolderName))

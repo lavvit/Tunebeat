@@ -16,8 +16,8 @@ namespace Tunebeat.Game
     {
         public override void Enable()
         {
-            CreateMode = !string.IsNullOrEmpty(SongSelect.SongSelect.FileName) ? true : false;
-            Preview = CreateMode;
+            CreateMode = SongSelect.SongSelect.PlayMode == 1 ? true : false;
+            Preview = true;
             InfoMenu = false;
             Selecting = false;
             Mapping = false;
@@ -92,30 +92,33 @@ namespace Tunebeat.Game
         {
             if (CreateMode)
             {
-                TextureLoad.Game_Notes.Draw(195 * 4 + 98, 520, new Rectangle(195 * 6, 0, 195 * 2, 195));
-                TextureLoad.Game_Notes.Draw(0, 520, new Rectangle(195, 0, 195 * 5, 195));
-                TextureLoad.Game_Notes.Draw(98, 520 + 195, new Rectangle(195 * 9, 0, 195 * 2, 195));
-                TextureLoad.Game_Notes.Draw(0, 520 + 195, new Rectangle(195 * 8, 0, 195, 195));
-                TextureLoad.Game_Notes.Draw(195 * 2, 520 + 195, new Rectangle(195 * 11, 0, 195 * 4, 195));
+                //TextureLoad.Game_Notes.Draw(195 * 4 + 98, 520, new Rectangle(195 * 6, 0, 195 * 2, 195));
+                //TextureLoad.Game_Notes.Draw(0, 520, new Rectangle(195, 0, 195 * 5, 195));
+                //TextureLoad.Game_Notes.Draw(98, 520 + 195, new Rectangle(195 * 9, 0, 195 * 2, 195));
+                //TextureLoad.Game_Notes.Draw(0, 520 + 195, new Rectangle(195 * 8, 0, 195, 195));
+                //TextureLoad.Game_Notes.Draw(195 * 2, 520 + 195, new Rectangle(195 * 11, 0, 195 * 4, 195));
 
                 double len = (Mouse.X - (Notes.NotesP[0].X - 22)) / (1421f / InputType);
                 int cur = (int)Math.Floor(len);
-
                 if (Course[Game.Course[0]] != null)
                 {
-                    if (Course[Game.Course[0]].Count > 54)
+                    if (Course[Game.Course[0]].Count > 29)
                     {
-                        float count = Course[Game.Course[0]].Count - 53;
-                        float width = 1080 / count;
-                        if (width < 4) width = 1076 / count;
-                        float y = NowScroll * width;
+                        float count = Course[Game.Course[0]].Count - 28;
+                        float width = (1080 - 490) / count;
+                        if (width < 4) width = (1076 - 490) / count;
+                        float y = 490 + NowScroll * width;
                         DrawBoxAA(1916, y, 1920, y + (width < 4 ? 4 : width), 0xffff00, TRUE);
                     }
-                    for (int i = 0; i < (Course[Game.Course[0]].Count > 54 ? 54 : Course[Game.Course[0]].Count); i++)
+                    for (int i = 0; i < (Course[Game.Course[0]].Count > 29 ? 29 : Course[Game.Course[0]].Count); i++)
                     {
-                        DrawString(1280, 20 * i, Course[Game.Course[0]][i + NowScroll], 0xffffff);
+                        DrawString(1280, 495 + 20 * i, Course[Game.Course[0]][i + NowScroll], 0xffffff);
                     }
                 }
+
+                DrawString(472, 350, $"{InputType,2}", 0xffffff);
+                if (Mapping) DrawCircleAA(478, 330, 8, 256, 0xff0000, TRUE);
+
                 DrawBox(0, 0, 496, Notes.NotesP[0].Y - 4, 0x000000, TRUE);
                 DrawString(40, 10, $"Title:{(Input.IsEnable && Cursor == 0 ? Input.Text : File.Title)}", Selecting && Cursor == 0 ? (uint)0xffff00 : 0xffffff);
                 DrawString(40, 30, $"SubTitle:{(Input.IsEnable && Cursor == 1 ? Input.Text : File.SubTitle)}", Selecting && Cursor == 1 ? (uint)0xffff00 : 0xffffff);
@@ -151,6 +154,7 @@ namespace Tunebeat.Game
                     DrawBox(0, Notes.NotesP[0].Y + 199, 240, Notes.NotesP[0].Y + 239, 0x000000, TRUE);
                     DrawString(10, Notes.NotesP[0].Y + 209, "命令文を記入してください。", 0xffffff);
                 }
+                if (RollEnd) DrawString(800, 520, "Roll...", 0xffffff);
 
 #if DEBUG
                 DrawString(240, 20, $"Length:{len}", 0xffffff);
@@ -164,11 +168,14 @@ namespace Tunebeat.Game
                     foreach (Chip c in File.Bar[Game.Course[0]][i].Chip)
                         chip.Add(c);
                     RangeFix(chip, 1);
-                    for (int j = 0; j < chip.Count; j++)
+                    if (i < 29)
                     {
-                        DrawString(20 + 9 * j, 500 + 20 * i, $"{(int)chip[j].ENote}", 0xffffff);
+                        for (int j = 0; j < chip.Count; j++)
+                        {
+                            DrawString(20 + 9 * j, 500 + 20 * i, $"{(int)chip[j].ENote}", 0xffffff);
+                        }
+                        DrawString(20 + 9 * chip.Count, 500 + 20 * i, ",", 0xffffff);
                     }
-                    DrawString(20 + 9 * chip.Count, 500 + 20 * i, ",", 0xffffff);
                 }
                 if (Game.MainTimer.State == 0)
                 {
@@ -186,14 +193,14 @@ namespace Tunebeat.Game
                 else DrawString(900 - 36, 500, $"Now:{0,6}:None", 0xffffff);
                 for (int i = 0; i < ListCommand.Count; i++)
                 {
-                    DrawString(900, 540 + 20 * i, $"{(int)(File.Command[Game.Course[0]][i].Time - Game.MainTimer.Value),6}:{File.Command[Game.Course[0]][i].Name}", 0xffffff);
+                    if (i < 29) DrawString(900, 540 + 20 * i, $"{(int)(File.Command[Game.Course[0]][i].Time - Game.MainTimer.Value),6}:{File.Command[Game.Course[0]][i].Name}", 0xffffff);
                 }
                 if (Game.NowMeasure > 0)
                 {
                     if (Game.NowMeasure <= File.Bar[Game.Course[0]].Count)
                     {
                         BarLine bar = File.Bar[Game.Course[0]][Game.NowMeasure - 1];
-                        double num = 240000.0 / bar.BPM * bar.Measure;
+                        /*double num = 240000.0 / bar.BPM * bar.Measure;
                         double num2 = Game.MainTimer.Value - bar.Time;
                         DrawString(400, 500, $"num:{num}", 0xffffff);
                         DrawString(400, 520, $"num2:{num2}", 0xffffff);
@@ -206,14 +213,14 @@ namespace Tunebeat.Game
                             double num4 = (j + 0.5) * (double)num / count;
                             DrawString(400, 540 + 20 * j, $"{num3}", 0xffffff);
                             DrawString(600, 540 + 20 * j, $"{num4}", 0xffffff);
-                        }
+                        }*/
                         Chip chip = GetNotes.GetNowNote(bar.Chip, Game.MainTimer.Value, true);
                         if (chip != null)
                         {
                             DrawString(800, 500, $"{4 / chip.Measure}", 0xffffff);
 
                         }
-                        if (RollEnd) DrawString(800, 520, "Roll...", 0xffffff);
+                        
                     }
                 }
 #endif
@@ -332,6 +339,7 @@ namespace Tunebeat.Game
                     ListAllChip.AddRange(list1.ToArray());
                 for (int i = 0; i < File.Bar[course].Count; i++)
                 {
+                    //TJAParse.Course.RollDoubledCheck(File.Bar[course][i].Chip);
                     RangeFix(File.Bar[course][i].Chip, 480);
                 }
             }
@@ -553,7 +561,17 @@ namespace Tunebeat.Game
                 int count = 0;
                 for (int i = 0; i < listchip.Count; i++)
                 {
-                    if (i % 2 > 0 && listchip[i].ENote == ENote.Space)
+                    bool b = false;
+                    for (int j = 0; j < File.Command[Game.Course[0]].Count; j++)
+                    {
+                        double time = File.Command[Game.Course[0]][j].Time;
+                        if (listchip[i].Time == time)
+                        {
+                            b = true;
+                            break;
+                        }
+                    }
+                    if (i % 2 > 0 && listchip[i].ENote == ENote.Space && !b)
                     {
                         count++;
                     }
@@ -575,7 +593,17 @@ namespace Tunebeat.Game
                 int count = 0;
                 for (int i = 0; i < listchip.Count; i++)
                 {
-                    if (i % 3 > 0 && listchip[i].ENote == ENote.Space)
+                    bool b = false;
+                    for (int j = 0; j < File.Command[Game.Course[0]].Count; j++)
+                    {
+                        double time = File.Command[Game.Course[0]][j].Time;
+                        if (listchip[i].Time == time)
+                        {
+                            b = true;
+                            break;
+                        }
+                    }
+                    if (i % 3 > 0 && listchip[i].ENote == ENote.Space && !b)
                     {
                         count++;
                     }
@@ -597,7 +625,17 @@ namespace Tunebeat.Game
                 int count = 0;
                 for (int i = 0; i < listchip.Count; i++)
                 {
-                    if (i % 5 > 0 && listchip[i].ENote == ENote.Space)
+                    bool b = false;
+                    for (int j = 0; j < File.Command[Game.Course[0]].Count; j++)
+                    {
+                        double time = File.Command[Game.Course[0]][j].Time;
+                        if (listchip[i].Time == time)
+                        {
+                            b = true;
+                            break;
+                        }
+                    }
+                    if (i % 5 > 0 && listchip[i].ENote == ENote.Space && !b)
                     {
                         count++;
                     }
@@ -690,6 +728,14 @@ namespace Tunebeat.Game
             }
         }
 
+        public static void AddMeasure()
+        {
+            BarLine lastbar = File.Bar[Game.Course[0]][File.Bar[Game.Course[0]].Count - 1];
+            double num = lastbar.Time + 240000.0 / lastbar.BPM / lastbar.Measure;
+            BarLine bar = new BarLine(num, lastbar.BPM, lastbar.Measure, 480);
+            File.Bar[Game.Course[0]].Add(bar);
+            DrawLog.Draw("小節を追加しました。");
+        }
         public static void AddCommand(string str)
         {
             foreach (BarLine bar in File.Bar[Game.Course[0]])
@@ -711,7 +757,7 @@ namespace Tunebeat.Game
                     }
                 }
             }
-            if (File.Command[Game.Course[0]].Count < 0) File.Command[Game.Course[0]].Sort((a, b) => { int result = (int)a.Time - (int)b.Time; return result != 0 ? result : SortCommand(a.Name) - SortCommand(b.Name); });
+            if (File.Command[Game.Course[0]].Count > 0) File.Command[Game.Course[0]].Sort((a, b) => { int result = (int)a.Time - (int)b.Time; return result != 0 ? result : SortCommand(a.Name) - SortCommand(b.Name); });
         }
         public static void DeleteCommand(string str)
         {
@@ -765,10 +811,12 @@ namespace Tunebeat.Game
                 streamWriter.WriteLine($"BPM:{File.Bpm}");
                 streamWriter.WriteLine($"WAVE:{File.Wave}");
                 streamWriter.WriteLine($"OFFSET:{File.Offset}");
+                if (!string.IsNullOrEmpty(File.BGImage)) streamWriter.WriteLine($"BGIMAGE:{File.BGImage}");
+                if (!string.IsNullOrEmpty(File.BGMovie)) streamWriter.WriteLine($"BGMOVIE:{File.BGImage}");
                 streamWriter.WriteLine($"SONGVOL:{File.SongVol}");
                 streamWriter.WriteLine($"SEVOL:{File.SeVol}");
                 streamWriter.WriteLine($"DEMOSTART:{File.DemoStart}");
-                streamWriter.WriteLine($"GENRE:{File.Genre}");
+                if (!string.IsNullOrEmpty(File.Genre)) streamWriter.WriteLine($"GENRE:{File.Genre}");
                 streamWriter.WriteLine("");
 
                 for (int i = 4; i >= 0; i--)
@@ -781,22 +829,24 @@ namespace Tunebeat.Game
                         streamWriter.WriteLine("");
 
                         streamWriter.WriteLine("#START");
-                        streamWriter.WriteLine("");
                         int count = 0;
                         foreach (BarLine bar in File.Bar[i])
                         {
                             RangeFix(bar.Chip, 1);
                             for (int j = 0; j < bar.Chip.Count; j++)
                             {
-                                for (int m = 0; m < 10; m++)
+                                if (count < File.Command[i].Count && File.Command[i][count].Time <= bar.Chip[j].Time)
                                 {
-                                    if (count < File.Command[i].Count && File.Command[i][count].Time <= bar.Chip[j].Time)
+                                    streamWriter.WriteLine("");
+                                    for (int m = 0; m < 20; m++)
                                     {
-                                        streamWriter.WriteLine("");
-                                        streamWriter.WriteLine(File.Command[i][count].Name);
-                                        count++;
+                                        if (count < File.Command[i].Count && File.Command[i][count].Time <= bar.Chip[j].Time)
+                                        {
+                                            streamWriter.WriteLine(File.Command[i][count].Name);
+                                            count++;
+                                        }
+                                        else break;
                                     }
-                                    else break;
                                 }
                                 streamWriter.Write($"{(int)bar.Chip[j].ENote}");
                             }

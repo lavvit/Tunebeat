@@ -767,7 +767,7 @@ namespace Tunebeat.Game
                         {
                             Create.NowScroll--;
                         }
-                        if ((Key.IsPushing(KEY_INPUT_ADD) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 54 < Create.Course[Game.Course[0]].Count)
+                        if ((Key.IsPushing(KEY_INPUT_ADD) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 29 < Create.Course[Game.Course[0]].Count)
                         {
                             Create.NowScroll++;
                         }
@@ -792,11 +792,13 @@ namespace Tunebeat.Game
                         {
                             SoundLoad.Don[0].Play();
                             Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, true);
+                            Flash(true, ListPushed(PlayData.Data.LEFTDON), 0);
                         }
                         if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
                         {
                             SoundLoad.Ka[0].Play();
                             Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, false);
+                            Flash(false, ListPushed(PlayData.Data.LEFTKA), 0);
                         }
                     }
                     if (Key.IsPushed(PlayData.Data.SaveFile))
@@ -807,6 +809,12 @@ namespace Tunebeat.Game
                     if (Key.IsPushed(PlayData.Data.InfoMenu))
                     {
                         Create.InfoMenu = !Create.InfoMenu;
+                    }
+                    if (Key.IsPushed(PlayData.Data.AddMeasure))
+                    {
+                        Create.AddMeasure();
+                        Create.Save(Game.TJAPath);
+                        Game.Reset();
                     }
                     if (Key.IsPushed(PlayData.Data.AddCommand))
                     {
@@ -1055,6 +1063,10 @@ namespace Tunebeat.Game
             if (isDon) taiko[player][0].Play();
             else taiko[player][1].Play();
 
+            Flash(isDon, isLeft, player);
+        }
+        public static void Flash(bool isDon, bool isLeft, int player)
+        {
             if (isDon)
             {
                 if (isLeft)

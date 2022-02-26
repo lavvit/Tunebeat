@@ -226,6 +226,7 @@ namespace Tunebeat.Game
             }
             TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
             Chip nchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            if (Create.CreateMode) nchip = GetNotes.GetNowNote(Create.ListAllChip, Game.MainTimer.Value, true);
             if (nchip != null && nchip.IsGogo)
             {
                 if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
@@ -240,60 +241,61 @@ namespace Tunebeat.Game
                 TextureLoad.Game_Lane_Gogo.Draw(NotesP[player].X - 22, NotesP[player].Y);
             }
 
-            if (Create.CreateMode && Game.MainTimer.State == 0)
-            {
-                float width = (1920 - (NotesP[0].X - 22)) / (float)Create.InputType;
-                float x;
-                uint[] color = new uint[2];
-                switch (Create.InputType)
-                {
-                    case 4:
-                        color = new uint[2] { 0xff0000, 0x0000ff };
-                        break;
-                    case 8:
-                        color = new uint[2] { 0xff0000, 0x0000ff };
-                        break;
-                    case 12:
-                        color = new uint[3] { 0xff0000, 0x00ff00, 0x0000ff };
-                        break;
-                    case 16:
-                        color = new uint[4] { 0xff0000, 0xffff00, 0x0000ff, 0xffff00 };
-                        break;
-                    case 20:
-                        color = new uint[5] { 0xff0000, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff };
-                        break;
-                    case 24:
-                        color = new uint[6] { 0xff0000, 0x00ffff, 0x00ff00, 0x0000ff, 0x00ff00, 0x00ffff };
-                        break;
-                    case 32:
-                        color = new uint[8] { 0xff0000, 0xff8000, 0xffff00, 0xff8000, 0x0000ff, 0xff8000, 0xffff00, 0xff8000 };
-                        break;
-                    case 48:
-                        color = new uint[12] { 0xff0000, 0xff00ff, 0x00ffff, 0xffff00, 0x00ff00, 0xff00ff, 0x0000ff, 0xff00ff, 0x00ff00, 0xffff00, 0x00ffff, 0xff00ff };
-                        break;
-                }
-                SetDrawBlendMode(DX_BLENDMODE_ALPHA, 64);
-                for (int i = 0; i < Create.InputType; i++)
-                {
-                    x = NotesP[0].X - 22 + i * width;
-                    DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, color[i % (Create.InputType == 4 ? 2 : Create.InputType / 4)], TRUE);
-                    if (Mouse.X >= x && Mouse.X < x + width && Mouse.Y >= NotesP[0].Y && Mouse.Y < NotesP[0].Y + 195)
-                    {
-                        DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, 0xffffff, TRUE);
-                    }
-                }
-                SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
-            }
-
-            int[] wid = new int[8] { 0, 29, 60, 75, 84, 90, 97, 104 };
-            if (Create.Preview && Game.MainTimer.State == 0)
-            {
-                TextureLoad.Game_Notes.Draw(NotesP[player].X - wid[Create.NowInput], NotesP[player].Y, new Rectangle(0, 0, 195, 195));
-            }
-            else TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
-
             if (Create.CreateMode)
             {
+                #region Create
+                if (Game.MainTimer.State == 0)
+                {
+                    float width = (1920 - (NotesP[0].X - 22)) / (float)Create.InputType;
+                    float x;
+                    uint[] color = new uint[2];
+                    switch (Create.InputType)
+                    {
+                        case 4:
+                            color = new uint[2] { 0xff0000, 0x0000ff };
+                            break;
+                        case 8:
+                            color = new uint[2] { 0xff0000, 0x0000ff };
+                            break;
+                        case 12:
+                            color = new uint[3] { 0xff0000, 0x00ff00, 0x0000ff };
+                            break;
+                        case 16:
+                            color = new uint[4] { 0xff0000, 0xffff00, 0x0000ff, 0xffff00 };
+                            break;
+                        case 20:
+                            color = new uint[5] { 0xff0000, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff };
+                            break;
+                        case 24:
+                            color = new uint[6] { 0xff0000, 0x00ffff, 0x00ff00, 0x0000ff, 0x00ff00, 0x00ffff };
+                            break;
+                        case 32:
+                            color = new uint[8] { 0xff0000, 0xff8000, 0xffff00, 0xff8000, 0x0000ff, 0xff8000, 0xffff00, 0xff8000 };
+                            break;
+                        case 48:
+                            color = new uint[12] { 0xff0000, 0xff00ff, 0x00ffff, 0xffff00, 0x00ff00, 0xff00ff, 0x0000ff, 0xff00ff, 0x00ff00, 0xffff00, 0x00ffff, 0xff00ff };
+                            break;
+                    }
+                    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 64);
+                    for (int i = 0; i < Create.InputType; i++)
+                    {
+                        x = NotesP[0].X - 22 + i * width;
+                        DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, color[i % (Create.InputType == 4 ? 2 : Create.InputType / 4)], TRUE);
+                        if (Mouse.X >= x && Mouse.X < x + width && Mouse.Y >= NotesP[0].Y && Mouse.Y < NotesP[0].Y + 195)
+                        {
+                            DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, 0xffffff, TRUE);
+                        }
+                    }
+                    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+                }
+
+                int[] wid = new int[8] { 0, 29, 60, 75, 84, 90, 97, 104 };
+                if (Create.Preview && Game.MainTimer.State == 0)
+                {
+                    TextureLoad.Game_Notes.Draw(NotesP[player].X - wid[Create.NowInput], NotesP[player].Y, new Rectangle(0, 0, 195, 195));
+                }
+                else TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
+
                 List<BarLine> Bar = Create.File.Bar[Game.Course[player]];
                 for (int i = Bar.Count - 1; i >= 0; i--)
                 {
@@ -478,18 +480,18 @@ namespace Tunebeat.Game
                     else TextureLoad.Game_Notes.Draw(NotesP[player].X - wid[Create.NowInput] + cur * width, NotesP[player].Y, rec[Create.NowColor]);
                     TextureLoad.Game_Notes.Opacity = 1.0;
                 }
+#endregion
             }
             else
             {
+                #region Normal
+                TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
+
                 for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
                 {
                     Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                     double time = chip.Time - Game.MainTimer.Value;
                     float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
-                    if (Create.Preview && Game.MainTimer.State == 0)
-                    {
-                        x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
-                    }
                     if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715 && Game.MainTimer.Value > chip.Time - 30000)
                     {
                         TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
@@ -525,10 +527,6 @@ namespace Tunebeat.Game
                 {
                     Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
                     float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
-                    if (Create.Preview && Game.MainTimer.State == 0)
-                    {
-                        x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player) - wid[Create.NowInput];
-                    }
                     if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]) && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
                     {
                         switch (chip.ENote)
@@ -559,17 +557,6 @@ namespace Tunebeat.Game
                                 double ballx = NotesX(chip.RollEnd != null ? chip.RollEnd.Time : chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                                 if (ballx >= -715)
                                 {
-                                    if (Create.Preview)
-                                    {
-                                        TextureLoad.Game_Notes.ScaleX = (float)(ballx - x);
-                                        TextureLoad.Game_Notes.Opacity = 0.5;
-                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + x - 3 + 112, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 6 : 9) + 10, 0, 1, 195)); //連打の中身
-                                        TextureLoad.Game_Notes.ScaleX = ballx + 1 < x ? -1f : 1f;
-                                        int xx = ballx + 1 < x ? 2 : 0;
-                                        TextureLoad.Game_Notes.Draw(NotesP[player].X + ballx - 4.5f + 112 + xx, NotesP[player].Y + 1, new Rectangle(195 * (chip.ENote == ENote.Balloon ? 7 : 10), 0, 195, 195)); //連打の末端の顔
-                                        TextureLoad.Game_Notes.ScaleX = 1f;
-                                        TextureLoad.Game_Notes.Opacity = 1.0;
-                                    }
                                     int mir = 0;
                                     if (chip.Scroll < 0)
                                     {
@@ -590,6 +577,7 @@ namespace Tunebeat.Game
                         }
                     }
                 }
+                #endregion
             }
         }
 

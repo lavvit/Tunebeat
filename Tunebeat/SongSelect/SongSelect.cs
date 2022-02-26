@@ -523,6 +523,9 @@ namespace Tunebeat.SongSelect
                             case 2:
                                 FileName = Input.Text;
                                 Input.End();
+                                SoundLoad.Don[0].Play();
+                                PlayMode = 1;
+                                if (Preview != null) { Preview.Stop(); Preview = null; }
                                 Program.SceneChange(new Game.Game());
                                 break;
                         }
@@ -537,6 +540,9 @@ namespace Tunebeat.SongSelect
                                 FolderName = Path.GetDirectoryName(file);
                                 FileName = Path.GetFileNameWithoutExtension(file);
                                 Input.End();
+                                SoundLoad.Don[0].Play();
+                                PlayMode = 2;
+                                if (Preview != null) { Preview.Stop(); Preview = null; }
                                 Program.SceneChange(new Game.Game());
                             }
                             else Input.End();
@@ -922,6 +928,7 @@ namespace Tunebeat.SongSelect
                             }
                             Random = false;
                             NowSListNumber = NowSongNumber;
+                            PlayMode = 0;
                             for (int i = 0; i < SongLoad.SongData.Count; i++)
                             {
                                 if (SongLoad.SongData[i].Type != EType.Score)
@@ -941,15 +948,15 @@ namespace Tunebeat.SongSelect
                     }
                     break;
                 case EType.Random:
-                    for (int i = 0; i < 100000000; i++)
+                    while (true)
                     {
                         Random random = new Random();
                         int r = random.Next(SongLoad.SongList.Count);
                         if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
                         {
                             Random difran = new Random();
-                            int d = difran.Next(0, 2);
-                            Course = 3 + d;
+                            int d = difran.Next(0, 3);
+                            Course = d > 0 ? 4 : 3;
                             if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[Course].IsEnable)
                             {
                                 NowTJA = SongLoad.SongList[r];
@@ -965,6 +972,7 @@ namespace Tunebeat.SongSelect
                             }
                         }
                     }
+                    PlayMode = 0;
                     if (Preview != null) { Preview.Stop(); Preview = null; }
                     if (File.Exists(NowTJA.Path))
                     {
@@ -1207,7 +1215,7 @@ namespace Tunebeat.SongSelect
         public static SongData NowTJA;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
         public static Sound Preview;
-        public static int NowSongNumber, NowSListNumber, NowRivalScore, Course, CreateStep;
+        public static int NowSongNumber, NowSListNumber, NowRivalScore, Course, CreateStep, PlayMode;
         public static int[] NowReplay = new int[2];
         public static bool Random;
         public static string NowPath, RivalScore, FolderName, FileName;

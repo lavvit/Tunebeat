@@ -250,51 +250,51 @@ namespace TJAParse
             }
         }
 
-        public static void RollDoubledCheck(Course course)//仕方なく分ける
+        public static void RollDoubledCheck(List<Chip> listchip)//仕方なく分ける
         {
-            if (course.ListChip.Count == 0) return;
+            if (listchip.Count == 0) return;
 
-            for (int i = course.ListChip.Count - 1; i > 0; i--)
+            for (int i = listchip.Count - 1; i > 0; i--)
             {
-                if (course.ListChip[i].ENote == course.ListChip[i - 1].ENote)
+                if (listchip[i].ENote == listchip[i - 1].ENote)
                 {
-                    if (course.ListChip[i].ENote == ENote.Balloon || course.ListChip[i].ENote == ENote.RollStart || course.ListChip[i].ENote == ENote.ROLLStart || course.ListChip[i].ENote == ENote.Kusudama)
+                    if (listchip[i].ENote == ENote.Balloon || listchip[i].ENote == ENote.RollStart || listchip[i].ENote == ENote.ROLLStart || listchip[i].ENote == ENote.Kusudama)
                     {
-                        course.ListChip.RemoveAt(i);
+                        listchip.RemoveAt(i);
                     }
                 }
             }
         }
 
-        public static void RandomizeChip(Course course, int random, bool mirror, int change)
+        public static void RandomizeChip(List<Chip> listchip, int random, bool mirror, int change)
         {
-            if (course.ListChip.Count == 0) return;
+            if (listchip.Count == 0) return;
 
             if (change > 0)
             {
-                for (int i = course.ListChip.Count - 1; i > 0; i--)
+                for (int i = listchip.Count - 1; i > 0; i--)
                 {
                     switch (change)
                     {
                         case 1:
-                            if (course.ListChip[i].ENote == ENote.Ka || course.ListChip[i].ENote == ENote.KA)
-                                course.ListChip.RemoveAt(i);
+                            if (listchip[i].ENote == ENote.Ka || listchip[i].ENote == ENote.KA)
+                                listchip.RemoveAt(i);
                             break;
                         case 2:
-                            if (course.ListChip[i].ENote == ENote.Don || course.ListChip[i].ENote == ENote.DON)
-                                course.ListChip.RemoveAt(i);
+                            if (listchip[i].ENote == ENote.Don || listchip[i].ENote == ENote.DON)
+                                listchip.RemoveAt(i);
                             break;
                         case 3:
-                            if (course.ListChip[i].ENote == ENote.Ka)
-                                course.ListChip[i].ENote = ENote.Don;
-                            if (course.ListChip[i].ENote == ENote.KA)
-                                course.ListChip[i].ENote = ENote.DON;
+                            if (listchip[i].ENote == ENote.Ka)
+                                listchip[i].ENote = ENote.Don;
+                            if (listchip[i].ENote == ENote.KA)
+                                listchip[i].ENote = ENote.DON;
                             break;
                         case 4:
-                            if (course.ListChip[i].ENote == ENote.Don)
-                                course.ListChip[i].ENote = ENote.Ka;
-                            if (course.ListChip[i].ENote == ENote.DON)
-                                course.ListChip[i].ENote = ENote.KA;
+                            if (listchip[i].ENote == ENote.Don)
+                                listchip[i].ENote = ENote.Ka;
+                            if (listchip[i].ENote == ENote.DON)
+                                listchip[i].ENote = ENote.KA;
                             break;
                     }
                 }
@@ -303,7 +303,7 @@ namespace TJAParse
             if (random > 0)
             {
                 Random ran = new Random();
-                for (int i = 0; i < course.ListChip.Count; i++)
+                for (int i = 0; i < listchip.Count; i++)
                 {
                     int value = ran.Next(100);
                     if (value < random)
@@ -311,19 +311,19 @@ namespace TJAParse
                         int half = ran.Next(100);
                         if (half > 49)
                         {
-                            switch (course.ListChip[i].ENote)
+                            switch (listchip[i].ENote)
                             {
                                 case ENote.Don:
-                                    course.ListChip[i].ENote = ENote.Ka;
+                                    listchip[i].ENote = ENote.Ka;
                                     break;
                                 case ENote.Ka:
-                                    course.ListChip[i].ENote = ENote.Don;
+                                    listchip[i].ENote = ENote.Don;
                                     break;
                                 case ENote.DON:
-                                    course.ListChip[i].ENote = ENote.KA;
+                                    listchip[i].ENote = ENote.KA;
                                     break;
                                 case ENote.KA:
-                                    course.ListChip[i].ENote = ENote.DON;
+                                    listchip[i].ENote = ENote.DON;
                                     break;
                             }
                         }
@@ -332,21 +332,21 @@ namespace TJAParse
             }
             if (mirror)
             {
-                for (int i = 0; i < course.ListChip.Count; i++)
+                for (int i = 0; i < listchip.Count; i++)
                 {
-                    switch (course.ListChip[i].ENote)
+                    switch (listchip[i].ENote)
                     {
                         case ENote.Don:
-                            course.ListChip[i].ENote = ENote.Ka;
+                            listchip[i].ENote = ENote.Ka;
                             break;
                         case ENote.Ka:
-                            course.ListChip[i].ENote = ENote.Don;
+                            listchip[i].ENote = ENote.Don;
                             break;
                         case ENote.DON:
-                            course.ListChip[i].ENote = ENote.KA;
+                            listchip[i].ENote = ENote.KA;
                             break;
                         case ENote.KA:
-                            course.ListChip[i].ENote = ENote.DON;
+                            listchip[i].ENote = ENote.DON;
                             break;
                     }
                 }
