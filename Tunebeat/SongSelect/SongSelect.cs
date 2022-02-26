@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using TJAParse;
 using Tunebeat.Common;
 using Tunebeat.Game;
@@ -186,7 +186,7 @@ namespace Tunebeat.SongSelect
                         int wcursor = (int)Math.Round(widgh, 0, MidpointRounding.AwayFromZero);
                         for (int i = 0; i < 5; i++)
                         {
-                            if (i == (select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0)) || (PlayData.Data.IsPlay2P && i == (select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1))) || PlayData.Data.PreviewType == 3)
+                            if (i == (select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0)) || (PlayData.Data.IsPlay2P && i == (select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1))) || PlayData.Data.PreviewType == 3)
                             {
                                 switch (i)
                                 {
@@ -235,12 +235,12 @@ namespace Tunebeat.SongSelect
                                 Score.DrawNumber(difXY[0] + 94 + 156 * i - 12 * Score.Digit(NowTJA.Course[i].LEVEL), difXY[1] + 42, $"{NowTJA.Course[i].LEVEL}", 0);
                             }
                         }
-                        if (NowTJA.Course[select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL > 0)
+                        if (NowTJA.Course[select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL > 0)
                         {
-                            int lev = NowTJA.Course[select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL < 12 ? NowTJA.Course[select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL : 12;
+                            int lev = NowTJA.Course[select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL < 12 ? NowTJA.Course[select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL : 12;
                             for (int i = 0; i < lev; i++)
                             {
-                                switch (select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0))
+                                switch (select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0))
                                 {
                                     case (int)ECourse.Easy:
                                         TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0xff5f3f);
@@ -262,9 +262,9 @@ namespace Tunebeat.SongSelect
                                 if (NowTJA.Course[EnableCourse(NowTJA.Course, 0)].LEVEL > 12)
                                 {
 
-                                    for (int j = 0; j < NowTJA.Course[select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL - 12; j++)
+                                    for (int j = 0; j < NowTJA.Course[select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0)].LEVEL - 12; j++)
                                     {
-                                        switch (select && !Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 0))
+                                        switch (select && !Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 0))
                                         {
                                             case (int)ECourse.Easy:
                                                 TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x7f2f1f);
@@ -287,12 +287,12 @@ namespace Tunebeat.SongSelect
                                 }
                             }
                         }
-                        if (PlayData.Data.IsPlay2P && NowTJA.Course[select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL > 0)
+                        if (PlayData.Data.IsPlay2P && NowTJA.Course[select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL > 0)
                         {
-                            int lev = NowTJA.Course[select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL < 12 ? NowTJA.Course[select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL : 12;
+                            int lev = NowTJA.Course[select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL < 12 ? NowTJA.Course[select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL : 12;
                             for (int i = 0; i < lev; i++)
                             {
-                                switch (select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1))
+                                switch (select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1))
                                 {
                                     case (int)ECourse.Easy:
                                         TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0xff5f3f);
@@ -311,12 +311,12 @@ namespace Tunebeat.SongSelect
                                         break;
                                 }
                                 TextureLoad.SongSelect_Difficulty_Level.Draw(difXY[0] + 12 + 66 * i, difXY[1] + 136 + 31);
-                                if (NowTJA.Course[select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL > 12)
+                                if (NowTJA.Course[select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL > 12)
                                 {
 
-                                    for (int j = 0; j < NowTJA.Course[select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL - 12; j++)
+                                    for (int j = 0; j < NowTJA.Course[select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1)].LEVEL - 12; j++)
                                     {
-                                        switch (select && Key.IsPushing(KEY_INPUT_LSHIFT) ? wcursor : EnableCourse(NowTJA.Course, 1))
+                                        switch (select && Key.IsPushing(EKey.LShift) ? wcursor : EnableCourse(NowTJA.Course, 1))
                                         {
                                             case (int)ECourse.Easy:
                                                 TextureLoad.SongSelect_Difficulty_Level.Color = Color.FromArgb(0x7f2f1f);
@@ -378,7 +378,7 @@ namespace Tunebeat.SongSelect
                         if (!string.IsNullOrEmpty(ReplayScore[0]) && File.Exists($@"{ Path.GetDirectoryName(NowTJA.Path)}\{ Path.GetFileNameWithoutExtension(NowTJA.Path)}.{ (ECourse)EnableCourse(NowTJA.Course, 0)}.{ReplayScore[0]}.tbr"))
                         {
                             DrawString(520, 700, $"ReplayScore1P:{ReplayScore[0]}", 0xffffff);
-                            DrawString(540 + GetDrawStringWidth($"ReplayScore1P:{ReplayScore[0]}", $"ReplayScore1P:{ReplayScore[0]}".Length), 700, "Press LSHIFT & ENTER to play", 0xffffff);
+                            DrawString(540 + GetDrawStringWidth($"ReplayScore1P:{ReplayScore[0]}", $"ReplayScore1P:{ReplayScore[0]}".Length), 700, "Press LShift & ENTER to play", 0xffffff);
                         }
                         else
                         {
@@ -389,7 +389,7 @@ namespace Tunebeat.SongSelect
                             if (!string.IsNullOrEmpty(ReplayScore[1]) && File.Exists($@"{Path.GetDirectoryName(NowTJA.Path)}\{Path.GetFileNameWithoutExtension(NowTJA.Path)}.{(ECourse)EnableCourse(NowTJA.Course, 0)}.{ReplayScore[1]}.tbr"))
                             {
                                 DrawString(520, 720, $"ReplayScore2P:{ReplayScore[1]}", 0xffffff);
-                                DrawString(540 + GetDrawStringWidth($"ReplayScore2P:{ReplayScore[1]}", $"ReplayScore2P:{ReplayScore[1]}".Length), 720, "Press RSHIFT & ENTER to play", 0xffffff);
+                                DrawString(540 + GetDrawStringWidth($"ReplayScore2P:{ReplayScore[1]}", $"ReplayScore2P:{ReplayScore[1]}".Length), 720, "Press RShift & ENTER to play", 0xffffff);
                             }
                             else
                             {
@@ -509,7 +509,7 @@ namespace Tunebeat.SongSelect
             }
             if (Input.IsEnable)
             {
-                if (Key.IsPushed(KEY_INPUT_RETURN))
+                if (Key.IsPushed(EKey.Enter))
                 {
                     if (NowTJA.Type == EType.New && CreateStep > 0)
                     {
@@ -550,7 +550,7 @@ namespace Tunebeat.SongSelect
                         else Input.End();
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                if (Key.IsPushed(EKey.Esc))
                 {
                     CreateStep = 0;
                     Input.End();
@@ -625,7 +625,7 @@ namespace Tunebeat.SongSelect
                     Back();
                 }
 
-                if ((Key.IsPushed(KEY_INPUT_RETURN) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
+                if ((Key.IsPushed(EKey.Enter) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
                 {
                     SoundLoad.Don[0].Play();
                     Enter();
@@ -681,7 +681,7 @@ namespace Tunebeat.SongSelect
                     else if (Mouse.X >= difx + 22 && Mouse.X < difx + 795 && Mouse.Y >= dify + 8 && Mouse.Y < dify + 126)
                     {
                         SoundLoad.Ka[0].Play();
-                        if (Key.IsPushing(KEY_INPUT_LSHIFT) && PlayData.Data.IsPlay2P)
+                        if (Key.IsPushing(EKey.LShift) && PlayData.Data.IsPlay2P)
                         {
                             PlayData.Data.PlayCourse[1] = wcursor;
                         }
@@ -715,7 +715,7 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
-                if (Key.IsPushed(KEY_INPUT_SPACE))
+                if (Key.IsPushed(EKey.Space))
                 {
                     SoundLoad.Ka[0].Play();
                     string title = NowTJA.Title;
@@ -743,10 +743,10 @@ namespace Tunebeat.SongSelect
                     {
                         str = "譜面の並び順をデフォルトに戻しました!";
                     }
-                    DrawLog.Draw(str);
+                    TextLog.Draw(str);
                 }
 
-                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                if (Key.IsPushed(EKey.Esc))
                 {
                     SoundLoad.Ka[0].Play();
                     if (SongLoad.FolderFloor > 0)
@@ -761,7 +761,7 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
-                if (Key.IsPushed(KEY_INPUT_1))
+                if (Key.IsPushed(EKey.Key_1))
                 {
                     if (NowTJA.ScoreList[EnableCourse(NowTJA.Course, 0)] != null && NowTJA.ScoreList[EnableCourse(NowTJA.Course, 0)].Count > 0)
                     {
@@ -771,7 +771,7 @@ namespace Tunebeat.SongSelect
                         RivalScore = NowTJA.ScoreList[EnableCourse(NowTJA.Course, 0)][NowRivalScore];
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_2))
+                if (Key.IsPushed(EKey.Key_2))
                 {
                     if (NowTJA.ScoreList != null && NowTJA.ScoreList[EnableCourse(NowTJA.Course, 0)].Count > 0)
                     {
@@ -781,7 +781,7 @@ namespace Tunebeat.SongSelect
                         ReplayScore[0] = NowTJA.ScoreList[EnableCourse(NowTJA.Course, 0)][NowReplay[0]];
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_3))
+                if (Key.IsPushed(EKey.Key_3))
                 {
                     if (NowTJA.ScoreList != null && NowTJA.ScoreList[EnableCourse(NowTJA.Course, 0)].Count > 0 && PlayData.Data.IsPlay2P)
                     {
@@ -797,32 +797,32 @@ namespace Tunebeat.SongSelect
                     if (Preview != null) { Preview.Stop(); Preview = null; }
                     Program.SceneChange(new Config.Config());
                 }
-                if (Key.IsPushed(KEY_INPUT_F2))
+                if (Key.IsPushed(EKey.F2))
                 {
                     PlayData.Init();
                     SongLoad.Init();
                     if (!File.Exists(NowTJA.Path)) NowSongNumber--;
                     NowTJA = SongLoad.SongData[NowSongNumber];
                 }
-                if (Key.IsPushed(KEY_INPUT_F3))
+                if (Key.IsPushed(EKey.F3))
                 {
                     PlayData.Data.Auto[0] = !PlayData.Data.Auto[0];
                 }
-                if (Key.IsPushed(KEY_INPUT_F4) && PlayData.Data.IsPlay2P)
+                if (Key.IsPushed(EKey.F4) && PlayData.Data.IsPlay2P)
                 {
                     PlayData.Data.Auto[1] = !PlayData.Data.Auto[1];
                 }
-                if (Key.IsPushed(KEY_INPUT_F5))
+                if (Key.IsPushed(EKey.F5))
                 {
                     PlayData.Data.IsPlay2P = !PlayData.Data.IsPlay2P;
                 }
-                if (Key.IsPushed(KEY_INPUT_F6))
+                if (Key.IsPushed(EKey.F6))
                 {
                     PlayData.Data.ShowGraph = !PlayData.Data.ShowGraph;
                 }
-                if (Key.IsPushed(KEY_INPUT_F7))
+                if (Key.IsPushed(EKey.F7))
                 {
-                    if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                    if (Key.IsPushing(EKey.LShift) || Key.IsPushing(EKey.RShift) && PlayData.Data.IsPlay2P)
                     {
                         GaugeChange(1);
                     }
@@ -831,9 +831,9 @@ namespace Tunebeat.SongSelect
                         GaugeChange(0);
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_F8))
+                if (Key.IsPushed(EKey.F8))
                 {
-                    if (Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT) && PlayData.Data.IsPlay2P)
+                    if (Key.IsPushing(EKey.LShift) || Key.IsPushing(EKey.RShift) && PlayData.Data.IsPlay2P)
                     {
                         GASChange(1);
                     }
@@ -842,9 +842,9 @@ namespace Tunebeat.SongSelect
                         GASChange(0);
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_F9))
+                if (Key.IsPushed(EKey.F9))
                 {
-                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    if ((Key.IsPushing(EKey.LShift) || Key.IsPushing(EKey.RShift)) && PlayData.Data.IsPlay2P)
                     {
                         PlayData.Data.Hazard[1]--;
                     }
@@ -853,9 +853,9 @@ namespace Tunebeat.SongSelect
                         PlayData.Data.Hazard[0]--;
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_F10))
+                if (Key.IsPushed(EKey.F10))
                 {
-                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    if ((Key.IsPushing(EKey.LShift) || Key.IsPushing(EKey.RShift)) && PlayData.Data.IsPlay2P)
                     {
                         PlayData.Data.Hazard[1]++;
                     }
@@ -865,10 +865,10 @@ namespace Tunebeat.SongSelect
                     }
                 }
 
-                if (Key.IsPushed(KEY_INPUT_LEFT))
+                if (Key.IsPushed(EKey.Left))
                 {
                     SoundLoad.Ka[0].Play();
-                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    if ((Key.IsPushing(EKey.LShift) || Key.IsPushing(EKey.RShift)) && PlayData.Data.IsPlay2P)
                     {
                         CourseChange(true, 1);
                         SetScore();
@@ -880,10 +880,10 @@ namespace Tunebeat.SongSelect
                         SetScore();
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_RIGHT))
+                if (Key.IsPushed(EKey.Right))
                 {
                     SoundLoad.Ka[0].Play();
-                    if ((Key.IsPushing(KEY_INPUT_LSHIFT) || Key.IsPushing(KEY_INPUT_RSHIFT)) && PlayData.Data.IsPlay2P)
+                    if ((Key.IsPushing(EKey.LShift) || Key.IsPushing(EKey.RShift)) && PlayData.Data.IsPlay2P)
                     {
                         CourseChange(false, 1);
                         SetScore();
@@ -895,7 +895,7 @@ namespace Tunebeat.SongSelect
                         SetScore();
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_SLASH))
+                if (Key.IsPushed(EKey.Slash))
                 {
                     Input.Init();
                 }
@@ -918,7 +918,7 @@ namespace Tunebeat.SongSelect
                     {
                         if (NowTJA.Course[EnableCourse(NowTJA.Course, 0)].IsEnable || PlayData.Data.PreviewType == 3)
                         {
-                            if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                            if (Key.IsPushing(EKey.LShift))
                             {
                                 Replay[0] = true;
                             }
@@ -939,12 +939,12 @@ namespace Tunebeat.SongSelect
                         }
                         else
                         {
-                            DrawLog.Draw("譜面がありません!難易度を確認してください。");
+                            TextLog.Draw("譜面がありません!難易度を確認してください。");
                         }
                     }
                     else
                     {
-                        DrawLog.Draw("TJAが見つかりません!パスを確認してください。");
+                        TextLog.Draw("TJAが見つかりません!パスを確認してください。");
                     }
                     break;
                 case EType.Random:
@@ -978,7 +978,7 @@ namespace Tunebeat.SongSelect
                     {
                         if (NowTJA.Course[EnableCourse(NowTJA.Course, 0)].IsEnable || PlayData.Data.PreviewType == 3)
                         {
-                            if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                            if (Key.IsPushing(EKey.LShift))
                             {
                                 Replay[0] = true;
                             }
@@ -992,12 +992,12 @@ namespace Tunebeat.SongSelect
                         }
                         else
                         {
-                            DrawLog.Draw("譜面がありません!難易度を確認してください。");
+                            TextLog.Draw("譜面がありません!難易度を確認してください。");
                         }
                     }
                     else
                     {
-                        DrawLog.Draw("TJAが見つかりません!パスを確認してください。");
+                        TextLog.Draw("TJAが見つかりません!パスを確認してください。");
                     }
                     break;
                 case EType.Folder:
@@ -1154,25 +1154,23 @@ namespace Tunebeat.SongSelect
         {
             if (NowTJA.Header == null) return;
 
-            FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
+            string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
             if (!string.IsNullOrEmpty(NowTJA.Header.TITLE))
             {
-                Title = DrawFont.GetTexture(NowTJA.Header.TITLE, family, 96, 4, 0, Color.White, Color.Black);
+                Title = FontRender.GetTexture(NowTJA.Header.TITLE, 96, font, 4);
             }
             else Title = new Texture();
-            FontFamily familyb = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "Arial Black");
             if (!string.IsNullOrEmpty(NowTJA.Header.GENRE))
             {
-                Genre = DrawFont.GetTexture(NowTJA.Header.GENRE, familyb, 32, 4, 0, Color.White, Color.Black);
+                Genre = FontRender.GetTexture(NowTJA.Header.GENRE, 32, font, 6);
             }
             else Genre = new Texture();
             if (!string.IsNullOrEmpty(NowTJA.Header.SUBTITLE))
             {
-                SubTitle = DrawFont.GetTexture(NowTJA.Header.SUBTITLE, familyb, 32, 4, 0, Color.White, Color.Black);
+                SubTitle = FontRender.GetTexture(NowTJA.Header.SUBTITLE, 32, font, 6);
             }
             else SubTitle = new Texture();
-            FontFamily familyc = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "Arial Black");
-            BPM = DrawFont.GetTexture($"{Math.Round(NowTJA.Header.BPM, 0, MidpointRounding.AwayFromZero)} BPM", familyc, 32, 6, 0, Color.White, Color.Black);
+            BPM = FontRender.GetTexture($"{Math.Round(NowTJA.Header.BPM, 0, MidpointRounding.AwayFromZero)} BPM", 32, font, 8);
         }
 
         public static void GaugeChange(int player)

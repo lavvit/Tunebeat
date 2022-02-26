@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Tunebeat.Common;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using TJAParse;
 
 namespace Tunebeat.Game
@@ -20,7 +20,7 @@ namespace Tunebeat.Game
 
                 if (Create.Cursor != 11)
                 {
-                    if (Key.IsPushed(KEY_INPUT_RETURN))
+                    if (Key.IsPushed(EKey.Enter))
                     {
                         Create.Selecting = !Create.Selecting;
                         #region HeaderLoad
@@ -74,7 +74,7 @@ namespace Tunebeat.Game
                         #endregion
                         Input.End();
                     }
-                    if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                    if (Key.IsPushed(EKey.Esc))
                     {
                         Create.Selecting = !Create.Selecting;
                         Input.End();
@@ -131,7 +131,7 @@ namespace Tunebeat.Game
                 }
                 else
                 {
-                    if (Key.IsPushed(KEY_INPUT_RIGHT))
+                    if (Key.IsPushed(EKey.Right))
                     {
                         if (Game.Course[0] < 4)
                             Game.Course[0]++;
@@ -139,7 +139,7 @@ namespace Tunebeat.Game
                             Game.Course[0] = 0;
                         Game.Reset();
                     }
-                    if (Key.IsPushed(KEY_INPUT_LEFT))
+                    if (Key.IsPushed(EKey.Left))
                     {
                         if (Game.Course[0] > 0)
                             Game.Course[0]--;
@@ -147,7 +147,7 @@ namespace Tunebeat.Game
                             Game.Course[0] = 4;
                         Game.Reset();
                     }
-                    if (Key.IsPushed(KEY_INPUT_RETURN))
+                    if (Key.IsPushed(EKey.Enter))
                     {
                         if (!Game.MainTJA[0].Courses[Game.Course[0]].IsEnable)
                         {
@@ -160,7 +160,7 @@ namespace Tunebeat.Game
             }
             else if (Create.CommandLayer == 2)
             {
-                if (Key.IsPushed(KEY_INPUT_RETURN))
+                if (Key.IsPushed(EKey.Enter))
                 {
                     if (!Create.DeleteMode) Create.AddCommand(Input.Text);
                     else Create.DeleteCommand(Input.Text);
@@ -169,7 +169,7 @@ namespace Tunebeat.Game
                     Input.End();
                     Create.CommandLayer = 0;
                 }
-                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                if (Key.IsPushed(EKey.Esc))
                 {
                     Create.CommandLayer = 0;
                     Input.End();
@@ -201,7 +201,7 @@ namespace Tunebeat.Game
                 }
 
 #if DEBUG
-                if ((Key.IsPushed(KEY_INPUT_RBRACKET) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(KEY_INPUT_RBRACKET) && PlayData.Data.AutoRoll > 20))
+                if ((Key.IsPushed(EKey.RBracket) && PlayData.Data.AutoRoll > 0) || (Key.IsPushing(EKey.RBracket) && PlayData.Data.AutoRoll > 20))
                 {
                     PlayData.Data.AutoRoll--;
                     for (int i = 0; i < 5; i++)
@@ -209,7 +209,7 @@ namespace Tunebeat.Game
                         ProcessAuto.RollTimer[i] = new Counter((long)0.0, (long)(1000.0 / PlayData.Data.AutoRoll), (long)1000.0, false);
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_LBRACKET) || (Key.IsPushing(KEY_INPUT_LBRACKET) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
+                if (Key.IsPushed(EKey.LBracket) || (Key.IsPushing(EKey.LBracket) && PlayData.Data.AutoRoll > 20 && PlayData.Data.AutoRoll < 1000))
                 {
                     PlayData.Data.AutoRoll++;
                     for (int i = 0; i < 5; i++)
@@ -329,11 +329,11 @@ namespace Tunebeat.Game
                             }
                             Notes.PreGreen[0] = Notes.GetGreenNumber(0, -0.25);
                         }
-                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        if (Key.IsPushed(EKey.Left))
                         {
                             Game.Adjust[0] += 0.5;
                         }
-                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        if (Key.IsPushed(EKey.Right))
                         {
                             Game.Adjust[0] -= 0.5;
                         }
@@ -381,11 +381,11 @@ namespace Tunebeat.Game
                             }
                             Notes.PreGreen[1] = Notes.GetGreenNumber(1, -0.25);
                         }
-                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        if (Key.IsPushed(EKey.Left))
                         {
                             Game.Adjust[1] += 0.5;
                         }
-                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        if (Key.IsPushed(EKey.Right))
                         {
                             Game.Adjust[1] -= 0.5;
                         }
@@ -516,12 +516,12 @@ namespace Tunebeat.Game
                             }
                             PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                         }
-                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        if (Key.IsPushed(EKey.Left))
                         {
                             Game.Adjust[0] += 0.5;
                             PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                         }
-                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        if (Key.IsPushed(EKey.Right))
                         {
                             Game.Adjust[0] -= 0.5;
                             PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
@@ -577,12 +577,12 @@ namespace Tunebeat.Game
                             }
                             PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                         }
-                        if (Key.IsPushed(KEY_INPUT_LEFT))
+                        if (Key.IsPushed(EKey.Left))
                         {
                             Game.Adjust[1] += 0.5;
                             PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                         }
-                        if (Key.IsPushed(KEY_INPUT_RIGHT))
+                        if (Key.IsPushed(EKey.Right))
                         {
                             Game.Adjust[1] -= 0.5;
                             PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
@@ -621,8 +621,8 @@ namespace Tunebeat.Game
 
                 if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.IsSongPlay && !Game.MainSong.IsPlaying && Game.PlayMeasure == 0)
                 {
-                    if (!Game.IsReplay[0] && !Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(0);
-                    if (Game.Play2P && !Game.IsReplay[1] & Key.IsPushing(KEY_INPUT_LSHIFT)) PlayMemory.SaveData(1);
+                    if (!Game.IsReplay[0] && !Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(0);
+                    if (Game.Play2P && !Game.IsReplay[1] & Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(1);
                 }
 
                 #region Create
@@ -632,7 +632,7 @@ namespace Tunebeat.Game
                     SoundLoad.Ka[0].Play();
                     Create.CreateMode = !Create.CreateMode;
                     Create.InfoMenu = false;
-                    if (Key.IsPushing(KEY_INPUT_RSHIFT))
+                    if (Key.IsPushing(EKey.RShift))
                     {
                         Create.BarInit(Game.Course[0]);
                         Create.Save(Game.TJAPath);
@@ -650,7 +650,7 @@ namespace Tunebeat.Game
                 }
                 if (Create.CreateMode)
                 {
-                    if (Key.IsPushed(KEY_INPUT_RSHIFT) || Key.IsLeft(KEY_INPUT_RSHIFT))
+                    if (Key.IsPushed(EKey.RShift) || Key.IsLeft(EKey.RShift))
                     {
                         Create.Preview = !Create.Preview;
                         if (Create.Preview && Game.MainTimer.State == 0)
@@ -663,14 +663,14 @@ namespace Tunebeat.Game
                         }
                     }
                     int[] inputlist = new int[8] { 4, 8, 12, 16, 20, 24, 32, 48 };
-                    if (Key.IsPushed(KEY_INPUT_DIVIDE))
+                    if (Key.IsPushed(EKey.NumPad_Divide))
                     {
                         SoundLoad.Ka[0].Play();
                         if (Create.NowInput > 0) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput - 1];
                         if (Create.NowInput-- <= 0) Create.NowInput = 0;
                         Create.InputType = inputlist[Create.NowInput];
                     }
-                    if (Key.IsPushed(KEY_INPUT_MULTIPLY))
+                    if (Key.IsPushed(EKey.NumPad_Multiply))
                     {
                         SoundLoad.Ka[0].Play();
                         if (Create.NowInput < 7) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput + 1];
@@ -763,11 +763,11 @@ namespace Tunebeat.Game
                     }
                     if (Create.AllText != null)
                     {
-                        if ((Key.IsPushing(KEY_INPUT_SUBTRACT) || (Mouse.X >= 1280 && Mouse.Wheel > 0)) && Create.NowScroll > 0)
+                        if ((Key.IsPushing(EKey.NumPad_Subtract) || (Mouse.X >= 1280 && Mouse.Wheel > 0)) && Create.NowScroll > 0)
                         {
                             Create.NowScroll--;
                         }
-                        if ((Key.IsPushing(KEY_INPUT_ADD) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 29 < Create.Course[Game.Course[0]].Count)
+                        if ((Key.IsPushing(EKey.NumPad_Add) || (Mouse.X >= 1280 && Mouse.Wheel < 0)) && Create.NowScroll + 29 < Create.Course[Game.Course[0]].Count)
                         {
                             Create.NowScroll++;
                         }
@@ -777,11 +777,11 @@ namespace Tunebeat.Game
                         Create.Mapping = !Create.Mapping;
                         if (Create.Mapping)
                         {
-                            DrawLog.Draw("マッピングを開始します…");
+                            TextLog.Draw("マッピングを開始します…");
                         }
                         if (!Create.Mapping)
                         {
-                            DrawLog.Draw("マッピングをセーブしました!");
+                            TextLog.Draw("マッピングをセーブしました!");
                             Create.Save(Game.TJAPath);
                             Game.Reset();
                         }
@@ -803,7 +803,7 @@ namespace Tunebeat.Game
                     }
                     if (Key.IsPushed(PlayData.Data.SaveFile))
                     {
-                        DrawLog.Draw("セーブしました!");
+                        TextLog.Draw("セーブしました!");
                         Create.Save(Game.TJAPath);
                     }
                     if (Key.IsPushed(PlayData.Data.InfoMenu))
@@ -823,12 +823,12 @@ namespace Tunebeat.Game
                     }
                     if (!Create.InfoMenu)
                     {
-                        if (Key.IsPushed(KEY_INPUT_UP))
+                        if (Key.IsPushed(EKey.Up))
                         {
                             SoundLoad.Ka[0].Play();
                             if (Create.NowColor-- <= 0) Create.NowColor = 7;
                         }
-                        if (Key.IsPushed(KEY_INPUT_DOWN))
+                        if (Key.IsPushed(EKey.Down))
                         {
                             SoundLoad.Ka[0].Play();
                             if (Create.NowColor++ >= 7) Create.NowColor = 0;
@@ -836,15 +836,15 @@ namespace Tunebeat.Game
                     }
                     else
                     {
-                        if (Key.IsPushed(KEY_INPUT_UP))
+                        if (Key.IsPushed(EKey.Up))
                         {
                             if (Create.Cursor-- <= 0) Create.Cursor = 13;
                         }
-                        if (Key.IsPushed(KEY_INPUT_DOWN))
+                        if (Key.IsPushed(EKey.Down))
                         {
                             if (Create.Cursor++ >= 13) Create.Cursor = 0;
                         }
-                        if (Key.IsPushed(KEY_INPUT_RETURN))
+                        if (Key.IsPushed(EKey.Enter))
                         {
                             Create.Selecting = !Create.Selecting;
                             if (Create.Cursor != 11) Input.Init();

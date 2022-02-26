@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using Tunebeat.Common;
 
 namespace Tunebeat.Player

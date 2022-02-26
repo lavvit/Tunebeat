@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using Tunebeat.Common;
 using Tunebeat.Game;
 
@@ -42,13 +42,13 @@ namespace Tunebeat.Title
 
         public override void Update()
         {
-            if (Key.IsPushed(KEY_INPUT_RETURN) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
+            if (Key.IsPushed(EKey.Enter) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
                 Program.SceneChange(new SongSelect.SongSelect());
             }
-            if (Key.IsPushed(KEY_INPUT_ESCAPE))
+            if (Key.IsPushed(EKey.Esc))
             {
                 Program.End();
             }
@@ -59,35 +59,35 @@ namespace Tunebeat.Title
             }
 
             #if DEBUG
-            if (Key.IsPushing(KEY_INPUT_1))
+            if (Key.IsPushing(EKey.Key_1))
             {
-                if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[0] < 255)
+                if (Key.IsPushing(EKey.Up) && PlayData.Data.SkinColor[0] < 255)
                 {
                     PlayData.Data.SkinColor[0]++;
                 }
-                if (Key.IsPushing(KEY_INPUT_DOWN) && PlayData.Data.SkinColor[0] > 0)
+                if (Key.IsPushing(EKey.Down) && PlayData.Data.SkinColor[0] > 0)
                 {
                     PlayData.Data.SkinColor[0]--;
                 }
             }
-            if (Key.IsPushing(KEY_INPUT_2))
+            if (Key.IsPushing(EKey.Key_2))
             {
-                if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[1] < 255)
+                if (Key.IsPushing(EKey.Up) && PlayData.Data.SkinColor[1] < 255)
                 {
                     PlayData.Data.SkinColor[1]++;
                 }
-                if (Key.IsPushing(KEY_INPUT_DOWN) && PlayData.Data.SkinColor[1] > 0)
+                if (Key.IsPushing(EKey.Down) && PlayData.Data.SkinColor[1] > 0)
                 {
                     PlayData.Data.SkinColor[1]--;
                 }
             }
-            if (Key.IsPushing(KEY_INPUT_3))
+            if (Key.IsPushing(EKey.Key_3))
             {
-                if (Key.IsPushing(KEY_INPUT_UP) && PlayData.Data.SkinColor[2] < 255)
+                if (Key.IsPushing(EKey.Up) && PlayData.Data.SkinColor[2] < 255)
                 {
                     PlayData.Data.SkinColor[2]++;
                 }
-                if (Key.IsPushing(KEY_INPUT_DOWN) && PlayData.Data.SkinColor[2] > 0)
+                if (Key.IsPushing(EKey.Down) && PlayData.Data.SkinColor[2] > 0)
                 {
                     PlayData.Data.SkinColor[2]--;
                 }

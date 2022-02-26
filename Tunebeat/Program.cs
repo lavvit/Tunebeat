@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using Tunebeat.Common;
 
 namespace Tunebeat
@@ -55,7 +55,7 @@ namespace Tunebeat
             //音源読み込み
             SoundLoad.Init();
 
-            DrawLog.Init();
+            SeaDrop.SeaDrop.Init();
 
             SceneChange(new Title.Title());
         }
@@ -64,11 +64,9 @@ namespace Tunebeat
         {
             while(ProcessMessage() == 0 && ScreenFlip() == 0 && ClearDrawScreen() == 0)
             {
-                Key.Update();
-                Mouse.Update();
+                SeaDrop.SeaDrop.Update();
                 NowScene?.Draw();
                 NowScene?.Update();
-                DrawLog.Update();
 
                 if (PlayData.Data.FullScreen) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
 
@@ -78,7 +76,7 @@ namespace Tunebeat
                     strTime = $"{time.Year:0000}{time.Month:00}{time.Day:00}{time.Hour:00}{time.Minute:00}{time.Second:00}";
                     if (!Directory.Exists("Capture")) Directory.CreateDirectory("Capture");
                     SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strTime}.png");
-                    DrawLog.Draw($"スクリーンショットが保存されました! : {strTime}.png", 2000);
+                    TextLog.Draw($"スクリーンショットが保存されました! : {strTime}.png", 2000);
                 }
             }
         }

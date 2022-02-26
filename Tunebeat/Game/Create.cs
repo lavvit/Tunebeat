@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using TJAParse;
 using Tunebeat.Common;
 
@@ -37,7 +37,7 @@ namespace Tunebeat.Game
         public static void Read()
         {
             AllText = new List<string>();
-            using (StreamReader sr = new StreamReader(Game.MainTJA[0].TJAPath, Encoding.GetEncoding("SHIFT_JIS")))
+            using (StreamReader sr = new StreamReader(Game.MainTJA[0].TJAPath, Encoding.GetEncoding("Shift_JIS")))
             {
                 while (sr.Peek() > -1)
                 {
@@ -734,7 +734,7 @@ namespace Tunebeat.Game
             double num = lastbar.Time + 240000.0 / lastbar.BPM / lastbar.Measure;
             BarLine bar = new BarLine(num, lastbar.BPM, lastbar.Measure, 480);
             File.Bar[Game.Course[0]].Add(bar);
-            DrawLog.Draw("小節を追加しました。");
+            TextLog.Draw("小節を追加しました。");
         }
         public static void AddCommand(string str)
         {
@@ -752,7 +752,7 @@ namespace Tunebeat.Game
                                 Name = str
                             };
                             File.Command[Game.Course[0]].Add(com);
-                            DrawLog.Draw("命令を追加しました。");
+                            TextLog.Draw("命令を追加しました。");
                         }
                     }
                 }
@@ -785,8 +785,8 @@ namespace Tunebeat.Game
                     success = true;
                 }
             }
-            if (success) DrawLog.Draw("命令を削除しました。");
-            else DrawLog.Draw("記入された命令が見つかりませんでした。");
+            if (success) TextLog.Draw("命令を削除しました。");
+            else TextLog.Draw("記入された命令が見つかりませんでした。");
         }
 
         public static int SortCommand(string str)
@@ -804,7 +804,7 @@ namespace Tunebeat.Game
 
         public static void Save(string path)
         {
-            using (StreamWriter streamWriter = new StreamWriter(path, false, Encoding.GetEncoding("SHIFT_JIS")))
+            using (StreamWriter streamWriter = new StreamWriter(path, false, Encoding.GetEncoding("Shift_JIS")))
             {
                 streamWriter.WriteLine($"TITLE:{File.Title}");
                 streamWriter.WriteLine($"SUBTITLE:--{File.SubTitle}");

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using TJAParse;
 using Tunebeat.Common;
 using Tunebeat.Config;
@@ -25,7 +25,7 @@ namespace Tunebeat.Game
                 {
                     Directory.CreateDirectory(SongSelect.SongSelect.FolderName);
                 }
-                using (StreamWriter streamWriter = new StreamWriter(TJAPath, false, Encoding.GetEncoding("SHIFT_JIS")))
+                using (StreamWriter streamWriter = new StreamWriter(TJAPath, false, Encoding.GetEncoding("Shift_JIS")))
                 {
                     streamWriter.WriteLine($"TITLE:{SongSelect.SongSelect.FileName}");
                     streamWriter.WriteLine("SUBTITLE:--");
@@ -64,15 +64,13 @@ namespace Tunebeat.Game
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
-            string movie = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
-            movie = movie.Replace(".wmv", ".mp4");
-            MainMovie = new Movie(movie);
+            MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
 
             if (PlayData.Data.FontRendering)
             {
-                FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
-                Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
-                SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
+                string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
+                Title = FontRender.GetTexture(MainTJA[0].Header.TITLE, 48, font, 8);
+                SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, font, 8);
             }
 
             RandomCourse = SongSelect.SongSelect.Course;
@@ -266,7 +264,7 @@ namespace Tunebeat.Game
 
             if (Create.Edited)
             {
-                DrawLog.Draw("セーブしました!");
+                TextLog.Draw("セーブしました!");
                 Create.Save(TJAPath);
                 Create.Edited = false;
             }
@@ -512,7 +510,7 @@ namespace Tunebeat.Game
             if (MainTimer.State == 0 && !IsSongPlay)
             {
                 DrawString(720, 356, $"{PlayMeasure}/{MeasureList.Count}", 0xffffff);
-                DrawString(720, 376, $"PRESS {((KeyList)PlayData.Data.PlayStart).ToString().ToUpper()} KEY", 0xffffff);
+                DrawString(720, 376, $"PRESS {((EKey)PlayData.Data.PlayStart).ToString().ToUpper()} KEY", 0xffffff);
             }
 
             if ((PlayData.Data.PreviewType >= (int)EPreviewType.Down) || (PlayData.Data.PreviewType == (int)EPreviewType.Normal && !(Play2P || PlayData.Data.ShowGraph)))
@@ -660,8 +658,8 @@ namespace Tunebeat.Game
 
         public static void GenerateLyric(Chip chip)
         {
-            FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
-            Lyric = DrawFont.GetTexture(chip.Lyric, family, 56, 4, 0, Color.White, Color.Blue);
+            string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
+            Lyric = FontRender.GetTexture(chip.Lyric, 56, font, 4, 0xffffff, 0x0000ff);
             return;
         }
         public override void Update()
@@ -680,7 +678,7 @@ namespace Tunebeat.Game
                 PushingTimer[i].Tick();
                 SuddenTimer[i].Tick();
             }
-            if (MainTimer.State == 0 && Create.CommandLayer == 0 && ((!(Create.CreateMode && Create.InfoMenu) && Key.IsPushed(KEY_INPUT_RETURN)) || Key.IsPushed(PlayData.Data.PlayStart) || PlayData.Data.QuickStart))
+            if (MainTimer.State == 0 && Create.CommandLayer == 0 && ((!(Create.CreateMode && Create.InfoMenu) && Key.IsPushed(EKey.Enter)) || Key.IsPushed((EKey)PlayData.Data.PlayStart) || PlayData.Data.QuickStart))
             {
                 MainTimer.Start();
                 if (IsAuto[0]) PlayData.Data.InputAdjust[0] = Adjust[0];
@@ -714,7 +712,7 @@ namespace Tunebeat.Game
                     if (Create.Mapping)
                     {
                         Create.Mapping = !Create.Mapping;
-                        DrawLog.Draw("マッピングをセーブしました!");
+                        TextLog.Draw("マッピングをセーブしました!");
                         Create.Save(TJAPath);
                     }
                     Reset();
@@ -777,9 +775,9 @@ namespace Tunebeat.Game
 
                         if (PlayData.Data.FontRendering)
                         {
-                            FontFamily family = new FontFamily(!string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic");
-                            Title = DrawFont.GetTexture(MainTJA[0].Header.TITLE, family, 48, 4, 0, Color.White, Color.Black);
-                            SubTitle = DrawFont.GetTexture(MainTJA[0].Header.SUBTITLE, family, 20, 4, 0, Color.White, Color.Black);
+                            string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
+                            Title = FontRender.GetTexture(MainTJA[0].Header.TITLE, 48, font, 8);
+                            SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, font, 8);
                         }
                         Notes.SetNotesP();
                         PlayMeasure = 0;
@@ -789,11 +787,9 @@ namespace Tunebeat.Game
                         MainTimer.Value = -2000;
                         MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
                         MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
-                        string movie = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
-                        movie = movie.Replace(".wmv", ".mp4");
-                        MainMovie = new Movie(movie);
+                        MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
 
-                        DrawLog.Draw($"Now:{MainTJA[0].TJAPath}", 2000);
+                        TextLog.Draw($"Now:{MainTJA[0].TJAPath}", 2000);
                     }
                     else
                     {
@@ -801,7 +797,7 @@ namespace Tunebeat.Game
                         {
                             Program.SceneChange(new Result.Result());
                         }
-                        if (Key.IsPushed(KEY_INPUT_RETURN) || Key.IsPushed(PlayData.Data.PlayStart))
+                        if (Key.IsPushed(EKey.Enter) || Key.IsPushed((EKey)PlayData.Data.PlayStart))
                         {
                             PlayMemory.Dispose();
                             Program.SceneChange(new SongSelect.SongSelect());
@@ -809,7 +805,7 @@ namespace Tunebeat.Game
                     }
                 }
             }
-            if (Key.IsPushed(KEY_INPUT_ESCAPE) && Create.CommandLayer < 2)
+            if (Key.IsPushed(EKey.Esc) && Create.CommandLayer < 2)
             {
                 PlayMemory.Dispose();
                 Program.SceneChange(new SongSelect.SongSelect());

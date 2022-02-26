@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using TJAParse;
 using Tunebeat.Common;
 
@@ -87,22 +87,22 @@ namespace Tunebeat.Config
 
         public override void Update()
         {
-            if (Key.IsPushed(KEY_INPUT_UP))
+            if (Key.IsPushed(EKey.Up))
             {
                 PushedTimer[0].Start();
             }
-            if (Key.IsLeft(KEY_INPUT_UP))
+            if (Key.IsLeft(EKey.Up))
             {
                 PushedTimer[0].Stop();
                 PushedTimer[0].Reset();
                 PushingTimer[0].Stop();
                 PushingTimer[0].Reset();
             }
-            if (Key.IsPushed(KEY_INPUT_DOWN))
+            if (Key.IsPushed(EKey.Down))
             {
                 PushedTimer[1].Start();
             }
-            if (Key.IsLeft(KEY_INPUT_DOWN))
+            if (Key.IsLeft(EKey.Down))
             {
                 PushedTimer[1].Stop();
                 PushedTimer[1].Reset();
@@ -117,13 +117,13 @@ namespace Tunebeat.Config
                 }
             }
 
-            if (Key.IsPushing(KEY_INPUT_UP) && Key.IsPushing(KEY_INPUT_DOWN) && Selecting && OptionList != null)
+            if (Key.IsPushing(EKey.Up) && Key.IsPushing(EKey.Down) && Selecting && OptionList != null)
             {
                 OptionList[Cursor].Reset();
             }
             else
             {
-                if (Key.IsPushed(KEY_INPUT_UP) || (PushingTimer[0].Value == PushingTimer[0].End))
+                if (Key.IsPushed(EKey.Up) || (PushingTimer[0].Value == PushingTimer[0].End))
                 {
                     if (Selecting && OptionList != null)
                     {
@@ -141,7 +141,7 @@ namespace Tunebeat.Config
                     }
                     PushingTimer[0].Reset();
                 }
-                if (Key.IsPushed(KEY_INPUT_DOWN) || (PushingTimer[1].Value == PushingTimer[1].End))
+                if (Key.IsPushed(EKey.Down) || (PushingTimer[1].Value == PushingTimer[1].End))
                 {
                     if (Selecting && OptionList != null)
                     {
@@ -160,7 +160,7 @@ namespace Tunebeat.Config
                 }
                 for (int i = 0; i < 256; i++)
                 {
-                    if (Key.IsPushed(i) && Selecting)
+                    if (Key.IsPushed((EKey)i) && Selecting)
                     {
                         if (OptionList[Cursor].Type == OptionType.Key)
                         {
@@ -168,13 +168,13 @@ namespace Tunebeat.Config
                             OptionList[Cursor].Enter();
                             UpdateConfig();
                         }
-                        else if (OptionList[Cursor].Type == OptionType.KeyList)
+                        else if (OptionList[Cursor].Type == OptionType.EKey)
                         {
                             OptionList[Cursor].Add();
                         }
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_RETURN))
+                if (Key.IsPushed(EKey.Enter))
                 {
                     if (Selecting)
                     {
@@ -199,7 +199,7 @@ namespace Tunebeat.Config
                             {
                                 OptionList[Cursor].Enter();
                             }
-                            if (OptionList[Cursor].Type == OptionType.KeyList)
+                            if (OptionList[Cursor].Type == OptionType.EKey)
                             {
                                 OptionList[Cursor].Start();
                             }
@@ -228,7 +228,7 @@ namespace Tunebeat.Config
                         }
                     }
                 }
-                if (Key.IsPushed(KEY_INPUT_ESCAPE))
+                if (Key.IsPushed(EKey.Esc))
                 {
                     if (Selecting)
                     {
@@ -382,14 +382,14 @@ namespace Tunebeat.Config
                     //Back = new Option("<< Back to List", "前の項目に戻ります。"); OptionList.Add(Back);
                     break;
                 case ELayer.KeyConfig:
-                    LeftDon = new OptionKeyList("LeftDon", PlayData.Data.LEFTDON, "[プレイ] 1P左側の面"); OptionList.Add(LeftDon);
-                    RightDon = new OptionKeyList("RightDon", PlayData.Data.RIGHTDON, "[プレイ] 1P右側の面"); OptionList.Add(RightDon);
-                    LeftKa = new OptionKeyList("LeftKa", PlayData.Data.LEFTKA, "[プレイ] 1P左側の縁"); OptionList.Add(LeftKa);
-                    RightKa = new OptionKeyList("RightKa", PlayData.Data.RIGHTKA, "[プレイ] 1P右側の縁"); OptionList.Add(RightKa);
-                    LeftDon2P = new OptionKeyList("LeftDon2P", PlayData.Data.LEFTDON2P, "[プレイ] 2P左側の面"); OptionList.Add(LeftDon2P);
-                    RightDon2P = new OptionKeyList("RightDon2P", PlayData.Data.RIGHTDON2P, "[プレイ] 2P右側の面"); OptionList.Add(RightDon2P);
-                    LeftKa2P = new OptionKeyList("LeftKa2P", PlayData.Data.LEFTKA2P, "[プレイ] 2P左側の縁"); OptionList.Add(LeftKa2P);
-                    RightKa2P = new OptionKeyList("RightKa2P", PlayData.Data.RIGHTKA2P, "[プレイ] 2P右側の縁"); OptionList.Add(RightKa2P);
+                    LeftDon = new OptionEKey("LeftDon", PlayData.Data.LEFTDON, "[プレイ] 1P左側の面"); OptionList.Add(LeftDon);
+                    RightDon = new OptionEKey("RightDon", PlayData.Data.RIGHTDON, "[プレイ] 1P右側の面"); OptionList.Add(RightDon);
+                    LeftKa = new OptionEKey("LeftKa", PlayData.Data.LEFTKA, "[プレイ] 1P左側の縁"); OptionList.Add(LeftKa);
+                    RightKa = new OptionEKey("RightKa", PlayData.Data.RIGHTKA, "[プレイ] 1P右側の縁"); OptionList.Add(RightKa);
+                    LeftDon2P = new OptionEKey("LeftDon2P", PlayData.Data.LEFTDON2P, "[プレイ] 2P左側の面"); OptionList.Add(LeftDon2P);
+                    RightDon2P = new OptionEKey("RightDon2P", PlayData.Data.RIGHTDON2P, "[プレイ] 2P右側の面"); OptionList.Add(RightDon2P);
+                    LeftKa2P = new OptionEKey("LeftKa2P", PlayData.Data.LEFTKA2P, "[プレイ] 2P左側の縁"); OptionList.Add(LeftKa2P);
+                    RightKa2P = new OptionEKey("RightKa2P", PlayData.Data.RIGHTKA2P, "[プレイ] 2P右側の縁"); OptionList.Add(RightKa2P);
                     ScreenShot = new OptionKey("ScreenShot", PlayData.Data.ScreenShot, "[共通] スクリーンショットを撮影する"); OptionList.Add(ScreenShot);
                     MoveConfig = new OptionKey("MoveConfig", PlayData.Data.MoveConfig, "[タイトル・選曲] この画面に移行する"); OptionList.Add(MoveConfig);
                     OpenOption = new OptionKey("OpenOption", PlayData.Data.OpenOption, "[選曲] オプションを開く"); OptionList.Add(OpenOption);
@@ -581,6 +581,6 @@ namespace Tunebeat.Config
         public static OptionStrList PlayFolder;
         public static OptionKey ScreenShot, MoveConfig, OpenOption, PlayStart, PlayReset, DisplaySudden, SuddenPlus, SuddenMinus, ChangeFHS, DisplaySudden2P, SuddenPlus2P, SuddenMinus2P, ChangeFHS2P,
             MeasureUp, MeasureDown, JunpHome, JunpEnd, ChangeAuto, ChangeAuto2P, MoveCreate, InfoMenu, AddMeasure, AddCommand, OpenTenplate, RealTimeMapping, SaveFile, SaveReplay;
-        public static OptionKeyList LeftDon, LeftKa, RightDon, RightKa, LeftDon2P, LeftKa2P, RightDon2P, RightKa2P;
+        public static OptionEKey LeftDon, LeftKa, RightDon, RightKa, LeftDon2P, LeftKa2P, RightDon2P, RightKa2P;
     }
 }

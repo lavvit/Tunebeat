@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using static DxLibDLL.DX;
-using Amaoto;
+using SeaDrop;
 using TJAParse;
 using Tunebeat.Common;
 
@@ -107,7 +107,7 @@ namespace Tunebeat.Game
                     TextureLoad.Game_Sudden.Draw(NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), NotesP[1].Y);
                 }
 
-                if (Key.IsPushing(KEY_INPUT_LSHIFT))
+                if (Key.IsPushing(EKey.LShift))
                 {
                     int type = 0;
                     if (PlayData.Data.FloatingHiSpeed[0]) type = 1;
@@ -118,7 +118,7 @@ namespace Tunebeat.Game
                     Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 348, $"{Sudden[0]}", 0);
                     Score.DrawNumber(Sudden[0] < 54 ? 1842 : NotesP[0].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[0]) / 1000), 388, $"{(GreenNumber[0] > 0 ? GreenNumber[0] : 0)}", 5);
                 }
-                if (Key.IsPushing(KEY_INPUT_RSHIFT) && Game.Play2P)
+                if (Key.IsPushing(EKey.RShift) && Game.Play2P)
                 {
                     int type = 0;
                     if (PlayData.Data.FloatingHiSpeed[1]) type = 1;

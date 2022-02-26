@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using Amaoto;
+using SeaDrop;
 using static DxLibDLL.DX;
 
 namespace Tunebeat.Common
@@ -11,9 +11,9 @@ namespace Tunebeat.Common
         {
             Data = new Data();
             if (!File.Exists("Config.json"))
-                ConfigManager.SaveConfig(Data, "Config.json");
+                ConfigJson.SaveConfig(Data, "Config.json");
 
-            Data = ConfigManager.GetConfig<Data>(@"Config.json");
+            Data = ConfigJson.GetConfig<Data>(@"Config.json");
             if (Data.PlayFolder.Count > 1) Data.PlayFolder.RemoveAt(0);
             if (Data.LEFTDON.Count > 1) Data.LEFTDON.RemoveAt(0);
             if (Data.LEFTKA.Count > 1) Data.LEFTKA.RemoveAt(0);
@@ -26,7 +26,7 @@ namespace Tunebeat.Common
         }
         public static void End()
         {
-            ConfigManager.SaveConfig(Data, "Config.json");
+            ConfigJson.SaveConfig(Data, "Config.json");
         }
         public static Data Data { get; set; }
     }
@@ -104,42 +104,42 @@ namespace Tunebeat.Common
 
         public List<string> Template = new List<string>();
 
-        public List<int> LEFTDON = new List<int>() { KEY_INPUT_F };
-        public List<int> RIGHTDON = new List<int>() { KEY_INPUT_J };
-        public List<int> LEFTKA = new List<int>() { KEY_INPUT_D };
-        public List<int> RIGHTKA = new List<int>() { KEY_INPUT_K };
-        public List<int> LEFTDON2P = new List<int>() { KEY_INPUT_V };
-        public List<int> RIGHTDON2P = new List<int>() { KEY_INPUT_M };
-        public List<int> LEFTKA2P = new List<int>() { KEY_INPUT_C };
-        public List<int> RIGHTKA2P = new List<int>() { KEY_INPUT_COMMA };
+        public List<int> LEFTDON = new List<int>() { (int)EKey.F };
+        public List<int> RIGHTDON = new List<int>() { (int)EKey.J };
+        public List<int> LEFTKA = new List<int>() { (int)EKey.D };
+        public List<int> RIGHTKA = new List<int>() { (int)EKey.K };
+        public List<int> LEFTDON2P = new List<int>() { (int)EKey.V };
+        public List<int> RIGHTDON2P = new List<int>() { (int)EKey.M };
+        public List<int> LEFTKA2P = new List<int>() { (int)EKey.C };
+        public List<int> RIGHTKA2P = new List<int>() { (int)EKey.Comma };
 
-        public int ScreenShot = KEY_INPUT_F12;
-        public int MoveConfig = KEY_INPUT_F1;
-        public int OpenOption = KEY_INPUT_F2;
-        public int PlayStart = KEY_INPUT_SPACE;
-        public int PlayReset = KEY_INPUT_Q;
-        public int DisplaySudden = KEY_INPUT_LSHIFT;
-        public int SuddenPlus = KEY_INPUT_Z;
-        public int SuddenMinus = KEY_INPUT_X;
-        public int ChangeFHS = KEY_INPUT_LCONTROL;
-        public int DisplaySudden2P = KEY_INPUT_RSHIFT;
-        public int SuddenPlus2P = KEY_INPUT_SLASH;
-        public int SuddenMinus2P = KEY_INPUT_BACKSLASH;
-        public int ChangeFHS2P = KEY_INPUT_RCONTROL;
-        public int MeasureUp = KEY_INPUT_PGUP;
-        public int MeasureDown = KEY_INPUT_PGDN;
-        public int JunpHome = KEY_INPUT_HOME;
-        public int JunpEnd = KEY_INPUT_END;
-        public int ChangeAuto = KEY_INPUT_F1;
-        public int ChangeAuto2P = KEY_INPUT_F2;
-        public int MoveCreate = KEY_INPUT_F3;
-        public int InfoMenu = KEY_INPUT_F4;
-        public int AddMeasure = KEY_INPUT_F5;
-        public int AddCommand = KEY_INPUT_F6;
-        public int OpenTenplate = KEY_INPUT_F7;
-        public int RealTimeMapping = KEY_INPUT_F8;
-        public int SaveFile = KEY_INPUT_F9;
-        public int SaveReplay = KEY_INPUT_F11;
-        //public int MoveTraining = KEY_INPUT_F9;
+        public int ScreenShot = (int)EKey.F12;
+        public int MoveConfig = (int)EKey.F1;
+        public int OpenOption = (int)EKey.F2;
+        public int PlayStart = (int)EKey.Space;
+        public int PlayReset = (int)EKey.Q;
+        public int DisplaySudden = (int)EKey.LShift;
+        public int SuddenPlus = (int)EKey.Z;
+        public int SuddenMinus = (int)EKey.X;
+        public int ChangeFHS = (int)EKey.LCtrl;
+        public int DisplaySudden2P = (int)EKey.RShift;
+        public int SuddenPlus2P = (int)EKey.Slash;
+        public int SuddenMinus2P = (int)EKey.BackSlash;
+        public int ChangeFHS2P = (int)EKey.RCtrl;
+        public int MeasureUp = (int)EKey.PgUp;
+        public int MeasureDown = (int)EKey.PgDn;
+        public int JunpHome = (int)EKey.Home;
+        public int JunpEnd = (int)EKey.End;
+        public int ChangeAuto = (int)EKey.F1;
+        public int ChangeAuto2P = (int)EKey.F2;
+        public int MoveCreate = (int)EKey.F3;
+        public int InfoMenu = (int)EKey.F4;
+        public int AddMeasure = (int)EKey.F5;
+        public int AddCommand = (int)EKey.F6;
+        public int OpenTenplate = (int)EKey.F7;
+        public int RealTimeMapping = (int)EKey.F8;
+        public int SaveFile = (int)EKey.F9;
+        public int SaveReplay = (int)EKey.F11;
+        //public int MoveTraining = EKey.F9;
     }
 }

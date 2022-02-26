@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Amaoto;
+using SeaDrop;
 using Tunebeat.Common;
 using Tunebeat.Game;
 
@@ -22,7 +22,7 @@ namespace Tunebeat.SongSelect
             string oldscorepath = $@"{path}.{PlayData.Data.PlayerName}.scoredata";
             if (File.Exists(scorepath))
             {
-                ScoreData = ConfigManager.GetConfig<ScoreData>(scorepath);
+                ScoreData = ConfigJson.GetConfig<ScoreData>(scorepath);
             }
             else if (File.Exists(oldscorepath))
             {

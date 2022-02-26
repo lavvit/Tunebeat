@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using TJAParse;
-using Amaoto;
+using SeaDrop;
 using Tunebeat.Common;
 using Tunebeat.SongSelect;
 
@@ -29,15 +29,15 @@ namespace Tunebeat.Game
 
             if (Game.IsReplay[0] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[0]))
             {
-                ReplayData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.ReplayScore[0]}.tbr");
+                ReplayData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.ReplayScore[0]}.tbr");
             }
             if (Game.Play2P && Game.IsReplay[1] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[1]))
             {
-                ReplayData2P = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.SongSelect.ReplayScore[1]}.tbr");
+                ReplayData2P = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.SongSelect.ReplayScore[1]}.tbr");
             }
             if (new BestScore(Game.TJAPath).ScoreData != null && !string.IsNullOrEmpty(new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore) && PlayData.Data.ShowGraph && PlayData.Data.ShowBestScore)
             {
-                BestData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.PlayerName}.{new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore}.tbr");
+                BestData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.PlayerName}.{new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore}.tbr");
             }
             if (new BestScore(Game.TJAPath).ScoreData != null)
             {
@@ -52,7 +52,7 @@ namespace Tunebeat.Game
             }
             if (!string.IsNullOrEmpty(SongSelect.SongSelect.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
             {
-                RivalData = ConfigManager.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.RivalScore}.tbr");
+                RivalData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.RivalScore}.tbr");
             }
 
             if (ReplayData != null && ReplayData.Chip != null)
@@ -198,9 +198,9 @@ namespace Tunebeat.Game
                 Chip = chipdata
             };
 
-            ConfigManager.SaveConfig(bestscore, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
-            ConfigManager.SaveConfig(replaydata, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
-            DrawLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
+            ConfigJson.SaveConfig(bestscore, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
+            ConfigJson.SaveConfig(replaydata, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
+            TextLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
             Saved = true;
         }
 
@@ -272,11 +272,11 @@ namespace Tunebeat.Game
                 Chip = chipdata
             };
 
-            ConfigManager.SaveConfig(bestscore, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
+            ConfigJson.SaveConfig(bestscore, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
             if (Score.EXScore[player] > scores[course].Score || !File.Exists($"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{scores[course].BestScore}.tbr"))
             {
-                ConfigManager.SaveConfig(replaydata, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
-                DrawLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
+                ConfigJson.SaveConfig(replaydata, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
+                TextLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
                 Saved = true;
             }
         }
