@@ -26,7 +26,7 @@ namespace Tunebeat
             string Version = "";//AssemblyInfo?そんな回りくどいことはせんよ
             #if DEBUG
             #else
-            Version = "  Ver.Beta 0.3";
+            Version = "  Ver.Beta 0.4";
             #endif
             SetMainWindowText("Tunebeat" + Version); //ソフト名決める
             SetWindowStyleMode(7); //画面最大化できるようにする

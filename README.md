@@ -26,14 +26,14 @@ https://discord.gg/467xQnteQx
 - [x] Sudden機能
 - [x] リプレイデータの保存
 - [x] スキンカラーのカスタマイズ
-- [ ] 譜面作成モード(仮)
+- [x] 譜面作成モード(仮) (Beta 0.4～)
 - [ ] 段位コース作成機能(仮)
 - [ ] 大会評価用機能(仮)
 
 ## 開発環境
 - .Net FrameWork 4.7.2
 - C#
-- Amaoto(DXライブラリ) by [AioiLight](https://github.com/AioiLight)氏
+- SeaDrop (Forked by Amaoto(DXライブラリ) by [AioiLight](https://github.com/AioiLight)氏)
 
 ## 必要スペック
 (必要最低限のスペックを掲載。確認でき次第更新します。)
