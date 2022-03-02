@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 using static DxLibDLL.DX;
 using SeaDrop;
 using TJAParse;
-using Tunebeat.Common;
 
-namespace Tunebeat.Config
+namespace Tunebeat
 {
     public class Config : Scene
     {
@@ -74,6 +73,7 @@ namespace Tunebeat.Config
                     }
                 }
             }
+            TextDebug.Update();
 
             #if DEBUG
             DrawString(0, 0, $"Layer:{Layer}", 0xffffff);
@@ -185,7 +185,7 @@ namespace Tunebeat.Config
                             {
                                 OptionList[Cursor].Enter();
                                 if (OptionList[Cursor].Name == "PlayFolder")
-                                    SongSelect.SongSelect.NowSongNumber = 0;
+                                    SongSelect.NowSongNumber = 0;
                             }
                             UpdateConfig();
                         }
@@ -219,8 +219,8 @@ namespace Tunebeat.Config
                     {
                         if (Layer == (int)ELayer.Back)
                         {
-                            if (Title.Title.Config) Program.SceneChange(new Title.Title());
-                            else Program.SceneChange(new SongSelect.SongSelect());
+                            if (Title.Config) Program.SceneChange(new Title());
+                            else Program.SceneChange(new SongSelect());
                         }
                         else if (OptionList.Count > 0)
                         {
@@ -244,8 +244,8 @@ namespace Tunebeat.Config
                     {
                         //設定の保存
                         PlayData.End();
-                        if (Title.Title.Config) Program.SceneChange(new Title.Title());
-                        else Program.SceneChange(new SongSelect.SongSelect());
+                        if (Title.Config) Program.SceneChange(new Title());
+                        else Program.SceneChange(new SongSelect());
                     }
                 }
             }

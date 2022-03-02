@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using SeaDrop;
 using TJAParse;
-using Tunebeat.Common;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class ProcessAuto
     {

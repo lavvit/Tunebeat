@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using TJAParse;
 using SeaDrop;
-using Tunebeat.Common;
-using Tunebeat.SongSelect;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     class PlayMemory
     {
@@ -27,13 +22,13 @@ namespace Tunebeat.Game
             RivalData = new ReplayData();
             Saved = false;
 
-            if (Game.IsReplay[0] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[0]))
+            if (Game.IsReplay[0] && !string.IsNullOrEmpty(SongSelect.ReplayScore[0]))
             {
-                ReplayData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.ReplayScore[0]}.tbr");
+                ReplayData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.ReplayScore[0]}.tbr");
             }
-            if (Game.Play2P && Game.IsReplay[1] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[1]))
+            if (Game.Play2P && Game.IsReplay[1] && !string.IsNullOrEmpty(SongSelect.ReplayScore[1]))
             {
-                ReplayData2P = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.SongSelect.ReplayScore[1]}.tbr");
+                ReplayData2P = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.ReplayScore[1]}.tbr");
             }
             if (new BestScore(Game.TJAPath).ScoreData != null && !string.IsNullOrEmpty(new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore) && PlayData.Data.ShowGraph && PlayData.Data.ShowBestScore)
             {
@@ -50,9 +45,9 @@ namespace Tunebeat.Game
                 BestData.Roll = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].Roll;
                 BestData.MaxCombo = new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].MaxCombo;
             }
-            if (!string.IsNullOrEmpty(SongSelect.SongSelect.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
+            if (!string.IsNullOrEmpty(SongSelect.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
             {
-                RivalData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.SongSelect.RivalScore}.tbr");
+                RivalData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.RivalScore}.tbr");
             }
 
             if (ReplayData != null && ReplayData.Chip != null)

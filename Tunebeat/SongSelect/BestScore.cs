@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using SeaDrop;
-using Tunebeat.Common;
-using Tunebeat.Game;
 
-namespace Tunebeat.SongSelect
+namespace Tunebeat
 {
     public class BestScore
     {

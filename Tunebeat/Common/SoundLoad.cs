@@ -1,6 +1,6 @@
 ﻿using SeaDrop;
 
-namespace Tunebeat.Common
+namespace Tunebeat
 {
     class SoundLoad
     {

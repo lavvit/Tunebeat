@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Drawing;
+﻿using System.Drawing;
 using static DxLibDLL.DX;
 using SeaDrop;
-using Tunebeat.Common;
-using Tunebeat.Game;
 
-namespace Tunebeat.Title
+namespace Tunebeat
 {
     public class Title : Scene
     {
@@ -46,7 +38,7 @@ namespace Tunebeat.Title
             {
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
-                Program.SceneChange(new SongSelect.SongSelect());
+                Program.SceneChange(new SongSelect());
             }
             if (Key.IsPushed(EKey.Esc))
             {
@@ -55,7 +47,7 @@ namespace Tunebeat.Title
             if (Key.IsPushed(PlayData.Data.MoveConfig))
             {
                 Config = true;
-                Program.SceneChange(new Config.Config());
+                Program.SceneChange(new Config());
             }
 
             #if DEBUG

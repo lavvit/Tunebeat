@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using static DxLibDLL.DX;
 using SeaDrop;
-using Tunebeat.Common;
 
 namespace Tunebeat
 {
@@ -57,16 +52,16 @@ namespace Tunebeat
 
             SeaDrop.SeaDrop.Init();
 
-            SceneChange(new Title.Title());
+            SceneChange(new Title());
         }
 
         static void Update()
         {
             while(ProcessMessage() == 0 && ScreenFlip() == 0 && ClearDrawScreen() == 0)
             {
-                SeaDrop.SeaDrop.Update();
                 NowScene?.Draw();
                 NowScene?.Update();
+                SeaDrop.SeaDrop.Update();
 
                 if (PlayData.Data.FullScreen) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
 

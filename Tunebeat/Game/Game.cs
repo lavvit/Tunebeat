@@ -2,44 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Drawing;
 using static DxLibDLL.DX;
 using SeaDrop;
 using TJAParse;
-using Tunebeat.Common;
-using Tunebeat.Config;
-using Tunebeat.SongSelect;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class Game : Scene
     {
         public override void Enable()
         {
-            TJAPath = SongSelect.SongSelect.PlayMode > 0 ? $@"{SongSelect.SongSelect.FolderName}\{SongSelect.SongSelect.FileName}.tja" : SongSelect.SongSelect.NowTJA.Path;
+            TJAPath = SongSelect.PlayMode > 0 ? $@"{SongSelect.FolderName}\{SongSelect.FileName}.tja" : SongSelect.NowTJA.Path;
             if (!File.Exists(TJAPath))
             {
-                if (!Directory.Exists(SongSelect.SongSelect.FolderName))
+                if (!Directory.Exists(SongSelect.FolderName)) Directory.CreateDirectory(SongSelect.FolderName);
+                string[] tja = new string[]
                 {
-                    Directory.CreateDirectory(SongSelect.SongSelect.FolderName);
-                }
-                using (StreamWriter streamWriter = new StreamWriter(TJAPath, false, Encoding.GetEncoding("Shift_JIS")))
-                {
-                    streamWriter.WriteLine($"TITLE:{SongSelect.SongSelect.FileName}");
-                    streamWriter.WriteLine("SUBTITLE:--");
-                    streamWriter.WriteLine("BPM:120");
-                    streamWriter.WriteLine($"WAVE:{SongSelect.SongSelect.FileName}.ogg");
-                    streamWriter.WriteLine("OFFSET:-0");
-                    streamWriter.WriteLine("SONGVOL:100");
-                    streamWriter.WriteLine("SEVOL:100");
-                    streamWriter.WriteLine("DEMOSTART:0");
-                    streamWriter.WriteLine($"COURSE:{SongSelect.SongSelect.NowTJA.Course}");
-                    streamWriter.WriteLine("LEVEL:0");
-                    streamWriter.WriteLine("#START");
-                    streamWriter.WriteLine("#END");
-                }
+                    $"TITLE:{SongSelect.FileName}",
+                    "SUBTITLE:--",
+                    "BPM:120",
+                    $"WAVE:{SongSelect.FileName}.ogg",
+                    "OFFSET:-0",
+                    "DEMOSTART:0",
+                    $"COURSE:{SongSelect.NowTJA.Course[0]}",
+                    "LEVEL:0",
+                    "#START",
+                    "#END"
+                };
+                ConfigIni ini = new ConfigIni();
+                ini.AddList(tja);
+                ini.SaveConfig(TJAPath);
             }
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
             if (PlayData.Data.PreviewType == 3)
@@ -73,12 +66,12 @@ namespace Tunebeat.Game
                 SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, font, 8);
             }
 
-            RandomCourse = SongSelect.SongSelect.Course;
+            RandomCourse = SongSelect.Course;
             for (int i = 0; i < 2; i++)
             {
                 IsAuto[i] = PlayData.Data.PreviewType == 3 ? true : PlayData.Data.Auto[i];
-                IsReplay[i] = SongSelect.SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.SongSelect.ReplayScore[i]) ? true : false;
-                Course[i] = SongSelect.SongSelect.Random && PlayData.Data.PlayCourse[i] == 4 ? RandomCourse : SongSelect.SongSelect.EnableCourse(SongSelect.SongSelect.NowTJA.Course, i);
+                IsReplay[i] = SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.ReplayScore[i]) ? true : false;
+                Course[i] = SongSelect.Random && PlayData.Data.PlayCourse[i] == 4 ? RandomCourse : SongSelect.EnableCourse(SongSelect.NowTJA.Course, i);
                 Failed[i] = false;
                 ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
@@ -600,13 +593,7 @@ namespace Tunebeat.Game
                 }
             }
 
-            if (Input.IsEnable)
-            {
-                DrawBox(0, 1040, GetDrawStringWidth(Input.Text, Input.Text.Length) + 40, 1080, 0x000000, TRUE);
-                DrawBox(20 + 9 * Input.Selection.Start, 1040, 20 + 9 * Input.Selection.End, 1080, 0x0000ff, TRUE);
-                DrawString(20, 1052, Input.Text, 0xffffff);
-                DrawString(16 + GetDrawStringWidth(Input.Text, Input.Position), 1052, "|", 0xffff00);
-            }
+            TextDebug.Update();
 
             #if DEBUG
             DrawString(0, 0, $"{MainTimer.Value}", 0xffffff); if (IsSongPlay && !MainSong.IsPlaying) DrawString(60, 0, "Stoped", 0xffffff);
@@ -721,7 +708,7 @@ namespace Tunebeat.Game
                 {
                     if (PlayData.Data.PlayList)
                     {
-                        if (SongSelect.SongSelect.Random)
+                        if (SongSelect.Random)
                         {
                             for (int i = 0; i < 100000000; i++)
                             {
@@ -795,12 +782,12 @@ namespace Tunebeat.Game
                     {
                         if (PlayData.Data.ShowResultScreen)
                         {
-                            Program.SceneChange(new Result.Result());
+                            Program.SceneChange(new Result());
                         }
                         if (Key.IsPushed(EKey.Enter) || Key.IsPushed((EKey)PlayData.Data.PlayStart))
                         {
                             PlayMemory.Dispose();
-                            Program.SceneChange(new SongSelect.SongSelect());
+                            Program.SceneChange(new SongSelect());
                         }
                     }
                 }
@@ -808,7 +795,7 @@ namespace Tunebeat.Game
             if (Key.IsPushed(EKey.Esc) && Create.CommandLayer < 2)
             {
                 PlayMemory.Dispose();
-                Program.SceneChange(new SongSelect.SongSelect());
+                Program.SceneChange(new SongSelect());
             }
 
             if (MainTimer.State != 0)

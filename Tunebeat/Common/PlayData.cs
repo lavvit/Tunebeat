@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using SeaDrop;
-using static DxLibDLL.DX;
 
-namespace Tunebeat.Common
+namespace Tunebeat
 {
     class PlayData
     {

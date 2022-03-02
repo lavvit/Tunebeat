@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
 using static DxLibDLL.DX;
 using SeaDrop;
 using TJAParse;
-using Tunebeat.Common;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class Notes : Scene
     {

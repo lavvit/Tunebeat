@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Drawing;
 using static DxLibDLL.DX;
 using SeaDrop;
 using TJAParse;
-using Tunebeat.Common;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class Create : Scene
     {
         public override void Enable()
         {
-            CreateMode = SongSelect.SongSelect.PlayMode == 1 ? true : false;
+            CreateMode = SongSelect.PlayMode == 1 ? true : false;
             Preview = true;
             InfoMenu = false;
             Selecting = false;
@@ -160,7 +156,7 @@ namespace Tunebeat.Game
                 DrawString(240, 20, $"Length:{len}", 0xffffff);
                 DrawString(240, 40, $"Cursor:{cur}", 0xffffff);
                 DrawString(240, 60, $"Bar:{File.Bar[Game.Course[0]].Count}", 0xffffff);
-                DrawString(240, 80, $"Song:{GetSoundTotalTime(Game.MainSong.ID)}", 0xffffff);
+                DrawString(240, 80, $"Song:{Game.MainSong.Length}", 0xffffff);
                 DrawString(240, 100, $"Off:{-File.Offset * 1000.0}", 0xffffff);
                 for (int i = 0; i < File.Bar[Game.Course[0]].Count; i++)
                 {

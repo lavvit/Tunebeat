@@ -7,9 +7,8 @@ using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
 using SeaDrop;
-using Tunebeat.Common;
 
-namespace Tunebeat.ModeSelect
+namespace Tunebeat
 {
     public class ModeSelect : Scene
     {

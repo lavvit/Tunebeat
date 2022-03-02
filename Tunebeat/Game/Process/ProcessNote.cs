@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TJAParse;
-using static DxLibDLL.DX;
-using Tunebeat.Common;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class ProcessNote
     {

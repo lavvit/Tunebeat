@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SeaDrop;
-using TJAParse;
-using Tunebeat.Common;
-using Tunebeat.Game;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class ProcessReplay
     {

@@ -7,11 +7,8 @@ using System.IO;
 using System.Drawing;
 using static DxLibDLL.DX;
 using SeaDrop;
-using Tunebeat.Common;
-using Tunebeat.Game;
-using Tunebeat.SongSelect;
 
-namespace Tunebeat.Result
+namespace Tunebeat
 {
     public class Result : Scene
     {
@@ -116,7 +113,7 @@ namespace Tunebeat.Result
 
             Score.DrawNumber(398, 960, $"{(Score.EXScore[0] > 0 ? Score.Roll[0] : Score.AutoRoll[0]),4}", Score.EXScore[0] == 0 && Score.AutoRoll[0] > 0 ? 5 : 0);
 
-            if (Game.Game.Play2P)
+            if (Game.Play2P)
             {
                 TextureLoad.Result_Panel.Draw(960, 0, new Rectangle(960, 0, 960, 1080));
 
@@ -148,19 +145,19 @@ namespace Tunebeat.Result
             {
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
-                Program.SceneChange(new SongSelect.SongSelect());
+                Program.SceneChange(new SongSelect());
             }
             if (Key.IsPushed(PlayData.Data.PlayReset))
             {
                 SoundLoad.Ka[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Ka[0].Play();
-                Program.SceneChange(new Game.Game());
+                Program.SceneChange(new Game());
             }
 
-            if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.Game.PlayMeasure == 0)
+            if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.PlayMeasure == 0)
             {
-                if (!Game.Game.IsReplay[0]) PlayMemory.SaveData(0);
-                if (Game.Game.Play2P && !Game.Game.IsReplay[1]) PlayMemory.SaveData(1);
+                if (!Game.IsReplay[0]) PlayMemory.SaveData(0);
+                if (Game.Play2P && !Game.IsReplay[1]) PlayMemory.SaveData(1);
             }
 
             base.Update();

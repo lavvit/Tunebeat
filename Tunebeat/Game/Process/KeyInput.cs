@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using Tunebeat.Common;
 using static DxLibDLL.DX;
 using SeaDrop;
 using TJAParse;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class KeyInput
     {

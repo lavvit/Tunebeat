@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TJAParse;
-using Tunebeat.Common;
 
-namespace Tunebeat.Game
+namespace Tunebeat
 {
     public class GetNotes
     {

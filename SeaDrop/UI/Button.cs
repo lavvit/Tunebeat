@@ -7,14 +7,20 @@ namespace SeaDrop
     /// </summary>
     public class Button
     {
-        public Button(string path)
+        public Button(string path, bool visible = true)
         {
             Texture = new Texture(path);
+            Visible = visible;
+        }
+        public Button(Texture texture, bool visible = true)
+        {
+            Texture = texture;
+            Visible = visible;
         }
 
         public void Draw(double x, double y, Rectangle? rectangle = null, double rangeX = 0, double rangeY = 0)
         {
-            Texture.Draw(x, y, rectangle);
+            if (Visible) Texture.Draw(x, y, rectangle);
             X = x;
             Y = y;
             RangeX = x + Texture.ActualSize.Width + rangeX;
@@ -24,7 +30,7 @@ namespace SeaDrop
         }
         public void Draw(double x, double y, double opacity, Rectangle? rectangle = null, double rangeX = 0, double rangeY = 0)
         {
-            Texture.Draw(x, y, opacity, rectangle);
+            if (Visible) Texture.Draw(x, y, opacity, rectangle);
             X = x;
             Y = y;
             RangeX = x + Texture.ActualSize.Width + rangeX;
@@ -34,7 +40,7 @@ namespace SeaDrop
         }
         public void Draw(double x, double y, double scaleX, double scaleY, Rectangle? rectangle = null, double rangeX = 0, double rangeY = 0)
         {
-            Texture.Draw(x, y, scaleX, scaleY, rectangle);
+            if (Visible) Texture.Draw(x, y, scaleX, scaleY, rectangle);
             X = x;
             Y = y;
             RangeX = x + Texture.ActualSize.Width + rangeX;
@@ -44,7 +50,7 @@ namespace SeaDrop
         }
         public void Draw(double x, double y, double opacity, double scaleX, double scaleY, Rectangle? rectangle = null, double rangeX = 0, double rangeY = 0)
         {
-            Texture.Draw(x, y, opacity, scaleX, scaleY, rectangle);
+            if (Visible) Texture.Draw(x, y, opacity, scaleX, scaleY, rectangle);
             X = x;
             Y = y;
             RangeX = x + Texture.ActualSize.Width + rangeX;
@@ -76,6 +82,6 @@ namespace SeaDrop
 
         public Texture Texture;
         public double X, Y, RangeX, RangeY;
-        public bool Cursoring, LPushed, LPushing, LLeft, RPushed, RPushing, RLeft;
+        public bool Cursoring, LPushed, LPushing, LLeft, RPushed, RPushing, RLeft, Visible;
     }
 }
