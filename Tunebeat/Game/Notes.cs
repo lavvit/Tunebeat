@@ -51,7 +51,7 @@ namespace Tunebeat
                         if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
                         DrawNotes(i);
 
-                        if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                        if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
                         {
                             TextureLoad.Game_Base.Opacity = 0.75;
                             TextureLoad.Game_Lane_Frame.Opacity = 0.75;
@@ -126,7 +126,7 @@ namespace Tunebeat
                     Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 616, $"{Sudden[1]}", 0);
                     Score.DrawNumber(Sudden[1] < 54 ? 1842 : NotesP[1].X - 22 + (TextureLoad.Game_Lane.TextureSize.Width * (1000 - Sudden[1]) / 1000), 656, $"{(GreenNumber[1] > 0 ? GreenNumber[1] : 0)}", 5);
                 }
-                if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
                 {
                     TextureLoad.Game_Base_DP.Opacity = 0.75;
                     TextureLoad.Game_Base.Opacity = 0.75;
@@ -213,7 +213,7 @@ namespace Tunebeat
 
         public static void DrawNotes(int player)
         {
-            if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+            if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
             {
                 TextureLoad.Game_Lane.Opacity = 0.5;
             }
@@ -226,7 +226,7 @@ namespace Tunebeat
             if (Create.CreateMode) nchip = GetNotes.GetNowNote(Create.ListAllChip, Game.MainTimer.Value, true);
             if (nchip != null && nchip.IsGogo)
             {
-                if ((PlayData.Data.PlayMovie && File.Exists(Game.MainMovie.FileName)) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
                 {
                     TextureLoad.Game_Lane_Gogo.Opacity = 0.25;
                 }

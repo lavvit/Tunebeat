@@ -16,7 +16,7 @@ namespace Tunebeat
         public override void Enable()
         {
             SongLoad.Init();
-            if (SongLoad.SongData.Count > 0) NowTJA = SongLoad.SongData[NowSongNumber];
+            if (SongData.Song.Count > 0) NowTJA = SongData.Song[NowSongNumber];
             Title = new Texture();
             SubTitle = new Texture();
             Genre = new Texture();
@@ -58,7 +58,7 @@ namespace Tunebeat
             Genre = null;
             BPM = null;
             Preview = null;
-            SongLoad.Dispose();
+            //SongLoad.Dispose();
 
             for (int i = 0; i < 2; i++)
             {
@@ -475,7 +475,7 @@ namespace Tunebeat
 
             #if DEBUG
             if (NowTJA != null)DrawString(0, 0, $"File:{NowTJA.Path}", 0xffffff);
-            DrawString(200, 20, $"SongCount:{SongLoad.SongData.Count},{SongLoad.SongList.Count}", 0xffffff);
+            DrawString(200, 20, $"SongCount:{SongData.Song.Count},{SongData.AllSong.Count}", 0xffffff);
             DrawString(200, 40, $"SongNumber:{NowSongNumber}", 0xffffff);
             DrawString(0, 20, $"Course:{(ECourse)EnableCourse(NowTJA.Course, 0)}" + (PlayData.Data.IsPlay2P ? $"/{(ECourse)EnableCourse(NowTJA.Course, 1)}" : ""), 0xffffff);
             if (PlayData.Data.Auto[0])
@@ -505,12 +505,10 @@ namespace Tunebeat
         {
             if (Preview != null && Preview.IsEnable && !Preview.IsPlaying)
             {
+                
+                Preview.PlayLoop(new TJAParse.TJAParse(NowTJA.Path).Header.DEMOSTART, true);
                 Preview.Volume = PlayData.Data.SystemBGM / 100.0;
-                Preview.Play();
-            }
-            if (Preview != null && Preview.IsPlaying && Preview.Time < new TJAParse.TJAParse(NowTJA.Path).Header.DEMOSTART)
-            {
-                Preview.Time = new TJAParse.TJAParse(NowTJA.Path).Header.DEMOSTART;
+                Preview.PlaySpeed = PlayData.Data.PlaySpeed;
             }
             if (Input.IsEnable)
             {
@@ -563,11 +561,11 @@ namespace Tunebeat
             }
             else
             {
-                if (KeyInput.ListPushed(PlayData.Data.LEFTKA))
+                if (Key.IsPushed(PlayData.Data.LEFTKA))
                 {
                     PushedTimer[0].Start();
                 }
-                if (KeyInput.ListLeft(PlayData.Data.LEFTKA))
+                if (Key.IsLeft(PlayData.Data.LEFTKA))
                 {
                     if (PlayData.Data.FontRendering) FontLoad();
                     PushedTimer[0].Stop();
@@ -576,11 +574,11 @@ namespace Tunebeat
                     PushingTimer[0].Reset();
 
                 }
-                if (KeyInput.ListPushed(PlayData.Data.RIGHTKA))
+                if (Key.IsPushed(PlayData.Data.RIGHTKA))
                 {
                     PushedTimer[1].Start();
                 }
-                if (KeyInput.ListLeft(PlayData.Data.RIGHTKA))
+                if (Key.IsLeft(PlayData.Data.RIGHTKA))
                 {
                     if (PlayData.Data.FontRendering) FontLoad();
                     PushedTimer[1].Stop();
@@ -596,27 +594,27 @@ namespace Tunebeat
                     }
                 }
 
-                if ((KeyInput.ListPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End) || Mouse.Wheel > 0) && NowTJA != null)
+                if ((Key.IsPushed(PlayData.Data.LEFTKA) || (PushingTimer[0].Value == PushingTimer[0].End) || Mouse.Wheel > 0) && NowTJA != null)
                 {
                     SoundLoad.Ka[0].Play();
                     Prev();
                     Reload();
                     PushingTimer[0].Reset();
                 }
-                if ((KeyInput.ListPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End) || Mouse.Wheel < 0) && NowTJA != null)
+                if ((Key.IsPushed(PlayData.Data.RIGHTKA) || (PushingTimer[1].Value == PushingTimer[1].End) || Mouse.Wheel < 0) && NowTJA != null)
                 {
                     SoundLoad.Ka[0].Play();
                     Next();
                     Reload();
                     PushingTimer[1].Reset();
                 }
-                if (((KeyInput.ListPushing(PlayData.Data.LEFTKA) && KeyInput.ListPushed(PlayData.Data.RIGHTKA)) || (KeyInput.ListPushed(PlayData.Data.LEFTKA) && KeyInput.ListPushing(PlayData.Data.RIGHTKA))) && SongLoad.FolderFloor > 0)
+                if (((Key.IsPushing(PlayData.Data.LEFTKA) && Key.IsPushed(PlayData.Data.RIGHTKA)) || (Key.IsPushed(PlayData.Data.LEFTKA) && Key.IsPushing(PlayData.Data.RIGHTKA))) && SongLoad.FolderFloor > 0)
                 {
-                    NowTJA = SongLoad.SongData[0];
+                    NowTJA = SongData.Song[0];
                     Back();
                 }
 
-                if ((Key.IsPushed(EKey.Enter) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
+                if ((Key.IsPushed(EKey.Enter) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON)) && NowTJA != null)
                 {
                     SoundLoad.Don[0].Play();
                     Enter();
@@ -667,18 +665,18 @@ namespace Tunebeat
                         }
                         SetScore();
                         string path = NowTJA.Path;
-                        SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
-                        SongLoad.Sort(SongLoad.SongList, SongLoad.NowSort);
+                        SongLoad.Sort(SongData.Song, SongLoad.NowSort);
+                        SongLoad.Sort(SongData.AllSong, SongLoad.NowSort);
 
-                        for (int j = 0; j < SongLoad.SongData.Count; j++)
+                        for (int j = 0; j < SongData.Song.Count; j++)
                         {
-                            if (SongLoad.SongData[j].Path == path)
+                            if (SongData.Song[j].Path == path)
                             {
                                 NowSongNumber = j;
                                 break;
                             }
                         }
-                        NowTJA = SongLoad.SongData[NowSongNumber];
+                        NowTJA = SongData.Song[NowSongNumber];
                     }
                 }
 
@@ -688,18 +686,18 @@ namespace Tunebeat
                     string title = NowTJA.Title;
                     if (SongLoad.NowSort == ESort.Rate_Low) SongLoad.NowSort = ESort.None;
                     else SongLoad.NowSort++;
-                    SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
-                    SongLoad.Sort(SongLoad.SongList, SongLoad.NowSort);
+                    SongLoad.Sort(SongData.Song, SongLoad.NowSort);
+                    SongLoad.Sort(SongData.AllSong, SongLoad.NowSort);
 
-                    for (int i = 0; i < SongLoad.SongData.Count; i++)
+                    for (int i = 0; i < SongData.Song.Count; i++)
                     {
-                        if (SongLoad.SongData[i].Title == title)
+                        if (SongData.Song[i].Title == title)
                         {
                             NowSongNumber = i;
                             break;
                         }
                     }
-                    NowTJA = SongLoad.SongData[NowSongNumber];
+                    NowTJA = SongData.Song[NowSongNumber];
                     if (PlayData.Data.FontRendering) FontLoad();
                     string str;
                     if (SongLoad.NowSort != ESort.None)
@@ -718,7 +716,7 @@ namespace Tunebeat
                     SoundLoad.Ka[0].Play();
                     if (SongLoad.FolderFloor > 0)
                     {
-                        NowTJA = SongLoad.SongData[0];
+                        NowTJA = SongData.Song[0];
                         Back();
                     }
                     else
@@ -767,9 +765,9 @@ namespace Tunebeat
                 if (Key.IsPushed(EKey.F2))
                 {
                     PlayData.Init();
-                    SongLoad.Init();
+                    //SongLoad.Init();
                     if (!File.Exists(NowTJA.Path)) NowSongNumber--;
-                    NowTJA = SongLoad.SongData[NowSongNumber];
+                    NowTJA = SongData.Song[NowSongNumber];
                 }
                 if (Key.IsPushed(EKey.F3))
                 {
@@ -879,13 +877,13 @@ namespace Tunebeat
         public static void Next()
         {
             NowTJA = NowTJA.Next;
-            if (NowSongNumber >= SongLoad.SongData.Count - 1) NowSongNumber = 0;
+            if (NowSongNumber >= SongData.Song.Count - 1) NowSongNumber = 0;
             else NowSongNumber++;
         }
         public static void Prev()
         {
             NowTJA = NowTJA.Prev;
-            if (NowSongNumber <= 0) NowSongNumber = SongLoad.SongData.Count - 1;
+            if (NowSongNumber <= 0) NowSongNumber = SongData.Song.Count - 1;
             else NowSongNumber--;
         }
         public static void Enter()
@@ -908,9 +906,9 @@ namespace Tunebeat
                             Random = false;
                             NowSListNumber = NowSongNumber;
                             PlayMode = 0;
-                            for (int i = 0; i < SongLoad.SongData.Count; i++)
+                            for (int i = 0; i < SongData.Song.Count; i++)
                             {
-                                if (SongLoad.SongData[i].Type != EType.Score)
+                                if (SongData.Song[i].Type != EType.Score)
                                     NowSListNumber--;
                             }
                             if (Preview != null) { Preview.Stop(); Preview = null; }
@@ -930,23 +928,23 @@ namespace Tunebeat
                     while (true)
                     {
                         Random random = new Random();
-                        int r = random.Next(SongLoad.SongList.Count);
+                        int r = random.Next(SongData.AllSong.Count);
                         if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
                         {
                             Random difran = new Random();
                             int d = difran.Next(0, 3);
                             Course = d > 0 ? 4 : 3;
-                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[Course].IsEnable)
+                            if (SongData.AllSong[r] != null && SongData.AllSong[r].Course[Course].IsEnable)
                             {
-                                NowTJA = SongLoad.SongList[r];
+                                NowTJA = SongData.AllSong[r];
                                 break;
                             }
                         }
                         else
                         {
-                            if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable)
+                            if (SongData.AllSong[r] != null && SongData.AllSong[r].Course[PlayData.Data.PlayCourse[0]].IsEnable)
                             {
-                                NowTJA = SongLoad.SongList[r];
+                                NowTJA = SongData.AllSong[r];
                                 break;
                             }
                         }
@@ -981,13 +979,13 @@ namespace Tunebeat
                     break;
                 case EType.Folder:
                     SongLoad.FolderFloor++;
-                    SongLoad.SongData = new List<SongData>();
-                    SongLoad.SongList = new List<SongData>();
-                    SongLoad.FolderData = new List<string>();
+                    SongData.Song = new List<Song>();
+                    SongData.AllSong = new List<Song>();
+                    //SongLoad.FolderData = new List<string>();
                     NowPath = NowTJA.Path;
-                    SongLoad.Load(SongLoad.SongData, NowTJA.Path);
+                    //SongLoad.Load(SongData.Song, NowTJA.Path);
                     NowSongNumber = 0;
-                    NowTJA = SongLoad.SongData[NowSongNumber];
+                    NowTJA = SongData.Song[NowSongNumber];
                     if (PlayData.Data.FontRendering) FontLoad();
                     Reload();
                     break;
@@ -1005,20 +1003,20 @@ namespace Tunebeat
         {
             string title = NowTJA.Title;
             SongLoad.FolderFloor--;
-            SongLoad.SongData = new List<SongData>();
-            SongLoad.SongList = new List<SongData>();
-            SongLoad.FolderData = new List<string>();
+            SongData.Song = new List<Song>();
+            SongData.AllSong = new List<Song>();
+            //SongLoad.FolderData = new List<string>();
             NowPath = NowTJA.Path;
-            SongLoad.Load(SongLoad.SongData, NowTJA.Path);
-            for (int i = 0; i < SongLoad.SongData.Count; i++)
+            //SongLoad.Load(SongData.Song, NowTJA.Path);
+            for (int i = 0; i < SongData.Song.Count; i++)
             {
-                if (SongLoad.SongData[i].Title == title)
+                if (SongData.Song[i].Title == title)
                 {
                     NowSongNumber = i;
                     break;
                 }
             }
-            NowTJA = SongLoad.SongData[NowSongNumber];
+            NowTJA = SongData.Song[NowSongNumber];
             if (PlayData.Data.FontRendering) FontLoad();
             Reload();
         }
@@ -1078,18 +1076,18 @@ namespace Tunebeat
                 #endregion
             }
             string title = NowTJA.Title;
-            SongLoad.Sort(SongLoad.SongData, SongLoad.NowSort);
-            SongLoad.Sort(SongLoad.SongList, SongLoad.NowSort);
+            SongLoad.Sort(SongData.Song, SongLoad.NowSort);
+            SongLoad.Sort(SongData.AllSong, SongLoad.NowSort);
 
-            for (int i = 0; i < SongLoad.SongData.Count; i++)
+            for (int i = 0; i < SongData.Song.Count; i++)
             {
-                if (SongLoad.SongData[i].Title == title)
+                if (SongData.Song[i].Title == title)
                 {
                     NowSongNumber = i;
                     break;
                 }
             }
-            NowTJA = SongLoad.SongData[NowSongNumber];
+            NowTJA = SongData.Song[NowSongNumber];
         }
 
         public static int EnableCourse(Course[] course, int player)
@@ -1135,20 +1133,20 @@ namespace Tunebeat
             string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
             if (!string.IsNullOrEmpty(NowTJA.Header.TITLE))
             {
-                Title = FontRender.GetTexture(NowTJA.Header.TITLE, 96, font, 4);
+                Title = FontRender.GetTexture(NowTJA.Header.TITLE, 96, 6, PlayData.Data.FontName);
             }
             else Title = new Texture();
             if (!string.IsNullOrEmpty(NowTJA.Header.GENRE))
             {
-                Genre = FontRender.GetTexture(NowTJA.Header.GENRE, 32, font, 6);
+                Genre = FontRender.GetTexture(NowTJA.Header.GENRE, 32, 4, PlayData.Data.FontName);
             }
             else Genre = new Texture();
             if (!string.IsNullOrEmpty(NowTJA.Header.SUBTITLE))
             {
-                SubTitle = FontRender.GetTexture(NowTJA.Header.SUBTITLE, 32, font, 6);
+                SubTitle = FontRender.GetTexture(NowTJA.Header.SUBTITLE, 32, 4, PlayData.Data.FontName);
             }
             else SubTitle = new Texture();
-            BPM = FontRender.GetTexture($"{Math.Round(NowTJA.Header.BPM, 0, MidpointRounding.AwayFromZero)} BPM", 32, font, 8);
+            BPM = FontRender.GetTexture($"{Math.Round(NowTJA.Header.BPM, 0, MidpointRounding.AwayFromZero)} BPM", 32, 6, PlayData.Data.FontName);
         }
 
         public static void GaugeChange(int player)
@@ -1188,7 +1186,7 @@ namespace Tunebeat
 
         public static bool[] Replay = new bool[2];
         public static Texture Title, SubTitle, Genre, BPM;
-        public static SongData NowTJA;
+        public static Song NowTJA;
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2];
         public static Sound Preview;
         public static Button[] SongBar = new Button[21], CourseBar = new Button[5];

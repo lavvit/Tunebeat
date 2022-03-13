@@ -1,5 +1,4 @@
 ﻿using System.Drawing;
-using static DxLibDLL.DX;
 using SeaDrop;
 
 namespace Tunebeat
@@ -18,7 +17,7 @@ namespace Tunebeat
         }
         public override void Draw()
         {
-            DrawBox(0, 0, 1919, 1079, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
+            Drawing.Box(0, 0, 1919, 1079, Drawing.Color(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]));
             TextureLoad.Title_Background.Draw(0, 0);
 
             TextureLoad.Title_Text.Draw(270, 350);
@@ -26,7 +25,7 @@ namespace Tunebeat
             TextureLoad.Title_Text_Color.Draw(270, 350);
 
             #if DEBUG
-            DrawString(0, 0, $"RGB:{PlayData.Data.SkinColor[0]},{PlayData.Data.SkinColor[1]},{PlayData.Data.SkinColor[2]}", 0xffffff);
+            Drawing.Text(0, 0, $"RGB:{PlayData.Data.SkinColor[0]},{PlayData.Data.SkinColor[1]},{PlayData.Data.SkinColor[2]}", 0xffffff);
             #endif
 
             base.Draw();
@@ -34,11 +33,12 @@ namespace Tunebeat
 
         public override void Update()
         {
-            if (Key.IsPushed(EKey.Enter) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
+            if (Key.IsPushed(EKey.Enter) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
-                Program.SceneChange(new SongSelect());
+                SongLoad.Init();
+                Program.SceneChange(new SongSelectNew());
             }
             if (Key.IsPushed(EKey.Esc))
             {

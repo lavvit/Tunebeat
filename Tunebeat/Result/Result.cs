@@ -141,7 +141,7 @@ namespace Tunebeat
 
         public override void Update()
         {
-            if (Key.IsPushed(EKey.Esc) || Key.IsPushed(EKey.Enter) || KeyInput.ListPushed(PlayData.Data.LEFTDON) || KeyInput.ListPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
+            if (Key.IsPushed(EKey.Esc) || Key.IsPushed(EKey.Enter) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();

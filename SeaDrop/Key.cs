@@ -52,6 +52,87 @@ namespace SeaDrop
         /// </summary>
         /// <param name="key">キーコード。</param>
         /// <returns>押したかどうか。</returns>
+        public static bool IsPushed(EKey key)
+        {
+            return Keys[(int)key] == 1;
+        }
+
+        /// <summary>
+        /// そのキーを押しているかどうかチェックします。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <returns>押しているかどうか。</returns>
+        public static bool IsPushing(EKey key)
+        {
+            return Keys[(int)key] > 0;
+        }
+
+        /// <summary>
+        /// そのキーを離したかどうかチェックします。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <returns>離したかどうか。</returns>
+        public static bool IsLeft(EKey key)
+        {
+            return Keys[(int)key] == -1;
+        }
+
+        /// <summary>
+        /// そのキーを押したかどうかチェックします。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <returns>押したかどうか。</returns>
+        public static bool IsPushed(List<EKey> keylist)
+        {
+            foreach (int key in keylist)
+            {
+                if (IsPushed(key))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// そのキーを押しているかどうかチェックします。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <returns>押しているかどうか。</returns>
+        public static bool IsPushing(List<EKey> keylist)
+        {
+            foreach (int key in keylist)
+            {
+                if (IsPushing(key))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// そのキーを離したかどうかチェックします。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <returns>離したかどうか。</returns>
+        public static bool IsLeft(List<EKey> keylist)
+        {
+            foreach (int key in keylist)
+            {
+                if (IsLeft(key))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// そのキーを押したかどうかチェックします。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <returns>押したかどうか。</returns>
         public static bool IsPushed(int key)
         {
             return Keys[key] == 1;
@@ -76,14 +157,22 @@ namespace SeaDrop
         {
             return Keys[key] == -1;
         }
+
         /// <summary>
         /// そのキーを押したかどうかチェックします。
         /// </summary>
         /// <param name="key">キーコード。</param>
         /// <returns>押したかどうか。</returns>
-        public static bool IsPushed(EKey key)
+        public static bool IsPushed(List<int> keylist)
         {
-            return Keys[(int)key] == 1;
+            foreach (int key in keylist)
+            {
+                if (IsPushed(key))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -91,9 +180,16 @@ namespace SeaDrop
         /// </summary>
         /// <param name="key">キーコード。</param>
         /// <returns>押しているかどうか。</returns>
-        public static bool IsPushing(EKey key)
+        public static bool IsPushing(List<int> keylist)
         {
-            return Keys[(int)key] > 0;
+            foreach (int key in keylist)
+            {
+                if (IsPushing(key))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -101,9 +197,16 @@ namespace SeaDrop
         /// </summary>
         /// <param name="key">キーコード。</param>
         /// <returns>離したかどうか。</returns>
-        public static bool IsLeft(EKey key)
+        public static bool IsLeft(List<int> keylist)
         {
-            return Keys[(int)key] == -1;
+            foreach (int key in keylist)
+            {
+                if (IsLeft(key))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Drawing;
 using static DxLibDLL.DX;
 using SeaDrop;
 using TJAParse;
@@ -57,13 +58,14 @@ namespace Tunebeat
             }
             MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
             MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
-            MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
+            string path = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
+            string mp4path = path.Replace("wmv", "mp4");
+            if (PlayData.Data.PlayMovie) MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
 
             if (PlayData.Data.FontRendering)
             {
-                string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
-                Title = FontRender.GetTexture(MainTJA[0].Header.TITLE, 48, font, 8);
-                SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, font, 8);
+                Title = FontRender.GetTexture(MainTJA[0].Header.TITLE, 48, 6, PlayData.Data.FontName);
+                SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, 4, PlayData.Data.FontName);
             }
 
             RandomCourse = SongSelect.Course;
@@ -110,6 +112,7 @@ namespace Tunebeat
             StartTime = 0;
             MeasureList = new List<Chip>();
             MeasureCount();
+            LyricHandle = new Handle(PlayData.Data.FontName, 48);
 
             PlayMemory.Init();
 
@@ -135,7 +138,7 @@ namespace Tunebeat
         {
             MainSong.Dispose();
             MainImage.Dispose();
-            MainMovie.Dispose();
+            if (MainMovie != null) MainMovie.Dispose();
             MainTimer.Reset();
             IsSongPlay = false;
             for (int i = 0; i < 5; i++)
@@ -192,7 +195,7 @@ namespace Tunebeat
         {
             MainTimer.Stop();
             MainSong.Stop();
-            MainMovie.Stop();
+            if (MainMovie != null && MainMovie.IsEnable) MainMovie.Stop();
             if (PlayMeasure == 0) MainTimer.Reset();
             else MainTimer.Value = (int)StartTime;
             IsSongPlay = false;
@@ -221,7 +224,7 @@ namespace Tunebeat
                 }
             }
             if (File.Exists(MainSong.FileName)) MainSong.Time = StartTime / 1000;
-            if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = StartTime;
+            if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = StartTime;
 
             for (int i = 0; i < 5; i++)
             {
@@ -273,7 +276,7 @@ namespace Tunebeat
                 StartTime = 0;
                 MainTimer.Value = -2000;
                 if (File.Exists(MainSong.FileName)) MainSong.Time = 0;
-                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = 0;
+                if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = 0;
                 Score.Auto[0] = 0;
                 Score.Combo[0] = 0;
                 Score.MaxCombo[0] = 0;
@@ -296,7 +299,7 @@ namespace Tunebeat
                         TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[i].Time);
                         StartTime = Math.Ceiling(MeasureList[i].Time);
                         MainTimer.Value = (int)Math.Ceiling(MeasureList[i].Time);
-                        if (PlayData.Data.PlayMovie && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[i].Time);
+                        if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[i].Time);
                         break;
                     }
                 }
@@ -327,7 +330,7 @@ namespace Tunebeat
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 StartTime = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
-                if (PlayData.Data.PlayMovie && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
+                if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 SetBalloon();
             }
             else if (PlayMeasure < MeasureList.Count)
@@ -336,7 +339,7 @@ namespace Tunebeat
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
-                if (PlayData.Data.PlayMovie && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 SetBalloon();
             }
         }
@@ -349,7 +352,7 @@ namespace Tunebeat
                 TimeRemain += MainTimer.Value + 2000;
                 StartTime = 0;
                 MainTimer.Value = -2000;
-                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = 0;
+                if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = 0;
                 for (int i = 0; i < 2; i++)
                 {
                     if (Create.CreateMode)
@@ -408,7 +411,7 @@ namespace Tunebeat
                 TimeRemain += MainTimer.Value - (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
-                if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName)) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
+                if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (Chip chip in MainTJA[i].Courses[Course[i]].ListChip)
@@ -437,9 +440,8 @@ namespace Tunebeat
 
         public override void Draw()
         {
-            if (PlayData.Data.PlayMovie && File.Exists(MainMovie.FileName))
+            if (MainMovie != null && MainMovie.IsEnable)
             {
-                MainMovie.Volume = 0;
                 MainMovie.Draw(0, 0);
             }
             else if (PlayData.Data.ShowImage && File.Exists($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}"))
@@ -510,8 +512,8 @@ namespace Tunebeat
             {
                 if (PlayData.Data.FontRendering)
                 {
-                    Title.Draw(1920 - Title.ActualSize.Width - 20, 40);
-                    SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 90);
+                    Title.Draw(1920 - Title.ActualSize.Width - 20, 20);
+                    SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 80);
                 }
                 else
                 {
@@ -523,7 +525,7 @@ namespace Tunebeat
             {
                 if (PlayData.Data.FontRendering)
                 {
-                    Title.Draw(1920 - Title.ActualSize.Width - 20, 990);
+                    Title.Draw(1920 - Title.ActualSize.Width - 20, 980);
                     SubTitle.Draw(1920 - SubTitle.ActualSize.Width - 20, 1040);
                 }
                 else
@@ -589,7 +591,7 @@ namespace Tunebeat
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(nchip.Lyric)) DrawString(960 - GetDrawStringWidth(nchip.Lyric, nchip.Lyric.Length) / 2, 1000, nchip.Lyric, 0x0000ff);
+                    if (!string.IsNullOrEmpty(nchip.Lyric)) Drawing.Text(960 - Drawing.TextWidth(nchip.Lyric, LyricHandle) / 2, 1000, nchip.Lyric, LyricHandle, 0x0000ff);
                 }
             }
 
@@ -645,8 +647,7 @@ namespace Tunebeat
 
         public static void GenerateLyric(Chip chip)
         {
-            string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
-            Lyric = FontRender.GetTexture(chip.Lyric, 56, font, 4, 0xffffff, 0x0000ff);
+            Lyric = FontRender.GetTexture(chip.Lyric, 56, 4, Color.White, Color.Blue, PlayData.Data.FontName);
             return;
         }
         public override void Update()
@@ -683,16 +684,17 @@ namespace Tunebeat
                     MainSong.Volume = (PlayData.Data.GameBGM / 100.0) * (MainTJA[0].Header.SONGVOL / 100.0);
                 }
                 IsSongPlay = true;
-                if (PlayData.Data.PlayMovie && MainMovie.IsEnable)
+                if (MainMovie != null && MainMovie.IsEnable)
                 {
-                    MainMovie.Play(PlayMeasure == 0 ? true : false);
+                    MainMovie.PlayGraph(PlayMeasure == 0 ? true : false);
+                    MainMovie.PlaySpeed = PlayData.Data.PlaySpeed;
                 }
             }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
                 if (PlayData.Data.SaveScore && !Play2P &&  PlayMeasure == 0 && MainTimer.State != 0) PlayMemory.SaveScore(0, Course[0]);
-                MainTimer.Stop();
-                MainMovie.Stop();
+                //MainTimer.Stop();
+                //MainMovie.Stop();
                 PlayData.End();
                 if (Create.CreateMode)
                 {
@@ -713,23 +715,23 @@ namespace Tunebeat
                             for (int i = 0; i < 100000000; i++)
                             {
                                 Random random = new Random();
-                                int r = random.Next(SongLoad.SongList.Count);
+                                int r = random.Next(SongData.AllSong.Count);
                                 if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
                                 {
                                     Random difran = new Random();
                                     int d = difran.Next(0, 2);
                                     RandomCourse = 3 + d;
-                                    if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[RandomCourse].IsEnable && TJAPath != SongLoad.SongList[r].Path)
+                                    if (SongData.AllSong[r] != null && SongData.AllSong[r].Course[RandomCourse].IsEnable && TJAPath != SongData.AllSong[r].Path)
                                     {
-                                        TJAPath = SongLoad.SongList[r].Path;
+                                        TJAPath = SongData.AllSong[r].Path;
                                         break;
                                     }
                                 }
                                 else
                                 {
-                                    if (SongLoad.SongList[r] != null && SongLoad.SongList[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != SongLoad.SongList[r].Path)
+                                    if (SongData.AllSong[r] != null && SongData.AllSong[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != SongData.AllSong[r].Path)
                                     {
-                                        TJAPath = SongLoad.SongList[r].Path;
+                                        TJAPath = SongData.AllSong[r].Path;
                                         break;
                                     }
                                 }
@@ -737,11 +739,11 @@ namespace Tunebeat
                         }
                         else
                         {
-                            for (int i = 0; i < SongLoad.SongList.Count; i++)
+                            for (int i = 0; i < SongData.AllSong.Count; i++)
                             {
-                                if (SongLoad.SongList[i] != null && TJAPath == SongLoad.SongList[i].Path)
+                                if (SongData.AllSong[i] != null && TJAPath == SongData.AllSong[i].Path)
                                 {
-                                    TJAPath = SongLoad.SongList[i == SongLoad.SongList.Count - 1 ? 0 : i + 1].Path;
+                                    TJAPath = SongData.AllSong[i == SongData.AllSong.Count - 1 ? 0 : i + 1].Path;
                                     break;
                                 }
                             }
@@ -762,9 +764,8 @@ namespace Tunebeat
 
                         if (PlayData.Data.FontRendering)
                         {
-                            string font = !string.IsNullOrEmpty(PlayData.Data.FontName) ? PlayData.Data.FontName : "MS UI Gothic";
-                            Title = FontRender.GetTexture(MainTJA[0].Header.TITLE, 48, font, 8);
-                            SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, font, 8);
+                            Title = FontRender.GetTexture(MainTJA[0].Header.TITLE, 48, 6, PlayData.Data.FontName);
+                            SubTitle = FontRender.GetTexture(MainTJA[0].Header.SUBTITLE, 20, 4, PlayData.Data.FontName);
                         }
                         Notes.SetNotesP();
                         PlayMeasure = 0;
@@ -774,7 +775,9 @@ namespace Tunebeat
                         MainTimer.Value = -2000;
                         MainSong = new Sound($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.WAVE}");
                         MainImage = new Texture($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGIMAGE}");
-                        MainMovie = new Movie($"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}");
+                        string path = $"{Path.GetDirectoryName(MainTJA[0].TJAPath)}/{MainTJA[0].Header.BGMOVIE}";
+                        string mp4path = path.Replace("wmv", "mp4");
+                        if (PlayData.Data.PlayMovie) MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
 
                         TextLog.Draw($"Now:{MainTJA[0].TJAPath}", 2000);
                     }
@@ -874,7 +877,7 @@ namespace Tunebeat
                 {
                     case EGaugeAutoShift.None:
                         MainSong.Stop();
-                        MainMovie.Stop();
+                        if (MainMovie != null && MainMovie.IsEnable) MainMovie.Stop();
                         break;
                     case EGaugeAutoShift.Retry:
                         Reset();
@@ -907,5 +910,6 @@ namespace Tunebeat
         public static List<Chip> MeasureList = new List<Chip>();
         public static Counter[] PushedTimer = new Counter[2], PushingTimer = new Counter[2], SuddenTimer = new Counter[2];
         public static Counter[][] HitTimer = new Counter[5][];
+        public static Handle LyricHandle;
     }
 }

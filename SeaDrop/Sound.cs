@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using DxLibDLL;
 
 namespace SeaDrop
@@ -25,7 +26,7 @@ namespace SeaDrop
         public Sound(string fileName)
         {
             ID = DX.LoadSoundMem(fileName);
-            if (ID != -1)
+            if (ID != -1 && File.Exists(fileName))
             {
                 IsEnable = true;
                 if (DX.GetUseASyncLoadFlag() != DX.TRUE)
@@ -57,12 +58,14 @@ namespace SeaDrop
         /// <summary>
         /// サウンドをループしながら再生します。
         /// <param name="startTime">再生開始時間</param>
-        public void PlayLoop(double startTime)
+        /// <param name="truetime">等倍での時間か</param>
+        public void PlayLoop(double startTime, bool truetime = false)
         {
             if (IsEnable && !IsPlaying)
             {
                 PlayLoop();
-                Time = startTime;
+                if (truetime) TrueTime = startTime;
+                else Time = startTime;
             }
         }
 
@@ -81,12 +84,14 @@ namespace SeaDrop
         /// サウンドを再生します。
         /// </summary>
         /// <param name="startTime">再生開始時間</param>
-        public void Play(double startTime)
+        /// <param name="truetime">等倍での時間か</param>
+        public void Play(double startTime, bool truetime = false)
         {
             if (IsEnable)
             {
                 Play();
-                Time = startTime;
+                if (truetime) TrueTime = startTime;
+                else Time = startTime;
             }
         }
         /// <summary>
@@ -223,6 +228,38 @@ namespace SeaDrop
         /// 再生位置。秒が単位。
         /// </summary>
         public double Time
+        {
+            get
+            {
+                SetFreq();
+                if (!Frequency.HasValue)
+                {
+                    //throw new Exception("Sound file is not loaded yet.");
+                }
+
+                var freq = Frequency.Value;
+                var pos = DX.GetCurrentPositionSoundMem(ID);
+                // サンプル数で割ると秒数が出るが出る
+                return 1.0 * pos / freq / PlaySpeed;
+            }
+            set
+            {
+                SetFreq();
+                if (!Frequency.HasValue)
+                {
+                    //throw new Exception("Sound file is not loaded yet.");
+                    return;
+                }
+
+                var freq = Frequency.Value;
+                var pos = value;
+                DX.SetCurrentPositionSoundMem((int)(1.0 * pos * freq * PlaySpeed), ID);
+            }
+        }
+        /// <summary>
+        /// 再生速度を考慮しない再生位置。秒が単位。
+        /// </summary>
+        public double TrueTime
         {
             get
             {

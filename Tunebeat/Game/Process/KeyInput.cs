@@ -41,9 +41,9 @@ namespace Tunebeat
                                 break;
                             case 4:
                                 Create.File.BGMovie = Input.Text;
-                                string movie = $"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.BGMovie}";
-                                movie = movie.Replace(".wmv", ".mp4");
-                                if (!string.IsNullOrEmpty(movie)) Game.MainMovie = new Movie(movie);
+                                string path = $"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.BGMovie}";
+                                string mp4path = path.Replace("wmv", "mp4");
+                                if (PlayData.Data.PlayMovie) Game.MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
                                 break;
                             case 5:
                                 if (double.TryParse(Input.Text, out double d)) Create.File.Bpm = double.Parse(Input.Text);
@@ -225,22 +225,22 @@ namespace Tunebeat
 
                 if (!Auto1P && !Failed1P && !Game.IsReplay[0])
                 {
-                    if (ListPushed(PlayData.Data.LEFTDON))
+                    if (Key.IsPushed(PlayData.Data.LEFTDON))
                     {
                         Process(true, true, 0);
                         PlayMemory.AddData(0, Game.MainTimer.Value, true, true);
                     }
-                    if (ListPushed(PlayData.Data.RIGHTDON))
+                    if (Key.IsPushed(PlayData.Data.RIGHTDON))
                     {
                         Process(true, false, 0);
                         PlayMemory.AddData(0, Game.MainTimer.Value, true, false);
                     }
-                    if (ListPushed(PlayData.Data.LEFTKA))
+                    if (Key.IsPushed(PlayData.Data.LEFTKA))
                     {
                         Process(false, true, 0);
                         PlayMemory.AddData(0, Game.MainTimer.Value, false, true);
                     }
-                    if (ListPushed(PlayData.Data.RIGHTKA))
+                    if (Key.IsPushed(PlayData.Data.RIGHTKA))
                     {
                         Process(false, false, 0);
                         PlayMemory.AddData(0, Game.MainTimer.Value, false, false);
@@ -248,22 +248,22 @@ namespace Tunebeat
                 }
                 if (!Auto2P && !Failed2P && Game.Play2P && !Game.IsReplay[1])
                 {
-                    if (ListPushed(PlayData.Data.LEFTDON2P))
+                    if (Key.IsPushed(PlayData.Data.LEFTDON2P))
                     {
                         Process(true, true, 1);
                         PlayMemory.AddData(1, Game.MainTimer.Value, true, true);
                     }
-                    if (ListPushed(PlayData.Data.RIGHTDON2P))
+                    if (Key.IsPushed(PlayData.Data.RIGHTDON2P))
                     {
                         Process(true, false, 1);
                         PlayMemory.AddData(1, Game.MainTimer.Value, true, false);
                     }
-                    if (ListPushed(PlayData.Data.LEFTKA2P))
+                    if (Key.IsPushed(PlayData.Data.LEFTKA2P))
                     {
                         Process(false, true, 1);
                         PlayMemory.AddData(1, Game.MainTimer.Value, false, true);
                     }
-                    if (ListPushed(PlayData.Data.RIGHTKA2P))
+                    if (Key.IsPushed(PlayData.Data.RIGHTKA2P))
                     {
                         Process(false, false, 1);
                         PlayMemory.AddData(1, Game.MainTimer.Value, false, false);
@@ -302,7 +302,7 @@ namespace Tunebeat
                     if (Key.IsPushing(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
                     {
                         #region Sudden1P
-                        if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
+                        if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                         {
                             if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
                             {
@@ -315,7 +315,7 @@ namespace Tunebeat
                             }
                             Notes.PreGreen[0] = Notes.GetGreenNumber(0, 0.25);
                         }
-                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                         {
                             if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
                             {
@@ -354,7 +354,7 @@ namespace Tunebeat
                     if (Key.IsPushing(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
                     {
                         #region Sudden2P
-                        if (ListPushed(PlayData.Data.LEFTKA2P) || ListPushed(PlayData.Data.RIGHTKA2P))
+                        if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                         {
                             if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
                             {
@@ -367,7 +367,7 @@ namespace Tunebeat
                             }
                             Notes.PreGreen[1] = Notes.GetGreenNumber(1, 0.25);
                         }
-                        if (ListPushed(PlayData.Data.LEFTDON2P) || ListPushed(PlayData.Data.RIGHTDON2P))
+                        if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
                         {
                             if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
                             {
@@ -489,7 +489,7 @@ namespace Tunebeat
                     if (Key.IsPushing(PlayData.Data.DisplaySudden) && !Game.IsReplay[0])
                     {
                         #region Sudden1P
-                        if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
+                        if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                         {
                             if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
                             {
@@ -502,7 +502,7 @@ namespace Tunebeat
                             }
                             PlayMemory.AddSetting(0, Game.MainTimer.Value, Notes.Scroll[0], Notes.Sudden[0], Notes.UseSudden[0], Game.Adjust[0]);
                         }
-                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                         {
                             if (PlayData.Data.NormalHiSpeed[0] && !PlayData.Data.FloatingHiSpeed[0])
                             {
@@ -550,7 +550,7 @@ namespace Tunebeat
                     if (Key.IsPushing(PlayData.Data.DisplaySudden2P) && Game.Play2P && !Game.IsReplay[1])
                     {
                         #region Sudden2P
-                        if (ListPushed(PlayData.Data.LEFTKA2P) || ListPushed(PlayData.Data.RIGHTKA2P))
+                        if (Key.IsPushed(PlayData.Data.LEFTKA2P) || Key.IsPushed(PlayData.Data.RIGHTKA2P))
                         {
                             if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
                             {
@@ -563,7 +563,7 @@ namespace Tunebeat
                             }
                             PlayMemory.AddSetting(1, Game.MainTimer.Value, Notes.Scroll[1], Notes.Sudden[1], Notes.UseSudden[1], Game.Adjust[1]);
                         }
-                        if (ListPushed(PlayData.Data.LEFTDON2P) || ListPushed(PlayData.Data.RIGHTDON2P))
+                        if (Key.IsPushed(PlayData.Data.LEFTDON2P) || Key.IsPushed(PlayData.Data.RIGHTDON2P))
                         {
                             if (PlayData.Data.NormalHiSpeed[1] && !PlayData.Data.FloatingHiSpeed[1])
                             {
@@ -678,7 +678,7 @@ namespace Tunebeat
                     }
                     if (Create.CommandLayer > 0)
                     {
-                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                         {
                             BarLine bar = Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1];
                             Create.SelectedChip = (null, null);
@@ -787,17 +787,17 @@ namespace Tunebeat
                     }
                     if (Create.Mapping)
                     {
-                        if (ListPushed(PlayData.Data.LEFTDON) || ListPushed(PlayData.Data.RIGHTDON))
+                        if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                         {
                             SoundLoad.Don[0].Play();
                             Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, true);
-                            Flash(true, ListPushed(PlayData.Data.LEFTDON), 0);
+                            Flash(true, Key.IsPushed(PlayData.Data.LEFTDON), 0);
                         }
-                        if (ListPushed(PlayData.Data.LEFTKA) || ListPushed(PlayData.Data.RIGHTKA))
+                        if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                         {
                             SoundLoad.Ka[0].Play();
                             Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, false);
-                            Flash(false, ListPushed(PlayData.Data.LEFTKA), 0);
+                            Flash(false, Key.IsPushed(PlayData.Data.LEFTKA), 0);
                         }
                     }
                     if (Key.IsPushed(PlayData.Data.SaveFile))
@@ -894,40 +894,6 @@ namespace Tunebeat
                 }
             }
             #endregion
-        }
-
-        public static bool ListPushed(List<int> keylist)
-        {
-            foreach (int key in keylist)
-            {
-                if (Key.IsPushed(key))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static bool ListPushing(List<int> keylist)
-        {
-            foreach (int key in keylist)
-            {
-                if (Key.IsPushing(key))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public static bool ListLeft(List<int> keylist)
-        {
-            foreach (int key in keylist)
-            {
-                if (Key.IsLeft(key))
-                {
-                    return true;
-                }
-            }
-            return false;
         }
 
         public static void Process(bool isDon, bool isLeft, int player)

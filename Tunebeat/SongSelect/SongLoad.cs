@@ -13,24 +13,17 @@ namespace Tunebeat
     {
         public static void Init()
         {
-            SongData = new List<SongData>();
-            SongList = new List<SongData>();
-            FolderData = new List<string>();
-            if (!string.IsNullOrEmpty(SongSelect.NowPath) && FolderFloor != 0)
+            SongData.Song = new List<Song>();
+            SongData.AllSong = new List<Song>();
+            SongData.Folder = new List<string>();
+
+            foreach (string path in PlayData.Data.PlayFolder)
             {
-                Load(SongData, SongSelect.NowPath);
-            }
-            else
-            {
-                FolderFloor = 0;
-                Load(SongData, PlayData.Data.PlayFolder);
+                LoadSong(SongData.AllSong, path);
+                LoadFolder(SongData.Folder, path);
             }
         }
-        public static void Dispose()
-        {
-            SongData = null;
-            FolderData = null;
-        }
+
         public static bool DoubledCheck(string path, List<string> folder, int limit = 0)//仕方なく分ける2
         {
             if (folder.Count == 0) return false;
@@ -40,7 +33,7 @@ namespace Tunebeat
             }
             return false;
         }
-        public static void Load(List<SongData> data, List<string> allpath)
+        /*public static void Load(List<Song> data, List<string> allpath)
         {
             Course[] r = new Course[5];
             for (int i = 0; i < r.Length; i++)
@@ -48,7 +41,7 @@ namespace Tunebeat
                 r[i] = new Course();
             }
             bool[] t = new bool[5];
-            SongData New = new SongData()
+            Song New = new Song()
             {
                 Path = "",
                 Title = "新しく譜面を作成",
@@ -60,7 +53,7 @@ namespace Tunebeat
             };
             data.Add(New);
 
-            SongData random = new SongData()
+            Song random = new Song()
             {
                 Path = "",
                 Title = "ランダムに曲を選ぶ",
@@ -89,7 +82,7 @@ namespace Tunebeat
                         {
                             enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
                         }
-                        SongData songdata = new SongData()
+                        Song songdata = new Song()
                         {
                             Path = item,
                             Title = parse.Header.TITLE,
@@ -116,7 +109,7 @@ namespace Tunebeat
                     {
                         c[i] = new Course();
                     }
-                    SongData songdata = new SongData()
+                    Song songdata = new Song()
                     {
                         Path = Path.GetDirectoryName(item),
                         Title = !string.IsNullOrEmpty(folder.Name) ? folder.Name : Path.GetFileName(Path.GetDirectoryName(item)),
@@ -167,7 +160,7 @@ namespace Tunebeat
                         score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
                         rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / notes[i] * 100000.0 : 0;
                     }
-                    SongData songdata = new SongData()
+                    Song songdata = new Song()
                     {
                         Path = item,
                         Title = parse.Header.TITLE,
@@ -221,7 +214,7 @@ namespace Tunebeat
                         score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
                         rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / (double)notes[i] * 100000.0 : 0;
                     }
-                    SongData songdata = new SongData()
+                    Song songdata = new Song()
                     {
                         Path = item,
                         Title = parse.Header.TITLE,
@@ -261,7 +254,7 @@ namespace Tunebeat
                 data[i].Next = data[(i + 1) % data.Count];
             }
         }
-        public static void Load(List<SongData> data, string path)//folder
+        public static void Load(List<Song> data, string path)//folder
         {
             if (FolderFloor == 0)
             {
@@ -278,7 +271,7 @@ namespace Tunebeat
                 c[i] = new Course();
             }
             bool[] t = new bool[5];
-            SongData root = new SongData()
+            Song root = new Song()
             {
                 Path = Path.GetDirectoryName(path),
                 Title = !string.IsNullOrEmpty(fol.Name) ? fol.Name : Path.GetFileName(path),
@@ -295,7 +288,7 @@ namespace Tunebeat
             {
                 r[i] = new Course();
             }
-            SongData random = new SongData()
+            Song random = new Song()
             {
                 Path = path,
                 Title = "ランダムに曲を選ぶ",
@@ -321,7 +314,7 @@ namespace Tunebeat
                     {
                         enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
                     }
-                    SongData songdata = new SongData()
+                    Song songdata = new Song()
                     {
                         Path = item,
                         Title = parse.Header.TITLE,
@@ -340,7 +333,7 @@ namespace Tunebeat
                 {
                     if (DoubledCheck(Path.GetDirectoryName(item), FolderData)) break;
                     Folder folder = new Folder(item);
-                    SongData songdata = new SongData()
+                    Song songdata = new Song()
                     {
                         Path = Path.GetDirectoryName(item),
                         Title = !string.IsNullOrEmpty(folder.Name) ? folder.Name : Path.GetFileName(Path.GetDirectoryName(item)),
@@ -386,7 +379,7 @@ namespace Tunebeat
                         score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
                         rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / (double)notes[i] * 100000.0 : 0;
                     }
-                    SongData songdata = new SongData()
+                    Song songdata = new Song()
                     {
                         Path = item,
                         Title = parse.Header.TITLE,
@@ -437,7 +430,7 @@ namespace Tunebeat
                     score[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? new BestScore(item).ScoreData.Score[i].Score : 0;
                     rate[i] = new BestScore(item).ScoreData != null && new BestScore(item).ScoreData.Score[i].Score > 0 ? (1.01 * new BestScore(item).ScoreData.Score[i].Perfect + 1.0 * new BestScore(item).ScoreData.Score[i].Great + 0.5 * new BestScore(item).ScoreData.Score[i].Good) / (double)notes[i] * 100000.0 : 0;
                 }
-                SongData songdata = new SongData()
+                Song songdata = new Song()
                 {
                     Path = item,
                     Title = parse.Header.TITLE,
@@ -465,9 +458,50 @@ namespace Tunebeat
                 data[i].Prev = data[(i + (data.Count - 1)) % data.Count];
                 data[i].Next = data[(i + 1) % data.Count];
             }
+        }*/
+        public static void LoadSong(List<Song> data, string path)
+        {
+            foreach (string directory in Directory.EnumerateDirectories(path.Replace("/", "\\"), "*", SearchOption.AllDirectories))
+            {
+                foreach (string item in Directory.EnumerateFiles(directory, "*.tja", SearchOption.TopDirectoryOnly))
+                {
+                    TJAParse.TJAParse parse = new TJAParse.TJAParse(item);
+                    bool[] enable = new bool[5];
+                    for (int i = 0; i < 5; i++)
+                    {
+                        enable[i] = parse.Courses != null ? parse.Courses[i].IsEnable : false;
+                    }
+                    Song songdata = new Song()
+                    {
+                        Path = item,
+                        Title = parse.Header.TITLE,
+                        Time = File.GetLastWriteTime(item),
+                        Header = parse.Header,
+                        Course = parse.Courses,
+                        Type = EType.Score,
+                        Enable = enable,
+                    };
+                    data.Add(songdata);
+                }
+            }
+            data.Sort(SortSystem[(int)NowSort]);
+
+            for (int i = 0; i < data.Count; i++)
+            {
+                data[i].Prev = data[(i + (data.Count - 1)) % data.Count];
+                data[i].Next = data[(i + 1) % data.Count];
+            }
+        }
+        public static void LoadFolder(List<string> data, string path)
+        {
+            data.Add(path);
+            foreach (string directory in Directory.EnumerateDirectories(path.Replace("/", "\\"), "*", SearchOption.AllDirectories))
+            {
+                data.Add(directory);
+            }
         }
 
-        public static void Sort(List<SongData> data, ESort comp)
+        public static void Sort(List<Song> data, ESort comp)
         {
             if (data == null) return;
             data.Sort(SortSystem[(int)comp]);
@@ -481,11 +515,8 @@ namespace Tunebeat
 
         public static int FolderFloor;
         public static ESort NowSort;
-        public static List<SongData> SongData { get; set; }
-        public static List<SongData> SongList { get; set; }
-        public static List<string> FolderData { get; set; }
 
-        public static Comparison<SongData>[] SortSystem = new Comparison<SongData>[15]
+        public static Comparison<Song>[] SortSystem = new Comparison<Song>[15]
             {
                 (a, b) => { int result = a.Type - b.Type; int resulta = result != 0 ? result : b.Enable[SongSelect.EnableCourse(b.Course, 0)].CompareTo(a.Enable[SongSelect.EnableCourse(a.Course, 0)]);
                     return resulta != 0 ? resulta : a.Path.CompareTo(b.Path); },
@@ -532,7 +563,7 @@ namespace Tunebeat
             };
     }
 
-    public class SongData
+    public class Song
     {
         public string Title;
         public string Path;
@@ -540,8 +571,8 @@ namespace Tunebeat
         public Header Header;
         public Course[] Course = new Course[5];
         public EType Type;
-        public SongData Prev;
-        public SongData Next;
+        public Song Prev;
+        public Song Next;
         public ScoreData Score;
         public bool[] Enable = new bool[5];
         public int[] Lamp = new int[5];

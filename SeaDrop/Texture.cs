@@ -46,7 +46,7 @@ namespace SeaDrop
             : this()
         {
             ID = DX.LoadGraph(fileName);
-            if (ID != -1)
+            if (ID != -1 && File.Exists(fileName))
             {
                 IsEnable = true;
             }

@@ -271,6 +271,7 @@ namespace Tunebeat
                     SoundName = new OptionString("SoundName", PlayData.Data.SoundName, "使用する効果音のフォルダを変更します。"); OptionList.Add(SoundName);
                     BGMName = new OptionString("BGMName", PlayData.Data.BGMName, "使用するBGMのフォルダを変更します。"); OptionList.Add(BGMName);
                     PlayFolder = new OptionStrList("PlayFolder", PlayData.Data.PlayFolder, "読み込むフォルダを変更します。(セミコロン(;)で区切ることにより複数のパスを指定できます。)"); OptionList.Add(PlayFolder);
+                    FullLoad = new OptionBool("FullLoad", PlayData.Data.FullLoad, "曲データ全てを読み込みます。OFFの場合フォルダを開いたときに読み込みます。"); OptionList.Add(FullLoad);
                     SkinColorR = new OptionInt("SkinColor - R", PlayData.Data.SkinColor[0], 0, 255, "スキンの色を変更します。(Red)"); OptionList.Add(SkinColorR);
                     SkinColorG = new OptionInt("SkinColor - G", PlayData.Data.SkinColor[1], 0, 255, "スキンの色を変更します。(Green)"); OptionList.Add(SkinColorG);
                     SkinColorB = new OptionInt("SkinColor - B", PlayData.Data.SkinColor[2], 0, 255, "スキンの色を変更します。(Blue)"); OptionList.Add(SkinColorB);
@@ -280,6 +281,7 @@ namespace Tunebeat
                     SE = new OptionInt("Volume-SE", PlayData.Data.SE, 0, 100, "効果音の音量を調節します。"); OptionList.Add(SE);
                     FontRendering = new OptionBool("FontRendering", PlayData.Data.FontRendering, "文字を指定したフォントで読み込みます。(エラーが出る場合はOFFにしてください)"); OptionList.Add(FontRendering);
                     FontName = new OptionString("FontName", PlayData.Data.FontName, "使用するフォントを変更します。(空白の場合デフォルトの設定を使用します。)"); OptionList.Add(FontName);
+                    VSync = new OptionBool("VSync", PlayData.Data.VSync, "垂直同期を有効にします。(適用するにはソフトを再起動してください)"); OptionList.Add(VSync);
                     ShowImage = new OptionBool("ShowImage", PlayData.Data.ShowImage, "BGIMAGEに記述された画像を背景に表示します。"); OptionList.Add(ShowImage);
                     PlayMovie = new OptionBool("PlayMovie", PlayData.Data.PlayMovie, "BGMOVIEに記述された動画を背景に表示します。"); OptionList.Add(PlayMovie);
                     QuickStart = new OptionBool("QuickStart", PlayData.Data.QuickStart, "自動的に譜面を再生します。"); OptionList.Add(QuickStart);
@@ -442,7 +444,9 @@ namespace Tunebeat
                     PlayData.Data.SE = SE.Value;
                     PlayData.Data.FontRendering = FontRendering.ON;
                     PlayData.Data.FontName = FontName.Text;
+                    PlayData.Data.VSync = VSync.ON;
                     PlayData.Data.PlayFolder = PlayFolder.Text;
+                    PlayData.Data.FullLoad = FullLoad.ON;
                     PlayData.Data.SkinColor = new int[3] { SkinColorR.Value, SkinColorG.Value, SkinColorB.Value };
                     PlayData.Data.ShowImage = ShowImage.ON;
                     PlayData.Data.PlayMovie = PlayMovie.ON;
@@ -571,7 +575,7 @@ namespace Tunebeat
             Back
         }
         public static Option  Back;
-        public static OptionBool FullScreen, PreviewSong, FontRendering, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
+        public static OptionBool FullScreen, PreviewSong, FontRendering, VSync, FullLoad, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
         public static OptionInt SkinColorR, SkinColorG, SkinColorB, SystemBGM, GameBGM, SE, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;

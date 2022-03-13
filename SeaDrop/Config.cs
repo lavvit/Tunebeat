@@ -106,9 +106,10 @@ namespace SeaDrop
         /// <summary>
         /// ファイルの読み込みを行います。
         /// </summary>
-        /// <param name="path">ファイル名</param
+        /// <param name="path">ファイル名</param>
+        /// <param name="trim">空白を削る</param>
         /// <param name="code">文字コード</param>
-        public void Load(string path, string code = "Shift_JIS")
+        public void Load(string path, bool trim = true, string code = "Shift_JIS")
         {
             if (!File.Exists(path)) return;
             string strAll;
@@ -120,7 +121,7 @@ namespace SeaDrop
             string[] strSingleLine = strAll.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
             foreach (string s in strSingleLine)
             {
-                TextList.Add(s);
+                TextList.Add(trim ? s.Trim() : s);
             }
         }
         /// <summary>

@@ -281,7 +281,7 @@ namespace Tunebeat
                                 {
                                     File.Bar[course][i].Chip[nownote].ENote = ENote.Don;
                                 }
-                                if (File.Bar[course][i].Chip[nownote].ENote == ENote.Don && KeyInput.ListPushing(PlayData.Data.LEFTDON) && KeyInput.ListPushing(PlayData.Data.RIGHTDON))
+                                if (File.Bar[course][i].Chip[nownote].ENote == ENote.Don && Key.IsPushing(PlayData.Data.LEFTDON) && Key.IsPushing(PlayData.Data.RIGHTDON))
                                 {
                                     File.Bar[course][i].Chip[nownote].ENote = ENote.DON;
                                 }
@@ -292,7 +292,7 @@ namespace Tunebeat
                                 {
                                     File.Bar[course][i].Chip[nownote].ENote = ENote.Ka;
                                 }
-                                if (File.Bar[course][i].Chip[nownote].ENote == ENote.Ka && KeyInput.ListPushing(PlayData.Data.LEFTKA) && KeyInput.ListPushing(PlayData.Data.RIGHTKA))
+                                if (File.Bar[course][i].Chip[nownote].ENote == ENote.Ka && Key.IsPushing(PlayData.Data.LEFTKA) && Key.IsPushing(PlayData.Data.RIGHTKA))
                                 {
                                     File.Bar[course][i].Chip[nownote].ENote = ENote.KA;
                                 }

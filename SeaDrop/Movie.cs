@@ -21,19 +21,20 @@ namespace SeaDrop
         /// 映像のみ再生をループモードで開始します。
         /// </summary>
         /// <param name="startTime">再生開始時間</param>
-        public void PlayGraphLoop(double startTime)
+        /// <param name="truetime">等倍での時間か</param>
+        public void PlayGraphLoop(double startTime, bool truetime = false)
         {
             if (IsEnable && !IsPlaying)
             {
                 Play();
-                Time = startTime;
+                if (truetime) TrueTime = startTime;
+                else Time = startTime;
                 Volume = 0;
             }
         }
         /// <summary>
         /// 映像のみ再生をループモードで開始します。
         /// </summary>
-        /// <param name="startTime">再生開始時間</param>
         public void PlayGraphLoop(bool playFromBegin = true)
         {
             if (IsEnable && !IsPlaying)
@@ -46,19 +47,20 @@ namespace SeaDrop
         /// 映像のみ再生を開始します。
         /// </summary>
         /// <param name="startTime">再生開始時間</param>
-        public void PlayGraph(double startTime)
+        /// <param name="truetime">等倍での時間か</param>
+        public void PlayGraph(double startTime, bool truetime = false)
         {
             if (IsEnable)
             {
                 Play();
-                Time = startTime;
+                if (truetime) TrueTime = startTime;
+                else Time = startTime;
                 Volume = 0;
             }
         }
         /// <summary>
         /// 映像のみ再生を開始します。
         /// </summary>
-        /// <param name="startTime">再生開始時間</param>
         public void PlayGraph(bool playFromBegin = true)
         {
             if (IsEnable)
@@ -71,18 +73,19 @@ namespace SeaDrop
         /// 再生をループモードで開始します。
         /// </summary>
         /// <param name="startTime">再生開始時間</param>
-        public void PlayLoop(double startTime)
+        /// <param name="truetime">等倍での時間か</param>
+        public void PlayLoop(double startTime, bool truetime = false)
         {
             if (IsEnable && !IsPlaying)
             {
                 Play();
-                Time = startTime;
+                if (truetime) TrueTime = startTime;
+                else Time = startTime;
             }
         }
         /// <summary>
         /// 再生をループモードで開始します。
         /// </summary>
-        /// <param name="startTime">再生開始時間</param>
         public void PlayLoop(bool playFromBegin = true)
         {
             if (IsEnable && !IsPlaying)
@@ -94,12 +97,14 @@ namespace SeaDrop
         /// 再生を開始します。
         /// </summary>
         /// <param name="startTime">再生開始時間</param>
-        public void Play(double startTime)
+        /// <param name="truetime">等倍での時間か</param>
+        public void Play(double startTime, bool truetime = false)
         {
             if (IsEnable)
             {
                 Play();
-                Time = startTime;
+                if (truetime) TrueTime = startTime;
+                else Time = startTime;
             }
         }
         /// <summary>
@@ -145,6 +150,20 @@ namespace SeaDrop
         {
             get
             {
+                return (int)(DX.TellMovieToGraph(ID) / PlaySpeed);
+            }
+            set
+            {
+                DX.SeekMovieToGraph(ID, (int)(value * PlaySpeed));
+            }
+        }
+        /// <summary>
+        /// 再生速度を考慮しない時間。単位はミリ秒。
+        /// </summary>
+        public double TrueTime
+        {
+            get
+            {
                 return DX.TellMovieToGraph(ID);
             }
             set
@@ -164,6 +183,34 @@ namespace SeaDrop
             }
         }
 
+        /// <summary>
+        /// 再生速度を倍率で変更する。
+        /// </summary>
+        public double PlaySpeed
+        {
+            get
+            {
+                return _speed;
+            }
+            set
+            {
+                _speed = value;
+                DX.SetPlaySpeedRateMovieToGraph(ID, value);
+            }
+        }
+
+        /// <summary>
+        /// 長さ。
+        /// </summary>
+        public double Length
+        {
+            get
+            {
+                return DX.GetMovieTotalFrameToGraph(ID);
+            }
+        }
+
         private int _volume;
+        private double _speed;
     }
 }

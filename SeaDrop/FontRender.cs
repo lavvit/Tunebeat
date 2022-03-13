@@ -14,20 +14,16 @@ namespace SeaDrop
         /// <param name="text">テキスト</param>
         /// <param name="fontName">使用するフォント名</param>
         /// <param name="size">大きさ</param>
-        /// <param name="edge">縁の広さ</param>
         /// <param name="interval">間隔</param>
         /// <param name="foreColor">フォントの色</param>
-        /// <param name="backColor">縁の色</param>
         /// <param name="space">余白</param>
         /// <returns></returns>
-        public static Texture GetTexture(string text, int size, string fontName = "", int edge = 0, uint foreColor = 0xffffff, uint backColor = 0x000000, int interval = 0, int space = 16)
+        public static Texture GetTexture(string text, int size, string fontName = "", int interval = 0, int space = 16)
         {
-            Color back = ColorTranslator.FromWin32((int)backColor);
-            Color fore = ColorTranslator.FromWin32((int)foreColor);
-            return GetTexture(text, fontName, size, edge, back, fore, interval, space);
+            return GetTexture(text, fontName, size, 0, Color.Black, Color.White, interval, space);
         }
         /// <summary>
-        /// フォント描画用の画像を作成します。
+        /// フォント描画用の画像を作成します。(縁付き)
         /// </summary>
         /// <param name="text">テキスト</param>
         /// <param name="fontName">使用するフォント名</param>
@@ -38,14 +34,26 @@ namespace SeaDrop
         /// <param name="backColor">縁の色</param>
         /// <param name="space">余白</param>
         /// <returns></returns>
-        public static Texture GetTexture(string text, int size, uint foreColor, string fontName = "", int edge = 0, uint backColor = 0x000000, int interval = 0, int space = 16)
+        public static Texture GetTexture(string text, int size, int edge, string fontName = "", int interval = 0, int space = 16)
         {
-            Color back = ColorTranslator.FromWin32((int)backColor);
-            Color fore = ColorTranslator.FromWin32((int)foreColor);
-            return GetTexture(text, fontName, size, edge, back, fore, interval, space);
+            return GetTexture(text, fontName, size, edge, Color.Black, Color.White, interval, space);
         }
         /// <summary>
         /// フォント描画用の画像を作成します。
+        /// </summary>
+        /// <param name="text">テキスト</param>
+        /// <param name="fontName">使用するフォント名</param>
+        /// <param name="size">大きさ</param>
+        /// <param name="interval">間隔</param>
+        /// <param name="foreColor">フォントの色</param>
+        /// <param name="space">余白</param>
+        /// <returns></returns>
+        public static Texture GetTexture(string text, int size, Color foreColor, string fontName = "", int interval = 0, int space = 16)
+        {
+            return GetTexture(text, fontName, size, 0, Color.Black, foreColor, interval, space);
+        }
+        /// <summary>
+        /// フォント描画用の画像を作成します。(縁付き)
         /// </summary>
         /// <param name="text">テキスト</param>
         /// <param name="fontName">使用するフォント名</param>
@@ -56,14 +64,12 @@ namespace SeaDrop
         /// <param name="backColor">縁の色</param>
         /// <param name="space">余白</param>
         /// <returns></returns>
-        public static Texture GetTexture(string text, int size, int edge, string fontName = "", uint foreColor = 0xffffff, uint backColor = 0x000000, int interval = 0, int space = 16)
+        public static Texture GetTexture(string text, int size, int edge, Color foreColor, string fontName = "", int interval = 0, int space = 16)
         {
-            Color back = ColorTranslator.FromWin32((int)backColor);
-            Color fore = ColorTranslator.FromWin32((int)foreColor);
-            return GetTexture(text, fontName, size, edge, back, fore, interval, space);
+            return GetTexture(text, fontName, size, edge, Color.Black, foreColor, interval, space);
         }
         /// <summary>
-        /// フォント描画用の画像を作成します。
+        /// フォント描画用の画像を作成します。(縁付き)
         /// </summary>
         /// <param name="text">テキスト</param>
         /// <param name="fontName">使用するフォント名</param>
@@ -74,11 +80,25 @@ namespace SeaDrop
         /// <param name="backColor">縁の色</param>
         /// <param name="space">余白</param>
         /// <returns></returns>
-        public static Texture GetTexture(string text, int size, int edge, uint foreColor, uint backColor, string fontName = "", int interval = 0, int space = 16)
+        public static Texture GetTexture(string text, int size, int edge, Color foreColor, Color backColor, string fontName = "", int interval = 0, int space = 16)
         {
-            Color back = ColorTranslator.FromWin32((int)backColor);
-            Color fore = ColorTranslator.FromWin32((int)foreColor);
-            return GetTexture(text, fontName, size, edge, back, fore, interval, space);
+            return GetTexture(text, fontName, size, edge, backColor, foreColor, interval, space);
+        }
+        /// <summary>
+        /// フォント描画用の画像を作成します。(縁付き)
+        /// </summary>
+        /// <param name="text">テキスト</param>
+        /// <param name="fontName">使用するフォント名</param>
+        /// <param name="size">大きさ</param>
+        /// <param name="edge">縁の広さ</param>
+        /// <param name="interval">間隔</param>
+        /// <param name="foreColor">フォントの色</param>
+        /// <param name="backColor">縁の色</param>
+        /// <param name="space">余白</param>
+        /// <returns></returns>
+        public static Texture GetTexture(string text, int size, Color foreColor, Color backColor, int edge = 8, string fontName = "", int interval = 0, int space = 16)
+        {
+            return GetTexture(text, fontName, size, edge, backColor, foreColor, interval, space);
         }
         #endregion
         /// <summary>

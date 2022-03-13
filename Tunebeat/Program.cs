@@ -34,7 +34,7 @@ namespace Tunebeat
             SetAlwaysRunFlag(TRUE); //ソフトがアクティブじゃなくても処理続行するようにする
             SetWindowSizeExtendRate(0.75f); //起動時のウィンドウサイズを設定 ( 1 = 100%)
             SetUseMaskScreenFlag(TRUE); //書かなくても良い。マスク使うときだけ書こう
-            SetWaitVSyncFlag(FALSE); //垂直同期にするかどうか
+            SetWaitVSyncFlag(PlayData.Data.VSync ? TRUE : FALSE); //垂直同期にするかどうか
             SetDoubleStartValidFlag(TRUE); //複数起動ができるようにするかどうか
             SetMultiThreadFlag(TRUE); //マルチスレッドで処理できるようにするかどうか
             SetUseASyncLoadFlag(TRUE); //非同期で画像を読み込むかどうか
@@ -43,7 +43,7 @@ namespace Tunebeat
             if (DxLib_Init() < 0) return;
             SetDrawScreen(DX_SCREEN_BACK);
 
-            //ChangeFont("Arial");
+            ChangeFont(PlayData.Data.FontName);
 
             //画像読み込み
             TextureLoad.Init();
