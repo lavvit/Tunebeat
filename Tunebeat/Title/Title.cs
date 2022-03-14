@@ -38,7 +38,7 @@ namespace Tunebeat
                 SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
                 SoundLoad.Don[0].Play();
                 SongLoad.Init();
-                Program.SceneChange(new SongSelectNew());
+                Program.SceneChange(new SongSelect());
             }
             if (Key.IsPushed(EKey.Esc))
             {

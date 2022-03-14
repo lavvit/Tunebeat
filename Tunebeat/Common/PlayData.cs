@@ -48,7 +48,7 @@ namespace Tunebeat
         public int SE = 100;
 
         public List<string> PlayFolder = new List<string>() { "Songs" };
-        public bool FullLoad = false;
+        public bool IgnoreFolder = false;
         public int PreviewType = 0;
         public int[] PlayCourse = new int[2] { 3, 3 };
         public bool IsPlay2P = false;

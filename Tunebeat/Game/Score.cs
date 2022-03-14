@@ -100,7 +100,7 @@ namespace Tunebeat
                 int count = 0;
                 for (int i = 0; i < 5; i++)
                 {
-                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    if (SongData.NowTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
                     {
                         if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
                         count++;
@@ -110,25 +110,25 @@ namespace Tunebeat
                 {
                     DrawNumber(0, Notes.NotesP[i].Y + 2, $"{(EXScore[i] > 0 ? EXScore[i] : Auto[i] * 2),9}", EXScore[i] > 0 || Auto[i] == 0 ? 0 : 5);
                     DrawMiniNumber(136, Notes.NotesP[i].Y + 29, $"+{(EXScore[i] > 0 ? Roll[i] : AutoRoll[i]),4}", EXScore[i] > 0 || Auto[i] == 0 ? 0 : 1);
-                    Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value, true);
+                    Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value, true);
                     DrawNumber(0, Notes.NotesP[i].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[i] : Notes.Scroll[i]),9:F2}", 0);//HS
-                    DrawNumber(0, Notes.NotesP[i].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[i].Header.BPM),9:F1}", 0);
+                    DrawNumber(0, Notes.NotesP[i].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : SongData.NowTJA[i].Header.BPM),9:F1}", 0);
                 }
             }
             else
             {
                 DrawNumber(0, Notes.NotesP[0].Y + 2, $"{(EXScore[0] > 0 ? EXScore[0] : Auto[0] * 2),9}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 5);
                 DrawMiniNumber(136, Notes.NotesP[0].Y + 29, $"+{(EXScore[0] > 0 ? Roll[0] : AutoRoll[0]),4}", EXScore[0] > 0 || Auto[0] == 0 ? 0 : 1);
-                Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
-                Chip nowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
+                Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value, true);
+                Chip nowchip2p = GetNotes.GetNowNote(SongData.NowTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value, true);
                 DrawNumber(0, Notes.NotesP[0].Y + 2 + 52, $"{(nowchip != null ? nowchip.Scroll * Notes.Scroll[0] : Notes.Scroll[0]),9:F2}", 0);//HS
-                DrawNumber(0, Notes.NotesP[0].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : Game.MainTJA[0].Header.BPM),9:F1}", 0);
+                DrawNumber(0, Notes.NotesP[0].Y + 2 + 92, $"{(nowchip != null ? nowchip.Bpm : SongData.NowTJA[0].Header.BPM),9:F1}", 0);
                 if (Game.Play2P)
                 {
                     DrawNumber(0, Notes.NotesP[0].Y + 2 + 331, $"{(EXScore[1] > 0 ? EXScore[1] : Auto[1] * 2),9}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 5);
                     DrawMiniNumber(136, Notes.NotesP[0].Y + 29 + 331, $"+{(EXScore[1] > 0 ? Roll[1] : AutoRoll[1]),4}", EXScore[1] > 0 || Auto[1] == 0 ? 0 : 1);
                     DrawNumber(72, Notes.NotesP[0].Y + 2 + 331 + 52, $"{(nowchip2p != null ? nowchip2p.Scroll * Notes.Scroll[1] : Notes.Scroll[1]),6:F2}", 0);//HS
-                    DrawNumber(0, Notes.NotesP[0].Y + 2 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : Game.MainTJA[1].Header.BPM),9:F1}", 0);
+                    DrawNumber(0, Notes.NotesP[0].Y + 2 + 331 + 92, $"{(nowchip2p != null ? nowchip2p.Bpm : SongData.NowTJA[1].Header.BPM),9:F1}", 0);
                 }
             }
 
@@ -214,16 +214,16 @@ namespace Tunebeat
                 }
             }
 
-            int[] rankvalue = new int[] { 0, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 4 / 9,
-                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 6 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 8 / 9,
-                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 10 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 12 / 9,
-                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 14 / 9, Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 16 / 9,
-                Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2};
-            int[] rankvalue2p = new int[] { 0, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 4 / 9,
-                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 6 / 9, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 8 / 9,
-                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 10 / 9, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 12 / 9,
-                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 14 / 9, Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 16 / 9,
-                Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes * 2};
+            int[] rankvalue = new int[] { 0, SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 4 / 9,
+                SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 6 / 9, SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 8 / 9,
+                SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 10 / 9, SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 12 / 9,
+                SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 14 / 9, SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 16 / 9,
+                SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2};
+            int[] rankvalue2p = new int[] { 0, SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 4 / 9,
+                SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 6 / 9, SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 8 / 9,
+                SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 10 / 9, SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 12 / 9,
+                SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 14 / 9, SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 16 / 9,
+                SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes * 2};
             if (Game.IsSongPlay && !Game.MainSong.IsPlaying && !PlayData.Data.ShowResultScreen)
             {
                 ERank rank = Rank[0];
@@ -231,16 +231,16 @@ namespace Tunebeat
                 {
                     rank = Rank[0] + 1;
                 }
-                DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 86, $"SC:{EXScore[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 86, $"PG:{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 0x00ff00 : (uint)0xffffff);
-                DrawString(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 86, $"GR:{Great[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 500, Notes.NotesP[0].Y + 86, $"GD:{Good[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 600, Notes.NotesP[0].Y + 86, $"BD:{Bad[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 700, Notes.NotesP[0].Y + 86, $"PR:{Poor[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 800, Notes.NotesP[0].Y + 86, $"RL:{Roll[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 106, $"Rank:{Rank[0]}", 0xffffff);
-                DrawString(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 106, $"{rank}{((EXScore[0] + Auto[0] == Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes) || (rank == Rank[0]) ? "+" : "")}{EXScore[0] + Auto[0] * 2 - rankvalue[(int)rank]}", 0xffffff);
-                if (!Game.Play2P && EXScore[0] > PlayMemory.BestData.Score) DrawString(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 106, "New Record", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 86, $"SC:{EXScore[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 86, $"PG:{Perfect[0] + Auto[0]}", Auto[0] > 0 ? 0x00ff00 : 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 86, $"GR:{Great[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 500, Notes.NotesP[0].Y + 86, $"GD:{Good[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 600, Notes.NotesP[0].Y + 86, $"BD:{Bad[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 700, Notes.NotesP[0].Y + 86, $"PR:{Poor[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 800, Notes.NotesP[0].Y + 86, $"RL:{Roll[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 200, Notes.NotesP[0].Y + 106, $"Rank:{Rank[0]}", 0xffffff);
+                Drawing.Text(Notes.NotesP[0].X + 300, Notes.NotesP[0].Y + 106, $"{rank}{((EXScore[0] + Auto[0] == SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes) || (rank == Rank[0]) ? "+" : "")}{EXScore[0] + Auto[0] * 2 - rankvalue[(int)rank]}", 0xffffff);
+                if (!Game.Play2P && EXScore[0] > PlayMemory.BestData.Score) Drawing.Text(Notes.NotesP[0].X + 400, Notes.NotesP[0].Y + 106, "New Record", 0xffffff);
                 if (Game.Play2P)
                 {
                     ERank rank2p = Rank[1];
@@ -248,15 +248,15 @@ namespace Tunebeat
                     {
                         rank2p = Rank[1] + 1;
                     }
-                    DrawString(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 86, $"SC:{EXScore[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 86, $"PG:{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 0x00ff00 : (uint)0xffffff);
-                    DrawString(Notes.NotesP[1].X + 400, Notes.NotesP[1].Y + 86, $"GR:{Great[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 500, Notes.NotesP[1].Y + 86, $"GD:{Good[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 600, Notes.NotesP[1].Y + 86, $"BD:{Bad[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 700, Notes.NotesP[1].Y + 86, $"PR:{Poor[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 800, Notes.NotesP[1].Y + 86, $"RL:{Roll[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 106, $"Rank:{Rank[1]}", 0xffffff);
-                    DrawString(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 106, $"{rank2p}{((EXScore[1] + Auto[1] == Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes) || (rank2p == Rank[1]) ? "+" : "")}{EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)rank2p]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 86, $"SC:{EXScore[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 86, $"PG:{Perfect[1] + Auto[1]}", Auto[1] > 0 ? 0x00ff00 : 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 400, Notes.NotesP[1].Y + 86, $"GR:{Great[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 500, Notes.NotesP[1].Y + 86, $"GD:{Good[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 600, Notes.NotesP[1].Y + 86, $"BD:{Bad[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 700, Notes.NotesP[1].Y + 86, $"PR:{Poor[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 800, Notes.NotesP[1].Y + 86, $"RL:{Roll[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 200, Notes.NotesP[1].Y + 106, $"Rank:{Rank[1]}", 0xffffff);
+                    Drawing.Text(Notes.NotesP[1].X + 300, Notes.NotesP[1].Y + 106, $"{rank2p}{((EXScore[1] + Auto[1] == SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes) || (rank2p == Rank[1]) ? "+" : "")}{EXScore[1] + Auto[1] * 2 - rankvalue2p[(int)rank2p]}", 0xffffff);
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Tunebeat
                 int count = 0;
                 for (int i = 0; i < 5; i++)
                 {
-                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    if (SongData.NowTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
                     {
                         if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
                         count++;
@@ -273,7 +273,7 @@ namespace Tunebeat
                 }
                 for (int i = 0; i < count; i++)
                 {
-                    Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
+                    Chip rnowchip = GetNotes.GetNowNote(SongData.NowTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
                     ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
                     if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter[i].Reset(); RollCounter[i].Start(); }
                     if (RollCounter[i].State != 0)
@@ -287,8 +287,8 @@ namespace Tunebeat
             }
             else
             {
-                Chip rnowchip = GetNotes.GetNowNote(Game.MainTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[0]);
-                Chip rnowchip2p = GetNotes.GetNowNote(Game.MainTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - Game.Adjust[1]);
+                Chip rnowchip = GetNotes.GetNowNote(SongData.NowTJA[0].Courses[Game.Course[0]].ListChip, Game.MainTimer.Value - Game.Adjust[0]);
+                Chip rnowchip2p = GetNotes.GetNowNote(SongData.NowTJA[1].Courses[Game.Course[1]].ListChip, Game.MainTimer.Value - Game.Adjust[1]);
                 ERoll roll = rnowchip != null ? ProcessNote.RollState(rnowchip) : ERoll.None;
                 ERoll roll2p = rnowchip2p != null ? ProcessNote.RollState(rnowchip2p) : ERoll.None;
                 if (roll != ERoll.None && !rnowchip.IsHit) { RollCounter[0].Reset(); RollCounter[0].Start(); }
@@ -310,50 +310,50 @@ namespace Tunebeat
 
 
             #if DEBUG
-            DrawString(0, 300, $"SC:{EXScore[0]}", 0xffffff);
-            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 300, Remain[0] > 0 ? $"MAX-{Remain[0]}" : "MAX+0", 0xffffff);
-            DrawString(0, 320, $"PG:{Perfect[0]}", 0xffffff);
-            DrawString(0, 340, $"GR:{Great[0]}", 0xffffff);
-            DrawString(0, 360, $"GD:{Good[0]}", 0xffffff);
-            DrawString(0, 380, $"BD:{Bad[0]}", 0xffffff);
-            DrawString(0, 400, $"PR:{Poor[0]}", 0xffffff);
-            DrawString(0, 420, $"AT:{Auto[0]}", 0xffffff);
-            DrawString(0, 440, $"RL:{Roll[0] + AutoRoll[0]}({RollYellow[0]},{RollBalloon[0]})", 0xffffff);
+            Drawing.Text(0, 300, $"SC:{EXScore[0]}", 0xffffff);
+            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) Drawing.Text(80, 300, Remain[0] > 0 ? $"MAX-{Remain[0]}" : "MAX+0", 0xffffff);
+            Drawing.Text(0, 320, $"PG:{Perfect[0]}", 0xffffff);
+            Drawing.Text(0, 340, $"GR:{Great[0]}", 0xffffff);
+            Drawing.Text(0, 360, $"GD:{Good[0]}", 0xffffff);
+            Drawing.Text(0, 380, $"BD:{Bad[0]}", 0xffffff);
+            Drawing.Text(0, 400, $"PR:{Poor[0]}", 0xffffff);
+            Drawing.Text(0, 420, $"AT:{Auto[0]}", 0xffffff);
+            Drawing.Text(0, 440, $"RL:{Roll[0] + AutoRoll[0]}({RollYellow[0]},{RollBalloon[0]})", 0xffffff);
 
-            DrawString(200, 300, $"{Gauge[0]}", 0xffffff);
-            DrawString(200, 320, $"Total:{Total[0]}", 0xffffff);
-            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 340, Cleared[0] ? "Cleared" : "Failed", 0xffffff);
-            DrawString(200, 360, $"Combo:{MaxCombo[0]}", 0xffffff);
-            DrawString(200, 380, $"Rank:{Rank[0]}", 0xffffff);
+            Drawing.Text(200, 300, $"{Gauge[0]}", 0xffffff);
+            Drawing.Text(200, 320, $"Total:{Total[0]}", 0xffffff);
+            if (Game.IsSongPlay && !Game.MainSong.IsPlaying) Drawing.Text(200, 340, Cleared[0] ? "Cleared" : "Failed", 0xffffff);
+            Drawing.Text(200, 360, $"Combo:{MaxCombo[0]}", 0xffffff);
+            Drawing.Text(200, 380, $"Rank:{Rank[0]}", 0xffffff);
 
             if (JudgeCounter.State == TimerState.Started || JudgeCounterBig.State == TimerState.Started)
             {
-                DrawString(600, 260, $"{DisplayJudge[0]}", 0xffffff);
-                DrawString(600, 280, $"{Math.Round(msJudge[0], 2, MidpointRounding.AwayFromZero)}", 0xffffff);
+                Drawing.Text(600, 260, $"{DisplayJudge[0]}", 0xffffff);
+                Drawing.Text(600, 280, $"{Math.Round(msJudge[0], 2, MidpointRounding.AwayFromZero)}", 0xffffff);
             }
 
             if (Game.Play2P)
             {
-                DrawString(0, 560, $"SC:{EXScore[1]}", 0xffffff);
-                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(80, 560, Remain[1] > 0 ? $"MAX-{Remain[1]}" : "MAX+0", 0xffffff);
-                DrawString(0, 580, $"PG:{Perfect[1]}", 0xffffff);
-                DrawString(0, 600, $"GR:{Great[1]}", 0xffffff);
-                DrawString(0, 620, $"GD:{Good[1]}", 0xffffff);
-                DrawString(0, 640, $"BD:{Bad[1]}", 0xffffff);
-                DrawString(0, 660, $"PR:{Poor[1]}", 0xffffff);
-                DrawString(0, 680, $"AT:{Auto[1]}", 0xffffff);
-                DrawString(0, 700, $"RL:{Roll[1] + AutoRoll[1]}({RollYellow[1]},{RollBalloon[1]})", 0xffffff);
+                Drawing.Text(0, 560, $"SC:{EXScore[1]}", 0xffffff);
+                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) Drawing.Text(80, 560, Remain[1] > 0 ? $"MAX-{Remain[1]}" : "MAX+0", 0xffffff);
+                Drawing.Text(0, 580, $"PG:{Perfect[1]}", 0xffffff);
+                Drawing.Text(0, 600, $"GR:{Great[1]}", 0xffffff);
+                Drawing.Text(0, 620, $"GD:{Good[1]}", 0xffffff);
+                Drawing.Text(0, 640, $"BD:{Bad[1]}", 0xffffff);
+                Drawing.Text(0, 660, $"PR:{Poor[1]}", 0xffffff);
+                Drawing.Text(0, 680, $"AT:{Auto[1]}", 0xffffff);
+                Drawing.Text(0, 700, $"RL:{Roll[1] + AutoRoll[1]}({RollYellow[1]},{RollBalloon[1]})", 0xffffff);
 
-                DrawString(200, 560, $"{Gauge[1]}", 0xffffff);
-                DrawString(200, 580, $"Total:{Total[1]}", 0xffffff);
-                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) DrawString(200, 600, Cleared[1] ? "Cleared" : "Failed", 0xffffff);
-                DrawString(200, 620, $"Combo:{MaxCombo[1]}", 0xffffff);
-                DrawString(200, 640, $"Rank:{Rank[1]}", 0xffffff);
+                Drawing.Text(200, 560, $"{Gauge[1]}", 0xffffff);
+                Drawing.Text(200, 580, $"Total:{Total[1]}", 0xffffff);
+                if (Game.IsSongPlay && !Game.MainSong.IsPlaying) Drawing.Text(200, 600, Cleared[1] ? "Cleared" : "Failed", 0xffffff);
+                Drawing.Text(200, 620, $"Combo:{MaxCombo[1]}", 0xffffff);
+                Drawing.Text(200, 640, $"Rank:{Rank[1]}", 0xffffff);
 
                 if (JudgeCounter2P.State == TimerState.Started || JudgeCounterBig2P.State == TimerState.Started)
                 {
-                    DrawString(600, 520, $"{DisplayJudge[1]}", 0xffffff);
-                    DrawString(600, 540, $"{Math.Round(msJudge[1], 2, MidpointRounding.AwayFromZero)}", 0xffffff);
+                    Drawing.Text(600, 520, $"{DisplayJudge[1]}", 0xffffff);
+                    Drawing.Text(600, 540, $"{Math.Round(msJudge[1], 2, MidpointRounding.AwayFromZero)}", 0xffffff);
                 }
             }
             #endif
@@ -637,9 +637,9 @@ namespace Tunebeat
             double allnotes = Perfect[0] + Great[0] + Good[0] + Bad[0] + Poor[0] + Auto[0];
             double hitnotes = EXScore[0] > 0 ? EXScore[0] / 2.0 : Auto[0];
             double percent = allnotes > 0 ? hitnotes / allnotes : 0;
-            double hitpercent = hitnotes / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes;
-            double allpercent = allnotes / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes;
-            int score = (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * percent * 2);
+            double hitpercent = hitnotes / SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes;
+            double allpercent = allnotes / SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes;
+            int score = (int)(SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * percent * 2);
             ERank rank = GetRank(score, 0);
 
             TextureLoad.Game_Graph.Draw(499, 163, new Rectangle((int)(1000 - 1000 * hitpercent), 64 * 2, (int)(1000 * hitpercent), 64));
@@ -648,8 +648,8 @@ namespace Tunebeat
             {
                 double bestallnotes = PlayMemory.BestData.Score;
                 double bestnotes = EXScore[2];
-                double bestpercent = bestnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
-                double bestallpercent = bestallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                double bestpercent = bestnotes / (SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                double bestallpercent = bestallnotes / (SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
                 TextureLoad.Game_Graph.Draw(499, 163 - 76, new Rectangle((int)(1000 - 1000 * bestallpercent), 64 * 3, (int)(1000 * bestallpercent), 64));
                 if (PlayMemory.BestData.Chip != null)
                 {
@@ -666,7 +666,7 @@ namespace Tunebeat
                     double value = allvalue * allpercent;
                     TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * allvalue), 64 * 3, (int)(1000 * allvalue), 64));
                     TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * value), 0, (int)(1000 * value), 64));
-                    int num = (int)hitnotes * 2 - (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * value);
+                    int num = (int)hitnotes * 2 - (int)(SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * value);
                     DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(num >= 0 ? "+" : "")}{num}", num < 0 ? 1 : 0);
                     DrawNumber(499 - 178, 181 - 76 * 2, $"{PlayData.Data.RivalPercent,6:F2}%", 0);
                     break;
@@ -675,7 +675,7 @@ namespace Tunebeat
                     double rvalue = rpercent * allpercent;
                     TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rpercent), 64 * 3, (int)(1000 * rpercent), 64));
                     TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rvalue), 0, (int)(1000 * rvalue), 64));
-                    int rnum = (int)hitnotes * 2 - (int)(Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * rvalue);
+                    int rnum = (int)hitnotes * 2 - (int)(SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2 * rvalue);
                     DrawMiniNumber(499 + 8, 183 - 76 * 2, $"{(rnum >= 0 ? "+" : "")}{rnum}", rnum < 0 ? 1 : 0);
                     TextureLoad.Result_Rank.Draw(499 - 152, 175 - 76 * 2, new Rectangle(0, PlayData.Data.RivalRank > 7 ? 45 * 7 : 45 * PlayData.Data.RivalRank, 161, 45));
                     break;
@@ -684,8 +684,8 @@ namespace Tunebeat
                     {
                         double rivalallnotes = PlayMemory.RivalData.Score;
                         double rivalnotes = EXScore[3];
-                        double rivalpercent = rivalnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
-                        double rivalallpercent = rivalallnotes / (Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                        double rivalpercent = rivalnotes / (SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
+                        double rivalallpercent = rivalallnotes / (SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes * 2);
                         TextureLoad.Game_Graph.Draw(499, 163 - 76 * 2, new Rectangle((int)(1000 - 1000 * rivalallpercent), 64 * 3, (int)(1000 * rivalallpercent), 64));
                         if (PlayMemory.RivalData.Chip != null)
                         {
@@ -785,9 +785,9 @@ namespace Tunebeat
         {
             if (Game.MainTimer.State == 0 && GaugeType[player] >= EGauge.Hard) return;
 
-            double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes };
+            double[] gaugepernote = new double[2] { Total[0] / SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes };
             double[] gauge = new double[6];
-            int Notes = PlayData.Data.Hazard[player] > Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes ? Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes : PlayData.Data.Hazard[player];
+            int Notes = PlayData.Data.Hazard[player] > SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes ? SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes : PlayData.Data.Hazard[player];
             switch (judge)
             {
                 case EJudge.Perfect:
@@ -851,7 +851,7 @@ namespace Tunebeat
 
         public static void DeleteGauge(int player)
         {
-            double[] gaugepernote = new double[2] { Total[0] / Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / Game.MainTJA[1].Courses[Game.Course[1]].TotalNotes };
+            double[] gaugepernote = new double[2] { Total[0] / SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes, Total[1] / SongData.NowTJA[1].Courses[Game.Course[1]].TotalNotes };
             double[] gauge = new double[6];
 
             for (int i = 0; i < 6; i++)
@@ -995,7 +995,7 @@ namespace Tunebeat
                     {
                         goodrate[player] = 0.75;
                         badrate[player] = 0.5;
-                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
+                        switch (SongData.NowTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                                 total[player] = 166.666; //0.6
@@ -1016,7 +1016,7 @@ namespace Tunebeat
                 case (int)ECourse.Normal:
                     {
                         goodrate[player] = 0.75;
-                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
+                        switch (SongData.NowTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -1044,7 +1044,7 @@ namespace Tunebeat
                 case (int)ECourse.Hard:
                     {
                         goodrate[player] = 0.75;
-                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
+                        switch (SongData.NowTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -1077,7 +1077,7 @@ namespace Tunebeat
                 case (int)ECourse.Edit:
                     {
                         goodrate[player] = 0.5;
-                        switch (Game.MainTJA[player].Courses[Game.Course[player]].LEVEL)
+                        switch (SongData.NowTJA[player].Courses[Game.Course[player]].LEVEL)
                         {
                             case 1:
                             case 2:
@@ -1105,7 +1105,7 @@ namespace Tunebeat
             }
             poorrate = badrate;
 
-            Total[player] = Game.MainTJA[player].Courses[Game.Course[player]].TOTAL > 0.0 ? Game.MainTJA[player].Courses[Game.Course[player]].TOTAL : total[player];
+            Total[player] = SongData.NowTJA[player].Courses[Game.Course[player]].TOTAL > 0.0 ? SongData.NowTJA[player].Courses[Game.Course[player]].TOTAL : total[player];
             GoodRate[player] = goodrate[player];
             BadRate[player] = badrate[player];
             PoorRate[player] = poorrate[player];
@@ -1140,31 +1140,31 @@ namespace Tunebeat
 
         public static ERank GetRank(int value, int player)
         {
-            if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 16 / 9)
+            if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 16 / 9)
             {
                 return ERank.AAA;
             }
-            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 14 / 9)
+            else if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 14 / 9)
             {
                 return ERank.AA;
             }
-            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 12 / 9)
+            else if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 12 / 9)
             {
                 return ERank.A;
             }
-            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 10 / 9)
+            else if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 10 / 9)
             {
                 return ERank.B;
             }
-            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 8 / 9)
+            else if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 8 / 9)
             {
                 return ERank.C;
             }
-            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 6 / 9)
+            else if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 6 / 9)
             {
                 return ERank.D;
             }
-            else if (value >= Game.MainTJA[player].Courses[Game.Course[player]].TotalNotes * 4 / 9)
+            else if (value >= SongData.NowTJA[player].Courses[Game.Course[player]].TotalNotes * 4 / 9)
             {
                 return ERank.E;
             }

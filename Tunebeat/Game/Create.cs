@@ -20,7 +20,7 @@ namespace Tunebeat
             Metro = false;
             MetroL = false;
             Edited = false;
-            File = new TJAFile(Game.MainTJA[0]);
+            File = new TJAFile(SongData.NowTJA[0]);
             Read();
             MeasureCount = 0;
             InputType = 4;
@@ -33,7 +33,7 @@ namespace Tunebeat
         public static void Read()
         {
             AllText = new List<string>();
-            using (StreamReader sr = new StreamReader(Game.MainTJA[0].TJAPath, Encoding.GetEncoding("Shift_JIS")))
+            using (StreamReader sr = new StreamReader(SongData.NowTJA[0].TJAPath, Encoding.GetEncoding("Shift_JIS")))
             {
                 while (sr.Peek() > -1)
                 {
@@ -104,60 +104,60 @@ namespace Tunebeat
                         float width = (1080 - 490) / count;
                         if (width < 4) width = (1076 - 490) / count;
                         float y = 490 + NowScroll * width;
-                        DrawBoxAA(1916, y, 1920, y + (width < 4 ? 4 : width), 0xffff00, TRUE);
+                        Drawing.Box(1916, y, 1920, y + (width < 4 ? 4 : width), 0xffff00);
                     }
                     for (int i = 0; i < (Course[Game.Course[0]].Count > 29 ? 29 : Course[Game.Course[0]].Count); i++)
                     {
-                        DrawString(1280, 495 + 20 * i, Course[Game.Course[0]][i + NowScroll], 0xffffff);
+                        Drawing.Text(1280, 495 + 20 * i, Course[Game.Course[0]][i + NowScroll], 0xffffff);
                     }
                 }
 
-                DrawString(472, 350, $"{InputType,2}", 0xffffff);
-                if (Mapping) DrawCircleAA(478, 330, 8, 256, 0xff0000, TRUE);
+                Drawing.Text(472, 350, $"{InputType,2}", 0xffffff);
+                if (Mapping) DrawCircleAA(478, 330, 8, 256, 0xff0000);
 
-                DrawBox(0, 0, 496, Notes.NotesP[0].Y - 4, 0x000000, TRUE);
-                DrawString(40, 10, $"Title:{(Input.IsEnable && Cursor == 0 ? Input.Text : File.Title)}", Selecting && Cursor == 0 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 30, $"SubTitle:{(Input.IsEnable && Cursor == 1 ? Input.Text : File.SubTitle)}", Selecting && Cursor == 1 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 50, $"Wave:{(Input.IsEnable && Cursor == 2 ? Input.Text : File.Wave)}", Selecting && Cursor == 2 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 70, $"BGImage:{(Input.IsEnable && Cursor == 3 ? Input.Text : File.BGImage)}", Selecting && Cursor == 3 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 90, $"BGMovie:{(Input.IsEnable && Cursor == 4 ? Input.Text : File.BGMovie)}", Selecting && Cursor == 4 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 110, $"Bpm:{(Input.IsEnable && Cursor == 5 ? Input.Text : File.Bpm.ToString())}", Selecting && Cursor == 5 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 130, $"Offset:{(Input.IsEnable && Cursor == 6 ? Input.Text : File.Offset.ToString())}", Selecting && Cursor == 6 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 150, $"SongVol:{(Input.IsEnable && Cursor == 7 ? Input.Text : File.SongVol.ToString())}", Selecting && Cursor == 7 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 170, $"SeVol:{(Input.IsEnable && Cursor == 8 ? Input.Text : File.SeVol.ToString())}", Selecting && Cursor == 8 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 190, $"DemoStart:{(Input.IsEnable && Cursor == 9 ? Input.Text : File.DemoStart.ToString())}", Selecting && Cursor == 9 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 210, $"Genre:{(Input.IsEnable && Cursor == 10 ? Input.Text : File.Genre)}", Selecting && Cursor == 10 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 230, $"NowCourse:{(ECourse)Game.Course[0]}", Selecting && Cursor == 11 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 250, $"Level:{(Input.IsEnable && Cursor == 12 ? Input.Text : File.Level[Game.Course[0]].ToString())}", Selecting && Cursor == 12 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 270, $"Total:{(Input.IsEnable && Cursor == 13 ? Input.Text : File.Total[Game.Course[0]].ToString())}", Selecting && Cursor == 13 ? (uint)0xffff00 : 0xffffff);
-                DrawString(40, 310, $"Notes:{Game.MainTJA[0].Courses[Game.Course[0]].TotalNotes}", 0xffffff);
+                Drawing.Box(0, 0, 496, Notes.NotesP[0].Y - 4, 0x000000);
+                Drawing.Text(40, 10, $"Title:{(Input.IsEnable && Cursor == 0 ? Input.Text : File.Title)}", Selecting && Cursor == 0 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 30, $"SubTitle:{(Input.IsEnable && Cursor == 1 ? Input.Text : File.SubTitle)}", Selecting && Cursor == 1 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 50, $"Wave:{(Input.IsEnable && Cursor == 2 ? Input.Text : File.Wave)}", Selecting && Cursor == 2 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 70, $"BGImage:{(Input.IsEnable && Cursor == 3 ? Input.Text : File.BGImage)}", Selecting && Cursor == 3 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 90, $"BGMovie:{(Input.IsEnable && Cursor == 4 ? Input.Text : File.BGMovie)}", Selecting && Cursor == 4 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 110, $"Bpm:{(Input.IsEnable && Cursor == 5 ? Input.Text : File.Bpm.ToString())}", Selecting && Cursor == 5 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 130, $"Offset:{(Input.IsEnable && Cursor == 6 ? Input.Text : File.Offset.ToString())}", Selecting && Cursor == 6 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 150, $"SongVol:{(Input.IsEnable && Cursor == 7 ? Input.Text : File.SongVol.ToString())}", Selecting && Cursor == 7 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 170, $"SeVol:{(Input.IsEnable && Cursor == 8 ? Input.Text : File.SeVol.ToString())}", Selecting && Cursor == 8 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 190, $"DemoStart:{(Input.IsEnable && Cursor == 9 ? Input.Text : File.DemoStart.ToString())}", Selecting && Cursor == 9 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 210, $"Genre:{(Input.IsEnable && Cursor == 10 ? Input.Text : File.Genre)}", Selecting && Cursor == 10 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 230, $"NowCourse:{(ECourse)Game.Course[0]}", Selecting && Cursor == 11 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 250, $"Level:{(Input.IsEnable && Cursor == 12 ? Input.Text : File.Level[Game.Course[0]].ToString())}", Selecting && Cursor == 12 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 270, $"Total:{(Input.IsEnable && Cursor == 13 ? Input.Text : File.Total[Game.Course[0]].ToString())}", Selecting && Cursor == 13 ? 0xffff00 : 0xffffff);
+                Drawing.Text(40, 310, $"Notes:{SongData.NowTJA[0].Courses[Game.Course[0]].TotalNotes}", 0xffffff);
                 if (InfoMenu)
                 {
-                    DrawString(10, 10 + 20 * Cursor, ">", 0xff0000);
+                    Drawing.Text(10, 10 + 20 * Cursor, ">", 0xff0000);
                 }
                 if (Selecting && Cursor == 11)
                 {
-                    DrawString(30, 10 + 20 * Cursor, "<", 0x0000ff);
-                    DrawString(40 + GetDrawStringWidth($"NowCourse:{(ECourse)Game.Course[0]}", $"NowCourse:{(ECourse)Game.Course[0]}".Length), 10 + 20 * Cursor, ">", 0x0000ff);
+                    Drawing.Text(30, 10 + 20 * Cursor, "<", 0x0000ff);
+                    Drawing.Text(40 + Drawing.TextWidth($"NowCourse:{(ECourse)Game.Course[0]}", $"NowCourse:{(ECourse)Game.Course[0]}".Length), 10 + 20 * Cursor, ">", 0x0000ff);
                 }
                 if (CommandLayer == 1)
                 {
-                    DrawBox(0, Notes.NotesP[0].Y + 199, 400, Notes.NotesP[0].Y + 239, 0x000000, TRUE);
-                    DrawString(10, Notes.NotesP[0].Y + 209, "命令文を追加/削除するノーツを選択してください。", 0xffffff);
+                    Drawing.Box(0, Notes.NotesP[0].Y + 199, 400, Notes.NotesP[0].Y + 239, 0x000000);
+                    Drawing.Text(10, Notes.NotesP[0].Y + 209, "命令文を追加/削除するノーツを選択してください。", 0xffffff);
                 }
                 if (CommandLayer == 2)
                 {
-                    DrawBox(0, Notes.NotesP[0].Y + 199, 240, Notes.NotesP[0].Y + 239, 0x000000, TRUE);
-                    DrawString(10, Notes.NotesP[0].Y + 209, "命令文を記入してください。", 0xffffff);
+                    Drawing.Box(0, Notes.NotesP[0].Y + 199, 240, Notes.NotesP[0].Y + 239, 0x000000);
+                    Drawing.Text(10, Notes.NotesP[0].Y + 209, "命令文を記入してください。", 0xffffff);
                 }
-                if (RollEnd) DrawString(800, 520, "Roll...", 0xffffff);
+                if (RollEnd) Drawing.Text(800, 520, "Roll...", 0xffffff);
 
 #if DEBUG
-                DrawString(240, 20, $"Length:{len}", 0xffffff);
-                DrawString(240, 40, $"Cursor:{cur}", 0xffffff);
-                DrawString(240, 60, $"Bar:{File.Bar[Game.Course[0]].Count}", 0xffffff);
-                DrawString(240, 80, $"Song:{Game.MainSong.Length}", 0xffffff);
-                DrawString(240, 100, $"Off:{-File.Offset * 1000.0}", 0xffffff);
+                Drawing.Text(240, 20, $"Length:{len}", 0xffffff);
+                Drawing.Text(240, 40, $"Cursor:{cur}", 0xffffff);
+                Drawing.Text(240, 60, $"Bar:{File.Bar[Game.Course[0]].Count}", 0xffffff);
+                Drawing.Text(240, 80, $"Song:{Game.MainSong.Length}", 0xffffff);
+                Drawing.Text(240, 100, $"Off:{-File.Offset * 1000.0}", 0xffffff);
                 for (int i = 0; i < File.Bar[Game.Course[0]].Count; i++)
                 {
                     List<Chip> chip = new List<Chip>();
@@ -168,9 +168,9 @@ namespace Tunebeat
                     {
                         for (int j = 0; j < chip.Count; j++)
                         {
-                            DrawString(20 + 9 * j, 500 + 20 * i, $"{(int)chip[j].ENote}", 0xffffff);
+                            Drawing.Text(20 + 9 * j, 500 + 20 * i, $"{(int)chip[j].ENote}", 0xffffff);
                         }
-                        DrawString(20 + 9 * chip.Count, 500 + 20 * i, ",", 0xffffff);
+                        Drawing.Text(20 + 9 * chip.Count, 500 + 20 * i, ",", 0xffffff);
                     }
                 }
                 if (Game.MainTimer.State == 0)
@@ -185,11 +185,11 @@ namespace Tunebeat
                         ListCommand.RemoveAt(0);
                     }
                 }
-                if (NowCommand != null) DrawString(900 - 36, 500, $"Now:{(int)NowCommand.Time,6}:{NowCommand.Name}", 0xffffff);
-                else DrawString(900 - 36, 500, $"Now:{0,6}:None", 0xffffff);
+                if (NowCommand != null) Drawing.Text(900 - 36, 500, $"Now:{(int)NowCommand.Time,6}:{NowCommand.Name}", 0xffffff);
+                else Drawing.Text(900 - 36, 500, $"Now:{0,6}:None", 0xffffff);
                 for (int i = 0; i < ListCommand.Count; i++)
                 {
-                    if (i < 29) DrawString(900, 540 + 20 * i, $"{(int)(File.Command[Game.Course[0]][i].Time - Game.MainTimer.Value),6}:{File.Command[Game.Course[0]][i].Name}", 0xffffff);
+                    if (i < 29) Drawing.Text(900, 540 + 20 * i, $"{(int)(File.Command[Game.Course[0]][i].Time - Game.MainTimer.Value),6}:{File.Command[Game.Course[0]][i].Name}", 0xffffff);
                 }
                 if (Game.NowMeasure > 0)
                 {
@@ -198,22 +198,22 @@ namespace Tunebeat
                         BarLine bar = File.Bar[Game.Course[0]][Game.NowMeasure - 1];
                         /*double num = 240000.0 / bar.BPM * bar.Measure;
                         double num2 = Game.MainTimer.Value - bar.Time;
-                        DrawString(400, 500, $"num:{num}", 0xffffff);
-                        DrawString(400, 520, $"num2:{num2}", 0xffffff);
+                        Drawing.Text(400, 500, $"num:{num}", 0xffffff);
+                        Drawing.Text(400, 520, $"num2:{num2}", 0xffffff);
                         int count = bar.Chip.Count;
-                        DrawString(600, 500, $"Count:{count}", 0xffffff);
+                        Drawing.Text(600, 500, $"Count:{count}", 0xffffff);
                         for (int j = 0; j < count; j++)
                         {
-                            DrawString(200, 500 + 20 * j, $"{(int)bar.Chip[j].Time,6},{(int)bar.Chip[j].ENote},{bar.Chip[j].Bpm},{bar.Chip[j].Measure}", 0xffffff);
+                            Drawing.Text(200, 500 + 20 * j, $"{(int)bar.Chip[j].Time,6},{(int)bar.Chip[j].ENote},{bar.Chip[j].Bpm},{bar.Chip[j].Measure}", 0xffffff);
                             double num3 = (j - 0.5) * (double)num / count;
                             double num4 = (j + 0.5) * (double)num / count;
-                            DrawString(400, 540 + 20 * j, $"{num3}", 0xffffff);
-                            DrawString(600, 540 + 20 * j, $"{num4}", 0xffffff);
+                            Drawing.Text(400, 540 + 20 * j, $"{num3}", 0xffffff);
+                            Drawing.Text(600, 540 + 20 * j, $"{num4}", 0xffffff);
                         }*/
                         Chip chip = GetNotes.GetNowNote(bar.Chip, Game.MainTimer.Value, true);
                         if (chip != null)
                         {
-                            DrawString(800, 500, $"{4 / chip.Measure}", 0xffffff);
+                            Drawing.Text(800, 500, $"{4 / chip.Measure}", 0xffffff);
 
                         }
                         
@@ -324,7 +324,7 @@ namespace Tunebeat
             File.Command[course].Clear();
             ListMeasureCount = new List<int>();
             ListAllChip = new List<Chip>();
-            if (Game.MainTJA[0].Courses[Game.Course[0]].IsEnable)
+            if (SongData.NowTJA[0].Courses[Game.Course[0]].IsEnable)
             {
                 foreach (string str in Course[course])
                     GetMeasureCount(str);

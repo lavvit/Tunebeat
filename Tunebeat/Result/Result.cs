@@ -24,7 +24,7 @@ namespace Tunebeat
         }
         public override void Draw()
         {
-            DrawBox(0, 0, 1919, 257, GetColor(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]), TRUE);
+            Drawing.Box(0, 0, 1919, 257, Drawing.Color(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]));
             TextureLoad.Result_Background.Draw(0, 0);
             TextureLoad.Result_Panel.Draw(0, 0, new Rectangle(0, 0, 960, 1080));
 

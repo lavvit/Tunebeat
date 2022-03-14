@@ -104,12 +104,12 @@ namespace Tunebeat
                         {
                             if (RollState(chip) == ERoll.Balloon)
                             {
-                                SoundLoad.Balloon[player].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
+                                SoundLoad.Balloon[player].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
                                 SoundLoad.Balloon[player].Play();
                             }
                             else
                             {
-                                SoundLoad.Kusudama[player].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
+                                SoundLoad.Kusudama[player].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
                                 SoundLoad.Kusudama[player].Play();
                             }
                             chip.IsHit = true;
@@ -124,7 +124,7 @@ namespace Tunebeat
 
         public static int BalloonAmount(int player)
         {
-            return Game.MainTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? Game.MainTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
+            return SongData.NowTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? SongData.NowTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
         }
 
         public static int[] NowRoll = new int[5], BalloonRemain = new int[5], BalloonList = new int[5];

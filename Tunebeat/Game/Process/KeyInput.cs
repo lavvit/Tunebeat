@@ -33,15 +33,15 @@ namespace Tunebeat
                                 break;
                             case 2:
                                 Create.File.Wave = Input.Text;
-                                if (!string.IsNullOrEmpty(Create.File.Wave)) Game.MainSong = new Sound($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.Wave}");
+                                if (!string.IsNullOrEmpty(Create.File.Wave)) Game.MainSong = new Sound($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Create.File.Wave}");
                                 break;
                             case 3:
                                 Create.File.BGImage = Input.Text;
-                                if (!string.IsNullOrEmpty(Create.File.BGImage)) Game.MainImage = new Texture($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.BGImage}");
+                                if (!string.IsNullOrEmpty(Create.File.BGImage)) Game.MainImage = new Texture($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Create.File.BGImage}");
                                 break;
                             case 4:
                                 Create.File.BGMovie = Input.Text;
-                                string path = $"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Create.File.BGMovie}";
+                                string path = $"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Create.File.BGMovie}";
                                 string mp4path = path.Replace("wmv", "mp4");
                                 if (PlayData.Data.PlayMovie) Game.MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
                                 break;
@@ -148,7 +148,7 @@ namespace Tunebeat
                     }
                     if (Key.IsPushed(EKey.Enter))
                     {
-                        if (!Game.MainTJA[0].Courses[Game.Course[0]].IsEnable)
+                        if (!SongData.NowTJA[0].Courses[Game.Course[0]].IsEnable)
                         {
                             Create.Save(Game.TJAPath);
                             Game.Reset();
@@ -700,7 +700,7 @@ namespace Tunebeat
                             Chip chip = Create.File.Bar[Game.Course[0]][Game.NowMeasure - 1].Chip[nownote];
                             if (Mouse.X >= x && Mouse.X < x + width)
                             {
-                                DrawString(1100, 500, $"Time:{chip.Time}", 0xffffff);
+                                Drawing.Text(1100, 500, $"Time:{chip.Time}", 0xffffff);
                                 if (Create.CommandLayer > 0)
                                 {
                                     if (Mouse.IsPushed(MouseButton.Left))
@@ -898,8 +898,8 @@ namespace Tunebeat
 
         public static void Process(bool isDon, bool isLeft, int player)
         {
-            Chip chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
+            Chip chip = GetNotes.GetNearNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
+            Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value - Game.Adjust[player]);
             if (Create.CreateMode)
             {
                 List<Chip> list = new List<Chip>();
@@ -948,16 +948,16 @@ namespace Tunebeat
             if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
             {
                 taiko[player][0] = SoundLoad.DON[player];
-                taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0) * 1.5;
+                taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0) * 1.5;
                 taiko[player][1] = SoundLoad.KA[player];
-                taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0) * 1.5;
+                taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0) * 1.5;
             }
             else
             {
                 taiko[player][0] = SoundLoad.Don[player];
-                taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
+                taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
                 taiko[player][1] = SoundLoad.Ka[player];
-                taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (Game.MainTJA[0].Header.SEVOL / 100.0);
+                taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
             }
 
             if (PlayData.Data.PreviewType == 3)
@@ -965,7 +965,7 @@ namespace Tunebeat
                 int count = 0;
                 for (int i = 0; i < 5; i++)
                 {
-                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    if (SongData.NowTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
                     {
                         if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
                         count++;

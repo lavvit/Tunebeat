@@ -24,15 +24,15 @@ namespace Tunebeat
 
             if (Game.IsReplay[0] && !string.IsNullOrEmpty(SongSelect.ReplayScore[0]))
             {
-                ReplayData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.ReplayScore[0]}.tbr");
+                ReplayData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.ReplayScore[0]}.tbr");
             }
             if (Game.Play2P && Game.IsReplay[1] && !string.IsNullOrEmpty(SongSelect.ReplayScore[1]))
             {
-                ReplayData2P = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.ReplayScore[1]}.tbr");
+                ReplayData2P = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(SongData.NowTJA[1].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[1].TJAPath)}.{(ECourse)Game.Course[1]}.{SongSelect.ReplayScore[1]}.tbr");
             }
             if (new BestScore(Game.TJAPath).ScoreData != null && !string.IsNullOrEmpty(new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore) && PlayData.Data.ShowGraph && PlayData.Data.ShowBestScore)
             {
-                BestData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.PlayerName}.{new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore}.tbr");
+                BestData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{PlayData.Data.PlayerName}.{new BestScore(Game.TJAPath).ScoreData.Score[Game.Course[0]].BestScore}.tbr");
             }
             if (new BestScore(Game.TJAPath).ScoreData != null)
             {
@@ -47,14 +47,14 @@ namespace Tunebeat
             }
             if (!string.IsNullOrEmpty(SongSelect.RivalScore) && PlayData.Data.ShowGraph && PlayData.Data.RivalType == (int)ERival.PlayScore)
             {
-                RivalData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(Game.MainTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.RivalScore}.tbr");
+                RivalData = ConfigJson.GetConfig<ReplayData>($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[0].TJAPath)}.{(ECourse)Game.Course[0]}.{SongSelect.RivalScore}.tbr");
             }
 
             if (ReplayData != null && ReplayData.Chip != null)
             {
                 foreach (ChipData chipdata in ReplayData.Chip)
                 {
-                    foreach (Chip chip in Game.MainTJA[0].Courses[Game.Course[0]].ListChip)
+                    foreach (Chip chip in SongData.NowTJA[0].Courses[Game.Course[0]].ListChip)
                     {
                         if (chipdata.Chip.Time == chip.Time && chip.EChip == EChip.Note)
                         {
@@ -67,7 +67,7 @@ namespace Tunebeat
             {
                 foreach (ChipData chipdata in ReplayData2P.Chip)
                 {
-                    foreach (Chip chip in Game.MainTJA[1].Courses[Game.Course[1]].ListChip)
+                    foreach (Chip chip in SongData.NowTJA[1].Courses[Game.Course[1]].ListChip)
                     {
                         if (chipdata.Chip.Time == chip.Time && chip.EChip == EChip.Note)
                         {
@@ -165,7 +165,7 @@ namespace Tunebeat
             ScoreData bestscore;
             bestscore = new ScoreData()
             {
-                Title = Game.MainTJA[player].Header.TITLE,
+                Title = SongData.NowTJA[player].Header.TITLE,
                 Score = scores,
             };
 
@@ -175,7 +175,7 @@ namespace Tunebeat
             List<ChipData> chipdata = player == 0 ? ChipData : ChipData2P;
             replaydata = new ReplayData()
             {
-                Title = Game.MainTJA[player].Header.TITLE,
+                Title = SongData.NowTJA[player].Header.TITLE,
                 Course = Game.Course[player],
                 Time = $"{time:G}",
                 Score = Score.EXScore[player],
@@ -193,9 +193,9 @@ namespace Tunebeat
                 Chip = chipdata
             };
 
-            ConfigJson.SaveConfig(bestscore, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
-            ConfigJson.SaveConfig(replaydata, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
-            TextLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
+            ConfigJson.SaveConfig(bestscore, $"{Path.GetDirectoryName(SongData.NowTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
+            ConfigJson.SaveConfig(replaydata, $"{Path.GetDirectoryName(SongData.NowTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
+            TextLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
             Saved = true;
         }
 
@@ -232,7 +232,7 @@ namespace Tunebeat
                 };
             }
             scores[course].PlayCount++;
-            if (string.IsNullOrEmpty(scores[course].BestScore) || !File.Exists($"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{scores[course].BestScore}.tbr"))
+            if (string.IsNullOrEmpty(scores[course].BestScore) || !File.Exists($"{Path.GetDirectoryName(SongData.NowTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{scores[course].BestScore}.tbr"))
             {
                 scores[course].BestScore = $"{Score.EXScore[player]}.{strTime}";
             }
@@ -240,7 +240,7 @@ namespace Tunebeat
             ScoreData bestscore;
             bestscore = new ScoreData()
             {
-                Title = Game.MainTJA[player].Header.TITLE,
+                Title = SongData.NowTJA[player].Header.TITLE,
                 Score = scores,
             };
             ReplayData replaydata;
@@ -249,7 +249,7 @@ namespace Tunebeat
             List<ChipData> chipdata = player == 0 ? ChipData : ChipData2P;
             replaydata = new ReplayData()
             {
-                Title = Game.MainTJA[player].Header.TITLE,
+                Title = SongData.NowTJA[player].Header.TITLE,
                 Course = Game.Course[player],
                 Time = $"{time:G}",
                 Score = Score.EXScore[player],
@@ -267,11 +267,11 @@ namespace Tunebeat
                 Chip = chipdata
             };
 
-            ConfigJson.SaveConfig(bestscore, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
-            if (Score.EXScore[player] > scores[course].Score || !File.Exists($"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{scores[course].BestScore}.tbr"))
+            ConfigJson.SaveConfig(bestscore, $"{Path.GetDirectoryName(SongData.NowTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{PlayData.Data.PlayerName}.tbs");
+            if (Score.EXScore[player] > scores[course].Score || !File.Exists($"{Path.GetDirectoryName(SongData.NowTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{scores[course].BestScore}.tbr"))
             {
-                ConfigJson.SaveConfig(replaydata, $"{Path.GetDirectoryName(Game.MainTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
-                TextLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(Game.MainTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
+                ConfigJson.SaveConfig(replaydata, $"{Path.GetDirectoryName(SongData.NowTJA[player].TJAPath)}/{Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr");
+                TextLog.Draw($"スコアが保存されました! : {Path.GetFileNameWithoutExtension(SongData.NowTJA[player].TJAPath)}.{(ECourse)Game.Course[player]}.{PlayData.Data.PlayerName}.{Score.EXScore[player]}.{strTime}.tbr", 2000);
                 Saved = true;
             }
         }

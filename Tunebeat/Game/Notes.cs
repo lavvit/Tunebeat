@@ -46,7 +46,7 @@ namespace Tunebeat
             {
                 for (int i = 0; i < 5; i++)
                 {
-                    if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                    if (SongData.NowTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
                     {
                         if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
                         DrawNotes(i);
@@ -72,25 +72,25 @@ namespace Tunebeat
             }
             else
             {
-                if (Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.Normal)
+                if (SongData.NowTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.Normal)
                 {
                     DrawNotes(0);
                 }
                 else
                 {
                     DrawNotes(0);
-                    //DrawNotesHBS(0, Game.MainTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
+                    //DrawNotesHBS(0, SongData.NowTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
                 }
                 if (Game.Play2P)
                 {
-                    if (Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
+                    if (SongData.NowTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
                     {
                         DrawNotes(1);
                     }
                     else
                     {
                         DrawNotes(1);
-                        //DrawNotesHBS(1, Game.MainTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.HBSCROLL ? true : false);
+                        //DrawNotesHBS(1, SongData.NowTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.HBSCROLL ? true : false);
                     }
                 }
 
@@ -161,16 +161,16 @@ namespace Tunebeat
 
 #if DEBUG
 
-            if (UseSudden[0]) DrawString(1700, 360, $"{Sudden[0]}", 0xffffff);
-            DrawString(1700, 400, $"{GreenNumber[0]}", 0x00ff00);
-            if (PlayData.Data.NormalHiSpeed[0]) DrawString(1600, 380, $"{NHSNumber[0] + 1}", 0x0000ff);
-            if (PlayData.Data.FloatingHiSpeed[0]) DrawString(1600, 360, "FHS", 0xffffff);
+            if (UseSudden[0]) Drawing.Text(1700, 360, $"{Sudden[0]}", 0xffffff);
+            Drawing.Text(1700, 400, $"{GreenNumber[0]}", 0x00ff00);
+            if (PlayData.Data.NormalHiSpeed[0]) Drawing.Text(1600, 380, $"{NHSNumber[0] + 1}", 0x0000ff);
+            if (PlayData.Data.FloatingHiSpeed[0]) Drawing.Text(1600, 360, "FHS", 0xffffff);
             if (Game.Play2P)
             {
-                if (UseSudden[1]) DrawString(1700, 620, $"{Sudden[1]}", 0xffffff);
-                DrawString(1700, 660, $"{GreenNumber[1]}", 0x00ff00);
-                if (PlayData.Data.NormalHiSpeed[1]) DrawString(1600, 640, $"{NHSNumber[1] + 1}", 0x0000ff);
-                if (PlayData.Data.FloatingHiSpeed[1]) DrawString(1600, 620, "FHS", 0xffffff);
+                if (UseSudden[1]) Drawing.Text(1700, 620, $"{Sudden[1]}", 0xffffff);
+                Drawing.Text(1700, 660, $"{GreenNumber[1]}", 0x00ff00);
+                if (PlayData.Data.NormalHiSpeed[1]) Drawing.Text(1600, 640, $"{NHSNumber[1] + 1}", 0x0000ff);
+                if (PlayData.Data.FloatingHiSpeed[1]) Drawing.Text(1600, 620, "FHS", 0xffffff);
             }
 #endif
 
@@ -182,7 +182,7 @@ namespace Tunebeat
             for (int i = 0; i < 2; i++)
             {
                 GreenNumber[i] = GetGreenNumber(i);
-                Chip chip = GetNotes.GetNowNote(Game.MainTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
+                Chip chip = GetNotes.GetNowNote(SongData.NowTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
                 if (chip != null && chip.RollCount == 0 && chip.ENote >= ENote.RollStart && chip.ENote != ENote.RollEnd)
                 {
                     ProcessNote.BalloonRemain[i] = ProcessNote.BalloonAmount(i);
@@ -222,7 +222,7 @@ namespace Tunebeat
                 TextureLoad.Game_Lane.Opacity = 1.0;
             }
             TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
-            Chip nchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            Chip nchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
             if (Create.CreateMode) nchip = GetNotes.GetNowNote(Create.ListAllChip, Game.MainTimer.Value, true);
             if (nchip != null && nchip.IsGogo)
             {
@@ -245,42 +245,42 @@ namespace Tunebeat
                 {
                     float width = (1920 - (NotesP[0].X - 22)) / (float)Create.InputType;
                     float x;
-                    uint[] color = new uint[2];
+                    int[] color = new int[2];
                     switch (Create.InputType)
                     {
                         case 4:
-                            color = new uint[2] { 0xff0000, 0x0000ff };
+                            color = new int[2] { 0xff0000, 0x0000ff };
                             break;
                         case 8:
-                            color = new uint[2] { 0xff0000, 0x0000ff };
+                            color = new int[2] { 0xff0000, 0x0000ff };
                             break;
                         case 12:
-                            color = new uint[3] { 0xff0000, 0x00ff00, 0x0000ff };
+                            color = new int[3] { 0xff0000, 0x00ff00, 0x0000ff };
                             break;
                         case 16:
-                            color = new uint[4] { 0xff0000, 0xffff00, 0x0000ff, 0xffff00 };
+                            color = new int[4] { 0xff0000, 0xffff00, 0x0000ff, 0xffff00 };
                             break;
                         case 20:
-                            color = new uint[5] { 0xff0000, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff };
+                            color = new int[5] { 0xff0000, 0xffff00, 0x00ff00, 0x00ffff, 0x0000ff };
                             break;
                         case 24:
-                            color = new uint[6] { 0xff0000, 0x00ffff, 0x00ff00, 0x0000ff, 0x00ff00, 0x00ffff };
+                            color = new int[6] { 0xff0000, 0x00ffff, 0x00ff00, 0x0000ff, 0x00ff00, 0x00ffff };
                             break;
                         case 32:
-                            color = new uint[8] { 0xff0000, 0xff8000, 0xffff00, 0xff8000, 0x0000ff, 0xff8000, 0xffff00, 0xff8000 };
+                            color = new int[8] { 0xff0000, 0xff8000, 0xffff00, 0xff8000, 0x0000ff, 0xff8000, 0xffff00, 0xff8000 };
                             break;
                         case 48:
-                            color = new uint[12] { 0xff0000, 0xff00ff, 0x00ffff, 0xffff00, 0x00ff00, 0xff00ff, 0x0000ff, 0xff00ff, 0x00ff00, 0xffff00, 0x00ffff, 0xff00ff };
+                            color = new int[12] { 0xff0000, 0xff00ff, 0x00ffff, 0xffff00, 0x00ff00, 0xff00ff, 0x0000ff, 0xff00ff, 0x00ff00, 0xffff00, 0x00ffff, 0xff00ff };
                             break;
                     }
                     SetDrawBlendMode(DX_BLENDMODE_ALPHA, 64);
                     for (int i = 0; i < Create.InputType; i++)
                     {
                         x = NotesP[0].X - 22 + i * width;
-                        DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, color[i % (Create.InputType == 4 ? 2 : Create.InputType / 4)], TRUE);
+                        Drawing.Box(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, color[i % (Create.InputType == 4 ? 2 : Create.InputType / 4)]);
                         if (Mouse.X >= x && Mouse.X < x + width && Mouse.Y >= NotesP[0].Y && Mouse.Y < NotesP[0].Y + 195)
                         {
-                            DrawBoxAA(x, NotesP[0].Y, x + width, NotesP[0].Y + 195, 0xffffff, TRUE);
+                            Drawing.Box(x, NotesP[0].Y, x + width, NotesP[0].Y + 195);
                         }
                     }
                     SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
@@ -484,9 +484,9 @@ namespace Tunebeat
                 #region Normal
                 TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
-                for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+                for (int i = 0; i < SongData.NowTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
                 {
-                    Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                    Chip chip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip[i];
                     double time = chip.Time - Game.MainTimer.Value;
                     float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                     if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715 && Game.MainTimer.Value > chip.Time - 30000)
@@ -505,7 +505,7 @@ namespace Tunebeat
                     ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
                 }
                 //連打のタイマー　なんでここ？？
-                Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+                Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
                 ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
                 for (int i = 0; i < 5; i++)
                 {
@@ -520,9 +520,9 @@ namespace Tunebeat
                     ProcessAuto.RollTimer[player].Reset();
                 }
 
-                for (int i = Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
+                for (int i = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip.Count - 1; i >= 0; i--)
                 {
-                    Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                    Chip chip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip[i];
                     float x = (float)NotesX(chip.Time, Game.MainTimer.Value + Game.TimeRemain, chip.Bpm, chip.Scroll, player);
                     if (chip.EChip == EChip.Note && x <= 1500 && !chip.IsHit && (chip.Sudden[0] == 0.0 || Game.MainTimer.Value + Game.TimeRemain > chip.Time - chip.Sudden[0]) && (PlayData.Data.PreviewType == 3 || (player < 2 && !PlayData.Data.Stelth[player])))
                     {
@@ -591,9 +591,9 @@ namespace Tunebeat
 
             TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
-            for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+            for (int i = 0; i < SongData.NowTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
             {
-                Chip chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                Chip chip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip[i];
                 double time = chip.Time - Game.MainTimer.Value;
                 //float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
                 //if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
@@ -607,7 +607,7 @@ namespace Tunebeat
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
             }
             //連打のタイマー　なんでここ？？
-            Chip nowchip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
             ERoll roll = nowchip != null ? ProcessNote.RollState(nowchip) : ERoll.None;
             for (int i = 0; i < 5; i++)
             {
@@ -628,9 +628,9 @@ namespace Tunebeat
 
         public static int GetGreenNumber(int player, double plusminus = 0)
         {
-            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            if (chip == null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
+            Chip chip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            if (chip == null) chip = GetNotes.GetNearNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            double bpm = chip != null ? chip.Bpm : SongData.NowTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll * (Scroll[player] + plusminus) : (Scroll[player] + plusminus);
             int ms = scroll > 0 ? Showms[0] : Showms[1];
             int sudden = UseSudden[player] ? Sudden[player] : 0;
@@ -641,15 +641,15 @@ namespace Tunebeat
         public static void SetNHSScroll(int player, bool isLoad = false)
         {
             Chip chip = new Chip();
-            for (int i = 0; i < Game.MainTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
+            for (int i = 0; i < SongData.NowTJA[player].Courses[Game.Course[player]].ListChip.Count; i++)
             {
-                if (Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i].ENote >= ENote.Don)
+                if (SongData.NowTJA[player].Courses[Game.Course[player]].ListChip[i].ENote >= ENote.Don)
                 {
-                    chip = Game.MainTJA[player].Courses[Game.Course[player]].ListChip[i];
+                    chip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip[i];
                     break;
                 }
             }
-            double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
+            double bpm = chip != null ? chip.Bpm : SongData.NowTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll : 1.0;
             double prescroll = Scroll[player];
             Scroll[player] = Math.Round(Showms[0] / (NHSTargetGNum[NHSNumber[player]] * bpm * scroll * 2), 2, MidpointRounding.AwayFromZero);
@@ -660,9 +660,9 @@ namespace Tunebeat
 
         public static void SetScroll(int player, bool isLoad = false)
         {
-            Chip chip = GetNotes.GetNowNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            if (chip == null) chip = GetNotes.GetNearNote(Game.MainTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
-            double bpm = chip != null ? chip.Bpm : Game.MainTJA[player].Header.BPM;
+            Chip chip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            if (chip == null) chip = GetNotes.GetNearNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
+            double bpm = chip != null ? chip.Bpm : SongData.NowTJA[player].Header.BPM;
             double scroll = chip != null ? chip.Scroll : 1.0;
             int sudden = UseSudden[player] ? Sudden[player] : 0;
             double suddenrate = 1000.0 / (1000 - sudden);
@@ -720,7 +720,7 @@ namespace Tunebeat
                     int count = 0;
                     for (int i = 0; i < 5; i++)
                     {
-                        if (Game.MainTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
+                        if (SongData.NowTJA[i].Courses[Game.Course[i]].ListChip.Count > 0)
                         {
                             if (i > 0 && Game.Course[i] == Game.Course[i - 1]) break;
                             count++;

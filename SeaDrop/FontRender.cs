@@ -100,6 +100,22 @@ namespace SeaDrop
         {
             return GetTexture(text, fontName, size, edge, backColor, foreColor, interval, space);
         }
+        /// <summary>
+        /// フォント描画用の画像を作成します。(縁付き)
+        /// </summary>
+        /// <param name="text">テキスト</param>
+        /// <param name="fontName">使用するフォント名</param>
+        /// <param name="size">大きさ</param>
+        /// <param name="edge">縁の広さ</param>
+        /// <param name="interval">間隔</param>
+        /// <param name="foreColor">フォントの色</param>
+        /// <param name="backColor">縁の色</param>
+        /// <param name="space">余白</param>
+        /// <returns></returns>
+        public static Texture GetTexture(string text, int size, int edge, int foreColor, int backColor, string fontName = "", int interval = 0, int space = 16)
+        {
+            return GetTexture(text, fontName, size, edge, Color.FromArgb(backColor), Color.FromArgb(foreColor), interval, space);
+        }
         #endregion
         /// <summary>
         /// フォント描画用の画像を作成します。

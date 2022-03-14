@@ -38,37 +38,37 @@ namespace Tunebeat
         }
         public override void Draw()
         {
-            DrawString(80, 200 + 40 * Layer, ">", 0xff0000);
-            DrawString(100, 200, "System", Layer == (int)ELayer.System ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
-            DrawString(100, 240, "Play TJA", Layer == (int)ELayer.PlayTJA ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
-            DrawString(100, 280, "Play TJA(2P)", Layer == (int)ELayer.PlayTJA2P ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
-            DrawString(100, 320, "Play BMS", Layer == (int)ELayer.PlayBMS ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
-            DrawString(100, 360, "Play BMS(2P)", Layer == (int)ELayer.PlayBMS2P ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
-            DrawString(100, 400, "KEY CONFIG", Layer == (int)ELayer.KeyConfig ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
-            DrawString(100, 440, "Back to Menu", Layer == (int)ELayer.Back ? 0xff0000 : (InLayer ? 0x808080 : (uint)0xffffff));
+            Drawing.Text(80, 200 + 40 * Layer, ">", 0xff0000);
+            Drawing.Text(100, 200, "System", Layer == (int)ELayer.System ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
+            Drawing.Text(100, 240, "Play TJA", Layer == (int)ELayer.PlayTJA ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
+            Drawing.Text(100, 280, "Play TJA(2P)", Layer == (int)ELayer.PlayTJA2P ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
+            Drawing.Text(100, 320, "Play BMS", Layer == (int)ELayer.PlayBMS ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
+            Drawing.Text(100, 360, "Play BMS(2P)", Layer == (int)ELayer.PlayBMS2P ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
+            Drawing.Text(100, 400, "KEY CONFIG", Layer == (int)ELayer.KeyConfig ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
+            Drawing.Text(100, 440, "Back to Menu", Layer == (int)ELayer.Back ? 0xff0000 : (InLayer ? 0x808080 : 0xffffff));
 
             if (OptionList != null)
             {
                 for (int i = 0; i < OptionList.Count; i++)
                 {
                     Option list = OptionList[i];
-                    DrawString(300, 200 + 20 * i, $"{list.Name}", !InLayer ? 0x808080 : (Cursor == i ? 0xff0000 : (uint)0xffffff));
+                    Drawing.Text(300, 200 + 20 * i, $"{list.Name}", !InLayer ? 0x808080 : (Cursor == i ? 0xff0000 : 0xffffff));
                     if (InLayer && Cursor == i)
                     {
-                        DrawString(280, 200 + 20 * i, ">", 0xff0000);
-                        DrawString(600, 200, $"{list.Info}", 0xffffff);
+                        Drawing.Text(280, 200 + 20 * i, ">", 0xff0000);
+                        Drawing.Text(600, 200, $"{list.Info}", 0xffffff);
                         if (list.objAmount() != null)
                         {
-                            DrawString(600, 240, $"Now:{list.objAmount()}", Selecting && (list.Type < OptionType.String || list.Type >= OptionType.Key) ? 0xffff00 : (uint)0xffffff);
+                            Drawing.Text(600, 240, $"Now:{list.objAmount()}", Selecting && (list.Type < OptionType.String || list.Type >= OptionType.Key) ? 0xffff00 : 0xffffff);
                             if (Input.IsEnable)
                             {
-                                DrawString(632 + GetDrawStringWidth(Input.Text, Input.Position), 240, "|", 0xffff00);
+                                Drawing.Text(632 + Drawing.TextWidth(Input.Text, Input.Position), 240, "|", 0xffff00);
                             }
                         }
 
-                        if ((ELayer)Layer == ELayer.System && i >= 1 && i <= 3)
+                        if ((ELayer)Layer == ELayer.System && i >= 6 && i <= 8)
                         {
-                            DrawCircleAA(1450, 640, 200, 256, GetColor(OptionList[1].GetIndex(), OptionList[2].GetIndex(), OptionList[3].GetIndex()), TRUE);
+                            Drawing.Circle(1450, 640, 200, Drawing.Color(OptionList[6].GetIndex(), OptionList[7].GetIndex(), OptionList[8].GetIndex()));
                         }
                     }
                 }
@@ -76,11 +76,11 @@ namespace Tunebeat
             TextDebug.Update();
 
             #if DEBUG
-            DrawString(0, 0, $"Layer:{Layer}", 0xffffff);
-            if (InLayer) DrawString(0, 20, $"Cursor:{Cursor}", 0xffffff);
-            if (Selecting) DrawString(0, 60, "Selecting...", 0xffffff);
+            Drawing.Text(0, 0, $"Layer:{Layer}", 0xffffff);
+            if (InLayer) Drawing.Text(0, 20, $"Cursor:{Cursor}", 0xffffff);
+            if (Selecting) Drawing.Text(0, 60, "Selecting...", 0xffffff);
 
-            DrawString(0, 40, $"ListCount:{OptionList.Count}", 0xffffff);
+            Drawing.Text(0, 40, $"ListCount:{OptionList.Count}", 0xffffff);
             #endif
             base.Draw();
         }
@@ -185,7 +185,7 @@ namespace Tunebeat
                             {
                                 OptionList[Cursor].Enter();
                                 if (OptionList[Cursor].Name == "PlayFolder")
-                                    SongSelect.NowSongNumber = 0;
+                                    SongLoad.Init();
                             }
                             UpdateConfig();
                         }
@@ -271,7 +271,6 @@ namespace Tunebeat
                     SoundName = new OptionString("SoundName", PlayData.Data.SoundName, "使用する効果音のフォルダを変更します。"); OptionList.Add(SoundName);
                     BGMName = new OptionString("BGMName", PlayData.Data.BGMName, "使用するBGMのフォルダを変更します。"); OptionList.Add(BGMName);
                     PlayFolder = new OptionStrList("PlayFolder", PlayData.Data.PlayFolder, "読み込むフォルダを変更します。(セミコロン(;)で区切ることにより複数のパスを指定できます。)"); OptionList.Add(PlayFolder);
-                    FullLoad = new OptionBool("FullLoad", PlayData.Data.FullLoad, "曲データ全てを読み込みます。OFFの場合フォルダを開いたときに読み込みます。"); OptionList.Add(FullLoad);
                     SkinColorR = new OptionInt("SkinColor - R", PlayData.Data.SkinColor[0], 0, 255, "スキンの色を変更します。(Red)"); OptionList.Add(SkinColorR);
                     SkinColorG = new OptionInt("SkinColor - G", PlayData.Data.SkinColor[1], 0, 255, "スキンの色を変更します。(Green)"); OptionList.Add(SkinColorG);
                     SkinColorB = new OptionInt("SkinColor - B", PlayData.Data.SkinColor[2], 0, 255, "スキンの色を変更します。(Blue)"); OptionList.Add(SkinColorB);
@@ -446,7 +445,6 @@ namespace Tunebeat
                     PlayData.Data.FontName = FontName.Text;
                     PlayData.Data.VSync = VSync.ON;
                     PlayData.Data.PlayFolder = PlayFolder.Text;
-                    PlayData.Data.FullLoad = FullLoad.ON;
                     PlayData.Data.SkinColor = new int[3] { SkinColorR.Value, SkinColorG.Value, SkinColorB.Value };
                     PlayData.Data.ShowImage = ShowImage.ON;
                     PlayData.Data.PlayMovie = PlayMovie.ON;
@@ -575,7 +573,7 @@ namespace Tunebeat
             Back
         }
         public static Option  Back;
-        public static OptionBool FullScreen, PreviewSong, FontRendering, VSync, FullLoad, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
+        public static OptionBool FullScreen, PreviewSong, FontRendering, VSync, IsPlay2P, ShowImage, PlayMovie, QuickStart, ShowResultScreen, PlayList, SaveScore, ShowGraph, ShowBestScore, ChangeSESpeed, Random, Mirror, Stelth, Random2P, Mirror2P, Stelth2P,
             FloatingHiSpeed, NormalHiSpeed, UseSudden, FloatingHiSpeed2P, NormalHiSpeed2P, UseSudden2P, Auto, Auto2P, Just, AutoAdjust, AutoAdjust2P;
         public static OptionInt SkinColorR, SkinColorG, SkinColorB, SystemBGM, GameBGM, SE, RandomRate, GreenNumber, NHSSpeed, SuddenNumber, GreenNumber2P, NHSSpeed2P, SuddenNumber2P,
             AutoRoll, Hazard, Hazard2P;
