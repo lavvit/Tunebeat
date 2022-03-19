@@ -495,14 +495,15 @@ namespace Tunebeat
                     }
 
                     //オートの処理呼び出し
-                    ProcessAuto.Update(PlayData.Data.PreviewType == 3 ? true : Game.IsAuto[player], chip, Game.MainTimer.Value, player);
-                    if (PlayData.Data.PreviewType < 3)
-                    {
-                        ProcessReplay.Update(Game.IsReplay[player], player);
-                        ProcessReplay.UnderUpdate();
-                    }
+                    if (chip.Time - Game.MainTimer.Value < 100) ProcessAuto.Update(PlayData.Data.PreviewType == 3 ? true : Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                    
                     //ノーツが通り過ぎた時の処理
                     ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
+                }
+                if (PlayData.Data.PreviewType < 3)
+                {
+                    ProcessReplay.Update(Game.IsReplay[player], player);
+                    ProcessReplay.UnderUpdate();
                 }
                 //連打のタイマー　なんでここ？？
                 Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);

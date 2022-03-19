@@ -10,7 +10,8 @@ namespace TJAParse
     {
         public ENote ENote;
         public EChip EChip;
-        public double Time;
+        public double Time;//判定
+        //public double DrawTime;//描画
         public double Bpm;
         public double Scroll;
         public double Measure;
@@ -19,6 +20,7 @@ namespace TJAParse
         public bool IsGogo;
         public bool IsMiss;
         public bool IsShow;
+        //public bool IsDummy;
         public bool CanShow;
         public Chip RollEnd;
         public string Lyric;

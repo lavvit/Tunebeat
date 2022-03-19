@@ -17,233 +17,218 @@ namespace TJAParse
         public List<Chip> ListChip = new List<Chip>();
         public bool IsEnable = false;
 
-        public static int NowCourse;
+        public static int NowCourse = (int)ECourse.Oni;
         public static int MeasureCount;
 
         public static void Load(string str, Course[] courses, Header header, double playspeed, bool FullLoad = true)
         {
             if (str.Length <= 0) return;
             var split = str.Split(':');
-            if (FullLoad)
+            if (split.Length >= 2)
             {
-                if (split.Length >= 2)
+                HeaderLoad(split, courses, FullLoad);
+            }
+            else
+            {
+                if (str.StartsWith("#"))
                 {
-                    switch (split[0])
-                    {
-                        case "COURSE":
-                            NowCourse = GetCourse(split[1]);
-                            courses[NowCourse].COURSE = (ECourse)NowCourse;
-                            break;
-                        case "LEVEL":
-                            courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
-                            break;
-                        case "BALLOON":
-                            var splitballoon = split[1].Split(',');
-                            foreach (var sb in splitballoon)
-                                if (sb != "" && splitballoon.Length >= 1)
-                                    courses[NowCourse].BALLOON.Add(int.Parse(sb));
-                            break;
-                        case "TOTAL":
-                            courses[NowCourse].TOTAL = double.Parse(split[1]);
-                            break;
-                    }
+                    CommandLoad(str, courses, header, playspeed, FullLoad);
                 }
                 else
                 {
-                    if (str.StartsWith("#"))
-                    {
-                        if (str.StartsWith("#BMSCROLL"))
-                        {
-                            courses[NowCourse].ScrollType = EScroll.BMSCROLL;
-                        }
-                        else if (str.StartsWith("#HBSCROLL"))
-                        {
-                            courses[NowCourse].ScrollType = EScroll.HBSCROLL;
-                        }
-                        else if (str.StartsWith("#START"))
-                        {
-                            NowInfo.StartParse = true;
-                            NowInfo.Time = (long)(header.OFFSET * -1000.0);
-                            NowInfo.Scroll = 1.0;
-                            NowInfo.Bpm = header.BPM;
-                            NowInfo.Measure = 1.0;
-                            NowInfo.MeasureCount = 0;
-                            NowInfo.ShowBarLine = true;
-                            NowInfo.AddMeasure = true;
-                            NowInfo.RollBegin = null;
-                            NowInfo.LyricText = null;
-                            NowInfo.Sudden = new double[2] { 0.0, 0.0 };
-                        }
-                        else if (str.StartsWith("#END"))
-                        {
-                            NowInfo.StartParse = false;
-                        }
-                        else if (str.StartsWith("#SCROLL"))
-                        {
-                            NowInfo.Scroll = double.Parse(str.Replace("#SCROLL", "").Trim());
-                        }
-                        else if (str.StartsWith("#BPMCHANGE"))
-                        {
-                            NowInfo.Bpm = double.Parse(str.Replace("#BPMCHANGE", "").Trim()) * playspeed;
-                        }
-                        else if (str.StartsWith("#DELAY"))
-                        {
-                            NowInfo.Time += double.Parse(str.Replace("#DELAY", "").Trim()) * 1000.0;
-                        }
-                        else if (str.StartsWith("#MEASURE"))
-                        {
-                            var SplitSlash = str.Replace("#MEASURE", "").Trim().Split('/');
-                            if (SplitSlash.Length > 1) NowInfo.Measure = double.Parse(SplitSlash[1]) / double.Parse(SplitSlash[0]);
-                        }
-                        else if (str.StartsWith("#BARLINEON"))
-                        {
-                            NowInfo.ShowBarLine = true;
-                        }
-                        else if (str.StartsWith("#BARLINEOFF"))
-                        {
-                            NowInfo.ShowBarLine = false;
-                        }
-                        else if (str.StartsWith("#GOGOSTART"))
-                        {
-                            NowInfo.IsGogo = true;
-                        }
-                        else if (str.StartsWith("#GOGOEND"))
-                        {
-                            NowInfo.IsGogo = false;
-                        }
-                        else if (str.StartsWith("#LYRIC"))
-                        {
-                            NowInfo.LyricText = str.Replace("#LYRIC", "").Trim();
-                        }
-                        else if (str.StartsWith("#SUDDEN"))
-                        {
-                            var SplitSlash = str.Replace("#SUDDEN", "").Trim().Split(' ');
-                            if (SplitSlash.Length > 1) NowInfo.Sudden = new double[2] { double.Parse(SplitSlash[0]) * 1000.0, double.Parse(SplitSlash[1]) * 1000.0 };
-                            else NowInfo.Sudden = new double[2] { double.Parse(SplitSlash[0]) * 1000.0, double.Parse(SplitSlash[0]) * 1000.0 };
-                        }
-                    }
-                    else
-                    {
-
-                        if (!((str[0] >= '0' && str[0] <= '9') || (str[str.Length - 1] >= '0' && str[str.Length - 1] <= '9') || str[0] == ',' || str[str.Length - 1] == ',')) return;
-                        if (!NowInfo.StartParse) return;
-
-                        if (NowInfo.AddMeasure)
-                        {
-                            AddChip(NowInfo.Time, ENote.Space, EChip.Measure, courses[NowCourse].ListChip, ref courses[NowCourse], NowInfo.ShowBarLine);
-                            NowInfo.AddMeasure = false;
-                        }
-
-                        for (int i = 0; i < str.Length; i++)
-                        {
-                            var num = str[i];
-                            if (num >= '0' && num <= '9')
-                            {
-                                courses[NowCourse].IsEnable = true;
-                                break;
-                            }
-                        }
-                        for (int i = 0; i < str.Length; i++)
-                        {
-                            var num = str[i];
-                            if (num == ',')
-                            {
-                                NowInfo.MeasureCount++;
-                                NowInfo.AddMeasure = true;
-                            }
-                            if (num >= '0' && num <= '9')
-                            {
-                                Chip chip = new Chip()
-                                {
-                                    Time = NowInfo.Time,
-                                    Bpm = NowInfo.Bpm,
-                                    Scroll = NowInfo.Scroll,
-                                    Measure = NowInfo.Measure,
-                                    IsGogo = NowInfo.IsGogo,
-                                    EChip = EChip.Note,
-                                    ENote = (ENote)int.Parse(num.ToString()),
-                                    CanShow = true,
-                                    Lyric = NowInfo.LyricText,
-                                    Sudden = NowInfo.Sudden
-                                };
-
-                                if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)
-                                {
-                                    if (NowInfo.RollBegin == null)
-                                        NowInfo.RollBegin = chip;
-                                }
-                                if (chip.EChip == EChip.Note && chip.ENote == ENote.RollEnd)
-                                {
-                                    if (NowInfo.RollBegin != null)
-                                    {
-                                        NowInfo.RollBegin.RollEnd = chip;
-                                        chip.RollEnd = chip;
-                                    }
-                                    NowInfo.RollBegin = null;
-                                }
-
-                                if (chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
-                                    courses[NowCourse].TotalNotes++;
-
-                                //if (chip.ENote != ENote.Space)
-                                courses[NowCourse].ListChip.Add(chip);
-
-                                NowInfo.Time += 15000d / NowInfo.Bpm / NowInfo.Measure * (16d / courses[NowCourse].ListMeasureCount[NowInfo.MeasureCount < courses[NowCourse].ListMeasureCount.Count ? NowInfo.MeasureCount : courses[NowCourse].ListMeasureCount.Count - 1]);
-                            }
-                        }
-                    }
+                    ChipLoad(str, courses, FullLoad);
                 }
+            }
+            if (FullLoad && courses[NowCourse].ListChip != null)
+            {
                 foreach (Chip chip in courses[NowCourse].ListChip)
                 {
                     chip.Time = Math.Round(chip.Time, 4, MidpointRounding.AwayFromZero);
                 }
             }
-            else
+        }
+
+        public static void HeaderLoad(string[] split, Course[] courses, bool FullLoad)
+        {
+            switch (split[0])
             {
-                if (split.Length >= 2)
+                case "COURSE":
+                    NowCourse = GetCourse(split[1]);
+                    courses[NowCourse].COURSE = (ECourse)NowCourse;
+                    break;
+                case "LEVEL":
+                    courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
+                    break;
+            }
+            if (FullLoad)
+            {
+                switch (split[0])
                 {
-                    switch (split[0])
-                    {
-                        case "COURSE":
-                            NowCourse = GetCourse(split[1]);
-                            courses[NowCourse].COURSE = (ECourse)NowCourse;
-                            break;
-                        case "LEVEL":
-                            courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
-                            break;
-                    }
+                    case "BALLOON":
+                        var splitballoon = split[1].Split(',');
+                        foreach (var sb in splitballoon)
+                            if (sb != "" && splitballoon.Length >= 1)
+                                courses[NowCourse].BALLOON.Add(int.Parse(sb));
+                        break;
+                    case "TOTAL":
+                        courses[NowCourse].TOTAL = double.Parse(split[1]);
+                        break;
                 }
-                else
+            }
+        }
+        public static void CommandLoad(string str, Course[] courses, Header header, double playspeed, bool FullLoad)
+        {
+            if (str.StartsWith("#BMSCROLL"))
+            {
+                courses[NowCourse].ScrollType = EScroll.BMSCROLL;
+            }
+            else if (str.StartsWith("#HBSCROLL"))
+            {
+                courses[NowCourse].ScrollType = EScroll.HBSCROLL;
+            }
+            if (FullLoad)
+            {
+                if (str.StartsWith("#START"))
                 {
-                    if (str.StartsWith("#"))
+                    NowInfo.StartParse = true;
+                    NowInfo.Time = (long)(header.OFFSET * -1000.0);
+                    NowInfo.Scroll = 1.0;
+                    NowInfo.Bpm = header.BPM;
+                    NowInfo.Measure = 1.0;
+                    NowInfo.MeasureCount = 0;
+                    NowInfo.ShowBarLine = true;
+                    NowInfo.AddMeasure = true;
+                    NowInfo.RollBegin = null;
+                    NowInfo.LyricText = null;
+                    NowInfo.Sudden = new double[2] { 0.0, 0.0 };
+                }
+                else if (str.StartsWith("#END"))
+                {
+                    NowInfo.StartParse = false;
+                }
+                else if (str.StartsWith("#SCROLL"))
+                {
+                    NowInfo.Scroll = double.Parse(str.Replace("#SCROLL", "").Trim());
+                }
+                else if (str.StartsWith("#BPMCHANGE"))
+                {
+                    NowInfo.Bpm = double.Parse(str.Replace("#BPMCHANGE", "").Trim()) * playspeed;
+                }
+                else if (str.StartsWith("#DELAY"))
+                {
+                    NowInfo.Time += double.Parse(str.Replace("#DELAY", "").Trim()) * 1000.0;
+                }
+                else if (str.StartsWith("#MEASURE"))
+                {
+                    var SplitSlash = str.Replace("#MEASURE", "").Trim().Split('/');
+                    if (SplitSlash.Length > 1) NowInfo.Measure = double.Parse(SplitSlash[1]) / double.Parse(SplitSlash[0]);
+                }
+                else if (str.StartsWith("#BARLINEON"))
+                {
+                    NowInfo.ShowBarLine = true;
+                }
+                else if (str.StartsWith("#BARLINEOFF"))
+                {
+                    NowInfo.ShowBarLine = false;
+                }
+                else if (str.StartsWith("#GOGOSTART"))
+                {
+                    NowInfo.IsGogo = true;
+                }
+                else if (str.StartsWith("#GOGOEND"))
+                {
+                    NowInfo.IsGogo = false;
+                }
+                else if (str.StartsWith("#LYRIC"))
+                {
+                    NowInfo.LyricText = str.Replace("#LYRIC", "").Trim();
+                }
+                else if (str.StartsWith("#SUDDEN"))
+                {
+                    var SplitSlash = str.Replace("#SUDDEN", "").Trim().Split(' ');
+                    if (SplitSlash.Length > 1) NowInfo.Sudden = new double[2] { double.Parse(SplitSlash[0]) * 1000.0, double.Parse(SplitSlash[1]) * 1000.0 };
+                    else NowInfo.Sudden = new double[2] { double.Parse(SplitSlash[0]) * 1000.0, double.Parse(SplitSlash[0]) * 1000.0 };
+                }
+            }
+        }
+        public static void ChipLoad(string str, Course[] courses, bool FullLoad)
+        {
+            if (FullLoad)
+            {
+                if (!((str[0] >= '0' && str[0] <= '9') || (str[str.Length - 1] >= '0' && str[str.Length - 1] <= '9') || str[0] == ',' || str[str.Length - 1] == ',')) return;
+                if (!NowInfo.StartParse) return;
+
+                if (NowInfo.AddMeasure)
+                {
+                    AddChip(NowInfo.Time, ENote.Space, EChip.Measure, ref courses[NowCourse], NowInfo.ShowBarLine);
+                    NowInfo.AddMeasure = false;
+                }
+            }
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                var num = str[i];
+                if (num >= '0' && num <= '9')
+                {
+                    courses[NowCourse].IsEnable = true;
+                    break;
+                }
+            }
+            for (int i = 0; i < str.Length; i++)
+            {
+                var num = str[i];
+                if (num == ',')
+                {
+                    NowInfo.MeasureCount++;
+                    NowInfo.AddMeasure = true;
+                }
+                if (num >= '0' && num <= '9')
+                {
+                    if (FullLoad)
                     {
-                        if (str.StartsWith("#BMSCROLL"))
+                        Chip chip = new Chip()
                         {
-                            courses[NowCourse].ScrollType = EScroll.BMSCROLL;
-                        }
-                        else if (str.StartsWith("#HBSCROLL"))
+                            Time = NowInfo.Time,
+                            Bpm = NowInfo.Bpm,
+                            Scroll = NowInfo.Scroll,
+                            Measure = NowInfo.Measure,
+                            IsGogo = NowInfo.IsGogo,
+                            EChip = EChip.Note,
+                            ENote = (ENote)int.Parse(num.ToString()),
+                            CanShow = true,
+                            Lyric = NowInfo.LyricText,
+                            Sudden = NowInfo.Sudden
+                        };
+
+                        if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)
                         {
-                            courses[NowCourse].ScrollType = EScroll.HBSCROLL;
+                            if (NowInfo.RollBegin == null)
+                                NowInfo.RollBegin = chip;
                         }
+                        if (chip.EChip == EChip.Note && chip.ENote == ENote.RollEnd)
+                        {
+                            if (NowInfo.RollBegin != null)
+                            {
+                                NowInfo.RollBegin.RollEnd = chip;
+                                chip.RollEnd = chip;
+                            }
+                            NowInfo.RollBegin = null;
+                        }
+
+                        if (chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
+                            courses[NowCourse].TotalNotes++;
+
+                        //if (chip.ENote != ENote.Space)
+                        courses[NowCourse].ListChip.Add(chip);
+
+                        int measure = NowInfo.MeasureCount < courses[NowCourse].ListMeasureCount.Count ? NowInfo.MeasureCount : courses[NowCourse].ListMeasureCount.Count - 1;
+                        NowInfo.Time += 15000d / NowInfo.Bpm / NowInfo.Measure * (16d / courses[NowCourse].ListMeasureCount[measure]);
                     }
                     else
                     {
-                        for (int i = 0; i < str.Length; i++)
+                        if (int.Parse(num.ToString()) >= (int)ENote.Don && int.Parse(num.ToString()) <= (int)ENote.KA)
                         {
-                            var num = str[i];
-                            if (num >= '0' && num <= '9')
-                            {
-                                courses[NowCourse].IsEnable = true;
-                                break;
-                            }
-                        }
-                        for (int i = 0; i < str.Length; i++)
-                        {
-                            var num = str[i];
-                            if (num >= '0' && num <= '9' && int.Parse(num.ToString()) >= (int)ENote.Don && int.Parse(num.ToString()) <= (int)ENote.KA)
-                            {
-                                courses[NowCourse].TotalNotes++;
-                            }
+                            courses[NowCourse].TotalNotes++;
                         }
                     }
                 }
@@ -366,13 +351,7 @@ namespace TJAParse
                         courses[NowCourse].COURSE = (ECourse)NowCourse;
                         break;
                     case "LEVEL":
-                        courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) ? int.Parse(split[1]) : 0;
-                        break;
-                    case "BALLOON":
-                        var splitballoon = split[1].Split(',');
-                        foreach (var sb in splitballoon)
-                            if (sb != "" && splitballoon.Length >= 1)
-                                courses[NowCourse].BALLOON.Add(int.Parse(sb));
+                        courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
                         break;
                 }
             }
@@ -412,7 +391,7 @@ namespace TJAParse
             }
         }
 
-        public static void AddChip(double time, ENote note, EChip channel, List<Chip> listChip, ref Course course, bool isShow = true)
+        public static void AddChip(double time, ENote note, EChip channel, ref Course course, bool isShow = true)
         {
             var Chip = new Chip()
             {

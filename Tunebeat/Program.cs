@@ -53,6 +53,7 @@ namespace Tunebeat
             SeaDrop.SeaDrop.Init();
 
             SceneChange(new Title());
+            FPS = new FPSCount();
         }
 
         static void Update()
@@ -73,6 +74,11 @@ namespace Tunebeat
                     SaveDrawScreenToPNG(0, 0, 1920, 1080, $@"Capture\{strTime}.png");
                     TextLog.Draw($"スクリーンショットが保存されました! : {strTime}.png", 2000);
                 }
+
+#if DEBUG
+                FPS.Update();
+                Drawing.Text(1880, 0, $"{FPS.FPS}", 0x00ff00);
+#endif
             }
         }
 
@@ -95,5 +101,6 @@ namespace Tunebeat
 
         public static Scene NowScene, OldScene;
         public static string strTime;
+        public static FPSCount FPS;
     }
 }

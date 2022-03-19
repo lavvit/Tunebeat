@@ -15,10 +15,13 @@ namespace Tunebeat
 
             foreach (InputData input in data)
             {
-                if (Game.MainTimer.Value + 8.0 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
+                if (input.Time - Game.MainTimer.Value < 100)
                 {
-                    KeyInput.Process(input.IsDon, input.IsLeft, player);
-                    input.Hit = true;
+                    if (Game.MainTimer.Value + 8.0 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit && Math.Abs(Game.MainTimer.Value - input.Time) < GetNotes.range[4])
+                    {
+                        KeyInput.Process(input.IsDon, input.IsLeft, player);
+                        input.Hit = true;
+                    }
                 }
             }
 
@@ -27,13 +30,16 @@ namespace Tunebeat
 
             foreach (InputSetting input in setting)
             {
-                if (Game.MainTimer.Value + 8.0 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit)
+                if (input.Time - Game.MainTimer.Value < 100)
                 {
-                    Notes.Scroll[player] = input.Scroll;
-                    Notes.UseSudden[player] = input.Sudden;
-                    Notes.Sudden[player] = input.SuddenNumber;
-                    Game.Adjust[player] = input.Adjust;
-                    input.Hit = true;
+                    if (Game.MainTimer.Value + 8.0 >= input.Time / PlayData.Data.PlaySpeed && !input.Hit)
+                    {
+                        Notes.Scroll[player] = input.Scroll;
+                        Notes.UseSudden[player] = input.Sudden;
+                        Notes.Sudden[player] = input.SuddenNumber;
+                        Game.Adjust[player] = input.Adjust;
+                        input.Hit = true;
+                    }
                 }
             }
         }
@@ -47,10 +53,13 @@ namespace Tunebeat
             {
                 foreach (ChipData chip in data)
                 {
-                    if (Game.MainTimer.Value + 8.0 >= chip.Time / PlayData.Data.PlaySpeed && !chip.Hit)
+                    if (chip.Time - Game.MainTimer.Value < 100)
                     {
-                        Score.AddScore(chip.judge, 2);
-                        chip.Hit = true;
+                        if (Game.MainTimer.Value + 8.0 >= chip.Time / PlayData.Data.PlaySpeed && !chip.Hit)
+                        {
+                            Score.AddScore(chip.judge, 2);
+                            chip.Hit = true;
+                        }
                     }
                 }
             }
@@ -60,10 +69,13 @@ namespace Tunebeat
             {
                 foreach (ChipData chip in rdata)
                 {
-                    if (Game.MainTimer.Value + 8.0 >= chip.Time / PlayData.Data.PlaySpeed && !chip.Hit)
+                    if (chip.Time - Game.MainTimer.Value < 100)
                     {
-                        Score.AddScore(chip.judge, 3);
-                        chip.Hit = true;
+                        if (Game.MainTimer.Value + 8.0 >= chip.Time / PlayData.Data.PlaySpeed && !chip.Hit)
+                        {
+                            Score.AddScore(chip.judge, 3);
+                            chip.Hit = true;
+                        }
                     }
                 }
             }

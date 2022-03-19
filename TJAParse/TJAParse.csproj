@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Chip.cs" />
     <Compile Include="Course.cs" />
+    <Compile Include="DanCourse.cs" />
     <Compile Include="Header.cs" />
     <Compile Include="NowInfo.cs" />
     <Compile Include="TJAParse.cs" />
