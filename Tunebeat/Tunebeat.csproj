@@ -66,6 +66,7 @@
     <Compile Include="Game\Create.cs" />
     <Compile Include="Game\Game.cs" />
     <Compile Include="Game\Process\GetNotes.cs" />
+    <Compile Include="Game\Process\HBSCROLL.cs" />
     <Compile Include="Game\Process\KeyInput.cs" />
     <Compile Include="Game\Notes.cs" />
     <Compile Include="Game\Process\PlayMemory.cs" />

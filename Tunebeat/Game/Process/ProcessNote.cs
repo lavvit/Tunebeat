@@ -100,7 +100,7 @@ namespace Tunebeat
                         chip.RollCount++;
                         BalloonRemain[player]--;
                         Score.AddBalloon(player);
-                        if (chip.RollCount == BalloonAmount(player))
+                        if (BalloonRemain[player] <= 0)
                         {
                             if (RollState(chip) == ERoll.Balloon)
                             {
@@ -113,7 +113,6 @@ namespace Tunebeat
                                 SoundLoad.Kusudama[player].Play();
                             }
                             chip.IsHit = true;
-                            BalloonList[player]++;
                         }
                     }
                     break;
@@ -122,12 +121,7 @@ namespace Tunebeat
             }
         }
 
-        public static int BalloonAmount(int player)
-        {
-            return SongData.NowTJA[player].Courses[Game.Course[player]].BALLOON.Count > BalloonList[player] ? SongData.NowTJA[player].Courses[Game.Course[player]].BALLOON[BalloonList[player]] : 5;
-        }
-
-        public static int[] NowRoll = new int[5], BalloonRemain = new int[5], BalloonList = new int[5];
+        public static int[] NowRoll = new int[5], BalloonRemain = new int[5];
     }
 
     public enum ERoll

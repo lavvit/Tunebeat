@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SeaDrop;
+using TJAParse;
 
 namespace Tunebeat
 {
@@ -15,6 +16,6 @@ namespace Tunebeat
         public static int FolderFloor;
 
         public static Song NowSong;
-        public static TJAParse.TJAParse[] NowTJA;
+        public static TJA[] NowTJA;
     }
 }

@@ -7,9 +7,9 @@ using System.IO;
 
 namespace TJAParse
 {
-    public class TJAParse
+    public class TJA
     {
-        public TJAParse(string path, double playspeed, int random, bool mirror, int change)
+        public TJA(string path, double playspeed, int random, bool mirror, int change)
         {
             TJAPath = path;
             Header = new Header();
@@ -54,7 +54,7 @@ namespace TJAParse
 
         }
 
-        public TJAParse(string path)//Load
+        public TJA(string path)//Load
         {
             TJAPath = path;
             Header = new Header();

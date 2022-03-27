@@ -620,8 +620,8 @@ namespace Tunebeat
 
                 if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.IsSongPlay && !Game.MainSong.IsPlaying && Game.PlayMeasure == 0)
                 {
-                    if (!Game.IsReplay[0] && !Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(0);
-                    if (Game.Play2P && !Game.IsReplay[1] & Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(1);
+                    if (!Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(0);
+                    if (Game.Play2P && Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(1);
                 }
 
                 #region Create

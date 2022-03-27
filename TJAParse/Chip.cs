@@ -16,15 +16,22 @@ namespace TJAParse
         public double Scroll;
         public double Measure;
         public int RollCount;
+        public int Balloon;
         public bool IsHit;
         public bool IsGogo;
         public bool IsMiss;
         public bool IsShow;
-        //public bool IsDummy;
+        public bool IsDummy;
         public bool CanShow;
         public Chip RollEnd;
         public string Lyric;
         public double[] Sudden;
+        public int BPMID;//HBS用
+    }
+
+    public class BPM
+    {
+
     }
 
     public enum EChip

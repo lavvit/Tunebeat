@@ -871,7 +871,7 @@ namespace Tunebeat
 
     public class TJAFile
     {
-        public TJAFile(TJAParse.TJAParse parse)
+        public TJAFile(TJA parse)
         {
             Title = parse.Header.TITLE;
             SubTitle = parse.Header.SUBTITLE;

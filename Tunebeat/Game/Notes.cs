@@ -20,8 +20,10 @@ namespace Tunebeat
                 Scroll[i] = PlayData.Data.ScrollSpeed[i];
                 PreGreen[i] = PlayData.Data.GreenNumber[i];
                 NHSNumber[i] = PlayData.Data.NHSSpeed[i];
+                ScrollType[i] = SongData.NowTJA[i].Courses[Game.Course[i]].ScrollType > EScroll.Normal ? SongData.NowTJA[i].Courses[Game.Course[i]].ScrollType : (EScroll)PlayData.Data.ScrollType[i];
                 if (PlayData.Data.NormalHiSpeed[i]) SetNHSScroll(i, true);
                 if (PlayData.Data.FloatingHiSpeed[i]) SetScroll(i, true);
+                //if (ScrollType[i] > EScroll.Normal) HBSCROLL.Init(i);
             }
             SetNotesP();
             for (int i = 0; i < 5; i++)
@@ -72,25 +74,25 @@ namespace Tunebeat
             }
             else
             {
-                if (SongData.NowTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.Normal)
+                if (ScrollType[0] == EScroll.Normal)
                 {
                     DrawNotes(0);
                 }
                 else
                 {
                     DrawNotes(0);
-                    //DrawNotesHBS(0, SongData.NowTJA[0].Courses[Game.Course[0]].ScrollType == EScroll.HBSCROLL ? true : false);
+                    //DrawNotesHBS(0);
                 }
                 if (Game.Play2P)
                 {
-                    if (SongData.NowTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.Normal)
+                    if (ScrollType[1] == EScroll.Normal)
                     {
                         DrawNotes(1);
                     }
                     else
                     {
                         DrawNotes(1);
-                        //DrawNotesHBS(1, SongData.NowTJA[1].Courses[Game.Course[1]].ScrollType == EScroll.HBSCROLL ? true : false);
+                        //DrawNotesHBS(1);
                     }
                 }
 
@@ -185,12 +187,17 @@ namespace Tunebeat
                 Chip chip = GetNotes.GetNowNote(SongData.NowTJA[i].Courses[Game.Course[i]].ListChip, Game.MainTimer.Value - Game.Adjust[i]);
                 if (chip != null && chip.RollCount == 0 && chip.ENote >= ENote.RollStart && chip.ENote != ENote.RollEnd)
                 {
-                    ProcessNote.BalloonRemain[i] = ProcessNote.BalloonAmount(i);
-                }
-                if (chip != null && (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama) && chip.RollEnd != null && chip.RollEnd.Time <= Game.MainTimer.Value - Game.Adjust[i] && ProcessNote.BalloonRemain[i] > 0)
-                {
-                    ProcessNote.BalloonRemain[i] = 0;
-                    ProcessNote.BalloonList[i]++;
+                    switch (chip.ENote)
+                    {
+                        case ENote.RollStart:
+                        case ENote.ROLLStart:
+                            ProcessNote.BalloonRemain[i] = 0;
+                            break;
+                        case ENote.Balloon:
+                        case ENote.Kusudama:
+                            ProcessNote.BalloonRemain[i] = chip.Balloon;
+                            break;
+                    }
                 }
                 if (PlayData.Data.NormalHiSpeed[i] && !PlayData.Data.FloatingHiSpeed[i]) SetNHSScroll(i, Game.MainTimer.State == 0);
             }
@@ -213,6 +220,7 @@ namespace Tunebeat
 
         public static void DrawNotes(int player)
         {
+            #region Lane
             if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
             {
                 TextureLoad.Game_Lane.Opacity = 0.5;
@@ -237,6 +245,7 @@ namespace Tunebeat
                 TextureLoad.Game_Lane_Gogo.BlendMode = BlendMode.Add;
                 TextureLoad.Game_Lane_Gogo.Draw(NotesP[player].X - 22, NotesP[player].Y);
             }
+            #endregion
 
             if (Create.CreateMode)
             {
@@ -578,17 +587,34 @@ namespace Tunebeat
                 #endregion
             }
         }
-
-        public static double NotesX(double chiptime, double timer, double bpm,  double scroll, int player)
+        public static void DrawNotesHBS(int player)
         {
-            double time = chiptime - timer;
-            double x = time * bpm * scroll * 2.0 * (Scroll[player] - Game.ScrollRemain[player]) / 337.79;//1421
-            return x;
-        }
-
-        public static void DrawNotesHBS(int player, bool isHBS)
-        {
+            #region Lane
+            if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+            {
+                TextureLoad.Game_Lane.Opacity = 0.5;
+            }
+            else
+            {
+                TextureLoad.Game_Lane.Opacity = 1.0;
+            }
             TextureLoad.Game_Lane.Draw(NotesP[player].X - 22, NotesP[player].Y);
+            Chip nchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value, true);
+            if (Create.CreateMode) nchip = GetNotes.GetNowNote(Create.ListAllChip, Game.MainTimer.Value, true);
+            if (nchip != null && nchip.IsGogo)
+            {
+                if ((Game.MainMovie != null && Game.MainMovie.IsEnable) || (PlayData.Data.ShowImage && File.Exists(Game.MainImage.FileName)))
+                {
+                    TextureLoad.Game_Lane_Gogo.Opacity = 0.25;
+                }
+                else
+                {
+                    TextureLoad.Game_Lane_Gogo.Opacity = 0.5;
+                }
+                TextureLoad.Game_Lane_Gogo.BlendMode = BlendMode.Add;
+                TextureLoad.Game_Lane_Gogo.Draw(NotesP[player].X - 22, NotesP[player].Y);
+            }
+            #endregion
 
             TextureLoad.Game_Notes.Draw(NotesP[player].X, NotesP[player].Y, new Rectangle(0, 0, 195, 195));
 
@@ -596,16 +622,16 @@ namespace Tunebeat
             {
                 Chip chip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip[i];
                 double time = chip.Time - Game.MainTimer.Value;
-                //float x = (float)NotesX(chip.Time, Game.MainTimer.Value, chip.Bpm, chip.Scroll);
-                //if (chip.EChip == EChip.Measure && chip.IsShow && x <= 1500 && x >= -715)
-                //{
-                //    TextureLoad.Game_Bar.Draw(NotesP[player].X + 96 + x, NotesP[player].Y);
-                //}
-
                 //オートの処理呼び出し
-                ProcessAuto.Update(PlayData.Data.PreviewType == 3 || Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+                if (chip.Time - Game.MainTimer.Value < 100) ProcessAuto.Update(PlayData.Data.PreviewType == 3 ? true : Game.IsAuto[player], chip, Game.MainTimer.Value, player);
+
                 //ノーツが通り過ぎた時の処理
                 ProcessNote.PassNote(chip, time, chip.ENote == ENote.Ka || chip.ENote == ENote.KA ? false : true, player);
+            }
+            if (PlayData.Data.PreviewType < 3)
+            {
+                ProcessReplay.Update(Game.IsReplay[player], player);
+                ProcessReplay.UnderUpdate();
             }
             //連打のタイマー　なんでここ？？
             Chip nowchip = GetNotes.GetNowNote(SongData.NowTJA[player].Courses[Game.Course[player]].ListChip, Game.MainTimer.Value);
@@ -614,17 +640,26 @@ namespace Tunebeat
             {
                 ProcessAuto.RollTimer[i].Tick();
             }
-            for (int i = 0; i < 5; i++)
+            if (roll != ERoll.None)
             {
-                if (roll != ERoll.None)
-                {
-                    ProcessAuto.RollTimer[i].Start();
-                }
-                else
-                {
-                    ProcessAuto.RollTimer[i].Reset();
-                }
+                ProcessAuto.RollTimer[player].Start();
             }
+            else
+            {
+                ProcessAuto.RollTimer[player].Reset();
+            }
+
+            //for (int i = 0; i < HBSCROLL.Chips[player].Length; i++)
+            {
+
+            }
+        }
+
+        public static double NotesX(double chiptime, double timer, double bpm, double scroll, int player)
+        {
+            double time = chiptime - timer;
+            double x = time * bpm * scroll * 2.0 * (Scroll[player] - Game.ScrollRemain[player]) / 337.79;//1421
+            return x;
         }
 
         public static int GetGreenNumber(int player, double plusminus = 0)
@@ -753,6 +788,7 @@ namespace Tunebeat
         public static int[] Sudden = new int[2], GreenNumber = new int[2], PreGreen = new int[2], NHSNumber = new int[2];
         public static int[] NHSTargetGNum = new int[20] { 1200, 1000, 800, 700, 650, 600, 550, 500, 480, 460,
             440, 420, 400, 380, 360, 340, 320, 300, 280, 260 };
+        public static EScroll[] ScrollType = new EScroll[2];
     }
 
     public enum EPreviewType

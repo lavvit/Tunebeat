@@ -44,6 +44,8 @@ namespace SeaDrop
                         Keys[i] = 0;
                     }
                 }
+                if (Timer[i] == null) Timer[i] = new Counter(0, int.MaxValue, 1000, false);
+                Timer[i].Tick();
             }
         }
 
@@ -210,6 +212,78 @@ namespace SeaDrop
         }
 
         /// <summary>
+        /// そのキーを押しているかどうかチェックし、一定間隔で出力します。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <param name="interval">間隔。</param>
+        /// <returns>押しているかどうか。</returns>
+        public static bool IsHolding(EKey key, int interval)
+        {
+            Counter counter = Timer[(int)key];
+            if (IsPushed(key))
+            {
+                counter.Start();
+                return true;
+            }
+            else if (IsPushing(key))
+            {
+                if (counter.Value > interval)
+                {
+                    counter.Reset();
+                    return true;
+                }
+            }
+            else if (IsLeft(key))
+            {
+                counter.Stop();
+                counter.Reset();
+            }
+            return false;
+        }
+        /// <summary>
+        /// そのキーを押しているかどうかチェックし、しばらくしたのち一定間隔で出力します。
+        /// </summary>
+        /// <param name="key">キーコード。</param>
+        /// <param name="interval">間隔。</param>
+        /// <returns>押しているかどうか。</returns>
+        public static bool IsHolding(EKey key, int firstinterval, int interval)
+        {
+            Counter counter = Timer[(int)key];
+            if (IsPushed(key))
+            {
+                counter.Start();
+                return true;
+            }
+            else if (IsPushing(key))
+            {
+                if (Firsted[(int)key])
+                {
+                    if (counter.Value > interval)
+                    {
+                        counter.Reset();
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (counter.Value > firstinterval)
+                    {
+                        counter.Reset();
+                        Firsted[(int)key] = true;
+                        return true;
+                    }
+                }
+            }
+            else if (IsLeft(key))
+            {
+                counter.Stop();
+                counter.Reset();
+                Firsted[(int)key] = false;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// キーコードに対応する文字列を取得します。
         /// </summary>
         /// <param name="key">キーコード。</param>
@@ -228,6 +302,9 @@ namespace SeaDrop
 
         private static readonly int[] Keys = new int[256];
         private static readonly byte[] Buffer = new byte[256];
+
+        private static Counter[] Timer = new Counter[256];
+        private static readonly bool[] Firsted = new bool[256];
 
         /// <summary>
         /// キーコードの文字列。

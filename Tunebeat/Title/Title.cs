@@ -53,33 +53,33 @@ namespace Tunebeat
             #if DEBUG
             if (Key.IsPushing(EKey.Key_1))
             {
-                if (Key.IsPushing(EKey.Up) && PlayData.Data.SkinColor[0] < 255)
+                if (Key.IsHolding(EKey.Up, 250, 10) && PlayData.Data.SkinColor[0] < 255)
                 {
                     PlayData.Data.SkinColor[0]++;
                 }
-                if (Key.IsPushing(EKey.Down) && PlayData.Data.SkinColor[0] > 0)
+                if (Key.IsHolding(EKey.Down, 250, 10) && PlayData.Data.SkinColor[0] > 0)
                 {
                     PlayData.Data.SkinColor[0]--;
                 }
             }
             if (Key.IsPushing(EKey.Key_2))
             {
-                if (Key.IsPushing(EKey.Up) && PlayData.Data.SkinColor[1] < 255)
+                if (Key.IsHolding(EKey.Up, 250, 10) && PlayData.Data.SkinColor[1] < 255)
                 {
                     PlayData.Data.SkinColor[1]++;
                 }
-                if (Key.IsPushing(EKey.Down) && PlayData.Data.SkinColor[1] > 0)
+                if (Key.IsHolding(EKey.Down, 250, 10) && PlayData.Data.SkinColor[1] > 0)
                 {
                     PlayData.Data.SkinColor[1]--;
                 }
             }
             if (Key.IsPushing(EKey.Key_3))
             {
-                if (Key.IsPushing(EKey.Up) && PlayData.Data.SkinColor[2] < 255)
+                if (Key.IsHolding(EKey.Up, 250, 20) && PlayData.Data.SkinColor[2] < 255)
                 {
                     PlayData.Data.SkinColor[2]++;
                 }
-                if (Key.IsPushing(EKey.Down) && PlayData.Data.SkinColor[2] > 0)
+                if (Key.IsHolding(EKey.Down, 250, 20) && PlayData.Data.SkinColor[2] > 0)
                 {
                     PlayData.Data.SkinColor[2]--;
                 }

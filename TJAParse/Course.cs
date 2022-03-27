@@ -15,10 +15,11 @@ namespace TJAParse
         public List<int> BALLOON = new List<int>();
         public List<int> ListMeasureCount = new List<int>();
         public List<Chip> ListChip = new List<Chip>();
+        public List<BPM> ListBPM = new List<BPM>();
         public bool IsEnable = false;
 
         public static int NowCourse = (int)ECourse.Oni;
-        public static int MeasureCount;
+        public static int MeasureCount, BalloonCount;
 
         public static void Load(string str, Course[] courses, Header header, double playspeed, bool FullLoad = true)
         {
@@ -101,6 +102,8 @@ namespace TJAParse
                     NowInfo.RollBegin = null;
                     NowInfo.LyricText = null;
                     NowInfo.Sudden = new double[2] { 0.0, 0.0 };
+                    NowInfo.BPMID = 0;
+                    BalloonCount = 0;
                 }
                 else if (str.StartsWith("#END"))
                 {
@@ -108,11 +111,13 @@ namespace TJAParse
                 }
                 else if (str.StartsWith("#SCROLL"))
                 {
+                    if (!str.Contains('i'))
                     NowInfo.Scroll = double.Parse(str.Replace("#SCROLL", "").Trim());
                 }
                 else if (str.StartsWith("#BPMCHANGE"))
                 {
                     NowInfo.Bpm = double.Parse(str.Replace("#BPMCHANGE", "").Trim()) * playspeed;
+                    NowInfo.BPMID++;
                 }
                 else if (str.StartsWith("#DELAY"))
                 {
@@ -197,7 +202,8 @@ namespace TJAParse
                             ENote = (ENote)int.Parse(num.ToString()),
                             CanShow = true,
                             Lyric = NowInfo.LyricText,
-                            Sudden = NowInfo.Sudden
+                            Sudden = NowInfo.Sudden,
+                            BPMID = NowInfo.BPMID,
                         };
 
                         if (chip.ENote == ENote.Balloon || chip.ENote == ENote.RollStart || chip.ENote == ENote.ROLLStart || chip.ENote == ENote.Kusudama)
@@ -217,6 +223,12 @@ namespace TJAParse
 
                         if (chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
                             courses[NowCourse].TotalNotes++;
+
+                        if (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama)
+                        {
+                            chip.Balloon = BalloonCount < courses[NowCourse].BALLOON.Count ? courses[NowCourse].BALLOON[BalloonCount] : 5;
+                            BalloonCount++;
+                        }
 
                         //if (chip.ENote != ENote.Space)
                         courses[NowCourse].ListChip.Add(chip);
@@ -350,9 +362,6 @@ namespace TJAParse
                         NowCourse = GetCourse(split[1]);
                         courses[NowCourse].COURSE = (ECourse)NowCourse;
                         break;
-                    case "LEVEL":
-                        courses[NowCourse].LEVEL = !string.IsNullOrEmpty(split[1]) && double.TryParse(split[1], out double i) ? (int)double.Parse(split[1]) : 0;
-                        break;
                 }
             }
             else
@@ -438,5 +447,14 @@ namespace TJAParse
         Normal,
         BMSCROLL,
         HBSCROLL
+    }
+
+    public enum EChange
+    {
+        None,
+        RedOnly,
+        BlueOnly,
+        AllRed,
+        AllBlue,
     }
 }

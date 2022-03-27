@@ -156,8 +156,8 @@ namespace Tunebeat
 
             if (Key.IsPushed(PlayData.Data.SaveReplay) && Game.PlayMeasure == 0)
             {
-                if (!Game.IsReplay[0]) PlayMemory.SaveData(0);
-                if (Game.Play2P && !Game.IsReplay[1]) PlayMemory.SaveData(1);
+                if (!Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(0);
+                if (Game.Play2P && Key.IsPushing(EKey.LShift)) PlayMemory.SaveData(1);
             }
 
             base.Update();

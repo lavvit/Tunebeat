@@ -36,46 +36,13 @@ namespace Tunebeat
                 ini.SaveConfig(TJAPath);
             }
             MainTimer = new Counter(-2000, int.MaxValue, 1000, false);
-            if (PlayData.Data.PreviewType == 3)
-            {
-                SongData.NowTJA = new TJAParse.TJAParse[5];
-                for (int i = 0; i < 2; i++)
-                {
-                    SongData.NowTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
-                }
-                for (int i = 2; i < 5; i++)
-                {
-                    SongData.NowTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
-                }
-            }
-            else
-            {
-                SongData.NowTJA = new TJAParse.TJAParse[2];
-                for (int i = 0; i < 2; i++)
-                {
-                    SongData.NowTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
-                }
-            }
-            MainSong = new Sound($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{SongData.NowTJA[0].Header.WAVE}");
-            MainImage = new Texture($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{SongData.NowTJA[0].Header.BGIMAGE}");
-            string path = $"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{SongData.NowTJA[0].Header.BGMOVIE}";
-            string mp4path = path.Replace("wmv", "mp4");
-            if (PlayData.Data.PlayMovie) MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
 
-            if (PlayData.Data.FontRendering)
-            {
-                Title = FontRender.GetTexture(SongData.NowTJA[0].Header.TITLE, 48, 6, PlayData.Data.FontName);
-                SubTitle = FontRender.GetTexture(SongData.NowTJA[0].Header.SUBTITLE, 20, 4, PlayData.Data.FontName);
-            }
-
-            RandomCourse = SongSelect.Course;
             for (int i = 0; i < 2; i++)
             {
                 IsAuto[i] = PlayData.Data.PreviewType == 3 ? true : PlayData.Data.Auto[i];
                 IsReplay[i] = SongSelect.Replay[i] && !string.IsNullOrEmpty(SongSelect.ReplayScore[i]) ? true : false;
-                Course[i] = SongSelect.Random && PlayData.Data.PlayCourse[i] == 4 ? RandomCourse : SongSelect.EnableCourse(SongData.NowSong.Course, i);
+                Course[i] = SongSelect.Random ? SongSelect.Course : SongSelect.EnableCourse(SongData.NowSong, i);
                 Failed[i] = false;
-                ProcessNote.BalloonList[i] = 0;
                 PushedTimer[i] = new Counter(0, 499, 1000, false);
                 PushingTimer[i] = new Counter(0, 99, 1000, false);
                 SuddenTimer[i] = new Counter(0, 499, 1000, false);
@@ -84,7 +51,42 @@ namespace Tunebeat
                 if (IsReplay[i]) IsAuto[i] = false;
             }
             Adjust[2] = Adjust[3] = PlayData.Data.InputAdjust[0];
+            PlayMemory.Init();
+
+            if (PlayData.Data.PreviewType == 3)
+            {
+                SongData.NowTJA = new TJA[5];
+                for (int i = 0; i < 2; i++)
+                {
+                    ReplayData replay = i > 0 ? PlayMemory.ReplayData2P : PlayMemory.ReplayData;
+                    SongData.NowTJA[i] = new TJA(TJAPath, IsReplay[i] ? (replay.Speed > 0 ? replay.Speed : 1) : PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                }
+                for (int i = 2; i < 5; i++)
+                {
+                    SongData.NowTJA[i] = new TJA(TJAPath, IsReplay[0] ? (PlayMemory.ReplayData.Speed > 0 ? PlayMemory.ReplayData.Speed : 1) : PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                }
+            }
+            else
+            {
+                SongData.NowTJA = new TJA[2];
+                for (int i = 0; i < 2; i++)
+                {
+                    ReplayData replay = i > 0 ? PlayMemory.ReplayData2P : PlayMemory.ReplayData;
+                    SongData.NowTJA[i] = new TJA(TJAPath, IsReplay[i] ? (replay.Speed > 0 ? replay.Speed : 1) : PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                }
+            }
+            MainSong = new Sound($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{SongData.NowTJA[0].Header.WAVE}");
+            MainImage = new Texture($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{SongData.NowTJA[0].Header.BGIMAGE}");
+            string path = $"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{SongData.NowTJA[0].Header.BGMOVIE}";
+            string mp4path = path.Replace("wmv", "mp4");
+            if (PlayData.Data.PlayMovie) MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
+            if (PlayData.Data.FontRendering)
+            {
+                Title = FontRender.GetTexture(SongData.NowTJA[0].Header.TITLE, 48, 6, PlayData.Data.FontName);
+                SubTitle = FontRender.GetTexture(SongData.NowTJA[0].Header.SUBTITLE, 20, 4, PlayData.Data.FontName);
+            }
             Play2P = SongData.NowTJA[1].Courses[Course[1]].ListChip.Count > 0 ? PlayData.Data.IsPlay2P : false;
+            PlayMemory.SetColor();
 
             if ((EPreviewType)PlayData.Data.PreviewType == EPreviewType.AllCourses)
             {
@@ -113,8 +115,6 @@ namespace Tunebeat
             MeasureList = new List<Chip>();
             MeasureCount();
             LyricHandle = new Handle(PlayData.Data.FontName, 48);
-
-            PlayMemory.Init();
 
             for (int i = 0; i < 5; i++)
             {
@@ -172,25 +172,6 @@ namespace Tunebeat
             }
         }
 
-        public static void SetBalloon()
-        {
-            for (int player = 0; player < 2; player++)
-            {
-                int amount = 0;
-                foreach (Chip chip in SongData.NowTJA[player].Courses[Course[player]].ListChip)
-                {
-                    if (chip.ENote == ENote.Balloon || chip.ENote == ENote.Kusudama)
-                    {
-                        if (chip.RollEnd != null && chip.RollEnd.Time < StartTime)
-                        {
-                            amount++;
-                        }
-                    }
-                }
-                ProcessNote.BalloonList[player] = amount; 
-            }
-        }
-
         public static void Reset()
         {
             MainTimer.Stop();
@@ -205,22 +186,24 @@ namespace Tunebeat
             }
             if (PlayData.Data.PreviewType == 3)
             {
-                SongData.NowTJA = new TJAParse.TJAParse[5];
+                SongData.NowTJA = new TJA[5];
                 for (int i = 0; i < 2; i++)
                 {
-                    SongData.NowTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                    ReplayData replay = i > 0 ? PlayMemory.ReplayData2P : PlayMemory.ReplayData;
+                    SongData.NowTJA[i] = new TJA(TJAPath, IsReplay[i] ? (replay.Speed > 0 ? replay.Speed : 1) : PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
                 }
                 for (int i = 2; i < 5; i++)
                 {
-                    SongData.NowTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
+                    SongData.NowTJA[i] = new TJA(TJAPath, IsReplay[0] ? (PlayMemory.ReplayData.Speed > 0 ? PlayMemory.ReplayData.Speed : 1) : PlayData.Data.PlaySpeed, PlayData.Data.Random[0] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[0], PlayData.Data.NotesChange[0]);
                 }
             }
             else
             {
-                SongData.NowTJA = new TJAParse.TJAParse[2];
+                SongData.NowTJA = new TJA[2];
                 for (int i = 0; i < 2; i++)
                 {
-                    SongData.NowTJA[i] = new TJAParse.TJAParse(TJAPath, PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
+                    ReplayData replay = i > 0 ? PlayMemory.ReplayData2P : PlayMemory.ReplayData;
+                    SongData.NowTJA[i] = new TJA(TJAPath, IsReplay[i] ? (replay.Speed > 0 ? replay.Speed : 1) : PlayData.Data.PlaySpeed, PlayData.Data.Random[i] ? PlayData.Data.RandomRate : 0, PlayData.Data.Mirror[i], PlayData.Data.NotesChange[i]);
                 }
             }
             if (File.Exists(MainSong.FileName)) MainSong.Time = StartTime / 1000;
@@ -256,7 +239,6 @@ namespace Tunebeat
                 Notes.Sudden[i] = PlayData.Data.SuddenNumber[i];
                 if (PlayData.Data.PreviewType < 3) Notes.Scroll[i] = PlayData.Data.ScrollSpeed[i];
             }
-            SetBalloon();
 
             if (Create.Edited)
             {
@@ -332,7 +314,6 @@ namespace Tunebeat
                 StartTime = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
                 if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[MeasureList.Count - 1].Time);
-                SetBalloon();
             }
             else if (PlayMeasure < MeasureList.Count)
             {
@@ -341,7 +322,6 @@ namespace Tunebeat
                 StartTime = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 MainTimer.Value = (int)Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
                 if (MainMovie != null && MainMovie.IsEnable) MainMovie.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time);
-                SetBalloon();
             }
         }
         public static void MeasureDown(bool home = false)
@@ -404,7 +384,6 @@ namespace Tunebeat
                     }
                 }
                 ProcessReplay.Back();
-                SetBalloon();
             }
             else if (PlayMeasure > 1)
             {
@@ -435,7 +414,6 @@ namespace Tunebeat
                     }
                 }
                 ProcessReplay.Back();
-                SetBalloon();
             }
         }
 
@@ -560,21 +538,23 @@ namespace Tunebeat
             else
             {
                 string Lv1P = $"{SongData.NowTJA[0].Courses[Course[0]].COURSE} Lv.{SongData.NowTJA[0].Courses[Course[0]].LEVEL}";
-                Drawing.Text(413 - Drawing.TextWidth(Lv1P, Lv1P.Length) / 2, Notes.NotesP[0].Y + 6, Lv1P, 0xffffff);
+                Drawing.Text(413 - Drawing.TextWidth(Lv1P) / 2, Notes.NotesP[0].Y + 6, Lv1P, 0xffffff);
                 if (SongData.NowTJA[0].Courses[Course[0]].ScrollType != EScroll.Normal)
                 {
-                    Drawing.Text(378, Notes.NotesP[0].Y + 26, $"{SongData.NowTJA[0].Courses[Course[0]].ScrollType}", 0xffffff);
+                    string scr = $"{SongData.NowTJA[0].Courses[Course[0]].ScrollType}";
+                    Drawing.Text(413 - Drawing.TextWidth(scr) / 2, Notes.NotesP[0].Y + 26, scr, 0xffffff);
                 }
-                if (IsAuto[0]) Drawing.Text(258, Notes.NotesP[0].Y + 6, "AUTO PLAY", 0xffffff);
+                if (IsAuto[0] || IsReplay[0]) Drawing.Text(258, Notes.NotesP[0].Y + 6, "AUTO PLAY", 0xffffff);
                 if (Play2P)
                 {
                     string Lv2P = $"{SongData.NowTJA[1].Courses[Course[1]].COURSE} Lv.{SongData.NowTJA[1].Courses[Course[1]].LEVEL}";
-                    Drawing.Text(413 - Drawing.TextWidth(Lv2P, Lv2P.Length) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
+                    Drawing.Text(413 - Drawing.TextWidth(Lv2P) / 2, Notes.NotesP[0].Y + 416, Lv2P, 0xffffff);
                     if (SongData.NowTJA[1].Courses[Course[1]].ScrollType != EScroll.Normal)
                     {
-                        Drawing.Text(378, Notes.NotesP[0].Y + 436, $"{SongData.NowTJA[1].Courses[Course[1]].ScrollType}", 0xffffff);
+                        string scr = $"{SongData.NowTJA[1].Courses[Course[1]].ScrollType}";
+                        Drawing.Text(413 - Drawing.TextWidth(scr) / 2, Notes.NotesP[0].Y + 436, scr, 0xffffff);
                     }
-                    if (IsAuto[1]) Drawing.Text(258, Notes.NotesP[0].Y + 416, "AUTO PLAY", 0xffffff);
+                    if (IsAuto[1] || IsReplay[1]) Drawing.Text(258, Notes.NotesP[0].Y + 416, "AUTO PLAY", 0xffffff);
                 }
             }
 
@@ -618,8 +598,7 @@ namespace Tunebeat
                 Drawing.Text(520, 180, $"{chip[0].Time}", 0xffffff);
                 Drawing.Text(520, 200, $"{ProcessNote.RollState(chip[0])}", 0xffffff);
                 Drawing.Text(520, 220, $"{chip[0].RollCount}", 0xffffff);
-                Drawing.Text(520, 240, $"{ProcessNote.BalloonRemain[0]}", 0xffffff);
-                Drawing.Text(520, 260, $"{ProcessNote.BalloonList[0]}", 0xffffff);
+                Drawing.Text(520, 240, $"{chip[0].Balloon}", 0xffffff);
             }
             if (Play2P && chip[1] != null)
             {
@@ -627,8 +606,7 @@ namespace Tunebeat
                 Drawing.Text(520, 800, $"{chip[1].Time}", 0xffffff);
                 Drawing.Text(520, 820, $"{ProcessNote.RollState(chip[1])}", 0xffffff);
                 Drawing.Text(520, 840, $"{chip[1].RollCount}", 0xffffff);
-                Drawing.Text(520, 860, $"{ProcessNote.BalloonRemain[1]}", 0xffffff);
-                Drawing.Text(520, 880, $"{ProcessNote.BalloonList[1]}", 0xffffff);
+                Drawing.Text(520, 860, $"{chip[1].Balloon}", 0xffffff);
             }
 
             Drawing.Text(700, 160, $"NowAdjust:{Adjust[0]}", 0xffffff);
@@ -681,7 +659,7 @@ namespace Tunebeat
                 {
                     MainSong.Play(PlayMeasure == 0 ? true : false);
                     if (PlayMeasure > 0) MainSong.Time = Math.Ceiling(MeasureList[PlayMeasure - 1].Time) / 1000;
-                    MainSong.PlaySpeed = PlayData.Data.PlaySpeed;
+                    MainSong.PlaySpeed = IsReplay[0] ? PlayMemory.ReplayData.Speed : PlayData.Data.PlaySpeed;
                     MainSong.Volume = (PlayData.Data.GameBGM / 100.0) * (SongData.NowTJA[0].Header.SONGVOL / 100.0);
                 }
                 IsSongPlay = true;
@@ -693,7 +671,11 @@ namespace Tunebeat
             }
             if (IsSongPlay && !MainSong.IsPlaying)
             {
-                if (PlayData.Data.SaveScore && !Play2P &&  PlayMeasure == 0 && MainTimer.State != 0) PlayMemory.SaveScore(0, Course[0]);
+                if (PlayData.Data.SaveScore && !Play2P && PlayMeasure == 0 && MainTimer.State != 0)
+                {
+                    PlayMemory.SaveScore(0, Course[0]);
+                }
+
                 //MainTimer.Stop();
                 //MainMovie.Stop();
                 PlayData.End();
@@ -711,7 +693,7 @@ namespace Tunebeat
                 {
                     if (PlayData.Data.PlayList)
                     {
-                        List<Song> list = SongData.FolderSong;
+                        List<Song> list = SongData.FolderFloor > 0 ? SongData.FolderSong : SongData.AllSong;
                         if (SongSelect.Random)
                         {
                             while(true)
@@ -719,53 +701,68 @@ namespace Tunebeat
                                 Random random = new Random();
                                 int r = random.Next(list.Count);
                                 int d = random.Next(0, 3);
-                                if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
+                                if (SongData.NowSong.DisplayDif > 0)
                                 {
-                                    if (list[r] != null && TJAPath != list[r].Path)
+                                    if (list[r] != null && list[r].DisplayDif - 1 <= PlayData.Data.PlayCourse[0])
                                     {
-                                        if (list[r].Course[4].IsEnable)
+                                        TJAPath = list[r].Path;
+                                        for (int i = 0; i < 2; i++)
                                         {
-                                            if (list[r].Course[3].IsEnable)
+                                            Course[i] = list[r].DisplayDif - 1;
+                                        }
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (PlayData.Data.PlayCourse[0] == (int)ECourse.Edit)
+                                    {
+                                        if (list[r] != null && TJAPath != list[r].Path)
+                                        {
+                                            if (list[r].Course[4].IsEnable)
                                             {
-                                                RandomCourse = d > 0 ? 4 : 3;
-                                                if (list[r].Course[RandomCourse].IsEnable)
+                                                if (list[r].Course[3].IsEnable)
+                                                {
+                                                    RandomCourse = d > 0 ? 4 : 3;
+                                                    if (list[r].Course[RandomCourse].IsEnable)
+                                                    {
+                                                        TJAPath = list[r].Path;
+                                                        for (int i = 0; i < 2; i++)
+                                                        {
+                                                            Course[i] = RandomCourse;
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                                else
                                                 {
                                                     TJAPath = list[r].Path;
                                                     for (int i = 0; i < 2; i++)
                                                     {
-                                                        Course[i] = RandomCourse;
+                                                        Course[i] = 4;
                                                     }
                                                     break;
                                                 }
                                             }
-                                            else
+                                            else if (list[r].Course[3].IsEnable)
                                             {
                                                 TJAPath = list[r].Path;
                                                 for (int i = 0; i < 2; i++)
                                                 {
-                                                    Course[i] = 4;
+                                                    Course[i] = 3;
                                                 }
                                                 break;
                                             }
                                         }
-                                        else if (list[r].Course[3].IsEnable)
+
+                                    }
+                                    else
+                                    {
+                                        if (list[r] != null && list[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != list[r].Path)
                                         {
                                             TJAPath = list[r].Path;
-                                            for (int i = 0; i < 2; i++)
-                                            {
-                                                Course[i] = 3;
-                                            }
                                             break;
                                         }
-                                    }
-                                    
-                                }
-                                else
-                                {
-                                    if (list[r] != null && list[r].Course[PlayData.Data.PlayCourse[0]].IsEnable && TJAPath != list[r].Path)
-                                    {
-                                        TJAPath = list[r].Path;
-                                        break;
                                     }
                                 }
                             }

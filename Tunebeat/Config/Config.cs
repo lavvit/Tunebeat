@@ -184,10 +184,9 @@ namespace Tunebeat
                             if (OptionList[Cursor].Type == OptionType.String || OptionList[Cursor].Type == OptionType.StrList)
                             {
                                 OptionList[Cursor].Enter();
-                                if (OptionList[Cursor].Name == "PlayFolder")
-                                    SongLoad.Init();
                             }
                             UpdateConfig();
+                            if (OptionList[Cursor].Name == "PlayFolder") SongLoad.Init();
                         }
                     }
                     else if (InLayer)
