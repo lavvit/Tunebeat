@@ -38,6 +38,7 @@ namespace Tunebeat
         public string BGMName = "Default";
         public int[] SkinColor = new int[3] { 128, 128, 128 };
         public bool FullScreen = false;
+        public (int, int) Size = (1920, 1080);
         public bool FontRendering = true;
         public string FontName = "";
         public bool VSync = false;
@@ -55,6 +56,7 @@ namespace Tunebeat
         public bool ShowImage = true;
         public bool PlayMovie = true;
         public bool QuickStart = false;
+        public int ShowComboNotes = 10;
         public bool ShowResultScreen = false;
         public bool PlayList = false;
         public bool SaveScore = false;
@@ -103,7 +105,26 @@ namespace Tunebeat
         public double[] InputAdjust = new double[2] { 0, 0 };
         public bool[] AutoAdjust = new bool[2] { false, false };
 
+        public bool RandomDanSave = false;
+        public int DanFailedType = 2;
+        public DanOrder DanSetting = new DanOrder();
+
         public List<string> Template = new List<string>();
+
+        public int LNType = 1;
+        public bool Is2PSide = true;
+        public bool Hitsound = true;
+        public int[] Option = new int[2] { 0, 0 };
+        public double[] BMSScrollSpeed = new double[2] { 1.0, 1.0 };
+        public bool[] BMSFloatingHiSpeed = new bool[2] { false, false };
+        public int[] BMSGreenNumber = new int[2] { 1200, 1200 };
+        public bool[] BMSNormalHiSpeed = new bool[2] { false, false };
+        public int[] BMSNHSSpeed = new int[2] { 0, 0 };
+        public bool[] BMSUseSudden = new bool[2] { false, false };
+        public int[] BMSSuddenNumber = new int[2] { 0, 0 };
+        public double[] BMSInputAdjust = new double[2] { 0, 0 };
+
+        public int[] Controller = new int[2] { 0, 0 };
 
         public List<int> LEFTDON = new List<int>() { (int)EKey.F };
         public List<int> RIGHTDON = new List<int>() { (int)EKey.J };
@@ -113,6 +134,35 @@ namespace Tunebeat
         public List<int> RIGHTDON2P = new List<int>() { (int)EKey.M };
         public List<int> LEFTKA2P = new List<int>() { (int)EKey.C };
         public List<int> RIGHTKA2P = new List<int>() { (int)EKey.Comma };
+
+        public BMSKey BMSKey = new BMSKey()
+        {
+            Key1 = (int)EKey.Z,
+            Key2 = (int)EKey.S,
+            Key3 = (int)EKey.X,
+            Key4 = (int)EKey.D,
+            Key5 = (int)EKey.C,
+            Key6 = (int)EKey.F,
+            Key7 = (int)EKey.V,
+            Scr_F = (int)EKey.LShift,
+            Scr_R = (int)EKey.LCtrl,
+            Start = (int)EKey.Q,
+            Select = (int)EKey.W,
+        };
+        public BMSKey BMSKey2P = new BMSKey()
+        {
+            Key1 = (int)EKey.Comma,
+            Key2 = (int)EKey.L,
+            Key3 = (int)EKey.Period,
+            Key4 = (int)EKey.SemiColon,
+            Key5 = (int)EKey.Slash,
+            Key6 = (int)EKey.Colon,
+            Key7 = (int)EKey.BackSlash,
+            Scr_F = (int)EKey.RShift,
+            Scr_R = (int)EKey.RCtrl,
+            Start = (int)EKey.At,
+            Select = (int)EKey.LBracket,
+        };
 
         public int ScreenShot = (int)EKey.F12;
         public int MoveConfig = (int)EKey.F1;
@@ -142,5 +192,32 @@ namespace Tunebeat
         public int SaveFile = (int)EKey.F9;
         public int SaveReplay = (int)EKey.F11;
         //public int MoveTraining = EKey.F9;
+    }
+
+    public class BMSKey
+    {
+        public int Key1;
+        public int Key2;
+        public int Key3;
+        public int Key4;
+        public int Key5;
+        public int Key6;
+        public int Key7;
+        public int Scr_F;
+        public int Scr_R;
+        public int Start;
+        public int Select;
+
+        public int Pad_Key1 = (int)JoypadButton.Pad_1;
+        public int Pad_Key2 = (int)JoypadButton.Pad_2;
+        public int Pad_Key3 = (int)JoypadButton.Pad_3;
+        public int Pad_Key4 = (int)JoypadButton.Pad_4;
+        public int Pad_Key5 = (int)JoypadButton.Pad_5;
+        public int Pad_Key6 = (int)JoypadButton.Pad_6;
+        public int Pad_Key7 = (int)JoypadButton.Pad_7;
+        public int Pad_Scr_F = (int)JoypadButton.Up;
+        public int Pad_Scr_R = (int)JoypadButton.Down;
+        public int Pad_Start = (int)JoypadButton.Pad_9;
+        public int Pad_Select = (int)JoypadButton.Pad_10;
     }
 }

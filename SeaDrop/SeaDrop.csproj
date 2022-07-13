@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Counter.cs" />
+    <Compile Include="Joypad.cs" />
+    <Compile Include="Math.cs" />
     <Compile Include="UI\Button.cs" />
     <Compile Include="UI\Drawing.cs" />
     <Compile Include="DXLibUtil.cs" />

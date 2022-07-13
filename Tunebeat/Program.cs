@@ -19,14 +19,20 @@ namespace Tunebeat
             //設定読み込み
             PlayData.Init();
 
+            #region Discordの処理
+            //Discord.Initialize("895240560552591400");
+            //StartupTime = Discord.GetUnixTime();
+            //Discord.UpdatePresence("", Properties.Discord.Title, StartupTime);
+            #endregion
+
             SetOutApplicationLogValidFlag(FALSE); //ログ出力するか
             ChangeWindowMode(PlayData.Data.FullScreen ? FALSE : TRUE);  //ウィンドウモード切替
             SetGraphMode(1920, 1080, 32); //ゲームサイズ決める
-            SetWindowSize(1920, 1080); //ウィンドウサイズを決める
-            string Version = "";//AssemblyInfo?そんな回りくどいことはせんよ
+            SetWindowSize(PlayData.Data.Size.Item1, PlayData.Data.Size.Item2); //ウィンドウサイズを決める
+            Version = "";//AssemblyInfo?そんな回りくどいことはせんよ
             #if DEBUG
             #else
-            Version = "  Ver.Beta 0.4";
+            Version = "  Ver.Pre 1.0";
             #endif
             SetMainWindowText("Tunebeat" + Version); //ソフト名決める
             SetWindowStyleMode(7); //画面最大化できるようにする
@@ -45,10 +51,8 @@ namespace Tunebeat
 
             ChangeFont(PlayData.Data.FontName);
 
-            //画像読み込み
-            TextureLoad.Init();
-            //音源読み込み
-            SoundLoad.Init();
+            //画像音源読み込み
+            Resourse.Init();
 
             SeaDrop.SeaDrop.Init();
 
@@ -64,7 +68,8 @@ namespace Tunebeat
                 NowScene?.Update();
                 SeaDrop.SeaDrop.Update();
 
-                if (PlayData.Data.FullScreen) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
+                if (PlayData.Data.FullScreen) Cursor = true;
+                if (Cursor) DrawCircle(Mouse.X, Mouse.Y, 4, Mouse.IsPushing(MouseButton.Left)? (uint)0xffff00 : 0xff0000);
 
                 if (Key.IsPushed(PlayData.Data.ScreenShot))
                 {
@@ -87,6 +92,7 @@ namespace Tunebeat
             //設定の保存
             PlayData.End();
 
+            //Discord.Shutdown();
             DxLib_End();            
         }
 
@@ -99,8 +105,9 @@ namespace Tunebeat
             NowScene = scene;
         }
 
+        public static bool Cursor;
         public static Scene NowScene, OldScene;
-        public static string strTime;
+        public static string strTime, Version;
         public static FPSCount FPS;
     }
 }

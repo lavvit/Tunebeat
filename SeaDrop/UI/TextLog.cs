@@ -19,8 +19,11 @@ namespace SeaDrop
         }
         private static void Draw()
         {
-            DrawBox(0, 1040, 40 + GetDrawStringWidth(Text, Text.Length), 1080, BackColor, TRUE);
-            DrawString(20, 1052, Text, TextColor);
+            if (!string.IsNullOrEmpty(Text))
+            {
+                DrawBox(0, 1040, 40 + GetDrawStringWidth(Text, Text.Length), 1080, BackColor, TRUE);
+                DrawString(20, 1052, Text, TextColor);
+            }
         }
 
         public static void Update()

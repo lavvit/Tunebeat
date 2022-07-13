@@ -25,8 +25,10 @@ namespace SeaDrop
         /// </summary>
         public Sound(string fileName)
         {
+            if (!File.Exists(fileName)) return;
+
             ID = DX.LoadSoundMem(fileName);
-            if (ID != -1 && File.Exists(fileName))
+            if (ID != -1)
             {
                 IsEnable = true;
                 if (DX.GetUseASyncLoadFlag() != DX.TRUE)
@@ -37,6 +39,7 @@ namespace SeaDrop
             FileName = fileName;
 
             Volume = 1.0;
+            PlaySpeed = 1.0;
         }
 
         ~Sound()
@@ -63,9 +66,9 @@ namespace SeaDrop
         {
             if (IsEnable && !IsPlaying)
             {
-                PlayLoop();
                 if (truetime) TrueTime = startTime;
                 else Time = startTime;
+                PlayLoop(false);
             }
         }
 
@@ -89,9 +92,9 @@ namespace SeaDrop
         {
             if (IsEnable)
             {
-                Play();
                 if (truetime) TrueTime = startTime;
                 else Time = startTime;
+                Play(false);
             }
         }
         /// <summary>
@@ -225,7 +228,7 @@ namespace SeaDrop
         }
 
         /// <summary>
-        /// 再生位置。秒が単位。
+        /// 再生位置。ミリ秒が単位。
         /// </summary>
         public double Time
         {
@@ -240,7 +243,7 @@ namespace SeaDrop
                 var freq = Frequency.Value;
                 var pos = DX.GetCurrentPositionSoundMem(ID);
                 // サンプル数で割ると秒数が出るが出る
-                return 1.0 * pos / freq / PlaySpeed;
+                return 1000.0 * pos / freq / PlaySpeed;
             }
             set
             {
@@ -253,11 +256,11 @@ namespace SeaDrop
 
                 var freq = Frequency.Value;
                 var pos = value;
-                DX.SetCurrentPositionSoundMem((int)(1.0 * pos * freq * PlaySpeed), ID);
+                DX.SetCurrentPositionSoundMem((int)(0.001 * pos * freq * PlaySpeed), ID);
             }
         }
         /// <summary>
-        /// 再生速度を考慮しない再生位置。秒が単位。
+        /// 再生速度を考慮しない再生位置。ミリ秒が単位。
         /// </summary>
         public double TrueTime
         {
@@ -272,7 +275,7 @@ namespace SeaDrop
                 var freq = Frequency.Value;
                 var pos = DX.GetCurrentPositionSoundMem(ID);
                 // サンプル数で割ると秒数が出るが出る
-                return 1.0 * pos / freq;
+                return 1000.0 * pos / freq;
             }
             set
             {
@@ -285,7 +288,7 @@ namespace SeaDrop
 
                 var freq = Frequency.Value;
                 var pos = value;
-                DX.SetCurrentPositionSoundMem((int)(1.0 * pos * freq), ID);
+                DX.SetCurrentPositionSoundMem((int)(0.001 * pos * freq), ID);
             }
         }
 
@@ -323,9 +326,10 @@ namespace SeaDrop
         {
             get
             {
-                return DX.GetSoundTotalTime(ID);
+                return DX.GetSoundTotalTime(ID) / PlaySpeed;
             }
         }
+
 
         /// <summary>
         /// 音声の周波数。

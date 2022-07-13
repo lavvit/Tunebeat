@@ -86,9 +86,9 @@ namespace SeaDrop
             }
         }
 
-        public static Texture Texture;
-        public static int Width, Height, Space;
-        public static STNumber[] stNumber;
+        public  Texture Texture;
+        public  int Width, Height, Space;
+        public  STNumber[] stNumber;
     }
 
     public struct STNumber

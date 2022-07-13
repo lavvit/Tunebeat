@@ -70,7 +70,8 @@ namespace Tunebeat
 		String,
 		StrList,
 		Key,
-		EKey
+		EKey,
+		Pad
 	}
 
 	public class OptionBool : Option
@@ -526,6 +527,66 @@ namespace Tunebeat
 		public override object objAmount()
 		{
 			return (EKey)Value;
+		}
+		public override int GetIndex()
+		{
+			return Value;
+		}
+		public override void SetIndex(object index)
+		{
+			Value = (int)index;
+		}
+	}
+
+	public class OptionPad : Option
+	{
+		public int Value, Preset, Player;
+		public bool Selecting;
+
+		public OptionPad()
+		{
+			Type = OptionType.Pad;
+			Value = 0;
+			Preset = 0;
+			Selecting = false;
+		}
+		public OptionPad(string name, int value, string info, int player)
+			: this()
+		{
+			KeyInit(name, value, info, player);
+		}
+		public override void Enter()
+		{
+			for (int i = 0; i < 32; i++)
+			{
+				if (Joypad.IsPushing(Player, Joypad.GetButtonFromIndex(i)))
+				{
+					Value = (int)Joypad.GetButtonFromIndex(i);
+				}
+			}
+			Selecting = !Selecting;
+		}
+		public override void Up()
+		{
+		}
+		public override void Down()
+		{
+		}
+		public override void Reset()
+		{
+			Value = Preset;
+		}
+		public void KeyInit(string name, int value, string info, int player)
+		{
+			Init(name, info);
+			Value = value;
+			Preset = value;
+			Selecting = false;
+			Player = player;
+		}
+		public override object objAmount()
+		{
+			return (JoypadButton)Value;
 		}
 		public override int GetIndex()
 		{

@@ -25,8 +25,8 @@ namespace Tunebeat
         public override void Draw()
         {
             Drawing.Box(0, 0, 1919, 257, Drawing.Color(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]));
-            TextureLoad.Result_Background.Draw(0, 0);
-            TextureLoad.Result_Panel.Draw(0, 0, new Rectangle(0, 0, 960, 1080));
+            Tx.Result_Background.Draw(0, 0);
+            Tx.Result_Panel.Draw(0, 0, new Rectangle(0, 0, 960, 1080));
 
             int[] Color = new int[100];
             int[] Color2P = new int[100];
@@ -38,9 +38,9 @@ namespace Tunebeat
 
             for (int i = 0; i < 100; i++)
             {
-                TextureLoad.Result_Gauge.Draw(159 + 4 * i, 279, new Rectangle(Color[i], (int)Score.Gauge[0] > i ? 48 : 0, 3, 48));
+                Tx.Result_Gauge.Draw(159 + 4 * i, 279, new Rectangle(Color[i], (int)Score.Gauge[0] > i ? 48 : 0, 3, 48));
             }
-            TextureLoad.Result_Rank.Draw(363, 461, new Rectangle(0, 45 * (int)Score.Rank[0], 161, 45));
+            Tx.Result_Rank.Draw(363, 461, new Rectangle(0, 45 * (int)Score.Rank[0], 161, 45));
 
             Score.DrawNumber(52, 290, $"{(int)Score.Gauge[0],3}%", 0);
             Score.DrawNumber(377, 541, $"{(Score.EXScore[0] > 0 ? Score.EXScore[0] : Score.Auto[0] * 2),5}", Score.EXScore[0] > 0 ? 6 : 7);
@@ -48,7 +48,7 @@ namespace Tunebeat
             ReplayData data = PlayMemory.BestData;
             if (data != null)
             {
-                TextureLoad.Result_Rank.Draw(363 - 165, 461, new Rectangle(0, 45 * (int)Score.GetRank(data.Score, 0), 161, 45));
+                Tx.Result_Rank.Draw(363 - 165, 461, new Rectangle(0, 45 * (int)Score.GetRank(data.Score, 0), 161, 45));
                 Score.DrawNumber(377 - 165, 541, $"{data.Score,5}", 0);
                 Score.DrawNumber(377 - 165, 541 + 73, $"{data.Bad + data.Poor,5}", 0);
 
@@ -108,20 +108,20 @@ namespace Tunebeat
             int rate = pgrate + grrate + gdrate + bdrate + prrate;
             double perfast = fast + rate > 0 ? fast / (double)(fast + rate) : 0;
             double perrate = fast + rate > 0 ? rate / (double)(fast + rate) : 0;
-            TextureLoad.Result_FastRate.Draw(119, 949, new Rectangle(0, 0, (int)(200.0 * perfast), 16));
-            TextureLoad.Result_FastRate.Draw(119, 969, new Rectangle(0, 16, (int)(200.0 * perrate), 16));
+            Tx.Result_FastRate.Draw(119, 949, new Rectangle(0, 0, (int)(200.0 * perfast), 16));
+            Tx.Result_FastRate.Draw(119, 969, new Rectangle(0, 16, (int)(200.0 * perrate), 16));
 
             Score.DrawNumber(398, 960, $"{(Score.EXScore[0] > 0 ? Score.Roll[0] : Score.AutoRoll[0]),4}", Score.EXScore[0] == 0 && Score.AutoRoll[0] > 0 ? 5 : 0);
 
             if (Game.Play2P)
             {
-                TextureLoad.Result_Panel.Draw(960, 0, new Rectangle(960, 0, 960, 1080));
+                Tx.Result_Panel.Draw(960, 0, new Rectangle(960, 0, 960, 1080));
 
                 for (int i = 0; i < 100; i++)
                 {
-                    TextureLoad.Result_Gauge.Draw(1319 + 159 + 4 * i, 279, new Rectangle(Color2P[i], (int)Score.Gauge[1] > i ? 48 : 0, 3, 48));
+                    Tx.Result_Gauge.Draw(1319 + 159 + 4 * i, 279, new Rectangle(Color2P[i], (int)Score.Gauge[1] > i ? 48 : 0, 3, 48));
                 }
-                TextureLoad.Result_Rank.Draw(1353 + 363, 461, new Rectangle(0, 45 * (int)Score.Rank[1], 161, 45));
+                Tx.Result_Rank.Draw(1353 + 363, 461, new Rectangle(0, 45 * (int)Score.Rank[1], 161, 45));
 
                 Score.DrawNumber(1319 + 52, 290, $"{(int)Score.Gauge[1],3}%", 0);
                 Score.DrawNumber(1353 + 377, 541, $"{(Score.EXScore[1] > 0 ? Score.EXScore[1] : Score.Auto[1] * 2),5}", Score.EXScore[1] > 0 ? 6 : 7);
@@ -143,14 +143,14 @@ namespace Tunebeat
         {
             if (Key.IsPushed(EKey.Esc) || Key.IsPushed(EKey.Enter) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
-                SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
-                SoundLoad.Don[0].Play();
+                Sfx.Don[0].Volume = PlayData.Data.SE / 100.0;
+                Sfx.Don[0].Play();
                 Program.SceneChange(new SongSelect());
             }
             if (Key.IsPushed(PlayData.Data.PlayReset))
             {
-                SoundLoad.Ka[0].Volume = PlayData.Data.SE / 100.0;
-                SoundLoad.Ka[0].Play();
+                Sfx.Ka[0].Volume = PlayData.Data.SE / 100.0;
+                Sfx.Ka[0].Play();
                 Program.SceneChange(new Game());
             }
 

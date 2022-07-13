@@ -7,7 +7,8 @@ namespace Tunebeat
     {
         public override void Enable()
         {
-            Config = false;
+            ToConfig = false;
+            Config.SoundPitch();
             base.Enable();
         }
 
@@ -18,11 +19,11 @@ namespace Tunebeat
         public override void Draw()
         {
             Drawing.Box(0, 0, 1919, 1079, Drawing.Color(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]));
-            TextureLoad.Title_Background.Draw(0, 0);
+            Tx.Title_Background.Draw(0, 0);
 
-            TextureLoad.Title_Text.Draw(270, 350);
-            TextureLoad.Title_Text_Color.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
-            TextureLoad.Title_Text_Color.Draw(270, 350);
+            Tx.Title_Text.Draw(270, 350);
+            Tx.Title_Text_Color.Color = Color.FromArgb(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]);
+            Tx.Title_Text_Color.Draw(270, 350);
 
             #if DEBUG
             Drawing.Text(0, 0, $"RGB:{PlayData.Data.SkinColor[0]},{PlayData.Data.SkinColor[1]},{PlayData.Data.SkinColor[2]}", 0xffffff);
@@ -35,9 +36,10 @@ namespace Tunebeat
         {
             if (Key.IsPushed(EKey.Enter) || Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON) || Mouse.IsPushed(MouseButton.Left))
             {
-                SoundLoad.Don[0].Volume = PlayData.Data.SE / 100.0;
-                SoundLoad.Don[0].Play();
+                Sfx.Don[0].Volume = PlayData.Data.SE / 100.0;
+                Sfx.Don[0].Play();
                 SongLoad.Init();
+                TextLog.Draw(LoadPath);
                 Program.SceneChange(new SongSelect());
             }
             if (Key.IsPushed(EKey.Esc))
@@ -46,7 +48,7 @@ namespace Tunebeat
             }
             if (Key.IsPushed(PlayData.Data.MoveConfig))
             {
-                Config = true;
+                ToConfig = true;
                 Program.SceneChange(new Config());
             }
 
@@ -88,6 +90,8 @@ namespace Tunebeat
 
             base.Update();
         }
-        public static bool Config;
+
+        public static bool ToConfig;
+        public static string LoadPath;
     }
 }

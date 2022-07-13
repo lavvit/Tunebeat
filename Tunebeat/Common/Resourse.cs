@@ -2,16 +2,26 @@
 
 namespace Tunebeat
 {
-    class TextureLoad
+    public class Resourse
+    {
+        public static void Init()
+        {
+            Tx.Init();
+            Sfx.Init();
+        }
+    }
+
+    public class Tx
     {
         public static void Init()
         {
             const string DEFAULT = @"Graphic\";
             const string TITLE = @"\Title\";
-            const string PLAYER = @"\Player\";
-            const string MODE = @"\ModeSelect\";
+            //const string PLAYER = @"\Player\";
+            //const string MODE = @"\ModeSelect\";
             const string SONG = @"\SongSelect\";
             const string GAME = @"\Game\";
+            const string BMS = @"\Game\BMS\";
             const string RESULT = @"\Result\";
 
             #region Title
@@ -78,6 +88,15 @@ namespace Tunebeat
                 Game_Bomb[i] = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{GAME}Bomb_{i}.png");
             }
             #endregion
+            #region BMS
+            BMS_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Background.png");
+            BMS_Lane = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Lane.png");
+            BMS_Notes = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Notes.png");
+            BMS_Long = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Long.png");
+            BMS_Long_Charge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Long_Charge.png");
+            BMS_Long_Hell = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Long_Hell.png");
+            BMS_Long_Hell_Charge = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{BMS}Long_Hell_Charge.png");
+            #endregion
             #region Result
             Result_Background = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}Background.png");
             Result_Panel = new Texture($"{DEFAULT}{PlayData.Data.SkinName}{RESULT}Panel.png");
@@ -140,6 +159,15 @@ namespace Tunebeat
         public static Texture[][] Game_Don = new Texture[5][],
             Game_Ka = new Texture[5][];
         #endregion
+        #region BMS
+        public static Texture BMS_Background,
+            BMS_Lane,
+            BMS_Notes,
+            BMS_Long,
+            BMS_Long_Charge,
+            BMS_Long_Hell,
+            BMS_Long_Hell_Charge;
+        #endregion
         #region Result
         public static Texture Result_Background,
             Result_Panel,
@@ -147,5 +175,46 @@ namespace Tunebeat
             Result_Gauge,
             Result_Rank;
         #endregion
+    }
+
+    public class Sfx
+    {
+        public static void Init()
+        {
+            const string SOUND = @"Sound\";
+            //const string BGM = @"BGM\";
+            for (int i = 0; i < 5; i++)
+            {
+                Don[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Don.ogg");
+                Ka[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Ka.ogg");
+
+                if (System.IO.File.Exists($@"{SOUND}{PlayData.Data.SoundName}\Don_Large.ogg"))
+                {
+                    DON[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Don_Large.ogg");
+                }
+                else
+                {
+                    DON[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Don.ogg");
+                }
+
+                if (System.IO.File.Exists($@"{SOUND}{PlayData.Data.SoundName}\Ka_Large.ogg"))
+                {
+                    KA[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Ka_Large.ogg");
+                }
+                else
+                {
+                    KA[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Ka.ogg");
+                }
+                Balloon[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Balloon.ogg");
+                Kusudama[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Kusudama.ogg");
+            }
+            Metronome = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Metronome.ogg");
+            Metronome_Bar = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Metronome_Bar.ogg");
+
+            KeySound = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Key.ogg");
+        }
+
+        public static Sound Metronome, Metronome_Bar, KeySound;
+        public static Sound[] Don = new Sound[5], Ka = new Sound[5], DON = new Sound[5], KA = new Sound[5], Balloon = new Sound[5], Kusudama = new Sound[5];
     }
 }

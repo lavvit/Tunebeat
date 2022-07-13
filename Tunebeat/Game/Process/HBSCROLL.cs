@@ -11,7 +11,7 @@ namespace Tunebeat
     {
         public static void Init(int player)
         {
-            List<Chip> ListChip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip;
+            /*List<Chip> ListChip = SongData.NowTJA[player].Courses[Game.Course[player]].ListChip;
             int count = ListChip.Count;
             int lastbpm = ListChip[count - 1].BPMID + 1;
             List<Chip>[] ChipList = new List<Chip>[lastbpm];
@@ -32,7 +32,7 @@ namespace Tunebeat
                     Chips = ChipList[i]
                 };
                 Chips[player].Add(chip);
-            }
+            }*/
         }
 
         public double GetNowPBMTime()

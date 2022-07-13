@@ -26,10 +26,10 @@ namespace SeaDrop
         {
             if (IsEnable && !IsPlaying)
             {
-                Play();
                 if (truetime) TrueTime = startTime;
                 else Time = startTime;
                 Volume = 0;
+                Play(false);
             }
         }
         /// <summary>
@@ -52,10 +52,10 @@ namespace SeaDrop
         {
             if (IsEnable)
             {
-                Play();
                 if (truetime) TrueTime = startTime;
                 else Time = startTime;
                 Volume = 0;
+                Play(false);
             }
         }
         /// <summary>
@@ -78,9 +78,9 @@ namespace SeaDrop
         {
             if (IsEnable && !IsPlaying)
             {
-                Play();
                 if (truetime) TrueTime = startTime;
                 else Time = startTime;
+                Play(false);
             }
         }
         /// <summary>
@@ -102,9 +102,9 @@ namespace SeaDrop
         {
             if (IsEnable)
             {
-                Play();
                 if (truetime) TrueTime = startTime;
                 else Time = startTime;
+                Play(false);
             }
         }
         /// <summary>

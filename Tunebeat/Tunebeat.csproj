@@ -57,29 +57,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BGame\Game.cs" />
+    <Compile Include="BGame\Notes.cs" />
+    <Compile Include="BGame\Process\Process.cs" />
+    <Compile Include="BGame\Process\Sudden.cs" />
+    <Compile Include="BGame\Score.cs" />
+    <Compile Include="Common\Discord.cs" />
     <Compile Include="Common\PlayData.cs" />
+    <Compile Include="Common\Resourse.cs" />
     <Compile Include="Common\SongData.cs" />
-    <Compile Include="Common\SoundLoad.cs" />
-    <Compile Include="Common\TextureLoad.cs" />
     <Compile Include="Config\Config.cs" />
     <Compile Include="Config\OptionList.cs" />
     <Compile Include="Game\Create.cs" />
     <Compile Include="Game\Game.cs" />
+    <Compile Include="Game\Process\DanC.cs" />
     <Compile Include="Game\Process\GetNotes.cs" />
     <Compile Include="Game\Process\HBSCROLL.cs" />
     <Compile Include="Game\Process\KeyInput.cs" />
     <Compile Include="Game\Notes.cs" />
+    <Compile Include="Game\Process\Memory.cs" />
     <Compile Include="Game\Process\PlayMemory.cs" />
+    <Compile Include="Game\Process\Process.cs" />
     <Compile Include="Game\Process\ProcessAuto.cs" />
     <Compile Include="Game\Process\ProcessNote.cs" />
     <Compile Include="Game\Process\ProcessReplay.cs" />
+    <Compile Include="Game\Process\Sudden.cs" />
     <Compile Include="Game\Score.cs" />
     <Compile Include="ModeSelect\ModeSelect.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Discord.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Discord.resx</DependentUpon>
+    </Compile>
     <Compile Include="Result\Result.cs" />
     <Compile Include="SongSelect\BestScore.cs" />
+    <Compile Include="SongSelect\DanMenu.cs" />
+    <Compile Include="SongSelect\OptionMenu.cs" />
     <Compile Include="SongSelect\SongLoad.cs" />
     <Compile Include="SongSelect\SongSelect.cs" />
     <Compile Include="Title\Title.cs" />
@@ -88,6 +104,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BMSParse\BMSParse.csproj">
+      <Project>{0ab67fdf-770e-4f42-9117-447f18e159f6}</Project>
+      <Name>BMSParse</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SeaDrop\SeaDrop.csproj">
       <Project>{cc36afc2-4daa-44be-9121-656d642c0e3a}</Project>
       <Name>SeaDrop</Name>
@@ -99,6 +119,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Tunebeat.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Discord.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Discord.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

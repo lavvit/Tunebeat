@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,13 +45,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bar.cs" />
     <Compile Include="Chip.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="Course.cs" />
     <Compile Include="DanCourse.cs" />
     <Compile Include="Header.cs" />
     <Compile Include="NowInfo.cs" />
     <Compile Include="TJAParse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SeaDrop\SeaDrop.csproj">
+      <Project>{cc36afc2-4daa-44be-9121-656d642c0e3a}</Project>
+      <Name>SeaDrop</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

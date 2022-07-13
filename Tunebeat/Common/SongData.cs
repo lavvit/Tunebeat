@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SeaDrop;
 using TJAParse;
+using BMSParse;
 
 namespace Tunebeat
 {
@@ -17,5 +18,6 @@ namespace Tunebeat
 
         public static Song NowSong;
         public static TJA[] NowTJA;
+        public static BMS[] NowBMS;
     }
 }

@@ -9,7 +9,8 @@ namespace TJAParse
     public class Chip
     {
         public ENote ENote;
-        public EChip EChip;
+        public ENote ERanNote;
+        public ERoll ERoll;
         public double Time;//判定
         //public double DrawTime;//描画
         public double Bpm;
@@ -26,20 +27,12 @@ namespace TJAParse
         public Chip RollEnd;
         public string Lyric;
         public double[] Sudden;
-        public int BPMID;//HBS用
-    }
+        //public int BPMID;//HBS用
 
-    public class BPM
-    {
-
-    }
-
-    public enum EChip
-    {
-        Note,
-        Measure,
-        GoGoStart,
-        GoGoEnd
+        public string Draw()
+        {
+            return $"{(int)Time,7},{ENote,9},{ERoll,8},{(IsGogo ? "GOGO" : "    ")}{(ENote == ENote.Balloon || ENote == ENote.Kusudama ? $",{Balloon,4}" : "")}";
+        }
     }
 
     public enum ENote
@@ -55,4 +48,12 @@ namespace TJAParse
         RollEnd,
         Kusudama
     }
+    public enum ERoll
+    {
+        None,
+        Roll,
+        ROLL,
+        Balloon,
+        Kusudama
+    };
 }

@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tunebeat", "Tunebeat\Tunebe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TJAParse", "TJAParse\TJAParse.csproj", "{DDCEC7FC-EA71-46C5-B4C1-7E4C02529CB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BMSParse", "BMSParse\BMSParse.csproj", "{0AB67FDF-770E-4F42-9117-447F18E159F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,18 @@ Global
 		{DDCEC7FC-EA71-46C5-B4C1-7E4C02529CB8}.Release|x64.Build.0 = Release|Any CPU
 		{DDCEC7FC-EA71-46C5-B4C1-7E4C02529CB8}.Release|x86.ActiveCfg = Release|Any CPU
 		{DDCEC7FC-EA71-46C5-B4C1-7E4C02529CB8}.Release|x86.Build.0 = Release|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Debug|x64.Build.0 = Debug|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Debug|x86.Build.0 = Debug|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Release|x64.ActiveCfg = Release|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Release|x64.Build.0 = Release|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Release|x86.ActiveCfg = Release|Any CPU
+		{0AB67FDF-770E-4F42-9117-447F18E159F6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

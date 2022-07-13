@@ -17,7 +17,16 @@ namespace SeaDrop
         }
         public static void Update()
         {
-            if (Input.IsEnable) Draw();
+            if (Input.IsEnable)
+            {
+                Draw();
+
+                if (Input.Text.Contains(""))
+                {
+                    Input.Text = Input.Text.Substring(0, Input.Text.IndexOf(""));
+                    Input.Selection = (0, Input.Text.Length);
+                }
+            }
         }
     }
 }

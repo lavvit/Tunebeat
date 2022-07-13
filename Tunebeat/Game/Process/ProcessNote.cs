@@ -43,7 +43,7 @@ namespace Tunebeat
         public static void PassNote(Chip chip, double time, bool isDon, int player)
         {
             double cuttime = Game.MainTimer.State == 0 ? -1 : -100;
-            if (!chip.IsHit && time < cuttime && chip.EChip == EChip.Note && chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
+            if (!chip.IsHit && time < cuttime && chip.ENote >= ENote.Don && chip.ENote <= ENote.KA)
                 if (!chip.IsMiss)
                     if (GetNotes.GetJudge(chip, time) == EJudge.Through)
                     {
@@ -57,7 +57,7 @@ namespace Tunebeat
 
         public static ERoll RollState(Chip chip)
         {
-            if (chip != null && chip.EChip == EChip.Note)
+            if (chip != null)
             {
                 switch (chip.ENote)
                 {
@@ -104,13 +104,13 @@ namespace Tunebeat
                         {
                             if (RollState(chip) == ERoll.Balloon)
                             {
-                                SoundLoad.Balloon[player].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
-                                SoundLoad.Balloon[player].Play();
+                                Sfx.Balloon[player].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
+                                Sfx.Balloon[player].Play();
                             }
                             else
                             {
-                                SoundLoad.Kusudama[player].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
-                                SoundLoad.Kusudama[player].Play();
+                                Sfx.Kusudama[player].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
+                                Sfx.Kusudama[player].Play();
                             }
                             chip.IsHit = true;
                         }
@@ -123,13 +123,4 @@ namespace Tunebeat
 
         public static int[] NowRoll = new int[5], BalloonRemain = new int[5];
     }
-
-    public enum ERoll
-    {
-        None,
-        Roll,
-        ROLL,
-        Balloon,
-        Kusudama
-    };
 }

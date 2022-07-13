@@ -33,15 +33,15 @@ namespace Tunebeat
                                 break;
                             case 2:
                                 Create.File.Wave = Input.Text;
-                                if (!string.IsNullOrEmpty(Create.File.Wave)) Game.MainSong = new Sound($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Create.File.Wave}");
+                                if (!string.IsNullOrEmpty(Create.File.Wave)) Game.MainSong = new Sound($"{Path.GetDirectoryName(SongData.NowTJA[0].Path)}/{Create.File.Wave}");
                                 break;
                             case 3:
                                 Create.File.BGImage = Input.Text;
-                                if (!string.IsNullOrEmpty(Create.File.BGImage)) Game.MainImage = new Texture($"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Create.File.BGImage}");
+                                if (!string.IsNullOrEmpty(Create.File.BGImage)) Game.MainImage = new Texture($"{Path.GetDirectoryName(SongData.NowTJA[0].Path)}/{Create.File.BGImage}");
                                 break;
                             case 4:
                                 Create.File.BGMovie = Input.Text;
-                                string path = $"{Path.GetDirectoryName(SongData.NowTJA[0].TJAPath)}/{Create.File.BGMovie}";
+                                string path = $"{Path.GetDirectoryName(SongData.NowTJA[0].Path)}/{Create.File.BGMovie}";
                                 string mp4path = path.Replace("wmv", "mp4");
                                 if (PlayData.Data.PlayMovie) Game.MainMovie = new Movie(File.Exists(mp4path) ? mp4path : path);
                                 break;
@@ -150,7 +150,7 @@ namespace Tunebeat
                     {
                         if (!SongData.NowTJA[0].Courses[Game.Course[0]].IsEnable)
                         {
-                            Create.Save(Game.TJAPath);
+                            Create.Save(Game.Path);
                             Game.Reset();
                         }
                         Create.Selecting = !Create.Selecting;
@@ -163,7 +163,7 @@ namespace Tunebeat
                 {
                     if (!Create.DeleteMode) Create.AddCommand(Input.Text);
                     else Create.DeleteCommand(Input.Text);
-                    Create.Save(Game.TJAPath);
+                    Create.Save(Game.Path);
                     Game.Reset();
                     Input.End();
                     Create.CommandLayer = 0;
@@ -628,13 +628,13 @@ namespace Tunebeat
                 int[] wid = new int[8] { 0, 29, 60, 75, 84, 90, 97, 104 };
                 if (Key.IsPushed(PlayData.Data.MoveCreate))
                 {
-                    SoundLoad.Ka[0].Play();
+                    Sfx.Ka[0].Play();
                     Create.CreateMode = !Create.CreateMode;
                     Create.InfoMenu = false;
                     if (Key.IsPushing(EKey.RShift))
                     {
                         Create.BarInit(Game.Course[0]);
-                        Create.Save(Game.TJAPath);
+                        Create.Save(Game.Path);
                     }
                     else Create.BarLoad(Game.Course[0]);
                     Game.Reset();
@@ -664,14 +664,14 @@ namespace Tunebeat
                     int[] inputlist = new int[8] { 4, 8, 12, 16, 20, 24, 32, 48 };
                     if (Key.IsPushed(EKey.NumPad_Divide))
                     {
-                        SoundLoad.Ka[0].Play();
+                        Sfx.Ka[0].Play();
                         if (Create.NowInput > 0) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput - 1];
                         if (Create.NowInput-- <= 0) Create.NowInput = 0;
                         Create.InputType = inputlist[Create.NowInput];
                     }
                     if (Key.IsPushed(EKey.NumPad_Multiply))
                     {
-                        SoundLoad.Ka[0].Play();
+                        Sfx.Ka[0].Play();
                         if (Create.NowInput < 7) Game.TimeRemain = wid[Create.NowInput] - wid[Create.NowInput + 1];
                         if (Create.NowInput++ >= 7) Create.NowInput = 7;
                         Create.InputType = inputlist[Create.NowInput];
@@ -741,9 +741,9 @@ namespace Tunebeat
                                     if (Mouse.IsPushed(MouseButton.Left))
                                     {
                                         if (Create.NowColor == 1 || Create.NowColor == 3)
-                                            SoundLoad.Ka[0].Play();
+                                            Sfx.Ka[0].Play();
                                         else
-                                            SoundLoad.Don[0].Play();
+                                            Sfx.Don[0].Play();
                                         if (Create.RollEnd)
                                         {
                                             chip.ENote = ENote.RollEnd;
@@ -781,7 +781,7 @@ namespace Tunebeat
                         if (!Create.Mapping)
                         {
                             TextLog.Draw("マッピングをセーブしました!");
-                            Create.Save(Game.TJAPath);
+                            Create.Save(Game.Path);
                             Game.Reset();
                         }
                     }
@@ -789,13 +789,13 @@ namespace Tunebeat
                     {
                         if (Key.IsPushed(PlayData.Data.LEFTDON) || Key.IsPushed(PlayData.Data.RIGHTDON))
                         {
-                            SoundLoad.Don[0].Play();
+                            Sfx.Don[0].Play();
                             Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, true);
                             Flash(true, Key.IsPushed(PlayData.Data.LEFTDON), 0);
                         }
                         if (Key.IsPushed(PlayData.Data.LEFTKA) || Key.IsPushed(PlayData.Data.RIGHTKA))
                         {
-                            SoundLoad.Ka[0].Play();
+                            Sfx.Ka[0].Play();
                             Create.InputN(Game.Course[0], Game.MainTimer.Value, Game.NowMeasure, false);
                             Flash(false, Key.IsPushed(PlayData.Data.LEFTKA), 0);
                         }
@@ -803,7 +803,7 @@ namespace Tunebeat
                     if (Key.IsPushed(PlayData.Data.SaveFile))
                     {
                         TextLog.Draw("セーブしました!");
-                        Create.Save(Game.TJAPath);
+                        Create.Save(Game.Path);
                     }
                     if (Key.IsPushed(PlayData.Data.InfoMenu))
                     {
@@ -812,7 +812,7 @@ namespace Tunebeat
                     if (Key.IsPushed(PlayData.Data.AddMeasure))
                     {
                         Create.AddMeasure();
-                        Create.Save(Game.TJAPath);
+                        Create.Save(Game.Path);
                         Game.Reset();
                     }
                     if (Key.IsPushed(PlayData.Data.AddCommand))
@@ -824,12 +824,12 @@ namespace Tunebeat
                     {
                         if (Key.IsPushed(EKey.Up))
                         {
-                            SoundLoad.Ka[0].Play();
+                            Sfx.Ka[0].Play();
                             if (Create.NowColor-- <= 0) Create.NowColor = 7;
                         }
                         if (Key.IsPushed(EKey.Down))
                         {
-                            SoundLoad.Ka[0].Play();
+                            Sfx.Ka[0].Play();
                             if (Create.NowColor++ >= 7) Create.NowColor = 0;
                         }
                     }
@@ -942,21 +942,21 @@ namespace Tunebeat
             for (int i = 0; i < 5; i++)
             {
                 taiko[i] = new Sound[2];
-                taiko[i][0] = SoundLoad.Don[i];
-                taiko[i][1] = SoundLoad.Ka[i];
+                taiko[i][0] = Sfx.Don[i];
+                taiko[i][1] = Sfx.Ka[i];
             }
             if (chip != null && Math.Abs(Game.MainTimer.Value - Game.Adjust[player] - chip.Time) <= 32 && ((chip.ENote == ENote.DON || chip.ENote == ENote.KA) && (judge <= EJudge.Great || judge == EJudge.Auto)) || roll == ERoll.ROLL)
             {
-                taiko[player][0] = SoundLoad.DON[player];
+                taiko[player][0] = Sfx.DON[player];
                 taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0) * 1.5;
-                taiko[player][1] = SoundLoad.KA[player];
+                taiko[player][1] = Sfx.KA[player];
                 taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0) * 1.5;
             }
             else
             {
-                taiko[player][0] = SoundLoad.Don[player];
+                taiko[player][0] = Sfx.Don[player];
                 taiko[player][0].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
-                taiko[player][1] = SoundLoad.Ka[player];
+                taiko[player][1] = Sfx.Ka[player];
                 taiko[player][1].Volume = (PlayData.Data.SE / 100.0) * (SongData.NowTJA[0].Header.SEVOL / 100.0);
             }
 

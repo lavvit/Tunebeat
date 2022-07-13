@@ -21,5 +21,6 @@ namespace TJAParse
         public static string LyricText = null;
         public static double[] Sudden = new double[2];
         public static int BPMID = 0;
+        public static ERoll RollState = ERoll.None;
     }
 }

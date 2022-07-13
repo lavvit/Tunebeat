@@ -45,8 +45,10 @@ namespace SeaDrop
         public Texture(string fileName)
             : this()
         {
+            if (!File.Exists(fileName)) return;
+
             ID = DX.LoadGraph(fileName);
-            if (ID != -1 && File.Exists(fileName))
+            if (ID != -1)
             {
                 IsEnable = true;
             }

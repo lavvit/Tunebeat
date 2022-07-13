@@ -36,7 +36,7 @@ namespace Tunebeat
                     continue;
 
                 Chip chip = listChip[nIndex_NearestChip_Future];
-                if (!chip.IsHit && chip.CanShow)
+                if (!chip.IsHit && chip.CanShow)// && !chip.IsDummy)
                 {
                     if (((chip.ENote >= ENote.Don) && (chip.ENote <= ENote.KA)))
                     {
@@ -54,9 +54,12 @@ namespace Tunebeat
             {
                 Chip chip = listChip[nIndex_NearestChip_Past];
                 //if ( (!chip.bHit && chip.b可視 ) && ( (  0x93 <= chip.nチャンネル番号 ) && ( chip.nチャンネル番号 <= 0x99 ) ) )
-                if ((!chip.IsHit && chip.CanShow) && ((chip.ENote >= ENote.Don) && (chip.ENote <= ENote.KA)))
+                if (!chip.IsHit && chip.CanShow)// && !chip.IsDummy)
                 {
-                    break;
+                    if (((chip.ENote >= ENote.Don) && (chip.ENote <= ENote.KA)))
+                    {
+                            break;
+                    }
                 }
             }
             if ((nIndex_NearestChip_Future >= count) && (nIndex_NearestChip_Past < 0))  // 検索対象が過去未来どちらにも見つからなかった場合
@@ -198,16 +201,5 @@ namespace Tunebeat
             else return EJudge.Through;
         }
         public static double[] range = new double[5] { PlayData.Data.JudgePerfect, PlayData.Data.JudgeGreat, PlayData.Data.JudgeGood, PlayData.Data.JudgeBad, PlayData.Data.JudgePoor };
-    }
-
-    public enum EJudge
-    {
-        Perfect,
-        Great,
-        Good,
-        Bad,
-        Poor,
-        Through,
-        Auto
     }
 }
