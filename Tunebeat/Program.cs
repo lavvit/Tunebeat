@@ -38,7 +38,7 @@ namespace Tunebeat
             SetWindowStyleMode(7); //画面最大化できるようにする
             SetWindowSizeChangeEnableFlag(TRUE); //ウィンドウサイズ変えれるようにする
             SetAlwaysRunFlag(TRUE); //ソフトがアクティブじゃなくても処理続行するようにする
-            SetWindowSizeExtendRate(0.75f); //起動時のウィンドウサイズを設定 ( 1 = 100%)
+            SetWindowSizeExtendRate(1.0f); //起動時のウィンドウサイズを設定 ( 1 = 100%)
             SetUseMaskScreenFlag(TRUE); //書かなくても良い。マスク使うときだけ書こう
             SetWaitVSyncFlag(PlayData.Data.VSync ? TRUE : FALSE); //垂直同期にするかどうか
             SetDoubleStartValidFlag(TRUE); //複数起動ができるようにするかどうか

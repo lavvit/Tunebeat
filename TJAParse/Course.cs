@@ -517,7 +517,9 @@ namespace TJAParse
         Normal,
         Hard,
         Oni,
-        Edit
+        Edit,
+        Tower,
+        Dan
     }
 
     public enum EScroll

@@ -47,7 +47,7 @@ namespace Tunebeat
                     }
                     else
                     {
-                        Drawing.Box(x[i], 0, 432, 722 * (SuddenNumber[i] / 1000.0), Drawing.Color(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]));
+                        Drawing.Box((i == 0 && PlayData.Data.Is2PSide ? x[1] : x[i]), 0, 432, 722 * (SuddenNumber[i] / 1000.0), Drawing.Color(PlayData.Data.SkinColor[0], PlayData.Data.SkinColor[1], PlayData.Data.SkinColor[2]));
                     }
                 }
 
@@ -79,7 +79,7 @@ namespace Tunebeat
             }
             if (BGame.NowState < EState.End && BGame.Playmode[0] < EAuto.Replay)
             {
-                if (Key.IsPushed(EKey.W))
+                if (BProcess.Pushed(8, 0))
                 {
                     if (STimer[0].State == 0)
                     {
@@ -94,7 +94,7 @@ namespace Tunebeat
                         STimer[0].Stop();
                     }
                 }
-                if (Key.IsPushed(EKey.P) && BGame.Play2P)
+                if (BProcess.Pushed(8, 1) && BGame.Play2P)
                 {
                     if (STimer[1].State == 0)
                     {
@@ -110,8 +110,90 @@ namespace Tunebeat
                         STimer[1].Stop();
                     }
                 }
-                //if (Key.IsPushing(EKey.W)) SuddenUpdate(0);
-                //if (Key.IsPushing(EKey.P)) SuddenUpdate(1);
+                if (BProcess.Pushing(8, 0)) SuddenUpdate(0);
+                if (BProcess.Pushing(8, 1) && BGame.Play2P) SuddenUpdate(1);
+            }
+        }
+
+        public static void SuddenUpdate(int player)
+        {
+            if (BProcess.Pushed(2, player) || BProcess.Pushed(4, player) || BProcess.Pushed(6, player))
+            {
+                if (PlayData.Data.BMSNormalHiSpeed[player] && !PlayData.Data.BMSFloatingHiSpeed[player])
+                {
+                    if (NHSNumber[player] < 19) NHSNumber[player]++;
+                    SetNHSScroll(player);
+                }
+                else
+                {
+                    BNotes.Scroll[player] += 0.25;
+                    BGame.ScrollRemain[player] += 0.25;
+                    if (PlayData.Data.BMSFloatingHiSpeed[player] && BGame.NowState == EState.None) PreGreen[player] = GetGreenNumber(player);
+                }
+                //Add(player);
+            }
+            if (BProcess.Pushed(1, player) || BProcess.Pushed(3, player) || BProcess.Pushed(5, player) || BProcess.Pushed(7, player))
+            {
+                if (PlayData.Data.BMSNormalHiSpeed[player] && !PlayData.Data.BMSFloatingHiSpeed[player])
+                {
+                    if (NHSNumber[player] > 0) NHSNumber[player]--;
+                    SetNHSScroll(player);
+                }
+                else
+                {
+                    BNotes.Scroll[player] -= 0.25;
+                    BGame.ScrollRemain[player] -= 0.25;
+                    if (PlayData.Data.BMSFloatingHiSpeed[player] && BGame.NowState == EState.None) PreGreen[player] = GetGreenNumber(player);
+                }
+                //Add(player);
+            }
+            if (Key.IsPushed(EKey.Left))
+            {
+                BGame.Adjust[player] += 0.5;
+                //Add(player);
+            }
+            if (Key.IsPushed(EKey.Right))
+            {
+                BGame.Adjust[player] -= 0.5;
+                //Add(player);
+            }
+            if (IsHolding(11, player))
+            {
+                if (UseSudden[player])
+                {
+                    if (SuddenNumber[player] < 1000)
+                    {
+                        SetSudden(player, true);
+                        //Add(player);
+                    }
+                }
+                else if (PlayData.Data.BMSFloatingHiSpeed[player])
+                {
+                    BNotes.Scroll[player] += 0.01;
+                    BGame.ScrollRemain[player] += 0.01;
+                    BNotes.Scroll[player] = Math.Round(BNotes.Scroll[player], 2, MidpointRounding.AwayFromZero);
+                    if (BGame.NowState == EState.None) PreGreen[player] = GetGreenNumber(player);
+                    //Add(player);
+                }
+            }
+            if (IsHolding(10, player))
+            {
+                if (UseSudden[player])
+                {
+                    if (SuddenNumber[player] > 0)
+                    {
+                        SetSudden(player, false);
+                        //Add(player);
+                    }
+                }
+                else if (PlayData.Data.BMSFloatingHiSpeed[player])
+                {
+                    BNotes.Scroll[player] -= 0.01;
+                    BGame.ScrollRemain[player] -= 0.01;
+                    BNotes.Scroll[player] = Math.Round(BNotes.Scroll[player], 2, MidpointRounding.AwayFromZero);
+                    if (BGame.NowState == EState.None) PreGreen[player] = GetGreenNumber(player);
+                    //Add(player);
+                }
             }
         }
 
@@ -121,7 +203,7 @@ namespace Tunebeat
             int sudden = UseSudden[player] ? SuddenNumber[player] : 0;
             double suddenrate = 1000.0 / (1000 - sudden);
             double scroll = BNotes.Scroll[player];
-            return (int)(Showms / (bpm * scroll * suddenrate));
+            return (int)Math.Round(Showms / (bpm * scroll * suddenrate), 0, MidpointRounding.AwayFromZero);
         }
 
         public static void SetNHSScroll(int player)
@@ -146,7 +228,7 @@ namespace Tunebeat
         {
             if (Reset)
             {
-                SuddenNumber[player] = PlayData.Data.SuddenNumber[player];
+                SuddenNumber[player] = PlayData.Data.BMSSuddenNumber[player];
             }
             else
             {
@@ -155,7 +237,46 @@ namespace Tunebeat
                 else SuddenNumber[player]--;
             }
 
-            if (PlayData.Data.FloatingHiSpeed[player]) SetScroll(player);
+            if (PlayData.Data.BMSFloatingHiSpeed[player]) SetScroll(player);
         }
+
+        public static bool IsHolding(int key, int player)
+        {
+            counter.Tick();
+            if (BProcess.Pushed(key, player))
+            {
+                counter.Start();
+                return true;
+            }
+            else if (BProcess.Pushing(key, player))
+            {
+                if (Firsted)
+                {
+                    if (counter.Value > 20)
+                    {
+                        counter.Reset();
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (counter.Value > 250)
+                    {
+                        counter.Reset();
+                        Firsted = true;
+                        return true;
+                    }
+                }
+            }
+            else if (BProcess.Left(key, player))
+            {
+                counter.Stop();
+                counter.Reset();
+                Firsted = false;
+            }
+            return false;
+        }
+        private static bool Firsted;
+        private static Counter counter = new Counter(0, 1000, 1000, false);
     }
 }

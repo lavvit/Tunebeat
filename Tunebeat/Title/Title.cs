@@ -39,7 +39,6 @@ namespace Tunebeat
                 Sfx.Don[0].Volume = PlayData.Data.SE / 100.0;
                 Sfx.Don[0].Play();
                 SongLoad.Init();
-                TextLog.Draw(LoadPath);
                 Program.SceneChange(new SongSelect());
             }
             if (Key.IsPushed(EKey.Esc))

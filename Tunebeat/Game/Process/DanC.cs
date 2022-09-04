@@ -159,6 +159,7 @@ namespace Tunebeat
             int red = exam.RedNumberSong != null ? exam.RedNumberSong[DanCourse.SongNumber] : exam.RedNumber;
             int gold = exam.GoldNumberSong != null ? exam.GoldNumberSong[DanCourse.SongNumber] : exam.GoldNumber;
             int total = exam.RedNumberSong != null ? NewGame.NowCourse[0].TotalNotes : NewGame.Dan.TotalNotes;
+            int remain = NotesRemain(exam.RedNumberSong == null);
             if (!exam.isLess)
             {
                 switch (exam.Name)
@@ -170,11 +171,11 @@ namespace Tunebeat
                     case EExam.Poor:
                     case EExam.Light:
                     case EExam.Miss:
-                        if (value + NotesRemain(exam.RedNumberSong != null) < red)
+                        if (value + remain < red)
                             return ESuccess.Failed;
                         break;
                     case EExam.Score:
-                        if (value + (2 * NotesRemain(exam.RedNumberSong != null)) < red) return ESuccess.Failed;
+                        if (value + (2 * remain) < red) return ESuccess.Failed;
                         break;
                 }
 

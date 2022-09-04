@@ -118,7 +118,7 @@ namespace Tunebeat
                             }
                             else
                             {
-                                if (Pushing(i, ps))
+                                if (Pushing(i, ps, p))
                                 {
                                     if (kcolor[i] == 0xff4400)
                                     {
@@ -182,7 +182,7 @@ namespace Tunebeat
                                         int l = p == 1 ? BCourse.GetLane2P(chip, true) : BCourse.GetLane(chip, false);
                                         if (chip.LongEnd != null)
                                         {
-                                            if (l > 0 || (!BGame.AutoScratch[0] && l == 0))
+                                            if (BCourse.GetLane(chip) > 0 || (!PlayData.Data.AutoSclatch[0] && BCourse.GetLane(chip) == 0))
                                             {
                                                 if (!chip.IsHit)
                                                 {
@@ -271,7 +271,7 @@ namespace Tunebeat
                                     }
 
 
-                                    for (int i = BGame.AutoScratch[0] ? 1 : 0; i < 8; i++)
+                                    for (int i = PlayData.Data.AutoSclatch[0] ? 1 : 0; i < 8; i++)
                                     {
                                         int ii = p == 1 ? 8 + i : i;
                                         Chip chip = NearChip(BGame.Chips[0], BCourse.GetChannel(i, p == 1));
@@ -306,7 +306,7 @@ namespace Tunebeat
                                                     {
                                                         if (Pushed(i, p) && GetJudge(BGame.Timer.Value - (chip.Time + BGame.Adjust[0])) < EJudge.Poor && !chip.IsMiss)
                                                         {
-                                                            if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                            PlayKey(i);
                                                             if (BGame.ChargeSound[0][ii] != null)
                                                             {
                                                                 BGame.ChargeSound[0][ii].Volume = PlayData.Data.SE / 100.0;
@@ -339,7 +339,7 @@ namespace Tunebeat
                                                     {
                                                         if (Pushed(i, p) && GetJudge(BGame.Timer.Value - (chip.Time + BGame.Adjust[0])) < EJudge.Poor && !chip.IsMiss)
                                                         {
-                                                            if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                            PlayKey(i);
                                                             if (BGame.ChargeSound[0][ii] != null)
                                                             {
                                                                 BGame.ChargeSound[0][ii].Volume = PlayData.Data.SE / 100.0;
@@ -361,7 +361,7 @@ namespace Tunebeat
                                             {
                                                 if (Pushed(i, p))
                                                 {
-                                                    if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                    PlayKey(i);
                                                     if (BGame.KeySound[0][ii] != null)
                                                     {
                                                         BGame.KeySound[0][ii].Volume = PlayData.Data.SE / 100.0;
@@ -377,7 +377,7 @@ namespace Tunebeat
                                         {
                                             if (Pushed(i, p))
                                             {
-                                                if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                PlayKey(i);
                                                 if (BGame.KeySound[0][ii] != null)
                                                 {
                                                     BGame.KeySound[0][ii].Volume = PlayData.Data.SE / 100.0;
@@ -387,7 +387,7 @@ namespace Tunebeat
                                             }
                                         }
                                     }
-                                    if (BGame.AutoScratch[0])
+                                    if (PlayData.Data.AutoSclatch[0])
                                     {
                                         for (int i = 0; i < BGame.Chips[0].Count; i++)
                                         {
@@ -407,8 +407,8 @@ namespace Tunebeat
                                                     }
                                                     else
                                                     {
-                                                        if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
-                                                        chip.Sound.Volume = 1.0;
+                                                        PlayKey(i);
+                                                        chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                         chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                         if (chip.Time >= time) chip.Sound.Play();
                                                         if (PlayData.Data.LNType > 0) BScore.ScoreSet(EJudge.Auto, 0);
@@ -418,8 +418,8 @@ namespace Tunebeat
                                                 else
                                                 {
                                                     chip.IsHit = true;
-                                                    if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
-                                                    chip.Sound.Volume = 1.0;
+                                                    PlayKey(i);
+                                                    chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                     chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                     if (chip.Time >= time) chip.Sound.Play();
                                                     BScore.ScoreSet(EJudge.Auto, 0);
@@ -450,7 +450,7 @@ namespace Tunebeat
                                                 }
                                                 else
                                                 {
-                                                    if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                    PlayKey(BCourse.GetLane(chip));
                                                     chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                     chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                     if (chip.Time >= time) chip.Sound.Play();
@@ -461,7 +461,7 @@ namespace Tunebeat
                                             else
                                             {
                                                 chip.IsHit = true;
-                                                if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                PlayKey(BCourse.GetLane(chip));
                                                 chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                 chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                 if (chip.Time >= time) chip.Sound.Play();
@@ -478,12 +478,12 @@ namespace Tunebeat
                             #region Key
                             if (BGame.Playmode[0] == EAuto.Normal)
                             {
-                                for (int i = BGame.AutoScratch[0] ? 1 : 0; i < 8; i++)
+                                for (int i = PlayData.Data.AutoSclatch[0] ? 1 : 0; i < 8; i++)
                                 {
                                     int ii = p == 1 ? 8 + i : i;
                                     if (Pushed(i, p))
                                     {
-                                        if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                        PlayKey(i);
                                         if (BGame.KeySound[0][ii] != null)
                                         {
                                             BGame.KeySound[0][ii].Volume = PlayData.Data.SE / 100.0;
@@ -529,7 +529,7 @@ namespace Tunebeat
                                         int l = ps == 1 ? BCourse.GetLane2P(chip) : BCourse.GetLane(chip);
                                         if (chip.LongEnd != null)
                                         {
-                                            if (l > 0 || (!BGame.AutoScratch[p] && l == 0))
+                                            if (BCourse.GetLane(chip) > 0 || (!PlayData.Data.AutoSclatch[p] && BCourse.GetLane(chip) == 0))
                                             {
                                                 if (!chip.IsHit)
                                                 {
@@ -618,7 +618,7 @@ namespace Tunebeat
                                     }
 
 
-                                    for (int i = BGame.AutoScratch[p] ? 1 : 0; i < 8; i++)
+                                    for (int i = PlayData.Data.AutoSclatch[p] ? 1 : 0; i < 8; i++)
                                     {
                                         Chip chip = NearChip(BGame.Chips[p], BCourse.GetChannel(i));
                                         if (chip != null)
@@ -643,16 +643,16 @@ namespace Tunebeat
                                                 {
                                                     if (chip.Pushing)
                                                     {
-                                                        if (Left(i, ps))
+                                                        if (Left(i, ps, p))
                                                         {
                                                             chip.Pushing = false;
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        if (Pushed(i, ps) && GetJudge(BGame.Timer.Value - (chip.Time + BGame.Adjust[p])) < EJudge.Poor && !chip.IsMiss)
+                                                        if (Pushed(i, ps, p) && GetJudge(BGame.Timer.Value - (chip.Time + BGame.Adjust[p])) < EJudge.Poor && !chip.IsMiss)
                                                         {
-                                                            if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                            PlayKey(i);
                                                             if (BGame.ChargeSound[p][i] != null)
                                                             {
                                                                 BGame.ChargeSound[p][i].Volume = PlayData.Data.SE / 100.0;
@@ -670,7 +670,7 @@ namespace Tunebeat
                                                 {
                                                     if (chip.Pushing)
                                                     {
-                                                        if (Left(i, ps))
+                                                        if (Left(i, ps, p))
                                                         {
                                                             BScore.ScoreSet(chip, p, 2);
                                                             chip.Pushing = false;
@@ -684,9 +684,9 @@ namespace Tunebeat
                                                     }
                                                     else
                                                     {
-                                                        if (Pushed(i, ps) && GetJudge(BGame.Timer.Value - (chip.Time + BGame.Adjust[p])) < EJudge.Poor && !chip.IsMiss)
+                                                        if (Pushed(i, ps, p) && GetJudge(BGame.Timer.Value - (chip.Time + BGame.Adjust[p])) < EJudge.Poor && !chip.IsMiss)
                                                         {
-                                                            if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                            PlayKey(i);
                                                             if (BGame.ChargeSound[p][i] != null)
                                                             {
                                                                 BGame.ChargeSound[p][i].Volume = PlayData.Data.SE / 100.0;
@@ -707,9 +707,9 @@ namespace Tunebeat
                                             }
                                             else
                                             {
-                                                if (Pushed(i, ps))
+                                                if (Pushed(i, ps, p))
                                                 {
-                                                    if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                    PlayKey(i);
                                                     if (BGame.KeySound[p][i] != null)
                                                     {
                                                         BGame.KeySound[p][i].Volume = PlayData.Data.SE / 100.0;
@@ -724,9 +724,9 @@ namespace Tunebeat
                                         }
                                         else
                                         {
-                                            if (Pushed(i, ps))
+                                            if (Pushed(i, ps, p))
                                             {
-                                                if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                                PlayKey(i);
                                                 if (BGame.KeySound[p][i] != null)
                                                 {
                                                     BGame.KeySound[p][i].Volume = PlayData.Data.SE / 100.0;
@@ -737,7 +737,7 @@ namespace Tunebeat
                                             }
                                         }
                                     }
-                                    if (BGame.AutoScratch[p])
+                                    if (PlayData.Data.AutoSclatch[p])
                                     {
                                         for (int i = 0; i < BGame.Chips[p].Count; i++)
                                         {
@@ -757,8 +757,8 @@ namespace Tunebeat
                                                     }
                                                     else
                                                     {
-                                                        if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
-                                                        chip.Sound.Volume = 1.0;
+                                                        PlayKey(i);
+                                                        chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                         chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                         chip.Sound.Pan = SetPan(p);
                                                         if (chip.Time >= time) chip.Sound.Play();
@@ -769,8 +769,8 @@ namespace Tunebeat
                                                 else
                                                 {
                                                     chip.IsHit = true;
-                                                    if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
-                                                    chip.Sound.Volume = 1.0;
+                                                    PlayKey(i);
+                                                    chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                     chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                     chip.Sound.Pan = SetPan(p);
                                                     if (chip.Time >= time) chip.Sound.Play();
@@ -802,6 +802,7 @@ namespace Tunebeat
                                                 }
                                                 else
                                                 {
+                                                    PlayKey(BCourse.GetLane(chip));
                                                     chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                     chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
                                                     chip.Sound.Pan = SetPan(p);
@@ -812,6 +813,7 @@ namespace Tunebeat
                                             }
                                             else
                                             {
+                                                PlayKey(BCourse.GetLane(chip));
                                                 chip.IsHit = true;
                                                 chip.Sound.Volume = PlayData.Data.SE / 100.0;
                                                 chip.Sound.PlaySpeed = PlayData.Data.PlaySpeed;
@@ -831,11 +833,11 @@ namespace Tunebeat
                             if (BGame.Playmode[p] == EAuto.Normal)
                             {
                                 int ps = p == 0 && PlayData.Data.Is2PSide ? 1 : p;
-                                for (int i = BGame.AutoScratch[p] ? 1 : 0; i < 8; i++)
+                                for (int i = PlayData.Data.AutoSclatch[p] ? 1 : 0; i < 8; i++)
                                 {
-                                    if (Pushed(i, ps))
+                                    if (Pushed(i, ps, p))
                                     {
-                                        if (PlayData.Data.Hitsound) Sfx.KeySound.Play();
+                                        PlayKey(i);
                                         if (BGame.KeySound[p][i] != null)
                                         {
                                             BGame.KeySound[p][i].Volume = PlayData.Data.SE / 100.0;
@@ -850,6 +852,16 @@ namespace Tunebeat
                         }
                     }
                 }
+            }
+        }
+
+        public static void PlayKey(int lane)
+        {
+            if (PlayData.Data.Hitsound)
+            {
+                Sfx.KeySound[lane].Volume = PlayData.Data.SE / 100.0;
+                Sfx.KeySound[lane].Stop();
+                Sfx.KeySound[lane].Play();
             }
         }
 
@@ -993,65 +1005,75 @@ namespace Tunebeat
             return fin;
         }
 
-        public static bool Pushed(int value, int player)
+        public static bool Pushed(int value, int player, int trueplayer = -1)
         {
             BMSKey key = player == 1 ? PlayData.Data.BMSKey2P : PlayData.Data.BMSKey;
+            int joyp = trueplayer >= 0 ? trueplayer : player;
+            BMSKey jkey = joyp == 1 ? PlayData.Data.BMSKey2P : PlayData.Data.BMSKey;
             switch (value)
             {
                 case 0:
-                    return Key.IsPushed(key.Scr_F) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_F)
-                        || Key.IsPushed(key.Scr_R) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_R);
+                    return Key.IsPushed(key.Scr_F) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F)
+                        || Key.IsPushed(key.Scr_R) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
                 case 1:
-                    return Key.IsPushed(key.Key1) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key1);
+                    return Key.IsPushed(key.Key1) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key1);
                 case 2:
-                    return Key.IsPushed(key.Key2) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)(key.Pad_Key2));
+                    return Key.IsPushed(key.Key2) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)(jkey.Pad_Key2));
                 case 3:
-                    return Key.IsPushed(key.Key3) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key3);
+                    return Key.IsPushed(key.Key3) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key3);
                 case 4:
-                    return Key.IsPushed(key.Key4) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key4);
+                    return Key.IsPushed(key.Key4) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key4);
                 case 5:
-                    return Key.IsPushed(key.Key5) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key5);
+                    return Key.IsPushed(key.Key5) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key5);
                 case 6:
-                    return Key.IsPushed(key.Key6) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key6);
+                    return Key.IsPushed(key.Key6) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key6);
                 case 7:
-                    return Key.IsPushed(key.Key7) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key7);
+                    return Key.IsPushed(key.Key7) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key7);
                 case 8:
-                    return Key.IsPushed(key.Start) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Start);
+                    return Key.IsPushed(key.Start) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Start);
                 case 9:
-                    return Key.IsPushed(key.Select) || Joypad.IsPushed(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Select);
+                    return Key.IsPushed(key.Select) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Select);
+                case 10:
+                    return Key.IsPushed(key.Scr_F) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F);
+                case 11:
+                    return Key.IsPushed(key.Scr_R) || Joypad.IsPushed(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
             }
             return false;
         }
-        public static bool Pushing(int value, int player)
+        public static bool Pushing(int value, int player, int trueplayer = -1)
         {
             BMSKey key = player == 1 ? PlayData.Data.BMSKey2P : PlayData.Data.BMSKey;
+            int joyp = trueplayer >= 0 ? trueplayer : player;
+            BMSKey jkey = joyp == 1 ? PlayData.Data.BMSKey2P : PlayData.Data.BMSKey;
             if (player == 1)
             {
                 switch (value)
                 {
                     case 7:
-                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_F)
-                            || Key.IsPushing(key.Scr_R) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_R);
+                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F)
+                            || Key.IsPushing(key.Scr_R) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
                     case 0:
-                        return Key.IsPushing(key.Key1) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key1);
+                        return Key.IsPushing(key.Key1) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key1);
                     case 1:
-                        return Key.IsPushing(key.Key2) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)(key.Pad_Key2));
+                        return Key.IsPushing(key.Key2) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key2);
                     case 2:
-                        return Key.IsPushing(key.Key3) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key3);
+                        return Key.IsPushing(key.Key3) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key3);
                     case 3:
-                        return Key.IsPushing(key.Key4) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key4);
+                        return Key.IsPushing(key.Key4) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key4);
                     case 4:
-                        return Key.IsPushing(key.Key5) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key5);
+                        return Key.IsPushing(key.Key5) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key5);
                     case 5:
-                        return Key.IsPushing(key.Key6) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key6);
+                        return Key.IsPushing(key.Key6) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key6);
                     case 6:
-                        return Key.IsPushing(key.Key7) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key7);
+                        return Key.IsPushing(key.Key7) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key7);
                     case 8:
-                        return Key.IsPushing(key.Start) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Start);
+                        return Key.IsPushing(key.Start) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Start);
                     case 9:
-                        return Key.IsPushing(key.Select) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Select);
+                        return Key.IsPushing(key.Select) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Select);
                     case 10:
-                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_F);
+                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F);
+                    case 11:
+                        return Key.IsPushing(key.Scr_R) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
                 }
             }
             else
@@ -1059,54 +1081,62 @@ namespace Tunebeat
                 switch (value)
                 {
                     case 0:
-                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_F)
-                            || Key.IsPushing(key.Scr_R) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_R);
+                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F)
+                            || Key.IsPushing(key.Scr_R) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
                     case 1:
-                        return Key.IsPushing(key.Key1) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key1);
+                        return Key.IsPushing(key.Key1) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key1);
                     case 2:
-                        return Key.IsPushing(key.Key2) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)(key.Pad_Key2));
+                        return Key.IsPushing(key.Key2) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key2);
                     case 3:
-                        return Key.IsPushing(key.Key3) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key3);
+                        return Key.IsPushing(key.Key3) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key3);
                     case 4:
-                        return Key.IsPushing(key.Key4) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key4);
+                        return Key.IsPushing(key.Key4) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key4);
                     case 5:
-                        return Key.IsPushing(key.Key5) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key5);
+                        return Key.IsPushing(key.Key5) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key5);
                     case 6:
-                        return Key.IsPushing(key.Key6) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key6);
+                        return Key.IsPushing(key.Key6) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key6);
                     case 7:
-                        return Key.IsPushing(key.Key7) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key7);
+                        return Key.IsPushing(key.Key7) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key7);
                     case 8:
-                        return Key.IsPushing(key.Start) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Start);
+                        return Key.IsPushing(key.Start) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Start);
                     case 9:
-                        return Key.IsPushing(key.Select) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Select);
+                        return Key.IsPushing(key.Select) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Select);
                     case 10:
-                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_F);
+                        return Key.IsPushing(key.Scr_F) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F);
+                    case 11:
+                        return Key.IsPushing(key.Scr_R) || Joypad.IsPushing(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
                 }
             }
             return false;
         }
-        public static bool Left(int value, int player)
+        public static bool Left(int value, int player, int trueplayer = -1)
         {
+            int joyp = trueplayer >= 0 ? trueplayer : player;
             BMSKey key = player == 1 ? PlayData.Data.BMSKey2P : PlayData.Data.BMSKey;
+            BMSKey jkey = joyp == 1 ? PlayData.Data.BMSKey2P : PlayData.Data.BMSKey;
             switch (value)
             {
                 case 0:
-                    return Key.IsLeft(key.Scr_F) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_F)
-                        || Key.IsLeft(key.Scr_R) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Scr_R);
+                    return Key.IsLeft(key.Scr_F) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F)
+                        || Key.IsLeft(key.Scr_R) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
                 case 1:
-                    return Key.IsLeft(key.Key1) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key1);
+                    return Key.IsLeft(key.Key1) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key1);
                 case 2:
-                    return Key.IsLeft(key.Key2) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)(key.Pad_Key2));
+                    return Key.IsLeft(key.Key2) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)(JoypadButton)jkey.Pad_Key2);
                 case 3:
-                    return Key.IsLeft(key.Key3) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key3);
+                    return Key.IsLeft(key.Key3) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key3);
                 case 4:
-                    return Key.IsLeft(key.Key4) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key4);
+                    return Key.IsLeft(key.Key4) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key4);
                 case 5:
-                    return Key.IsLeft(key.Key5) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key5);
+                    return Key.IsLeft(key.Key5) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key5);
                 case 6:
-                    return Key.IsLeft(key.Key6) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key6);
+                    return Key.IsLeft(key.Key6) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key6);
                 case 7:
-                    return Key.IsLeft(key.Key7) || Joypad.IsLeft(PlayData.Data.Controller[player], (JoypadButton)key.Pad_Key7);
+                    return Key.IsLeft(key.Key7) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Key7);
+                case 10:
+                    return Key.IsLeft(key.Scr_F) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_F);
+                case 11:
+                    return Key.IsLeft(key.Scr_R) || Joypad.IsLeft(PlayData.Data.Controller[joyp], (JoypadButton)jkey.Pad_Scr_R);
             }
             return false;
         }

@@ -17,7 +17,7 @@ namespace TJAParse
             {
                 isEnable = true;
                 Header = new Header();
-                Courses = new Course[5];
+                Courses = new Course[7];
                 for (int i = 0; i < Courses.Length; i++)
                     Courses[i] = new Course();
 
@@ -76,7 +76,7 @@ namespace TJAParse
             {
                 isEnable = true;
                 Header = new Header();
-                Courses = new Course[5];
+                Courses = new Course[7];
                 for (int i = 0; i < Courses.Length; i++)
                     Courses[i] = new Course();
 

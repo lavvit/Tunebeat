@@ -112,9 +112,10 @@ namespace Tunebeat
         public List<string> Template = new List<string>();
 
         public int LNType = 1;
-        public bool Is2PSide = true;
-        public bool Hitsound = true;
+        public bool Is2PSide = false;
+        public bool Hitsound = false;
         public int[] Option = new int[2] { 0, 0 };
+        public bool[] AutoSclatch = new bool[2] { false, false };
         public double[] BMSScrollSpeed = new double[2] { 1.0, 1.0 };
         public bool[] BMSFloatingHiSpeed = new bool[2] { false, false };
         public int[] BMSGreenNumber = new int[2] { 1200, 1200 };

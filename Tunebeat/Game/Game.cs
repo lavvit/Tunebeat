@@ -467,6 +467,8 @@ namespace Tunebeat
             {
                 if (TJA[0].Sound != null)
                 {
+                    double volume = (PlayData.Data.GameBGM / 100.0) * (SongData.NowTJA[0].Header.SONGVOL / 100.0);
+                    TJA[0].Sound.Volume = volume;
                     TJA[0].Sound.PlaySpeed = Playmode[0] == EAuto.Replay && Memory.ReplayData != null ? (Memory.ReplayData.Speed > 0 ? Memory.ReplayData.Speed : 1) : PlayData.Data.PlaySpeed;
                     TJA[0].Sound.Play(StartMeasure > 0 ? Timer.Value : 0);
                 }
@@ -483,7 +485,8 @@ namespace Tunebeat
             {
                 if (Dan != null && DanCourse.SongNumber < Dan.Courses.Count - 1 && (DanC.ExamSuccess(Dan.Exams) != ESuccess.Failed || PlayData.Data.DanFailedType == (int)EDanFailedType.All))
                 {
-                    Timer.Reset();
+                    Timer.Stop();
+                    Timer.Value = -2000;
                     NowState = EState.Start;
                     Memory.SaveScore(0);
 
@@ -501,6 +504,7 @@ namespace Tunebeat
                     DanLoad();
                     StartMeasure = 0;
                     AutoTime[0] = 0;
+                    Timer.Start();
                 }
                 else NowState = EState.End;
             }

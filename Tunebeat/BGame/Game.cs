@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using SeaDrop;
 using BMSParse;
 
@@ -20,7 +21,7 @@ namespace Tunebeat
         public static Sound[][] KeySound = new Sound[2][], ChargeSound = new Sound[2][];
         public static int StartMeasure;
         public static bool Play2P;
-        public static bool[] Failed = new bool[2], AutoScratch = new bool[2];
+        public static bool[] Failed = new bool[2];
         public static double TimeRemain;
         public static double[] AutoTime = new double[2];
         public static double[] Adjust = new double[5], ScrollRemain = new double[5];
@@ -30,6 +31,7 @@ namespace Tunebeat
         public static Counter[][] HitTimer = new Counter[5][];
         public static Handle LyricHandle, TitleHandle, GenreHandle, ArtistHandle;
         public static Number GameNumber, SmallNumber;
+        public static DateTime FileTime;
         #endregion
 
         public override void Enable()
@@ -47,7 +49,6 @@ namespace Tunebeat
             BMSInit();
             Play2P = NowCourse[0].Player == 2 ? false : PlayData.Data.IsPlay2P;// Dan == null && Chips[1] != null && Chips[1].Count > 0 ? PlayData.Data.IsPlay2P : false;
             Init();
-            BSudden.Init();
 
             LyricHandle = new Handle(PlayData.Data.FontName, 48);
             TitleHandle = new Handle(PlayData.Data.FontName, 48);
@@ -81,6 +82,8 @@ namespace Tunebeat
         {
             NowState = EState.None;
             AutoTime[0] = AutoTime[1] = 0;
+            if (Timer.State != 0) Timer.Stop();
+            Timer.Value = StartMeasure == 0 ? Timer.Begin : (long)Bars[0][StartMeasure - 1].Time;
 
             for (int i = 0; i < 2; i++)
             {
@@ -93,9 +96,7 @@ namespace Tunebeat
                 ChargeSound[i] = new Sound[16];
             }
             BScore.Init();
-
-            if (Timer.State != 0) Timer.Stop();
-            Timer.Value = StartMeasure == 0 ? Timer.Begin : (long)Bars[0][StartMeasure - 1].Time;
+            BSudden.Init();
 
             for (int p = 0; p < BMS.Length; p++)
             {
@@ -109,7 +110,7 @@ namespace Tunebeat
                         chip.Pushing = false;
                         chip.TopPushed = false;
                         if (chip.LongEnd != null) chip.LongEnd.IsMiss = false;
-                        chip.Sound.Stop();
+                        if (chip.Sound != null) chip.Sound.Stop();
                     }
                     BCourse.SetOption(BMS[p].Course.ListChip, (EOption)PlayData.Data.Option[p], BMS[p].Course);
                 }
@@ -133,7 +134,8 @@ namespace Tunebeat
                     PlayData.Data.LNType, PlayData.Data.Option[i]);
             }
             BMS = SongData.NowBMS;
-            
+            FileTime = DateTime.Now;
+
             NowCourse = new BCourse[lane];
             Chips = new List<Chip>[lane];
             Bars = new List<Bar>[lane];
@@ -198,7 +200,7 @@ namespace Tunebeat
                 {
                     map += $"{(BMS[0].Course.RanMap[i] == 0 ? "S" : $"{BMS[0].Course.RanMap[i]}")}" + (i == 7 ? "" : ", ");
                 }
-                int[] keycolor = new int[8] { (Playmode[0] == EAuto.Normal && AutoScratch[0] ? 0x00ff44 : 0xff0000), 0xffffff, 0x0000ff, 0xffffff, 0x0000ff, 0xffffff, 0x0000ff, 0xffffff };
+                int[] keycolor = new int[8] { (Playmode[0] == EAuto.Normal && PlayData.Data.AutoSclatch[0] ? 0x00ff44 : 0xff0000), 0xffffff, 0x0000ff, 0xffffff, 0x0000ff, 0xffffff, 0x0000ff, 0xffffff };
                 Drawing.Text(0, 100, $"{(EOption)PlayData.Data.Option[0]} {map}");
                 Drawing.Text(0, 720, $"{NowState}");
                 Drawing.Text(0, 740, $"{Timer.Value}");
@@ -221,7 +223,7 @@ namespace Tunebeat
         {
             Timer.Tick();
             bool s = false;
-            if (NowState == EState.None && (Key.IsPushed(EKey.Space) || Key.IsPushed(EKey.Enter)))
+            if (NowState == EState.None && (Key.IsPushed(EKey.Space) || Key.IsPushed(EKey.Enter) || BProcess.Pushed(9, 0)))
             {
                 Timer.Start();
                 NowState = EState.Start;
@@ -252,18 +254,73 @@ namespace Tunebeat
                     break;
             }
             if (Key.IsPushed(EKey.Esc)) Program.SceneChange(new SongSelect());
-            if ((!s && Key.IsPushed(EKey.Space)) || Key.IsPushed(EKey.Back)) Init();
+            if (Key.IsPushed(EKey.Back)) Init();//(!s && Key.IsPushed(EKey.Space)) || 
+            for (int i = 0; i < 2; i++)
+            {
+                if ((NowState > EState.None && BProcess.Pushing(8, i) && BProcess.Pushing(9, i))
+                   || (NowState == EState.End && BProcess.Pushing(9, i))) Init();
+            }
             if (Key.IsPushed(EKey.F1))
             {
-                if (Playmode[0] < EAuto.Replay) Playmode[0] = Playmode[0] == EAuto.Normal ? EAuto.Auto : EAuto.Normal;
-                if (Playmode[0] == EAuto.Auto && NowState == EState.Play) AutoTime[0] = Timer.Value;
-                if (NowState == EState.None) PlayData.Data.Auto[0] = Playmode[0] == EAuto.Auto;
+                if (Key.IsPushing(EKey.LShift))
+                {
+                    PlayData.Data.AutoSclatch[0] = !PlayData.Data.AutoSclatch[0];
+                }
+                else
+                {
+                    if (Playmode[0] < EAuto.Replay)
+                    {
+                        Playmode[0] = Playmode[0] == EAuto.Normal ? EAuto.Auto : EAuto.Normal;
+                    }
+                    if (Playmode[0] == EAuto.Auto && NowState == EState.Play) AutoTime[0] = Timer.Value;
+                    if (NowState == EState.None) PlayData.Data.Auto[0] = Playmode[0] == EAuto.Auto;
+                }
+                
             }
             if (Key.IsPushed(EKey.F2) && Play2P)
             {
-                if (Playmode[1] < EAuto.Replay) Playmode[1] = Playmode[1] == EAuto.Normal ? EAuto.Auto : EAuto.Normal;
-                if (Playmode[1] == EAuto.Auto && NowState == EState.Play) AutoTime[1] = Timer.Value;
-                if (NowState == EState.None) PlayData.Data.Auto[1] = Playmode[1] == EAuto.Auto;
+                if (Key.IsPushing(EKey.RShift))
+                {
+                    PlayData.Data.AutoSclatch[1] = !PlayData.Data.AutoSclatch[1];
+                }
+                else
+                {
+                    if (Playmode[1] < EAuto.Replay) Playmode[1] = Playmode[1] == EAuto.Normal ? EAuto.Auto : EAuto.Normal;
+                    if (Playmode[1] == EAuto.Auto && NowState == EState.Play) AutoTime[1] = Timer.Value;
+                    if (NowState == EState.None) PlayData.Data.Auto[1] = Playmode[1] == EAuto.Auto;
+                }
+            }
+            if (Key.IsPushed(EKey.F3))
+            {
+                if (PlayData.Data.Option[0]++ >= (int)EOption.AllScrach) PlayData.Data.Option[0] = (int)EOption.None;
+                Init();
+            }
+            if (Key.IsPushed(EKey.F4) && Play2P)
+            {
+                if (PlayData.Data.Option[1]++ >= (int)EOption.AllScrach) PlayData.Data.Option[1] = (int)EOption.None;
+                Init();
+            }
+            if (Key.IsPushed(EKey.F5))
+            {
+                double pre = PlayData.Data.PlaySpeed;
+                PlayData.Data.PlaySpeed -= 0.05;
+                BMSInit();
+                Init();
+                Timer.Value = (long)(Timer.Value * (pre / PlayData.Data.PlaySpeed));
+            }
+            if (Key.IsPushed(EKey.F6))
+            {
+                double pre = PlayData.Data.PlaySpeed;
+                PlayData.Data.PlaySpeed += 0.05;
+                BMSInit();
+                Init();
+                Timer.Value = (long)(Timer.Value * (pre / PlayData.Data.PlaySpeed));
+            }
+
+            if (!string.IsNullOrEmpty(Path) && File.GetLastWriteTime(Path) > FileTime)
+            {
+                Init();
+                BMSInit();
             }
 
             base.Update();

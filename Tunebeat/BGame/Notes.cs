@@ -87,6 +87,8 @@ namespace Tunebeat
                             bool miss = chip.LongEnd != null ? (PlayData.Data.LNType == 0 ? (chip.IsMiss && BGame.Timer.Value > chip.LongEnd.Time) : (chip.LongEnd.IsMiss && BGame.Timer.Value > chip.LongEnd.Time)) : chip.IsMiss;
                             if ((player == 1 ? BCourse.GetLane2P(chip, is2PLane) : BCourse.GetLane(chip, is2PLane)) == i && !chip.IsHit && !miss && (BGame.NowState > EState.None || BGame.Timer.Value <= chip.Time))
                             {
+                                int recX = RectX(chip, is1P ? 0 : player).Item1;
+                                int recW = RectX(chip, is1P ? 0 : player).Item2;
                                 if (chip.LongEnd != null)
                                 {
                                     double ly = 722 - length + 12 - ((chip.LongEnd.Time - BGame.Timer.Value) * chip.LongEnd.Bpm / 332.42 * Scroll[is1P ? 0 : player]);
@@ -106,11 +108,11 @@ namespace Tunebeat
                                                 if (!chip.Pushing) tx = Tx.BMS_Long_Hell;
                                                 else tx = Tx.BMS_Long_Hell_Charge;
                                             }
-                                            tx.Draw(x + xx[i], ly + 18, 1, (cy - ly - 18) / 18.0, new Rectangle(RectX(chip, player).Item1, 0, RectX(chip, player).Item2, 18));
+                                            tx.Draw(x + xx[i], ly + 18, 1, (cy - ly - 18) / 18.0, new Rectangle(recX, 0, recW, 18));
                                         }
-                                        else Tx.BMS_Notes.Draw(x + xx[i], ly + 18, 1, (cy - ly - 18) / 18.0, new Rectangle(RectX(chip, player).Item1, (chip.Pushing ? 48 : 30) + hcl, RectX(chip, player).Item2, 18));
-                                        Tx.BMS_Notes.Draw(x + xx[i], cy - 6, new Rectangle(RectX(chip, player).Item1, 66 + hcl, RectX(chip, player).Item2, 18));//start
-                                        if (PlayData.Data.LNType > 0) Tx.BMS_Notes.Draw(x + xx[i], ly, new Rectangle(RectX(chip, player).Item1, 12 + hcl, RectX(chip, player).Item2, 18));//end
+                                        else Tx.BMS_Notes.Draw(x + xx[i], ly + 18, 1, (cy - ly - 18) / 18.0, new Rectangle(recX, (chip.Pushing ? 48 : 30) + hcl, recW, 18));
+                                        Tx.BMS_Notes.Draw(x + xx[i], cy - 6, new Rectangle(recX, 66 + hcl, recW, 18));//start
+                                        if (PlayData.Data.LNType > 0) Tx.BMS_Notes.Draw(x + xx[i], ly, new Rectangle(recX, 12 + hcl, recW, 18));//end
                                         //Drawing.Text(x[i], (int)cy, $"{chip.LongEnd.Time}");
                                     }
                                 }
@@ -118,7 +120,7 @@ namespace Tunebeat
                                 {
                                     if (cy >= 0 && cy < 1080 + length)
                                     {
-                                        Tx.BMS_Notes.Draw(x + xx[i], cy, new Rectangle(RectX(chip, player).Item1, 0, RectX(chip, player).Item2, 12));
+                                        Tx.BMS_Notes.Draw(x + xx[i], cy, new Rectangle(recX, 0, recW, 12));
                                     }
                                 }
                                 //Drawing.Text(x[i], (int)cy, $"{chip.Bpm}");
@@ -138,7 +140,7 @@ namespace Tunebeat
             switch (BCourse.GetLane(chip))
             {
                 case 0:
-                    if (BGame.AutoScratch[player]) return (0, 90);
+                    if (PlayData.Data.AutoSclatch[player]) return (0, 90);
                     else return (90, 90);
                 case 1:
                 case 3:

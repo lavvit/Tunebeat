@@ -211,10 +211,10 @@ namespace Tunebeat
             Metronome = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Metronome.ogg");
             Metronome_Bar = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Metronome_Bar.ogg");
 
-            KeySound = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Key.ogg");
+            for (int i = 0; i < 8; i++) KeySound[i] = new Sound($@"{SOUND}{PlayData.Data.SoundName}\Key.ogg");
         }
 
-        public static Sound Metronome, Metronome_Bar, KeySound;
-        public static Sound[] Don = new Sound[5], Ka = new Sound[5], DON = new Sound[5], KA = new Sound[5], Balloon = new Sound[5], Kusudama = new Sound[5];
+        public static Sound Metronome, Metronome_Bar;
+        public static Sound[] Don = new Sound[5], Ka = new Sound[5], DON = new Sound[5], KA = new Sound[5], Balloon = new Sound[5], Kusudama = new Sound[5], KeySound = new Sound[8];
     }
 }
